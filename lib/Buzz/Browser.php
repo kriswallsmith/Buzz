@@ -12,6 +12,7 @@ class Browser
   protected $history;
   protected $requestFactory;
   protected $responseFactory;
+  protected $services = array();
 
   public function __construct(Client\ClientInterface $client = null, Browser\History $history = null)
   {
@@ -75,6 +76,32 @@ class Browser
     list($request, $response) = $this->getHistory()->getLast();
 
     return $response->toDomDocument();
+  }
+
+  /**
+   * Registers a service to the current browser.
+   * 
+   * @param Service\ServiceInterface $service A service object
+   * @param string                   $name    Use this name for accessing the supplied service
+   */
+  public function registerService(Service\ServiceInterface $service, $name = null)
+  {
+    $this->services[$name ?: $services->getName()] = $service;
+  }
+
+  /**
+   * Returns a registered service.
+   * 
+   * @param string $name The registered service name
+   * 
+   * @return Service\ServiceInterface A service object
+   */
+  public function getService($name)
+  {
+    if (isset($this->services[$name]))
+    {
+      return $this->services[$name];
+    }
   }
 
   public function setClient(Client\ClientInterface $client)
