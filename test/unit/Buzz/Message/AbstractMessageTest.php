@@ -1,8 +1,8 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Message;
 
-include __DIR__.'/../../bootstrap/unit.php';
+include __DIR__.'/../../../bootstrap/unit.php';
 
 $t = new \LimeTest(5);
 

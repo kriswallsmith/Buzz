@@ -1,8 +1,10 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Client;
 
-abstract class AbstractStreamClient
+use Buzz\Message;
+
+abstract class AbstractStream
 {
   protected $ignoreErrors = true;
   protected $maxRedirects = 0;
@@ -41,11 +43,11 @@ abstract class AbstractStreamClient
   /**
    * Converts a request into an array for stream_context_create().
    * 
-   * @param Request $request A request object
+   * @param Message\Request $request A request object
    * 
    * @return array An array for stream_context_create()
    */
-  public function getStreamContextArray(Request $request)
+  public function getStreamContextArray(Message\Request $request)
   {
     return array('http' => array(
 

@@ -1,4 +1,4 @@
-Buzz is a PHP 5.3 library for issuing HTTP requests.
+Buzz is a lightweight PHP 5.3 library for issuing HTTP requests.
 
     require_once 'Buzz/ClassLoader.php';
     Buzz\ClassLoader::getInstance()->register();

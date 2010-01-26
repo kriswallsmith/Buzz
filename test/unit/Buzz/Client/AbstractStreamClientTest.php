@@ -1,19 +1,21 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Client;
 
-include __DIR__.'/../../bootstrap/unit.php';
+use Buzz\Message;
+
+include __DIR__.'/../../../bootstrap/unit.php';
 
 $t = new \LimeTest(1);
 
-class StreamClient extends AbstractStreamClient
+class StreamClient extends AbstractStream
 {
 }
 
 // ->getStreamContextArray()
 $t->diag('->getStreamContextArray()');
 
-$request = new Request('POST', '/resource/123', 'http://example.com');
+$request = new Message\Request('POST', '/resource/123', 'http://example.com');
 $request->addHeader('Content-Type: application/x-www-form-urlencoded');
 $request->addHeader('Content-Length: 15');
 $request->setContent('foo=bar&bar=baz');

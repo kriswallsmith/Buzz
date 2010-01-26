@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Message;
 
 abstract class AbstractMessage
 {

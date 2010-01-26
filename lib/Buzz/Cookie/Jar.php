@@ -1,8 +1,10 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Cookie;
 
-class CookieJar
+use Buzz\Message;
+
+class Jar
 {
   protected $cookies = array();
 
@@ -19,9 +21,9 @@ class CookieJar
   /**
    * Adds Cookie headers to the supplied request.
    * 
-   * @param Request $request A request object
+   * @param Message\Request $request A request object
    */
-  public function addCookieHeaders(Request $request)
+  public function addCookieHeaders(Message\Request $request)
   {
     foreach ($this->cookies as $cookie)
     {
@@ -35,10 +37,10 @@ class CookieJar
   /**
    * Processes Set-Cookie headers from a request/response pair.
    * 
-   * @param Request  $request  A request object
-   * @param Response $response A response object
+   * @param Message\Request  $request  A request object
+   * @param Message\Response $response A response object
    */
-  public function processSetCookieHeaders(Request $request, Response $response)
+  public function processSetCookieHeaders(Message\Request $request, Message\Response $response)
   {
     foreach ($response->getHeader('Set-Cookie', false) as $header)
     {

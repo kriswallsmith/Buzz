@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Message;
 
 class Request extends AbstractMessage
 {

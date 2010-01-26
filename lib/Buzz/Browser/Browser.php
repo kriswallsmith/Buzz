@@ -1,6 +1,9 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Browser;
+
+use Buzz\Client;
+use Buzz\Message;
 
 class Browser
 {
@@ -9,35 +12,35 @@ class Browser
   protected $requestFactory;
   protected $responseFactory;
 
-  public function __construct(ClientInterface $client = null, History $history = null)
+  public function __construct(Client\ClientInterface $client = null, History $history = null)
   {
-    $this->setClient($client ?: new FileGetContentsClient());
+    $this->setClient($client ?: new Client\FileGetContentsClient());
     $this->setHistory($history ?: new History());
   }
 
   public function get($url, $headers = array())
   {
-    return $this->call($url, Request::METHOD_GET, $headers);
+    return $this->call($url, Message\Request::METHOD_GET, $headers);
   }
 
   public function post($url, $headers = array())
   {
-    return $this->call($url, Request::METHOD_POST, $headers);
+    return $this->call($url, Message\Request::METHOD_POST, $headers);
   }
 
   public function head($url, $headers = array())
   {
-    return $this->call($url, Request::METHOD_HEAD, $headers);
+    return $this->call($url, Message\Request::METHOD_HEAD, $headers);
   }
 
   public function put($url, $headers = array())
   {
-    return $this->call($url, Request::METHOD_PUT, $headers);
+    return $this->call($url, Message\Request::METHOD_PUT, $headers);
   }
 
   public function delete($url, $headers = array())
   {
-    return $this->call($url, Request::METHOD_DELETE, $headers);
+    return $this->call($url, Message\Request::METHOD_DELETE, $headers);
   }
 
   /**
@@ -61,7 +64,7 @@ class Browser
     return $response;
   }
 
-  public function setClient(ClientInterface $client)
+  public function setClient(Client\ClientInterface $client)
   {
     $this->client = $client;
   }
@@ -71,7 +74,7 @@ class Browser
     return $this->client;
   }
 
-  public function setHistory(BrowserHistory $history)
+  public function setHistory(History $history)
   {
     $this->history = $history;
   }
@@ -108,7 +111,7 @@ class Browser
       return $callable($url, $method, $headers);
     }
 
-    $request = new Request($method);
+    $request = new Message\Request($method);
     $request->fromUrl($url);
     $request->addHeaders($headers);
 
@@ -122,6 +125,6 @@ class Browser
       return $callable();
     }
 
-    return new Response();
+    return new Message\Response();
   }
 }
