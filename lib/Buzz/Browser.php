@@ -17,27 +17,27 @@ class Browser
 
   public function get($url, $headers = array())
   {
-    $this->call($url, Request::METHOD_GET, $headers);
+    return $this->call($url, Request::METHOD_GET, $headers);
   }
 
   public function post($url, $headers = array())
   {
-    $this->call($url, Request::METHOD_POST, $headers);
+    return $this->call($url, Request::METHOD_POST, $headers);
   }
 
   public function head($url, $headers = array())
   {
-    $this->call($url, Request::METHOD_HEAD, $headers);
+    return $this->call($url, Request::METHOD_HEAD, $headers);
   }
 
   public function put($url, $headers = array())
   {
-    $this->call($url, Request::METHOD_PUT, $headers);
+    return $this->call($url, Request::METHOD_PUT, $headers);
   }
 
   public function delete($url, $headers = array())
   {
-    $this->call($url, Request::METHOD_DELETE, $headers);
+    return $this->call($url, Request::METHOD_DELETE, $headers);
   }
 
   /**
@@ -46,6 +46,8 @@ class Browser
    * @param string $url     The URL to call
    * @param string $method  The request method to use
    * @param array  $headers An array of request headers
+   * 
+   * @return Response The response object
    */
   public function call($url, $method, $headers = array())
   {
@@ -54,7 +56,9 @@ class Browser
 
     $this->getClient()->send($request, $response);
 
-    $this->history->add($request, $response);
+    $this->getHistory()->add($request, $response);
+
+    return $response;
   }
 
   public function setClient(ClientInterface $client)

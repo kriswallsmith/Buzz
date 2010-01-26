@@ -1,16 +1,14 @@
 Buzz is a PHP 5.3 library for issuing HTTP requests.
 
-    <?php
-
     require_once 'Buzz/ClassLoader.php';
     Buzz\ClassLoader::getInstance()->register();
 
     $browser = new Buzz\Browser();
-    $browser->get('http://www.google.com');
+    $response = $browser->get('http://www.google.com');
 
-You can also use the low-level classes directly.
+    echo $response;
 
-    <?php
+You can also use the low-level HTTP classes directly.
 
     require_once 'Buzz/ClassLoader.php';
     Buzz\ClassLoader::getInstance()->register();
