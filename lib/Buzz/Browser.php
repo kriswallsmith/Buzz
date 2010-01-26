@@ -13,6 +13,7 @@ class Browser
   protected $requestFactory;
   protected $responseFactory;
   protected $services = array();
+  protected $serviceWrapper;
 
   public function __construct(Client\ClientInterface $client = null, Browser\History $history = null)
   {
@@ -102,6 +103,25 @@ class Browser
     {
       return $this->services[$name];
     }
+  }
+
+  /**
+   * Moves into a fluent interface with the supplied service.
+   * 
+   * @param string $service A service name
+   * 
+   * @return ServiceWrapper The service wrapped in a fluent interface for the current browser
+   */
+  public function with($service)
+  {
+    if (!$this->serviceWrapper)
+    {
+      $this->serviceWrapper = new Browser\ServiceWrapper($this);
+    }
+
+    $this->serviceWrapper->setService($this->getService($service));
+
+    return $this->serviceWrapper;
   }
 
   public function setClient(Client\ClientInterface $client)
