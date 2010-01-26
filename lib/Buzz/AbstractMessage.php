@@ -24,7 +24,7 @@ abstract class AbstractMessage
     {
       if (0 === strpos($header, $needle))
       {
-        $values[] = trim(substr($header, strlen($needle)));;
+        $values[] = trim(substr($header, strlen($needle)));
       }
     }
 

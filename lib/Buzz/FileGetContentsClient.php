@@ -28,6 +28,7 @@ class FileGetContentsClient extends AbstractStreamClient implements ClientInterf
   {
     if ($cookieJar = $this->getCookieJar())
     {
+      $cookieJar->clearExpiredCookies();
       $cookieJar->addCookieHeaders($request);
     }
 

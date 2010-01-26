@@ -5,7 +5,6 @@ namespace Buzz;
 class CookieJar
 {
   protected $cookies = array();
-  protected $cookieFactory;
 
   /**
    * Adds a cookie to the current cookie jar.
@@ -24,12 +23,12 @@ class CookieJar
    */
   public function addCookieHeaders(Request $request)
   {
-    // todo: limit to cookies that match the supplied request
-    $cookies = $this->cookies;
-
-    foreach ($cookies as $cookie)
+    foreach ($this->cookies as $cookie)
     {
-      $request->addHeader($cookie->toCookieHeader());
+      if ($cookie->matchesRequest($request))
+      {
+        $request->addHeader($cookie->toCookieHeader());
+      }
     }
   }
 
@@ -41,16 +40,29 @@ class CookieJar
    */
   public function processSetCookieHeaders(Request $request, Response $response)
   {
-    // todo: get headers from response
-    $headers = array();
-
-    foreach ($headers as $header)
+    foreach ($response->getHeader('Set-Cookie', false) as $header)
     {
-      // todo: include host from request
       $cookie = new Cookie();
-      $cookie->fromSetCookieHeader($header);
+      $cookie->fromSetCookieHeader($header, parse_url($request->getHost(), PHP_URL_HOST));
 
       $this->addCookie($cookie);
     }
+  }
+
+  /**
+   * Removes expired cookies.
+   */
+  public function clearExpiredCookies()
+  {
+    foreach ($this->cookies as $i => $cookie)
+    {
+      if ($cookie->isExpired())
+      {
+        unset($this->cookies[$i]);
+      }
+    }
+
+    // reset array keys
+    $this->cookies = array_values($this->cookies);
   }
 }
