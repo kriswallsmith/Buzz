@@ -17,6 +17,11 @@ class History
     end($this->history);
   }
 
+  public function getLast()
+  {
+    return end($this->history);
+  }
+
   public function setLimit($limit)
   {
     $this->limit = $limit;

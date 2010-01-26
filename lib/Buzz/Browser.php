@@ -1,8 +1,9 @@
 <?php
 
-namespace Buzz\Browser;
+namespace Buzz;
 
 use Buzz\Client;
+use Buzz\Browser;
 use Buzz\Message;
 
 class Browser
@@ -12,10 +13,10 @@ class Browser
   protected $requestFactory;
   protected $responseFactory;
 
-  public function __construct(Client\ClientInterface $client = null, History $history = null)
+  public function __construct(Client\ClientInterface $client = null, Browser\History $history = null)
   {
-    $this->setClient($client ?: new Client\FileGetContentsClient());
-    $this->setHistory($history ?: new History());
+    $this->setClient($client ?: new Client\FileGetContents());
+    $this->setHistory($history ?: new Browser\History());
   }
 
   public function get($url, $headers = array())
@@ -64,6 +65,18 @@ class Browser
     return $response;
   }
 
+  /**
+   * Returns a DOMDocument for the current response.
+   * 
+   * @return DOMDocument
+   */
+  public function getDom()
+  {
+    list($request, $response) = $this->getHistory()->getLast();
+
+    return $response->toDomDocument();
+  }
+
   public function setClient(Client\ClientInterface $client)
   {
     $this->client = $client;
@@ -74,7 +87,7 @@ class Browser
     return $this->client;
   }
 
-  public function setHistory(History $history)
+  public function setHistory(Browser\History $history)
   {
     $this->history = $history;
   }

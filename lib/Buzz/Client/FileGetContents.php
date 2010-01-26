@@ -5,13 +5,16 @@ namespace Buzz\Client;
 use Buzz\Cookie;
 use Buzz\Message;
 
-class FileGetContents extends AbstractStreamClient implements ClientInterface
+class FileGetContents extends AbstractStream implements ClientInterface
 {
   protected $cookieJar;
 
   public function __construct(Cookie\Jar $cookieJar = null)
   {
-    $this->setCookieJar($cookieJar);
+    if ($cookieJar)
+    {
+      $this->setCookieJar($cookieJar);
+    }
   }
 
   public function setCookieJar(Cookie\Jar $cookieJar)

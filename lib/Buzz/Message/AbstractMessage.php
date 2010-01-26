@@ -38,6 +38,67 @@ abstract class AbstractMessage
     }
   }
 
+  /**
+   * Returns a header's attributes.
+   * 
+   * @param string $name A header name
+   * 
+   * @return array An associative array of attributes
+   */
+  public function getHeaderAttributes($name)
+  {
+    $attributes = array();
+    foreach ($this->getHeader($name, false) as $header)
+    {
+      // remove header value
+      list(, $header) = explode(';', $header, 2);
+
+      // loop through attribute key=value pairs
+      foreach (array_map('trim', explode(';', trim($header))) as $pair)
+      {
+        list($key, $value) = explode('=', $pair);
+        $attributes[$key] = $value;
+      }
+    }
+
+    return $attributes;
+  }
+
+  /**
+   * Returns the value of a particular header attribute.
+   * 
+   * @param string $header    A header name
+   * @param string $attribute An attribute name
+   * 
+   * @return string|null The value of the attribute or null if it isn't set
+   */
+  public function getHeaderAttribute($header, $attribute)
+  {
+    $attributes = $this->getHeaderAttributes($header);
+
+    if (isset($attributes[$attribute]))
+    {
+      return $attributes[$attribute];
+    }
+  }
+
+  /**
+   * Returns the current message as a DOMDocument.
+   * 
+   * @return DOMDocument
+   */
+  public function toDomDocument()
+  {
+    $revert = libxml_use_internal_errors(true);
+
+    $document = new \DOMDocument('1.0', $this->getHeaderAttribute('Content-Type', 'charset') ?: 'UTF-8');
+    $document->loadHTML($this->getContent());
+
+    libxml_use_internal_errors($revert);
+
+    return $document;
+  }
+
   public function clearHeaders()
   {
     $this->setHeaders(array());
