@@ -19,7 +19,16 @@ You can also use the low-level HTTP classes directly.
     echo $request;
     echo $response;
 
-Before doing any of this you need to register the Buzz autoloader.
+Before doing any of this you need to register the Buzz class loader.
 
     require_once 'Buzz/ClassLoader.php';
     Buzz\ClassLoader::register();
+
+Buzz provides packages for connecting to third party APIs easily.
+
+    use Buzz\Service\RightScale;
+
+    $rightscale = new RightScale\API();
+    $deployment = $rightscale->getDeployment('production');
+    $servers = $deployment->getServersByTemplate('application'):
+    $status = $servers->runRightScript('deploy');
