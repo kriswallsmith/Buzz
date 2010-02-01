@@ -2,12 +2,22 @@
 
 namespace Buzz\Service;
 
+use Buzz\Client;
+
 abstract class AbstractService implements ServiceInterface
 {
+  protected $client;
   protected $name;
 
-  public function __construct()
+  /**
+   * Constructor.
+   * 
+   * @param Client\ClientInterface $client A client object
+   */
+  public function __construct(Client\ClientInterface $client = null)
   {
+    $this->setClient($client ?: new Client\FileGetContents());
+
     $this->configure();
 
     if (!$this->getName())
@@ -16,6 +26,9 @@ abstract class AbstractService implements ServiceInterface
     }
   }
 
+  /**
+   * A stub configuration method called in the constructor.
+   */
   protected function configure()
   {
   }
@@ -31,5 +44,15 @@ abstract class AbstractService implements ServiceInterface
   public function getName()
   {
     return $this->name;
+  }
+
+  public function setClient(Client\ClientInterface $client)
+  {
+    $this->client = $client;
+  }
+
+  public function getClient()
+  {
+    return $this->client;
   }
 }

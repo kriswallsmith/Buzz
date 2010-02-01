@@ -2,6 +2,6 @@
 
 namespace Buzz\Service\RightScale;
 
-class Credential
+class Credential extends AbstractResource
 {
 }

@@ -2,6 +2,6 @@
 
 namespace Buzz\Service\RightScale;
 
-class AlertSpecification
+class AlertSpecification extends AbstractResource
 {
 }

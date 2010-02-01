@@ -2,6 +2,6 @@
 
 namespace Buzz\Service\RightScale;
 
-class ServerTemplate
+class ServerTemplate extends AbstractResource
 {
 }

@@ -2,6 +2,6 @@
 
 namespace Buzz\Service\RightScale;
 
-class ServerArray
+class ServerArray extends AbstractResource
 {
 }

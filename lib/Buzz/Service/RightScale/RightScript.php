@@ -2,6 +2,6 @@
 
 namespace Buzz\Service\RightScale;
 
-class RightScript
+class RightScript extends AbstractResource
 {
 }
