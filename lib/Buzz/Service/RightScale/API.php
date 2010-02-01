@@ -24,9 +24,7 @@ class API extends Service\AbstractService
   /**
    * Returns all deployments on the current account.
    * 
-   * @return array An array of deployment objects
-   * 
-   * @link http://support.rightscale.com/15-References/RightScale_API_Reference_Guide/02-Management/01-Deployments
+   * @return DeploymentCollection A collection of deployments
    */
   public function getDeployments()
   {
@@ -88,19 +86,98 @@ class API extends Service\AbstractService
   /**
    * Finds a deployment with a certain nickname.
    * 
-   * @param string $nickname A deployment nickname
+   * @param string $nickname A nickname or regular expression
    * 
    * @return Deployment|null The deployment, if found
    */
   public function findDeploymentByNickname($nickname)
   {
-    foreach ($this->getDeployments() as $deployment)
+    $deployments = $this->findDeploymentsByNickname($nickname, 1);
+
+    return count($deployments) ? $deployments->getDeployment(0) : null;
+  }
+
+  /**
+   * Returns all RightScripts on the current account.
+   * 
+   * @return array An array of RightScript objects
+   */
+  public function getRightScripts()
+  {
+    $request = new Message\Request('GET', '/api/acct/'.$this->getAccountId().'/right_scripts.js', static::HOST);
+    $response = new Message\Response();
+
+    $this->send($request, $response);
+
+    $rightScripts = array();
+
+    foreach (json_decode($response->getContent(), true) as $array)
     {
-      if ($nickname == $deployment->getNickname())
+      $rightScript = new RightScript($this->getAPI());
+      $rightScript->fromArray($array);
+
+      $rightScripts[] = $rightScript;
+    }
+
+    return $rightScripts;
+  }
+
+  /**
+   * Finds RightScripts by name.
+   * 
+   * @param string $name A name or regular expression
+   * 
+   * @return array An array of matching RightScripts
+   */
+  public function findRightScriptsByName($name, $limit = null)
+  {
+    $rightScripts = array();
+
+    // choose a comparision function
+    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $name, $match))
+    {
+      if ('!' == $match[1])
       {
-        return $deployment;
+        $compare = function ($name, $value) { return !preg_match(substr($name, 1), $value); };
+      }
+      else
+      {
+        $compare = function ($name, $value) { return preg_match($name, $value); };
       }
     }
+    else
+    {
+      $compare = function ($name, $value) { return $name == $value; };
+    }
+
+    foreach ($this->getRightScripts() as $rightScript)
+    {
+      if (null !== $limit && count($rightScripts) >= $limit)
+      {
+        break;
+      }
+
+      if ($compare($name, $rightScript->getName()))
+      {
+        $rightScripts[] = $rightScript;
+      }
+    }
+
+    return $rightScripts;
+  }
+
+  /**
+   * Finds a RightScript with a certain name.
+   * 
+   * @param string $name A name or regular expression
+   * 
+   * @return RightScript|null The RightScript, if found
+   */
+  public function findRightScriptByName($name)
+  {
+    $rightScripts = $this->findRightScriptsByName($name, 1);
+
+    return count($rightScripts) ? $rightScripts[0] : null;
   }
 
   /**
