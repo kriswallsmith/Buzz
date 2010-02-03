@@ -12,11 +12,6 @@ class Browser
   protected $history;
   protected $requestFactory;
   protected $responseFactory;
-  protected $serviceWrapper;
-
-  protected $services = array(
-    'rightscale' => 'Buzz\Service\RightScale\API',
-  );
 
   public function __construct(Client\ClientInterface $client = null, Browser\History $history = null)
   {
@@ -80,73 +75,6 @@ class Browser
     list($request, $response) = $this->getHistory()->getLast();
 
     return $response->toDomDocument();
-  }
-
-  /**
-   * Registers a service to the current browser.
-   * 
-   * @param string                          $name    Use this name for accessing the supplied service
-   * @param string|Service\ServiceInterface $service A service object or class name
-   */
-  public function registerService($name, $service)
-  {
-    $this->services[$name] = $service;
-  }
-
-  /**
-   * Unregisters a service from the current browser.
-   * 
-   * @param string $name The service name
-   */
-  public function unregisterService($name)
-  {
-    unset($this->services[$name]);
-  }
-
-  /**
-   * Returns a registered service.
-   * 
-   * @param string $name The registered service name
-   * 
-   * @return Service\ServiceInterface A service object
-   */
-  public function getService($name)
-  {
-    if (isset($this->services[$name]))
-    {
-      if (is_string($this->services[$name]))
-      {
-        $this->services[$name] = new $this->services[$name]();
-      }
-
-      return $this->services[$name];
-    }
-  }
-
-  /**
-   * Moves into a fluent interface with the supplied service.
-   * 
-   * @param string $service A service name
-   * 
-   * @return Browser\ServiceWrapper The service wrapped in a fluent interface for the current browser
-   * 
-   * @throws InvalidArgumentException If there is no service registered to the supplied name
-   */
-  public function with($name)
-  {
-    if (!$this->serviceWrapper)
-    {
-      $this->serviceWrapper = new Browser\ServiceWrapper($this);
-    }
-
-    if (!$service = $this->getService($name))
-    {
-      throw new InvalidArgumentException(sprintf('There is no "%s" service', $name));
-    }
-
-    $this->serviceWrapper->setService($service);
-
-    return $this->serviceWrapper;
   }
 
   public function setClient(Client\ClientInterface $client)
