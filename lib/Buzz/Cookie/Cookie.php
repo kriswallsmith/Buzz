@@ -49,6 +49,8 @@ class Cookie
     {
       return false;
     }
+
+    return true;
   }
 
   /**
