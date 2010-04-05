@@ -88,7 +88,13 @@ class Request extends AbstractMessage
   {
     $info = parse_url($url);
 
-    $this->setResource(isset($info['path']) ? $info['path'] : '/');
+    $resource = isset($info['path']) ? $info['path'] : '/';
+    if (isset($info['query']))
+    {
+      $resource .= '?'.$info['query'];
+    }
+
+    $this->setResource($resource);
     $this->setHost($info['scheme'].'://'.$info['host']);
   }
 

@@ -4,7 +4,7 @@ namespace Buzz\Message;
 
 include __DIR__.'/../../../bootstrap/unit.php';
 
-$t = new \LimeTest(9);
+$t = new \LimeTest(11);
 
 // ->__construct()
 $t->diag('->__construct()');
@@ -26,9 +26,17 @@ $t->is($request->getUrl(), 'http://example.com/resource/123', '->getUrl() combin
 $t->diag('->fromUrl()');
 
 $request = new Request();
-$request->fromUrl('http://example.com/resource/123');
+$request->fromUrl('http://example.com/resource/123?foo=bar');
 $t->is($request->getHost(), 'http://example.com', '->fromUrl() sets the host value');
-$t->is($request->getResource(), '/resource/123', '->fromUrl() sets the resource value');
+$t->is($request->getResource(), '/resource/123?foo=bar', '->fromUrl() sets the resource value');
+
+$request = new Request();
+$request->fromUrl('http://example.com');
+$t->is($request->getResource(), '/', '->fromUrl() defaults the resource to "/"');
+
+$request = new Request();
+$request->fromUrl('http://example.com?foo=bar');
+$t->is($request->getResource(), '/?foo=bar', '->fromUrl() adds a slash when necessary');
 
 // ->isSecure()
 $t->diag('->isSecure()');
