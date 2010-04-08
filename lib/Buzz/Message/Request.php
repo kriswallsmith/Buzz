@@ -93,9 +93,12 @@ class Request extends AbstractMessage
     {
       $resource .= '?'.$info['query'];
     }
-
     $this->setResource($resource);
-    $this->setHost($info['scheme'].'://'.$info['host']);
+
+    if (isset($info['scheme']) && isset($info['host']))
+    {
+      $this->setHost($info['scheme'].'://'.$info['host']);
+    }
   }
 
   /**
