@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Browser;
+namespace Buzz\History;
 
 use Buzz\Message;
 
@@ -22,16 +22,14 @@ $response2->setContent('response2');
 $response3 = new Message\Response();
 $response3->setContent('response3');
 
-// ->add() ->getLast()
-$t->diag('->add() ->getLast()');
+// ->record() ->getLast()
+$t->diag('->record() ->getLast()');
 
-$history = new History();
-$history->setLimit(2);
-$history->add($request1, $response1);
-$history->add($request2, $response2);
-$history->add($request3, $response3);
+$journal = new Journal();
+$journal->setLimit(2);
+$journal->record($request1, $response1);
+$journal->record($request2, $response2);
+$journal->record($request3, $response3);
 
-$t->is(count($history), 2, '->add() respects the set limit');
-
-list($request, $response) = $history->getLast();
-$t->is($request->getContent(), 'request3', '->getLast() returns the last entry');
+$t->is(count($journal), 2, '->record() respects the set limit');
+$t->is($journal->getLast()->getRequest()->getContent(), 'request3', '->getLast() returns the last entry');
