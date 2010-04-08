@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Service\RightScale;
+namespace Buzz\Service\RightScale\Resource;
 
 class RightScriptCollection extends RightScript implements \Iterator, \Countable
 {

@@ -3,7 +3,10 @@
 namespace Buzz\Service\RightScale;
 
 use Buzz;
+use Buzz\Client;
+use Buzz\History;
 use Buzz\Message;
+use Buzz\Service\RightScale\Resource;
 
 class Browser extends Buzz\Browser
 {
@@ -43,7 +46,7 @@ class Browser extends Buzz\Browser
   {
     $response = $this->get(static::HOST.'/api/acct/'.$this->getAccountId().'/deployments.js');
 
-    $deployments = new DeploymentCollection();
+    $deployments = new Resource\DeploymentCollection();
     $deployments->fromJson($response->getContent());
 
     return $deployments;
@@ -58,7 +61,7 @@ class Browser extends Buzz\Browser
    */
   public function findDeploymentsByNickname($nickname, $limit = null)
   {
-    $deployments = new DeploymentCollection();
+    $deployments = new Resource\DeploymentCollection();
 
     // choose a comparision function
     if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $nickname, $match))
@@ -118,7 +121,7 @@ class Browser extends Buzz\Browser
   {
     $response = $this->get(static::HOST.'/api/acct/'.$this->getAccountId().'/right_scripts.xml');
 
-    $rightScripts = new RightScriptCollection();
+    $rightScripts = new Resource\RightScriptCollection();
     $rightScripts->fromXml($response->getContent());
 
     return $rightScripts;
