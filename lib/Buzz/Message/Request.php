@@ -88,6 +88,14 @@ class Request extends AbstractMessage
   {
     $info = parse_url($url);
 
+    // support scheme-less URLs
+    if (!isset($info['host']) && 0 !== strpos($info['path'], '/'))
+    {
+      list($host, $path) = explode('/', $info['path']);
+      $info['host'] = $host;
+      $info['path'] = '/'.$path;
+    }
+
     $resource = isset($info['path']) ? $info['path'] : '/';
     if (isset($info['query']))
     {
@@ -95,9 +103,10 @@ class Request extends AbstractMessage
     }
     $this->setResource($resource);
 
-    if (isset($info['scheme']) && isset($info['host']))
+    if (isset($info['host']))
     {
-      $this->setHost($info['scheme'].'://'.$info['host']);
+      $scheme = $info['scheme'] ?: 'http';
+      $this->setHost($scheme.'://'.$info['host']);
     }
   }
 
