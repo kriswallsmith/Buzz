@@ -39,6 +39,11 @@ class Server extends AbstractResource
     $this->setTags($tags);
   }
 
+  public function getId()
+  {
+    return basename($this->getHref());
+  }
+
   // accessors and mutators
 
   public function setNickname($nickname)

@@ -44,7 +44,7 @@ class Browser extends Buzz\Browser
    */
   public function getDeployments()
   {
-    $response = $this->get(static::HOST.'/api/acct/'.$this->getAccountId().'/deployments.js');
+    $response = $this->get('/api/acct/'.$this->getAccountId().'/deployments.js');
 
     $deployments = new Resource\DeploymentCollection();
     $deployments->fromJson($response->getContent());
@@ -119,7 +119,7 @@ class Browser extends Buzz\Browser
    */
   public function getRightScripts()
   {
-    $response = $this->get(static::HOST.'/api/acct/'.$this->getAccountId().'/right_scripts.xml');
+    $response = $this->get('/api/acct/'.$this->getAccountId().'/right_scripts.xml');
 
     $rightScripts = new Resource\RightScriptCollection();
     $rightScripts->fromXml($response->getContent());
@@ -223,9 +223,19 @@ class Browser extends Buzz\Browser
   /**
    * @see Buzz\Browser
    */
-  public function getNewRequest($url, $method, $headers = array())
+  public function preSend(Message\Request $request, Message\Response $response)
   {
-    $request = parent::getNewRequest($url, $method, $headers);
+    // add account id to the request resource
+    if (false !== strpos($request->getResource(), '%s'))
+    {
+      $request->setResource(sprintf($request->getResource(), $this->getAccountId()));
+    }
+
+    // add the rightscale host
+    if (null === $request->getHost())
+    {
+      $request->setHost(static::HOST);
+    }
 
     if ($this->hasCredentials())
     {
@@ -233,7 +243,5 @@ class Browser extends Buzz\Browser
     }
 
     $request->addHeader('X-API-VERSION: 1.0');
-
-    return $request;
   }
 }

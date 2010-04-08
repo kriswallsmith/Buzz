@@ -27,9 +27,10 @@ $rightscale = new Browser(
   $_SERVER['RIGHTSCALE_PASSWORD']
 );
 
-// ->getNewRequest()
-$t->diag('->getNewRequest()');
+// ->preSend()
+$t->diag('->preSend()');
 
-$request = $rightscale->getNewRequest('http://example.com', Message\Request::METHOD_GET);
-$t->is($request->getHeader('X-API-VERSION'), '1.0', '->getNewRequest() sets the API version header');
-$t->ok($request->getHeader('Authorization'), '->getNewRequest() sets an authentication header');
+$request = new Message\Request();
+$rightscale->preSend($request, new Message\Response());
+$t->is($request->getHeader('X-API-VERSION'), '1.0', '->preSend() sets the API version header');
+$t->ok($request->getHeader('Authorization'), '->preSend() sets an authentication header');
