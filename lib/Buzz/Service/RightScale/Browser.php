@@ -5,7 +5,7 @@ namespace Buzz\Service\RightScale;
 use Buzz;
 use Buzz\Message;
 
-class API extends Buzz\Browser
+class Browser extends Buzz\Browser
 {
   const HOST = 'https://my.rightscale.com';
 
@@ -25,7 +25,7 @@ class API extends Buzz\Browser
   /**
    * Returns true if both a username and password have been entered.
    * 
-   * @return boolean True if the current API object has credentials
+   * @return boolean True if the current browser has credentials
    */
   public function hasCredentials()
   {

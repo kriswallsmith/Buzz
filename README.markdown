@@ -28,10 +28,7 @@ Buzz provides packages for connecting to third party APIs easily.
 
     use Buzz\Service\RightScale;
 
-    $rightscale = new RightScale\API();
-    $rightscale->setAccountId(123456);
-    $rightscale->setUsername('me@example.com');
-    $rightscale->setPassword('s3cr3t');
+    $rightscale = new RightScale\Browser(123456, 'me@example.com', 's3cr3t');
 
     $deployment = $rightscale->findDeploymentByNickname('production');
     $rightScript = $rightScript->findRightScriptByName('deploy');

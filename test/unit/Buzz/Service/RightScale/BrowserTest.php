@@ -21,7 +21,7 @@ include __DIR__.'/../../../../bootstrap/unit.php';
 
 $t = new \LimeTest(2);
 
-$api = new API(
+$rightscale = new Browser(
   $_SERVER['RIGHTSCALE_ACCOUNT_ID'],
   $_SERVER['RIGHTSCALE_USERNAME'],
   $_SERVER['RIGHTSCALE_PASSWORD']
@@ -30,9 +30,6 @@ $api = new API(
 // ->getNewRequest()
 $t->diag('->getNewRequest()');
 
-$request = $api->getNewRequest('http://example.com', Message\Request::METHOD_GET);
+$request = $rightscale->getNewRequest('http://example.com', Message\Request::METHOD_GET);
 $t->is($request->getHeader('X-API-VERSION'), '1.0', '->getNewRequest() sets the API version header');
 $t->ok($request->getHeader('Authorization'), '->getNewRequest() sets an authentication header');
-
-$api->getDeployments();
-$api->getRightScripts();
