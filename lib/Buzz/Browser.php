@@ -51,18 +51,49 @@ class Browser
    * @param string $method  The request method to use
    * @param array  $headers An array of request headers
    * 
-   * @return Response The response object
+   * @return Message\Response The response object
    */
   public function call($url, $method, $headers = array())
   {
-    $request = $this->getNewRequest($url, $method, $headers);
-    $response = $this->getNewResponse();
+    $request = $this->getNewRequest();
 
+    $request->setMethod($method);
+    $request->fromUrl($url);
+    $request->addHeaders($headers);
+
+    return $this->send($request);
+  }
+
+  /**
+   * Sends a request and records it to the journal.
+   * 
+   * @param Message\Request  $request  A request object
+   * @param Message\Response $response A response object
+   * 
+   * @return Message\Response A response object
+   */
+  public function send(Message\Request $request, Message\Response $response = null)
+  {
+    if (null === $response)
+    {
+      $response = $this->getNewResponse();
+    }
+
+    $this->preSend($request, $response);
     $this->getClient()->send($request, $response);
-
     $this->getJournal()->record($request, $response);
 
     return $response;
+  }
+
+  /**
+   * Filters request and response objects before the client processes them.
+   * 
+   * @param Message\Request  $request  A request object
+   * @param Message\Response $response A response object
+   */
+  public function preSend(Message\Request $request, Message\Response $response)
+  {
   }
 
   /**
@@ -115,18 +146,14 @@ class Browser
     return $this->responseFactory;
   }
 
-  public function getNewRequest($url, $method, $headers = array())
+  public function getNewRequest()
   {
     if ($callable = $this->getRequestFactory())
     {
-      return $callable($url, $method, $headers);
+      return $callable();
     }
 
-    $request = new Message\Request($method);
-    $request->fromUrl($url);
-    $request->addHeaders($headers);
-
-    return $request;
+    return new Message\Request();
   }
 
   public function getNewResponse()
