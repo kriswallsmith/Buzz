@@ -18,7 +18,7 @@ class TagCollection extends Tag implements \Iterator, \ArrayAccess, \Countable
   {
     foreach ($array as $data)
     {
-      $tag = new Tag($this->getAPI());
+      $tag = new Tag();
       $tag->fromArray($data);
 
       $this->addTag($tag);

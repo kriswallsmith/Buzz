@@ -7,7 +7,7 @@ namespace Buzz\Service\RightScale;
  * 
  * Provides an interface for performing actions on multiple deployments.
  */
-class DeploymentCollection extends Deployment implements \Iterator, \ArrayAccess, \Countable
+class DeploymentCollection extends Deployment implements \Iterator, \Countable
 {
   protected $deployments = array();
 
@@ -18,7 +18,7 @@ class DeploymentCollection extends Deployment implements \Iterator, \ArrayAccess
   {
     foreach ($array as $data)
     {
-      $deployment = new Deployment($this->getAPI());
+      $deployment = new Deployment();
       $deployment->fromArray($data);
 
       $this->addDeployment($deployment);
@@ -40,7 +40,7 @@ class DeploymentCollection extends Deployment implements \Iterator, \ArrayAccess
    */
   public function getServers()
   {
-    $servers = new ServerCollection($this->getAPI());
+    $servers = new ServerCollection();
 
     foreach ($this->getDeployments() as $deployment)
     {
@@ -52,37 +52,15 @@ class DeploymentCollection extends Deployment implements \Iterator, \ArrayAccess
 
   // deployments
 
-  public function setDeployment($name, Deployment $deployment)
-  {
-    $this->deployments[$name] = $deployment;
-  }
-
   public function setDeployments(array $deployments)
   {
-    $this->deployments = $deployments;
-  }
-
-  public function getDeployment($name)
-  {
-    if (isset($this->deployments[$name]))
-    {
-      return $this->deployments[$name];
-    }
+    $this->deployments = array();
+    $this->addDeployments($deployments);
   }
 
   public function getDeployments()
   {
     return $this->deployments;
-  }
-
-  public function hasDeployment($name)
-  {
-    return isset($this->deployments[$name]);
-  }
-
-  public function addDeployment(Deployment $deployment)
-  {
-    $this->deployments[] = $deployment;
   }
 
   public function addDeployments($deployments)
@@ -93,38 +71,9 @@ class DeploymentCollection extends Deployment implements \Iterator, \ArrayAccess
     }
   }
 
-  public function removeDeployment($name)
+  public function addDeployment(Deployment $deployment)
   {
-    unset($this->deployments[$name]);
-  }
-
-  // ArrayAccess
-
-  public function offsetSet($name, $value)
-  {
-    if (null === $name)
-    {
-      $this->addDeployment($value);
-    }
-    else
-    {
-      $this->setDeployment($name, $value);
-    }
-  }
-
-  public function offsetGet($name)
-  {
-    return $this->getDeployment($name);
-  }
-
-  public function offsetExists($name)
-  {
-    return $this->hasDeployment($name);
-  }
-
-  public function offsetUnset($name)
-  {
-    $this->removeDeployment($name);
+    $this->deployments[] = $deployment;
   }
 
   // Iterator

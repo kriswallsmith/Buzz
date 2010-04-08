@@ -7,7 +7,7 @@ namespace Buzz\Service\RightScale;
  * 
  * Provides an interface for performing actions on multiple servers.
  */
-class ServerCollection extends Server implements \Iterator, \ArrayAccess, \Countable
+class ServerCollection extends Server implements \Iterator, \Countable
 {
   protected $servers = array();
 
@@ -18,7 +18,7 @@ class ServerCollection extends Server implements \Iterator, \ArrayAccess, \Count
   {
     foreach ($array as $data)
     {
-      $server = new Server($this->getAPI());
+      $server = new Server();
       $server->fromArray($data);
 
       $this->addServer($server);
@@ -27,37 +27,15 @@ class ServerCollection extends Server implements \Iterator, \ArrayAccess, \Count
 
   // servers
 
-  public function setServer($name, Server $server)
-  {
-    $this->servers[$name] = $server;
-  }
-
   public function setServers(array $servers)
   {
-    $this->servers = $servers;
-  }
-
-  public function getServer($name)
-  {
-    if (isset($this->servers[$name]))
-    {
-      return $this->servers[$name];
-    }
+    $this->servers = array();
+    $this->addServers($servers);
   }
 
   public function getServers()
   {
     return $this->servers;
-  }
-
-  public function hasServer($name)
-  {
-    return isset($this->servers[$name]);
-  }
-
-  public function addServer(Server $server)
-  {
-    $this->servers[] = $server;
   }
 
   public function addServers($servers)
@@ -68,38 +46,9 @@ class ServerCollection extends Server implements \Iterator, \ArrayAccess, \Count
     }
   }
 
-  public function removeServer($name)
+  public function addServer(Server $server)
   {
-    unset($this->servers[$name]);
-  }
-
-  // ArrayAccess
-
-  public function offsetSet($name, $value)
-  {
-    if (null === $name)
-    {
-      $this->addServer($value);
-    }
-    else
-    {
-      $this->setServer($name, $value);
-    }
-  }
-
-  public function offsetGet($name)
-  {
-    return $this->getServer($name);
-  }
-
-  public function offsetExists($name)
-  {
-    return $this->hasServer($name);
-  }
-
-  public function offsetUnset($name)
-  {
-    $this->removeServer($name);
+    $this->servers[] = $server;
   }
 
   // Iterator

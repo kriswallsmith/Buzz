@@ -6,6 +6,9 @@ class Deployment extends AbstractResource
 {
   protected $nickname;
   protected $description;
+  protected $href;
+  protected $createdAt;
+  protected $updatedAt;
 
   /**
    * @var TagCollection
@@ -22,17 +25,17 @@ class Deployment extends AbstractResource
    */
   public function fromArray(array $array)
   {
+    $this->setNickname($array['nickname']);
+    $this->setDescription($array['description']);
+    $this->setHref($array['href']);
     $this->setCreatedAt(new \DateTime($array['created_at']));
     $this->setUpdatedAt(new \DateTime($array['updated_at']));
-    $this->setNickname($array['nickname']);
-    $this->setHref($array['href']);
-    $this->setDescription($array['description']);
 
-    $tags = new TagCollection($this->getAPI());
+    $tags = new TagCollection();
     $tags->fromArray($array['tags']);
     $this->setTags($tags);
 
-    $servers = new ServerCollection($this->getAPI());
+    $servers = new ServerCollection();
     $servers->fromArray($array['servers']);
     $this->setServers($servers);
   }
@@ -46,7 +49,7 @@ class Deployment extends AbstractResource
    */
   public function findServersByNickname($nickname, $limit = null)
   {
-    $servers = new ServerCollection($this->getAPI());
+    $servers = new ServerCollection();
 
     // choose a comparision function
     if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $nickname, $match))
@@ -95,59 +98,6 @@ class Deployment extends AbstractResource
     return count($servers) ? $servers->getServer(0) : null;
   }
 
-  // actions
-
-  /**
-   * Starts all of the current deployment's servers.
-   * 
-   * @return Message\Response The API response
-   */
-  public function startAll()
-  {
-    $request = new Message\Request('POST');
-    $request->fromUrl($this->getHref().'/start_all');
-
-    $response = new Message\Response();
-
-    $this->getAPI()->send($request, $response);
-
-    return $response;
-  }
-
-  /**
-   * Stops all of the current deployment's servers.
-   * 
-   * @return Message\Response The API response
-   */
-  public function stopAll()
-  {
-    $request = new Message\Request('POST');
-    $request->fromUrl($this->getHref().'/stop_all');
-
-    $response = new Message\Response();
-
-    $this->getAPI()->send($request, $response);
-
-    return $response;
-  }
-
-  /**
-   * Duplicates the current deployment.
-   * 
-   * @return Message\Response The API response
-   */
-  public function duplicate()
-  {
-    $request = new Message\Request('POST');
-    $request->fromUrl($this->getHref().'/duplicate');
-
-    $response = new Message\Response();
-
-    $this->getAPI()->send($request, $response);
-
-    return $response;
-  }
-
   // accessors and mutators
 
   public function setNickname($nickname)
@@ -188,5 +138,35 @@ class Deployment extends AbstractResource
   public function getServers()
   {
     return $this->servers;
+  }
+
+  public function setCreatedAt(\DateTime $createdAt)
+  {
+    $this->createdAt = $createdAt;
+  }
+
+  public function getCreatedAt()
+  {
+    return $this->createdAt;
+  }
+
+  public function setUpdatedAt(\DateTime $updatedAt)
+  {
+    $this->updatedAt = $updatedAt;
+  }
+
+  public function getUpdatedAt()
+  {
+    return $this->updatedAt;
+  }
+
+  public function setHref($href)
+  {
+    $this->href = $href;
+  }
+
+  public function getHref()
+  {
+    return $this->href;
   }
 }
