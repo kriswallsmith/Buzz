@@ -79,21 +79,10 @@ class Browser
       $response = $this->getNewResponse();
     }
 
-    $this->preSend($request, $response);
     $this->getClient()->send($request, $response);
     $this->getJournal()->record($request, $response);
 
     return $response;
-  }
-
-  /**
-   * Filters request and response objects before the client processes them.
-   * 
-   * @param Message\Request  $request  A request object
-   * @param Message\Response $response A response object
-   */
-  public function preSend(Message\Request $request, Message\Response $response)
-  {
   }
 
   /**

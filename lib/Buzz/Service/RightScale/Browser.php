@@ -223,7 +223,14 @@ class Browser extends Buzz\Browser
   /**
    * @see Buzz\Browser
    */
-  public function preSend(Message\Request $request, Message\Response $response)
+  public function send(Message\Request $request, Message\Response $response = null)
+  {
+    $this->prepareRequest($request);
+
+    return parent::send($request, $response);
+  }
+
+  public function prepareRequest(Message\Request $request)
   {
     // add account id to the request resource
     if (false !== strpos($request->getResource(), '%s'))
