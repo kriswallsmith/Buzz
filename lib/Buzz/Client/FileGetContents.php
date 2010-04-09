@@ -38,7 +38,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
       $cookieJar->addCookieHeaders($request);
     }
 
-    $context = stream_context_create(static::getStreamContextArray($request));
+    $context = stream_context_create($this->getStreamContextArray($request));
     $content = file_get_contents($request->getUrl(), 0, $context);
 
     $response->setHeaders($http_response_header);
