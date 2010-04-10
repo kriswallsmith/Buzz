@@ -35,6 +35,11 @@ class ClassLoader
 
   public function autoload($class)
   {
+    if (class_exists($class, false) || interface_exists($class, false))
+    {
+      return true;
+    }
+
     if (0 === strpos($class, 'Buzz\\'))
     {
       set_error_handler(array($this, 'handleIncludeError'));

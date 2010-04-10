@@ -2,13 +2,24 @@
 
 namespace Buzz;
 
-include __DIR__.'/../../bootstrap/unit.php';
+use Buzz;
+use Buzz\Client\Mock;
+use Buzz\Message;
 
-$t = new \LimeTest(2);
+require_once __DIR__.'/../../lib/Buzz/ClassLoader.php';
+Buzz\ClassLoader::register();
 
-// ->autoload()
-$t->diag('->autoload()');
+require_once 'PHPUnit/Framework/TestCase.php';
 
-$loader = ClassLoader::getInstance();
-$t->is($loader->autoload('Buzz\Browser'), true, '->autoload() returns true if the class exists');
-$t->is($loader->autoload('Buzz\Invalid'), false, '->autoload() returns false if the class does not exist');
+class ClassLoaderTest extends \PHPUnit_Framework_TestCase
+{
+  public function testAutoloadReturnsTrueIfClassExists()
+  {
+    $this->assertTrue(ClassLoader::getInstance()->autoload('Buzz\Browser'));
+  }
+
+  public function testAutoloadReturnsFalseIfClassDoesNotExist()
+  {
+    $this->assertFalse(ClassLoader::getInstance()->autoload('Buzz\Invalid'));
+  }
+}
