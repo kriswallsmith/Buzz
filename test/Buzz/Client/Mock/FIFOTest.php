@@ -2,35 +2,42 @@
 
 namespace Buzz\Client\Mock;
 
+use Buzz;
 use Buzz\Message;
 
-include __DIR__.'/../../../../bootstrap/unit.php';
+require_once __DIR__.'/../../../../lib/Buzz/ClassLoader.php';
+Buzz\ClassLoader::register();
 
-$t = new \LimeTest(3);
+require_once 'PHPUnit/Framework/TestCase.php';
 
-$response = new Message\Response();
-$response->addHeader('HTTP/1.0 200 OK');
-$response->setContent('Hello World!');
-
-$client = new FIFO();
-$client->sendToQueue($response);
-
-$request = new Message\Request();
-$response = new Message\Response();
-$client->send($request, $response);
-
-$t->is($response->getHeaders(), array('HTTP/1.0 200 OK'), '->send() sets response headers');
-$t->is($response->getContent(), 'Hello World!', '->send() sets response content');
-
-try
+class FIFOTest extends \PHPUnit_Framework_TestCase
 {
-  $request = new Message\Request();
-  $response = new Message\Response();
-  $client->send($request, $response);
+  public function testSetsResponseHeadersAndContent()
+  {
+    $response = new Message\Response();
+    $response->addHeader('HTTP/1.0 200 OK');
+    $response->setContent('Hello World!');
 
-  $t->fail('->send() throws an exception if the queue is empty');
-}
-catch (\LogicException $e)
-{
-  $t->pass('->send() throws an exception if the queue is empty');
+    $client = new FIFO();
+    $client->sendToQueue($response);
+
+    $request = new Message\Request();
+    $response = new Message\Response();
+    $client->send($request, $response);
+
+    $this->assertEquals($response->getHeaders(), array('HTTP/1.0 200 OK'));
+    $this->assertEquals($response->getContent(), 'Hello World!');
+  }
+
+  /**
+   * @expectedException LogicException
+   */
+  public function testThrowsAnExceptionIfTheQueueIsEmpty()
+  {
+    $request = new Message\Request();
+    $response = new Message\Response();
+
+    $client = new FIFO();
+    $client->send($request, $response);
+  }
 }
