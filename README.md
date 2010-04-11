@@ -24,3 +24,8 @@ Before doing any of this you need to register the Buzz class loader.
 
     require_once 'Buzz/ClassLoader.php';
     Buzz\ClassLoader::register();
+
+Buzz is tested using PHPUnit. The run the test suite, execute the following
+command:
+
+    $ phpunit test/
