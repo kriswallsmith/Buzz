@@ -2,35 +2,48 @@
 
 namespace Buzz\Message;
 
-include __DIR__.'/../../../bootstrap/unit.php';
+require_once __DIR__.'/../../../lib/Buzz/ClassLoader.php';
+\Buzz\ClassLoader::register();
 
-$t = new \LimeTest(5);
+require_once 'PHPUnit/Framework/TestCase.php';
 
 class Message extends AbstractMessage
 {
 }
 
-// ->getHeader()
-$t->diag('->getHeader()');
+class AbstractMessageTest extends \PHPUnit_Framework_TestCase
+{
+  public function testGetHeaderGluesHeadersTogether()
+  {
+    $message = new Message();
+    $message->addHeader('X-My-Header: foo');
+    $message->addHeader('X-My-Header: bar');
 
-$message = new Message();
-$message->addHeader('X-My-Header: foo');
-$message->addHeader('X-My-Header: bar');
-$t->is($message->getHeader('X-My-Header'), 'foo'.PHP_EOL.'bar', '->getHeader() glues multiple header values together');
-$t->is($message->getHeader('X-My-Header', ','), 'foo,bar', '->getHeader() accepts a custom glue value');
-$t->is($message->getHeader('X-My-Header', false), array('foo', 'bar'), '->getHeader() returns an array if glue is false');
-$t->is($message->getHeader('X-Nonexistant'), null, '->getHeader() returns null if header does not exist');
+    $this->assertEquals($message->getHeader('X-My-Header'), 'foo'.PHP_EOL.'bar');
+    $this->assertEquals($message->getHeader('X-My-Header', ','), 'foo,bar');
+    $this->assertEquals($message->getHeader('X-My-Header', false), array('foo', 'bar'));
+  }
 
-// ->__toString()
-$t->diag('->__toString()');
+  public function testGetHeaderReturnsNullIfHeaderDoesNotExist()
+  {
+    $message = new Message();
 
-$message = new Message();
-$message->addHeader('Foo: Bar');
-$message->setContent('==CONTENT==');
-$expected = <<<EOF
+    $this->assertNull($message->getHeader('X-Nonexistant'));
+  }
+
+  public function testToStringFormatsTheMessage()
+  {
+    $message = new Message();
+    $message->addHeader('Foo: Bar');
+    $message->setContent('==CONTENT==');
+
+    $expected = <<<EOF
 Foo: Bar
 
 ==CONTENT==
 
 EOF;
-$t->is((string) $message, $expected, '->__toString() converts a message to a string');
+
+    $this->assertEquals((string) $message, $expected);
+  }
+}
