@@ -5,8 +5,6 @@ namespace Buzz\Cookie;
 require_once __DIR__.'/../../../lib/Buzz/ClassLoader.php';
 \Buzz\ClassLoader::register();
 
-require_once 'PHPUnit/Framework/TestCase.php';
-
 class CookieTest extends \PHPUnit_Framework_TestCase
 {
   public function testFromSetCookieHeaderSetsCookieAttributes()
