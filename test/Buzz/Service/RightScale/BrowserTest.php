@@ -4,33 +4,39 @@ namespace Buzz\Service\RightScale;
 
 use Buzz\Message;
 
-$keys = array('RIGHTSCALE_ACCOUNT_ID', 'RIGHTSCALE_USERNAME', 'RIGHTSCALE_PASSWORD');
-if (array_diff($keys, array_keys($_SERVER)))
+require_once __DIR__.'/../../../../lib/Buzz/ClassLoader.php';
+\Buzz\ClassLoader::register();
+
+require_once 'PHPUnit/Framework/TestCase.php';
+
+class BrowserTest extends \PHPUnit_Framework_TestCase
 {
-  echo "\nPlease set the following environment variables:\n\n";
-  foreach ($keys as $key)
+  protected $browser;
+
+  public function setUp()
   {
-    echo " - $key\n";
+    $keys = array('RIGHTSCALE_ACCOUNT_ID', 'RIGHTSCALE_USERNAME', 'RIGHTSCALE_PASSWORD');
+    if (array_diff($keys, array_keys($_SERVER)))
+    {
+      throw new Exception(implode("\n", array_merge(
+        array('Please set the following environment variables:', ''),
+        array_map(function($key) { return ' - '.$key; }, $keys)
+      )));
+    }
+
+    $this->browser = new Browser(
+      $_SERVER['RIGHTSCALE_ACCOUNT_ID'],
+      $_SERVER['RIGHTSCALE_USERNAME'],
+      $_SERVER['RIGHTSCALE_PASSWORD']
+    );
   }
-  echo "\n";
 
-  exit(1);
+  public function testPrepareRequestSetsHeaders()
+  {
+    $request = new Message\Request();
+    $this->browser->prepareRequest($request);
+
+    $this->assertEquals($request->getHeader('X-API-VERSION'), '1.0');
+    $this->assertTrue(0 < strlen($request->getHeader('Authorization')));
+  }
 }
-
-include __DIR__.'/../../../../bootstrap/unit.php';
-
-$t = new \LimeTest(2);
-
-$rightscale = new Browser(
-  $_SERVER['RIGHTSCALE_ACCOUNT_ID'],
-  $_SERVER['RIGHTSCALE_USERNAME'],
-  $_SERVER['RIGHTSCALE_PASSWORD']
-);
-
-// ->prepareRequest()
-$t->diag('->prepareRequest()');
-
-$request = new Message\Request();
-$rightscale->prepareRequest($request);
-$t->is($request->getHeader('X-API-VERSION'), '1.0', '->prepareRequest() sets the API version header');
-$t->ok($request->getHeader('Authorization'), '->prepareRequest() sets an authentication header');
