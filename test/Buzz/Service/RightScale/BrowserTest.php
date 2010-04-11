@@ -11,9 +11,10 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 {
   protected $browser;
 
-  public function setUp()
+  static public function setUpBeforeClass()
   {
     $keys = array('RIGHTSCALE_ACCOUNT_ID', 'RIGHTSCALE_USERNAME', 'RIGHTSCALE_PASSWORD');
+
     if (array_diff($keys, array_keys($_SERVER)))
     {
       throw new Exception(implode("\n", array_merge(
@@ -21,7 +22,10 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
         array_map(function($key) { return ' - '.$key; }, $keys)
       )));
     }
+  }
 
+  public function setUp()
+  {
     $this->browser = new Browser(
       $_SERVER['RIGHTSCALE_ACCOUNT_ID'],
       $_SERVER['RIGHTSCALE_USERNAME'],
