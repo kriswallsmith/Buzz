@@ -4,32 +4,57 @@ namespace Buzz\History;
 
 use Buzz\Message;
 
-include __DIR__.'/../../../bootstrap/unit.php';
+require_once __DIR__.'/../../../lib/Buzz/ClassLoader.php';
+\Buzz\ClassLoader::register();
 
-$t = new \LimeTest(2);
+require_once 'PHPUnit/Framework/TestCase.php';
 
-$request1 = new Message\Request();
-$request1->setContent('request1');
-$request2 = new Message\Request();
-$request2->setContent('request2');
-$request3 = new Message\Request();
-$request3->setContent('request3');
+class JournalTest extends \PHPUnit_Framework_TestCase
+{
+  protected $request1;
+  protected $request2;
+  protected $request3;
 
-$response1 = new Message\Response();
-$response1->setContent('response1');
-$response2 = new Message\Response();
-$response2->setContent('response2');
-$response3 = new Message\Response();
-$response3->setContent('response3');
+  protected $response1;
+  protected $response2;
+  protected $response3;
 
-// ->record() ->getLast()
-$t->diag('->record() ->getLast()');
+  public function setUp()
+  {
+    $this->request1 = new Message\Request();
+    $this->request1->setContent('request1');
+    $this->request2 = new Message\Request();
+    $this->request2->setContent('request2');
+    $this->request3 = new Message\Request();
+    $this->request3->setContent('request3');
 
-$journal = new Journal();
-$journal->setLimit(2);
-$journal->record($request1, $response1);
-$journal->record($request2, $response2);
-$journal->record($request3, $response3);
+    $this->response1 = new Message\Response();
+    $this->response1->setContent('response1');
+    $this->response2 = new Message\Response();
+    $this->response2->setContent('response2');
+    $this->response3 = new Message\Response();
+    $this->response3->setContent('response3');
+  }
 
-$t->is(count($journal), 2, '->record() respects the set limit');
-$t->is($journal->getLast()->getRequest()->getContent(), 'request3', '->getLast() returns the last entry');
+  public function testRecordEnforcesLimit()
+  {
+    $journal = new Journal();
+    $journal->setLimit(2);
+
+    $journal->record($this->request1, $this->response1);
+    $journal->record($this->request2, $this->response2);
+    $journal->record($this->request3, $this->response3);
+
+    $this->assertEquals(count($journal), 2);
+  }
+
+  public function testGetLastReturnsTheLastEntry()
+  {
+    $journal = new Journal();
+
+    $journal->record($this->request1, $this->response1);
+    $journal->record($this->request2, $this->response2);
+
+    $this->assertEquals($journal->getLast()->getRequest(), $this->request2);
+  }
+}
