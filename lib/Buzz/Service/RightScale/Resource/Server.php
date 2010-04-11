@@ -6,14 +6,15 @@ use Buzz\Message;
 
 class Server extends AbstractResource
 {
+  protected $currentInstanceHref;
+  protected $createdAt;
+  protected $state;
+  protected $serverTemplateHref;
+  protected $updatedAt;
   protected $nickname;
   protected $serverType;
-  protected $state;
-  protected $deploymentHref;
-  protected $currentInstanceHref;
   protected $href;
-  protected $createdAt;
-  protected $updatedAt;
+  protected $deploymentHref;
 
   /**
    * @var TagCollection
@@ -25,14 +26,15 @@ class Server extends AbstractResource
    */
   public function fromArray(array $array)
   {
+    $this->setCurrentInstanceHref($array['current_instance_href']);
     $this->setCreatedAt(new \DateTime($array['created_at']));
+    $this->setState($array['state']);
+    $this->setServerTemplateHref($array['server_template_href']);
     $this->setUpdatedAt(new \DateTime($array['updated_at']));
     $this->setNickname($array['nickname']);
     $this->setServerType($array['server_type']);
     $this->setHref($array['href']);
-    $this->setState($array['state']);
     $this->setDeploymentHref($array['deployment_href']);
-    $this->setCurrentInstanceHref($array['current_instance_href']);
 
     $tags = new TagCollection();
     $tags->fromArray($array['tags']);
@@ -134,5 +136,15 @@ class Server extends AbstractResource
   public function getHref()
   {
     return $this->href;
+  }
+
+  public function setServerTemplateHref($serverTemplateHref)
+  {
+    $this->serverTemplateHref = $serverTemplateHref;
+  }
+
+  public function getServerTemplateHref()
+  {
+    return $this->serverTemplateHref;
   }
 }

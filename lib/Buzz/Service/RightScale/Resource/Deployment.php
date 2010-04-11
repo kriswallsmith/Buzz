@@ -4,11 +4,12 @@ namespace Buzz\Service\RightScale\Resource;
 
 class Deployment extends AbstractResource
 {
-  protected $nickname;
-  protected $description;
-  protected $href;
   protected $createdAt;
   protected $updatedAt;
+  protected $nickname;
+  protected $href;
+  protected $description;
+  protected $defaultVpcSubnetHref;
 
   /**
    * @var TagCollection
@@ -25,11 +26,12 @@ class Deployment extends AbstractResource
    */
   public function fromArray(array $array)
   {
-    $this->setNickname($array['nickname']);
-    $this->setDescription($array['description']);
-    $this->setHref($array['href']);
     $this->setCreatedAt(new \DateTime($array['created_at']));
     $this->setUpdatedAt(new \DateTime($array['updated_at']));
+    $this->setNickname($array['nickname']);
+    $this->setHref($array['href']);
+    $this->setDescription($array['description']);
+    $this->setDefaultVpcSubnetHref($array['default_vpc_subnet_href']);
 
     $tags = new TagCollection();
     $tags->fromArray($array['tags']);
@@ -168,5 +170,15 @@ class Deployment extends AbstractResource
   public function getHref()
   {
     return $this->href;
+  }
+
+  public function setDefaultVpcSubnetHref($defaultVpcSubnetHref)
+  {
+    $this->defaultVpcSubnetHref = $defaultVpcSubnetHref;
+  }
+
+  public function getDefaultVpcSubnetHref()
+  {
+    return $this->defaultVpcSubnetHref;
   }
 }
