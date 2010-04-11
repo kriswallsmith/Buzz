@@ -91,7 +91,7 @@ class Cookie
     if (0 === strpos($cookieDomain, '.'))
     {
       $pattern = '/\b'.preg_quote(substr($cookieDomain, 1), '/').'$/i';
-      return preg_match($pattern, $domain);
+      return (boolean) preg_match($pattern, $domain);
     }
     else
     {
