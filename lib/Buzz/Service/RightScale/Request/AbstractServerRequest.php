@@ -5,7 +5,7 @@ namespace Buzz\Service\RightScale\Request;
 use Buzz\Message;
 use Buzz\Service\RightScale\Resource;
 
-abstract class ServerRequest extends Message\Request
+abstract class AbstractServerRequest extends Message\Request
 {
   protected $serverId;
 
