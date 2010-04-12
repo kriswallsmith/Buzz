@@ -105,9 +105,7 @@ class Browser extends Buzz\Browser
    */
   public function findDeploymentByNickname($nickname)
   {
-    $deployments = $this->findDeploymentsByNickname($nickname, 1);
-
-    return count($deployments) ? $deployments->getDeployment(0) : null;
+    return current($this->findDeploymentsByNickname($nickname, 1)) ?: null;
   }
 
   // rightscripts
@@ -115,7 +113,7 @@ class Browser extends Buzz\Browser
   /**
    * Returns all RightScripts on the current account.
    * 
-   * @return array An array of RightScript objects
+   * @return RightScriptCollection
    */
   public function getRightScripts()
   {
@@ -132,7 +130,7 @@ class Browser extends Buzz\Browser
    * 
    * @param string $name A name or regular expression
    * 
-   * @return array An array of matching RightScripts
+   * @return RightScriptCollection A collection of matching RightScripts
    */
   public function findRightScriptsByName($name, $limit = null)
   {
@@ -180,13 +178,154 @@ class Browser extends Buzz\Browser
    */
   public function findRightScriptByName($name)
   {
-    $rightScripts = $this->findRightScriptsByName($name, 1);
-
-    return count($rightScripts) ? $rightScripts[0] : null;
+    return current($this->findRightScriptsByName($name, 1)) ?: null;
   }
 
-  // todo: servers
-  // todo: server arrays
+  // servers
+
+  /**
+   * Returns all servers on the current account.
+   * 
+   * @return ServerCollection
+   */
+  public function getServers()
+  {
+    $response = $this->get('/api/acct/'.$this->getAccountId().'/servers.js');
+
+    $servers = new Resource\ServerCollection();
+    $servers->fromJson($response->getContent());
+
+    return $servers;
+  }
+
+  /**
+   * Finds servers by nickname.
+   * 
+   * @param string $nickname A nickname or regular expression
+   * 
+   * @return ServerCollection A collection of matching servers
+   */
+  public function findServersByNickname($nickname, $limit = null)
+  {
+    $servers = new Resource\ServerCollection();
+
+    // choose a comparision function
+    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $nickname, $match))
+    {
+      if ('!' == $match[1])
+      {
+        $compare = function ($nickname, $value) { return !preg_match(substr($nickname, 1), $value); };
+      }
+      else
+      {
+        $compare = function ($nickname, $value) { return preg_match($nickname, $value); };
+      }
+    }
+    else
+    {
+      $compare = function ($nickname, $value) { return $nickname == $value; };
+    }
+
+    foreach ($this->getServers() as $server)
+    {
+      if (null !== $limit && $limit <= count($servers))
+      {
+        break;
+      }
+
+      if ($compare($nickname, $server->getNickname()))
+      {
+        $servers->addServer($server);
+      }
+    }
+
+    return $servers;
+  }
+
+  /**
+   * Finds a server with a certain nickname.
+   * 
+   * @param string $nickname A nickname or regular expression
+   * 
+   * @return Server|null The server, if found
+   */
+  public function findServerByNickname($nickname)
+  {
+    return current($this->findServersByNickname($nickname, 1)) ?: null;
+  }
+
+  // server arrays
+
+  /**
+   * Returns all server arrays on the current account.
+   * 
+   * @return ServerArrayCollection
+   */
+  public function getServerArrays()
+  {
+    $response = $this->get('/api/acct/'.$this->getAccountId().'/server_arrays.js');
+
+    $serverArrays = new Resource\ServerArrayCollection();
+    $serverArrays->fromJson($response->getContent());
+
+    return $serverArrays;
+  }
+
+  /**
+   * Finds server arrays by nickname.
+   * 
+   * @param string $nickname A nickname or regular expression
+   * 
+   * @return ServerArrayCollection A collection of matching server arrays
+   */
+  public function findServerArraysByNickname($nickname, $limit = null)
+  {
+    $serverArrays = new Resource\ServerArrayCollection();
+
+    // choose a comparision function
+    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $nickname, $match))
+    {
+      if ('!' == $match[1])
+      {
+        $compare = function ($nickname, $value) { return !preg_match(substr($nickname, 1), $value); };
+      }
+      else
+      {
+        $compare = function ($nickname, $value) { return preg_match($nickname, $value); };
+      }
+    }
+    else
+    {
+      $compare = function ($nickname, $value) { return $nickname == $value; };
+    }
+
+    foreach ($this->getServerArrays() as $serverArray)
+    {
+      if (null !== $limit && $limit <= count($serverArrays))
+      {
+        break;
+      }
+
+      if ($compare($nickname, $serverArray->getNickname()))
+      {
+        $serverArrays->addServerArray($serverArray);
+      }
+    }
+
+    return $serverArrays;
+  }
+
+  /**
+   * Finds a server array with a certain nickname.
+   * 
+   * @param string $nickname A nickname or regular expression
+   * 
+   * @return ServerArray|null The server array, if found
+   */
+  public function findServerArrayByNickname($nickname)
+  {
+    return current($this->findServerArraysByNickname($nickname, 1)) ?: null;
+  }
 
   // accessors and mutators
 
