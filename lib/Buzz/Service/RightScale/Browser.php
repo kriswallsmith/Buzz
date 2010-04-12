@@ -63,23 +63,7 @@ class Browser extends Buzz\Browser
   {
     $deployments = new Resource\DeploymentCollection();
 
-    // choose a comparision function
-    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $nickname, $match))
-    {
-      if ('!' == $match[1])
-      {
-        $compare = function ($nickname, $value) { return !preg_match(substr($nickname, 1), $value); };
-      }
-      else
-      {
-        $compare = function ($nickname, $value) { return preg_match($nickname, $value); };
-      }
-    }
-    else
-    {
-      $compare = function ($nickname, $value) { return $nickname == $value; };
-    }
-
+    $matches = static::getComparisonFunction($nickname);
     foreach ($this->getDeployments() as $deployment)
     {
       if (null !== $limit && $limit <= count($deployments))
@@ -87,7 +71,7 @@ class Browser extends Buzz\Browser
         break;
       }
 
-      if ($compare($nickname, $deployment->getNickname()))
+      if ($matches($deployment->getNickname()))
       {
         $deployments->addDeployment($deployment);
       }
@@ -136,23 +120,7 @@ class Browser extends Buzz\Browser
   {
     $rightScripts = array();
 
-    // choose a comparision function
-    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $name, $match))
-    {
-      if ('!' == $match[1])
-      {
-        $compare = function ($name, $value) { return !preg_match(substr($name, 1), $value); };
-      }
-      else
-      {
-        $compare = function ($name, $value) { return preg_match($name, $value); };
-      }
-    }
-    else
-    {
-      $compare = function ($name, $value) { return $name == $value; };
-    }
-
+    $matches = static::getComparisonFunction($name);
     foreach ($this->getRightScripts() as $rightScript)
     {
       if (null !== $limit && $limit <= count($rightScripts))
@@ -160,7 +128,7 @@ class Browser extends Buzz\Browser
         break;
       }
 
-      if ($compare($name, $rightScript->getName()))
+      if ($matches($rightScript->getName()))
       {
         $rightScripts[] = $rightScript;
       }
@@ -209,23 +177,7 @@ class Browser extends Buzz\Browser
   {
     $servers = new Resource\ServerCollection();
 
-    // choose a comparision function
-    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $nickname, $match))
-    {
-      if ('!' == $match[1])
-      {
-        $compare = function ($nickname, $value) { return !preg_match(substr($nickname, 1), $value); };
-      }
-      else
-      {
-        $compare = function ($nickname, $value) { return preg_match($nickname, $value); };
-      }
-    }
-    else
-    {
-      $compare = function ($nickname, $value) { return $nickname == $value; };
-    }
-
+    $matches = static::getComparisonFunction($nickname);
     foreach ($this->getServers() as $server)
     {
       if (null !== $limit && $limit <= count($servers))
@@ -233,7 +185,7 @@ class Browser extends Buzz\Browser
         break;
       }
 
-      if ($compare($nickname, $server->getNickname()))
+      if ($matches($server->getNickname()))
       {
         $servers->addServer($server);
       }
@@ -282,23 +234,7 @@ class Browser extends Buzz\Browser
   {
     $serverArrays = new Resource\ServerArrayCollection();
 
-    // choose a comparision function
-    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $nickname, $match))
-    {
-      if ('!' == $match[1])
-      {
-        $compare = function ($nickname, $value) { return !preg_match(substr($nickname, 1), $value); };
-      }
-      else
-      {
-        $compare = function ($nickname, $value) { return preg_match($nickname, $value); };
-      }
-    }
-    else
-    {
-      $compare = function ($nickname, $value) { return $nickname == $value; };
-    }
-
+    $matches = static::getComparisonFunction($nickname);
     foreach ($this->getServerArrays() as $serverArray)
     {
       if (null !== $limit && $limit <= count($serverArrays))
@@ -306,7 +242,7 @@ class Browser extends Buzz\Browser
         break;
       }
 
-      if ($compare($nickname, $serverArray->getNickname()))
+      if ($matches($serverArray->getNickname()))
       {
         $serverArrays->addServerArray($serverArray);
       }
@@ -389,5 +325,30 @@ class Browser extends Buzz\Browser
     }
 
     $request->addHeader('X-API-VERSION: 1.0');
+  }
+
+  /**
+   * Compiles a comparison string into a function.
+   * 
+   * @param string $pattern A comparison string
+   * 
+   * @return Closure
+   */
+  static protected function getComparisonFunction($pattern)
+  {
+    if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $pattern, $match))
+    {
+      if ('!' == $match[1])
+      {
+        $pattern = substr($pattern, 1);
+        return function ($value) use ($pattern) { return !preg_match($pattern, $value); };
+      }
+      else
+      {
+        return function ($value) use ($pattern) { return preg_match($pattern, $value); };
+      }
+    }
+
+    return function ($value) use ($pattern) { return $pattern == $value; };
   }
 }
