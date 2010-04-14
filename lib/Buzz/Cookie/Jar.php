@@ -8,6 +8,20 @@ class Jar
 {
   protected $cookies = array();
 
+  public function setCookies($cookies)
+  {
+    $this->cookies = array();
+    foreach ($cookies as $cookie)
+    {
+      $this->addCookie($cookie);
+    }
+  }
+
+  public function getCookies()
+  {
+    return $this->cookies;
+  }
+
   /**
    * Adds a cookie to the current cookie jar.
    * 

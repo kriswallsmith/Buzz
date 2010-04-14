@@ -99,11 +99,6 @@ abstract class AbstractMessage
     return $document;
   }
 
-  public function clearHeaders()
-  {
-    $this->setHeaders(array());
-  }
-
   public function setHeaders(array $headers)
   {
     $this->headers = $headers;

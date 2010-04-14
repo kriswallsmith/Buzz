@@ -2,6 +2,8 @@
 
 namespace Buzz\Cookie;
 
+use Buzz\Message;
+
 require_once __DIR__.'/../../../lib/Buzz/ClassLoader.php';
 \Buzz\ClassLoader::register();
 
@@ -10,7 +12,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
   public function testFromSetCookieHeaderSetsCookieAttributes()
   {
     $cookie = new Cookie();
-    $cookie->fromSetCookieHeader('SESSION=asdf; expires='.date('r', strtotime('2000-01-01 00:00:00')).'; path=/; domain=.example.com', 'www.example.com');
+    $cookie->fromSetCookieHeader('SESSION=asdf; expires='.date('r', strtotime('2000-01-01 00:00:00')).'; path=/; domain=.example.com; secure', 'www.example.com');
 
     $this->assertEquals($cookie->getName(), 'SESSION');
     $this->assertEquals($cookie->getValue(), 'asdf');
@@ -18,7 +20,16 @@ class CookieTest extends \PHPUnit_Framework_TestCase
       'expires' => date('r', strtotime('2000-01-01 00:00:00')),
       'path'    => '/',
       'domain'  => '.example.com',
+      'secure'  => null,
     ));
+  }
+
+  public function testFromSetCookieHeaderFallsBackToIssuingDomain()
+  {
+    $cookie = new Cookie();
+    $cookie->fromSetCookieHeader('SESSION=asdf', 'example.com');
+
+    $this->assertEquals($cookie->getAttribute(Cookie::ATTR_DOMAIN), 'example.com');
   }
 
   public function testToCookieHeaderFormatsACookieHeader()
@@ -86,5 +97,57 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 
     $cookie = new Cookie();
     $this->assertTrue($cookie->matchesPath('/resource/123'));
+  }
+
+  public function testMatchesRequestChecksDomain()
+  {
+    $request = new Message\Request();
+    $request->setHost('http://example.com');
+
+    $cookie = new Cookie();
+    $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
+
+    $this->assertTrue($cookie->matchesRequest($request));
+
+    $cookie = new Cookie();
+    $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'foo.com');
+
+    $this->assertFalse($cookie->matchesRequest($request));
+  }
+
+  public function testMatchesRequestChecksPath()
+  {
+    $request = new Message\Request();
+    $request->setHost('http://example.com');
+    $request->setResource('/foo/bar');
+
+    $cookie = new Cookie();
+    $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
+    $cookie->setAttribute(Cookie::ATTR_PATH, '/foo');
+
+    $this->assertTrue($cookie->matchesRequest($request));
+
+    $cookie = new Cookie();
+    $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
+    $cookie->setAttribute(Cookie::ATTR_PATH, '/foo/bar/baz');
+
+    $this->assertFalse($cookie->matchesRequest($request));
+  }
+
+  public function testMatchesRequestChecksSecureAttribute()
+  {
+    $request = new Message\Request();
+    $request->setHost('https://example.com');
+
+    $cookie = new Cookie();
+    $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
+    $cookie->setAttribute(Cookie::ATTR_SECURE, null);
+
+    $this->assertTrue($cookie->matchesRequest($request));
+
+    $request = new Message\Request();
+    $request->setHost('http://example.com');
+
+    $this->assertFalse($cookie->matchesRequest($request));
   }
 }

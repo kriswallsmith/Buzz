@@ -45,7 +45,7 @@ class Cookie
     }
 
     // secure
-    if ($this->getAttribute(static::ATTR_SECURE) && !$request->isSecure())
+    if ($this->hasAttribute(static::ATTR_SECURE) && !$request->isSecure())
     {
       return false;
     }
@@ -190,6 +190,11 @@ class Cookie
     {
       return $this->attributes[$name];
     }
+  }
+
+  public function hasAttribute($name)
+  {
+    return array_key_exists($name, $this->attributes);
   }
 
   public function clearAttributes()

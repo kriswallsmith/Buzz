@@ -44,4 +44,12 @@ EOF;
 
     $this->assertEquals((string) $message, $expected);
   }
+
+  public function testGetHeaderAttributesReturnsHeaderAttributes()
+  {
+    $message = new Message();
+    $message->addHeader('Content-Type: text/xml; charset=utf8');
+
+    $this->assertEquals($message->getHeaderAttribute('Content-Type', 'charset'), 'utf8');
+  }
 }
