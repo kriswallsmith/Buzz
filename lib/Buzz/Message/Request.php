@@ -91,7 +91,7 @@ class Request extends AbstractMessage
     // support scheme-less URLs
     if (!isset($info['host']) && 0 !== strpos($info['path'], '/'))
     {
-      list($host, $path) = explode('/', $info['path']);
+      list($host, $path) = explode('/', $info['path'], 2);
       $info['host'] = $host;
       $info['path'] = '/'.$path;
     }

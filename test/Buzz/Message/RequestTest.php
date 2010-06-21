@@ -50,10 +50,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
   public function testFromUrlSetsADefaultScheme()
   {
     $request = new Request();
-    $request->fromUrl('example.com/foo');
+    $request->fromUrl('example.com/foo/bar');
 
     $this->assertEquals($request->getHost(), 'http://example.com');
-    $this->assertEquals($request->getResource(), '/foo');
+    $this->assertEquals($request->getResource(), '/foo/bar');
   }
 
   public function testFromUrlLeaveHostEmptyIfNoneIsProvided()
