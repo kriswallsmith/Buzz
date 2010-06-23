@@ -64,6 +64,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     $this->assertNull($request->getHost());
   }
 
+  public function testFromUrlAcceptsPort()
+  {
+    $request = new Request();
+    $request->fromUrl('http://localhost:3000/foo');
+
+    $this->assertEquals($request->getHost(), 'http://localhost:3000');
+    $this->assertEquals($request->getResource(), '/foo');
+  }
+
   public function testIsSecureChecksScheme()
   {
     $request = new Request('GET', '/resource/123', 'http://example.com');
