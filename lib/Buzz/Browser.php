@@ -55,7 +55,7 @@ class Browser
    */
   public function call($url, $method, $headers = array())
   {
-    $request = $this->getNewRequest();
+    $request = $this->createRequest();
 
     $request->setMethod($method);
     $request->fromUrl($url);
@@ -76,7 +76,7 @@ class Browser
   {
     if (null === $response)
     {
-      $response = $this->getNewResponse();
+      $response = $this->createResponse();
     }
 
     $this->getClient()->send($request, $response);
@@ -135,7 +135,7 @@ class Browser
     return $this->responseFactory;
   }
 
-  public function getNewRequest()
+  public function createRequest()
   {
     if ($callable = $this->getRequestFactory())
     {
@@ -145,7 +145,7 @@ class Browser
     return new Message\Request();
   }
 
-  public function getNewResponse()
+  public function createResponse()
   {
     if ($callable = $this->getResponseFactory())
     {
