@@ -10,13 +10,13 @@ require_once __DIR__.'/../../lib/Buzz/ClassLoader.php';
 
 class ClassLoaderTest extends \PHPUnit_Framework_TestCase
 {
-  public function testAutoloadReturnsTrueIfClassExists()
-  {
-    $this->assertTrue(ClassLoader::getInstance()->autoload('Buzz\Browser'));
-  }
+    public function testAutoloadReturnsTrueIfClassExists()
+    {
+        $this->assertTrue(ClassLoader::getInstance()->autoload('Buzz\Browser'));
+    }
 
-  public function testAutoloadReturnsFalseIfClassDoesNotExist()
-  {
-    $this->assertFalse(ClassLoader::getInstance()->autoload('Buzz\Invalid'));
-  }
+    public function testAutoloadReturnsFalseIfClassDoesNotExist()
+    {
+        $this->assertFalse(ClassLoader::getInstance()->autoload('Buzz\Invalid'));
+    }
 }

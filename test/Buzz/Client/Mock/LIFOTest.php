@@ -9,22 +9,22 @@ require_once __DIR__.'/../../../../lib/Buzz/ClassLoader.php';
 
 class LIFOTest extends \PHPUnit_Framework_TestCase
 {
-  public function testUsesTheLastQueuedResponse()
-  {
-    $response1 = new Message\Response();
-    $response1->setContent('first');
+    public function testUsesTheLastQueuedResponse()
+    {
+        $response1 = new Message\Response();
+        $response1->setContent('first');
 
-    $response2 = new Message\Response();
-    $response2->setContent('last');
+        $response2 = new Message\Response();
+        $response2->setContent('last');
 
-    $client = new LIFO();
-    $client->sendToQueue($response1);
-    $client->sendToQueue($response2);
+        $client = new LIFO();
+        $client->sendToQueue($response1);
+        $client->sendToQueue($response2);
 
-    $request = new Message\Request();
-    $response = new Message\Response();
-    $client->send($request, $response);
+        $request = new Message\Request();
+        $response = new Message\Response();
+        $client->send($request, $response);
 
-    $this->assertEquals($response->getContent(), 'last');
-  }
+        $this->assertEquals($response->getContent(), 'last');
+    }
 }
