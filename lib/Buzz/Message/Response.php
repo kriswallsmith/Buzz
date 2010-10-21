@@ -45,4 +45,20 @@ class Response extends AbstractMessage
             return $reasonPhrase;
         }
     }
+
+    public function fromString($raw)
+    {
+        $lines = preg_split('/(\\r?\\n)/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
+        for ($i = 0; $i < count($lines); $i += 2) {
+            $line = $lines[$i];
+            $eol = $lines[$i + 1];
+
+            if (empty($line)) {
+                $this->setContent(implode('', array_slice($lines, $i + 2)));
+                break;
+            } else {
+                $this->addHeader($line);
+            }
+        }
+    }
 }

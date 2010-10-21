@@ -28,20 +28,7 @@ class Curl implements ClientInterface
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $request->getHeaders());
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $request->getContent());
 
-        $raw = curl_exec($this->curl);
-
-        $lines = preg_split('/(\\r?\\n)/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
-        for ($i = 0; $i < count($lines); $i += 2) {
-            $line = $lines[$i];
-            $eol = $lines[$i + 1];
-
-            if (empty($line)) {
-                $response->setContent(implode('', array_slice($lines, $i + 2)));
-                break;
-            } else {
-                $response->addHeader($line);
-            }
-        }
+        $response->fromString(curl_exec($this->curl));
     }
 
     public function __destruct()
