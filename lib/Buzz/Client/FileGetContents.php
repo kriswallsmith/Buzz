@@ -39,7 +39,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
         $context = stream_context_create($this->getStreamContextArray($request));
         $content = file_get_contents($request->getUrl(), 0, $context);
 
-        $response->setHeaders($http_response_header);
+        $response->setHeaders((array) $http_response_header);
         $response->setContent($content);
 
         if ($cookieJar) {
