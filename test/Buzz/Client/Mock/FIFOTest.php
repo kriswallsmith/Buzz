@@ -4,9 +4,6 @@ namespace Buzz\Client\Mock;
 
 use Buzz\Message;
 
-require_once __DIR__.'/../../../../lib/Buzz/ClassLoader.php';
-\Buzz\ClassLoader::register();
-
 class FIFOTest extends \PHPUnit_Framework_TestCase
 {
     public function testSetsResponseHeadersAndContent()

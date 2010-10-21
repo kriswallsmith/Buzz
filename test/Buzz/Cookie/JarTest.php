@@ -4,9 +4,6 @@ namespace Buzz\Cookie;
 
 use Buzz\Message;
 
-require_once __DIR__.'/../../../lib/Buzz/ClassLoader.php';
-\Buzz\ClassLoader::register();
-
 class JarTest extends \PHPUnit_Framework_TestCase
 {
     public function testProcessSetCookieHeadersSetsCookies()
