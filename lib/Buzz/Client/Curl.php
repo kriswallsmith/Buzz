@@ -8,12 +8,27 @@ class Curl implements ClientInterface
 {
     protected $curl;
 
+    static protected function createCurlHandle()
+    {
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+
+        return $curl;
+    }
+
+    static protected function setCurlOptsFromRequest($curl, Message\Request $request)
+    {
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
+        curl_setopt($curl, CURLOPT_URL, $request->getUrl());
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $request->getHeaders());
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
+    }
+
     public function __construct()
     {
-        $this->curl = curl_init();
-
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->curl, CURLOPT_HEADER, true);
+        $this->curl = static::createCurlHandle();
     }
 
     public function getCurl()
@@ -23,11 +38,7 @@ class Curl implements ClientInterface
 
     public function send(Message\Request $request, Message\Response $response)
     {
-        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
-        curl_setopt($this->curl, CURLOPT_URL, $request->getUrl());
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $request->getHeaders());
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $request->getContent());
-
+        static::setCurlOptsFromRequest($this->curl, $request);
         $response->fromString(curl_exec($this->curl));
     }
 
