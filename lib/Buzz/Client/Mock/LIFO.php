@@ -4,8 +4,10 @@ namespace Buzz\Client\Mock;
 
 class LIFO extends AbstractQueue
 {
-    public function __construct()
+    public function receiveFromQueue()
     {
-        parent::__construct('array_push', 'array_pop');
+        if (count($this->queue)) {
+            return array_pop($this->queue);
+        }
     }
 }

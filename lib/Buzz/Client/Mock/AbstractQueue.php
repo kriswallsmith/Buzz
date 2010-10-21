@@ -8,20 +8,6 @@ use Buzz\Message;
 abstract class AbstractQueue implements Client\ClientInterface
 {
     protected $queue = array();
-    protected $sendCallable;
-    protected $receiveCallable;
-
-    /**
-     * Constructor.
-     * 
-     * @param mixed $sendCallable    Called when sending a response to the queue
-     * @param mixed $receiveCallable Called when receiving a response from the queue
-     */
-    public function __construct($sendCallable, $receiveCallable)
-    {
-        $this->sendCallable = $sendCallable;
-        $this->receiveCallable = $receiveCallable;
-    }
 
     public function getQueue()
     {
@@ -42,7 +28,7 @@ abstract class AbstractQueue implements Client\ClientInterface
      */
     public function sendToQueue(Message\Response $response)
     {
-        call_user_func($this->sendCallable, &$this->queue, $response);
+        $this->queue[] = $response;
     }
 
     /**
@@ -50,12 +36,7 @@ abstract class AbstractQueue implements Client\ClientInterface
      * 
      * @return Message\Response|null
      */
-    public function receiveFromQueue()
-    {
-        if (count($this->queue)) {
-            return call_user_func($this->receiveCallable, &$this->queue);
-        }
-    }
+    abstract public function receiveFromQueue();
 
     /**
      * @see Client\ClientInterface

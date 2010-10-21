@@ -4,8 +4,10 @@ namespace Buzz\Client\Mock;
 
 class FIFO extends AbstractQueue
 {
-    public function __construct()
+    public function receiveFromQueue()
     {
-        parent::__construct('array_push', 'array_shift');
+        if (count($this->queue)) {
+            return array_shift($this->queue);
+        }
     }
 }
