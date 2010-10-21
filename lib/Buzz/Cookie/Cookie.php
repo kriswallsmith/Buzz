@@ -113,11 +113,22 @@ class Cookie
     public function fromSetCookieHeader($header, $issuingDomain)
     {
         list($this->name, $header)  = explode('=', $header, 2);
-        list($this->value, $header) = explode(';', $header, 2);
+        if (false === strpos($header, ';')) {
+            $this->value = $header;
+            $header = null;
+        } else {
+            list($this->value, $header) = explode(';', $header, 2);
+        }
 
         $this->clearAttributes();
         foreach (array_map('trim', explode(';', trim($header))) as $pair) {
-            list($name, $value) = explode('=', $pair);
+            if (false === strpos($pair, '=')) {
+                $name = $pair;
+                $value = null;
+            } else {
+                list($name, $value) = explode('=', $pair);
+            }
+
             $this->setAttribute($name, $value);
         }
 

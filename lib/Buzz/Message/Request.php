@@ -102,7 +102,7 @@ class Request extends AbstractMessage
         $this->setResource($resource);
 
         if (isset($info['host'])) {
-            $scheme = $info['scheme'] ?: 'http';
+            $scheme = isset($info['scheme']) ? $info['scheme'] : 'http';
             $port = isset($info['port']) ? ':'.$info['port'] : '';
             $this->setHost($scheme.'://'.$info['host'].$port);
         }
