@@ -7,7 +7,7 @@ use Buzz\Message;
 class Curl implements ClientInterface
 {
     protected $curl;
-    protected $maxRedirects = 0;
+    protected $maxRedirects = 5;
     protected $timeout = 5;
 
     static protected function createCurlHandle()

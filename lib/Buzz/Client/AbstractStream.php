@@ -7,7 +7,7 @@ use Buzz\Message;
 abstract class AbstractStream
 {
     protected $ignoreErrors = true;
-    protected $maxRedirects = 0;
+    protected $maxRedirects = 5;
     protected $timeout = 5;
 
     public function setIgnoreErrors($ignoreErrors)
