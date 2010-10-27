@@ -66,7 +66,19 @@ class Curl implements ClientInterface
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 0 < $this->maxRedirects);
         curl_setopt($this->curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
 
-        $response->fromString(curl_exec($this->curl));
+        $response->fromString($this->getLastResponse(curl_exec($this->curl)));
+    }
+
+    protected function getLastResponse($raw)
+    {
+        $parts = preg_split('/((?:\\r?\\n){2})/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
+        for ($i = count($parts) - 3; $i >= 0; $i -= 2) {
+            if (0 === stripos($parts[$i], 'http')) {
+                return implode('', array_slice($parts, $i));
+            }
+        }
+
+        return $raw;
     }
 
     public function __destruct()
