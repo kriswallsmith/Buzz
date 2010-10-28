@@ -24,9 +24,9 @@ class Browser
         return $this->call($url, Message\Request::METHOD_GET, $headers);
     }
 
-    public function post($url, $headers = array())
+    public function post($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\Request::METHOD_POST, $headers);
+        return $this->call($url, Message\Request::METHOD_POST, $headers, $content);
     }
 
     public function head($url, $headers = array())
@@ -34,14 +34,14 @@ class Browser
         return $this->call($url, Message\Request::METHOD_HEAD, $headers);
     }
 
-    public function put($url, $headers = array())
+    public function put($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\Request::METHOD_PUT, $headers);
+        return $this->call($url, Message\Request::METHOD_PUT, $headers, $content);
     }
 
-    public function delete($url, $headers = array())
+    public function delete($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\Request::METHOD_DELETE, $headers);
+        return $this->call($url, Message\Request::METHOD_DELETE, $headers, $content);
     }
 
     /**
@@ -50,16 +50,18 @@ class Browser
      * @param string $url     The URL to call
      * @param string $method  The request method to use
      * @param array  $headers An array of request headers
+     * @param string $content The request content
      * 
      * @return Message\Response The response object
      */
-    public function call($url, $method, $headers = array())
+    public function call($url, $method, $headers = array(), $content = '')
     {
         $request = $this->createRequest();
 
         $request->setMethod($method);
         $request->fromUrl($url);
         $request->addHeaders($headers);
+        $request->setContent($content);
 
         return $this->send($request);
     }
