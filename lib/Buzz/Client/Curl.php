@@ -60,13 +60,17 @@ class Curl implements ClientInterface
 
     public function send(Message\Request $request, Message\Response $response)
     {
-        static::setCurlOptsFromRequest($this->curl, $request);
-
-        curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 0 < $this->maxRedirects);
-        curl_setopt($this->curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
-
+        $this->prepare($request, $response, $this->curl);
         $response->fromString($this->getLastResponse(curl_exec($this->curl)));
+    }
+
+    protected function prepare(Message\Request $request, Message\Response $response, $curl)
+    {
+        static::setCurlOptsFromRequest($curl, $request);
+
+        curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->maxRedirects);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
     }
 
     protected function getLastResponse($raw)

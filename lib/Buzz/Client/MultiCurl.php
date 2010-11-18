@@ -27,7 +27,7 @@ class MultiCurl extends Curl implements BatchClientInterface
                 $curl = $this->queue[$i][2] = static::createCurlHandle();
             }
 
-            static::setCurlOptsFromRequest($curl, $request);
+            $this->prepare($request, $response, $curl);
             curl_multi_add_handle($this->curl, $curl);
         }
 
