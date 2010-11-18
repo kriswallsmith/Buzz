@@ -53,6 +53,18 @@ class MultiCurl extends Curl implements BatchClientInterface
         $this->queue = array();
     }
 
+    public function getCurl($i = null)
+    {
+        if (null === $i) {
+            return parent::getCurl();
+        } elseif (isset($this->queue[$i])) {
+            list($request, $response, $curl) = $this->queue[$i];
+            return $curl;
+        } else {
+            throw new \InvalidArgumentException(sprintf('There is no cURL handler queued at position %s.', $i));
+        }
+    }
+
     public function __destruct()
     {
         curl_multi_close($this->curl);
