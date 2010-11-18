@@ -46,7 +46,7 @@ class MultiCurl extends Curl implements BatchClientInterface
 
         foreach ($this->queue as $queue) {
             list($request, $response, $curl) = $queue;
-            $response->fromString($this->getLastResponse(curl_multi_getcontent($curl)));
+            $response->fromString(static::getLastResponse(curl_multi_getcontent($curl)));
             curl_multi_remove_handle($this->curl, $curl);
         }
 

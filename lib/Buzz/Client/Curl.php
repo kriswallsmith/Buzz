@@ -28,6 +28,18 @@ class Curl implements ClientInterface
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
     }
 
+    static protected function getLastResponse($raw)
+    {
+        $parts = preg_split('/((?:\\r?\\n){2})/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
+        for ($i = count($parts) - 3; $i >= 0; $i -= 2) {
+            if (0 === stripos($parts[$i], 'http')) {
+                return implode('', array_slice($parts, $i));
+            }
+        }
+
+        return $raw;
+    }
+
     public function __construct()
     {
         $this->curl = static::createCurlHandle();
@@ -61,7 +73,7 @@ class Curl implements ClientInterface
     public function send(Message\Request $request, Message\Response $response)
     {
         $this->prepare($request, $response, $this->curl);
-        $response->fromString($this->getLastResponse(curl_exec($this->curl)));
+        $response->fromString(static::getLastResponse(curl_exec($this->curl)));
     }
 
     protected function prepare(Message\Request $request, Message\Response $response, $curl)
@@ -71,18 +83,6 @@ class Curl implements ClientInterface
         curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->maxRedirects);
         curl_setopt($curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
-    }
-
-    protected function getLastResponse($raw)
-    {
-        $parts = preg_split('/((?:\\r?\\n){2})/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
-        for ($i = count($parts) - 3; $i >= 0; $i -= 2) {
-            if (0 === stripos($parts[$i], 'http')) {
-                return implode('', array_slice($parts, $i));
-            }
-        }
-
-        return $raw;
     }
 
     public function __destruct()
