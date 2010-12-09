@@ -12,7 +12,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
     public function __construct(Cookie\Jar $cookieJar = null)
     {
         if ($cookieJar) {
-          $this->setCookieJar($cookieJar);
+            $this->setCookieJar($cookieJar);
         }
     }
 
