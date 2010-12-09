@@ -70,6 +70,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($request->getResource(), '/foo');
     }
 
+    public function testFromUrlRejectsInvalidUrl()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        // port number is too high
+        $request = new Request();
+        $request->fromUrl('http://localhost:123456');
+    }
+
     public function testIsSecureChecksScheme()
     {
         $request = new Request('GET', '/resource/123', 'http://example.com');

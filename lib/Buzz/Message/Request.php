@@ -83,10 +83,16 @@ class Request extends AbstractMessage
      * A convenience method for populating the current request from a URL.
      * 
      * @param string $url A URL
+     * 
+     * @throws InvalidArgumentException If the URL is invalid
      */
     public function fromUrl($url)
     {
         $info = parse_url($url);
+
+        if (false === $info) {
+            throw new \InvalidArgumentException(sprintf('The URL "%s" is invalid.', $url));
+        }
 
         // support scheme-less URLs
         if (!isset($info['host']) && 0 !== strpos($info['path'], '/')) {
