@@ -28,6 +28,8 @@ class FileGetContents extends AbstractStream implements ClientInterface
 
     /**
      * @see ClientInterface
+     * 
+     * @throws RuntimeException If file_get_contents() fires an error
      */
     public function send(Message\Request $request, Message\Response $response)
     {
@@ -37,7 +39,12 @@ class FileGetContents extends AbstractStream implements ClientInterface
         }
 
         $context = stream_context_create($this->getStreamContextArray($request));
-        $content = file_get_contents($request->getUrl(), 0, $context);
+
+        try {
+            $content = file_get_contents($request->getUrl(), 0, $context);
+        } catch (\Exception $e) {
+            throw new \RuntimeException($e->getMessage(), null, $e);
+        }
 
         $response->setHeaders((array) $http_response_header);
         $response->setContent($content);
