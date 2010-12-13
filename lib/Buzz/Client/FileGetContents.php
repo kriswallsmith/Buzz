@@ -40,10 +40,10 @@ class FileGetContents extends AbstractStream implements ClientInterface
 
         $context = stream_context_create($this->getStreamContextArray($request));
 
-        try {
-            $content = file_get_contents($request->getUrl(), 0, $context);
-        } catch (\Exception $e) {
-            throw new \RuntimeException($e->getMessage(), null, $e);
+        $content = @file_get_contents($request->getUrl(), 0, $context);
+        if (false === $content) {
+            $error = error_get_last();
+            throw new \RuntimeException($error['message']);
         }
 
         $response->setHeaders((array) $http_response_header);

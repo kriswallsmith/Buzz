@@ -6,16 +6,28 @@ use Buzz\Message;
 
 class FileGetContentsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSendToInvalidUrl()
+    /**
+     * @dataProvider provideInvalidHosts
+     */
+    public function testSendToInvalidUrl($host)
     {
         $this->setExpectedException('RuntimeException');
 
         $request = new Message\Request();
-        $request->fromUrl('http://'.substr(sha1(rand(11111, 99999)), 0, 7).':12345');
+        $request->fromUrl('http://'.$host.':12345');
 
         $response = new Message\Response();
 
         $client = new FileGetContents();
+        $client->setTimeout(0.05);
         $client->send($request, $response);
+    }
+
+    public function provideInvalidHosts()
+    {
+        return array(
+            array('invalid_domain'),
+            array('invalid_domain.buzz'),
+        );
     }
 }
