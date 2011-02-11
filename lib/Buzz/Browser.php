@@ -80,6 +80,10 @@ class Browser
             $response = $this->createResponse();
         }
 
+        if ($request instanceof BrowserAwareInterface) {
+            $request->setBrowser($this);
+        }
+
         $this->getClient()->send($request, $response);
         $this->getJournal()->record($request, $response);
 
