@@ -32,8 +32,8 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($response->getReasonPhrase(), null);
 
-        $response->addHeader('1.0 200 OK');
+        $response->addHeader('1.0 404 Not Found');
 
-        $this->assertEquals($response->getReasonPhrase(), 'OK');
+        $this->assertEquals($response->getReasonPhrase(), 'Not Found');
     }
 }
