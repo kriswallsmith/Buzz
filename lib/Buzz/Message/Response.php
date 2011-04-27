@@ -12,7 +12,7 @@ class Response extends AbstractMessage
     public function getProtocolVersion()
     {
         if (isset($this->headers[0])) {
-            list($httpVersion, $statusCode, $reasonPhrase) = explode(' ', $this->headers[0]);
+            list($httpVersion) = explode(' ', $this->headers[0]);
 
             return (float) $httpVersion;
         }
@@ -26,7 +26,7 @@ class Response extends AbstractMessage
     public function getStatusCode()
     {
         if (isset($this->headers[0])) {
-            list($httpVersion, $statusCode, $reasonPhrase) = explode(' ', $this->headers[0]);
+            list(, $statusCode) = explode(' ', $this->headers[0]);
 
             return (integer) $statusCode;
         }
@@ -40,9 +40,7 @@ class Response extends AbstractMessage
     public function getReasonPhrase()
     {
         if (isset($this->headers[0])) {
-            list($httpVersion, $statusCode, $reasonPhrase) = explode(' ', $this->headers[0]);
-
-            return $reasonPhrase;
+            return substr($this->headers[0], strpos($this->headers[0], ' ', strpos($this->headers[0], ' ') + 1) + 1);
         }
     }
 

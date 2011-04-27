@@ -36,4 +36,15 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($response->getReasonPhrase(), 'OK');
     }
+
+    public function testGetReasonPhraseReturnsTheReasonPhraseMultiword()
+    {
+        $response = new Response();
+
+        $this->assertEquals($response->getReasonPhrase(), null);
+
+        $response->addHeader('1.0 500 Internal Server Error');
+
+        $this->assertEquals($response->getReasonPhrase(), 'Internal Server Error');
+    }
 }
