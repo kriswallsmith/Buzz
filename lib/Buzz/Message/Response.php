@@ -40,7 +40,9 @@ class Response extends AbstractMessage
     public function getReasonPhrase()
     {
         if (isset($this->headers[0])) {
-            return substr($this->headers[0], strpos($this->headers[0], ' ', strpos($this->headers[0], ' ') + 1) + 1);
+            list(,, $reasonPhrase) = explode(' ', $this->headers[0], 3);
+
+            return $reasonPhrase;
         }
     }
 

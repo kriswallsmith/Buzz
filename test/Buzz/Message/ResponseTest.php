@@ -37,7 +37,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($response->getReasonPhrase(), 'OK');
     }
 
-    public function testGetReasonPhraseReturnsTheReasonPhraseMultiword()
+    public function testGetReasonPhraseReturnsAMultiwordReasonPhrase()
     {
         $response = new Response();
 
