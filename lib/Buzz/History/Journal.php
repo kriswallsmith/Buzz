@@ -9,9 +9,9 @@ class Journal implements \Countable
     protected $entries = array();
     protected $limit = 10;
 
-    public function record(Message\Request $request, Message\Response $response)
+    public function record(Message\Request $request, Message\Response $response, $time = 0)
     {
-        $this->addEntry(new Entry($request, $response));
+        $this->addEntry(new Entry($request, $response, $time));
     }
 
     public function addEntry(Entry $entry)

@@ -79,4 +79,15 @@ class JournalTest extends \PHPUnit_Framework_TestCase
         $journal->clear();
         $this->assertEquals(count($journal), 0);
     }
+
+    /**
+     * @depends testGetLastReturnsTheLastEntry
+     */
+    public function testTime()
+    {
+        $journal = new Journal();
+        $journal->record($this->request1, $this->response1, 100);
+
+        $this->assertEquals($journal->getLast()->getTime(), 100);
+    }
 }
