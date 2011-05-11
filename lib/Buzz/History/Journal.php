@@ -28,6 +28,11 @@ class Journal implements \Countable, \IteratorAggregate
         end($this->entries);
     }
 
+    public function getEntries()
+    {
+        return $this->entries;
+    }
+
     public function getLast()
     {
         return end($this->entries);
