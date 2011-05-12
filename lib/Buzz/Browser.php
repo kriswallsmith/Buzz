@@ -84,14 +84,8 @@ class Browser
             $request->setBrowser($this);
         }
 
-        $start = microtime(true);
-
         $this->getClient()->send($request, $response);
-
-        $end = microtime(true);
-        $time = ($end - $start) * 1000;
-
-        $this->getJournal()->record($request, $response, (int) $time);
+        $this->getJournal()->record($request, $response);
 
         return $response;
     }
