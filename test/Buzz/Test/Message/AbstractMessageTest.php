@@ -51,4 +51,18 @@ EOF;
 
         $this->assertEquals('utf8', $message->getHeaderAttribute('Content-Type', 'charset'));
     }
+
+    public function testRemoveHeaderRemovesHeader()
+    {
+        $message = new Message();
+        $message->addHeader('Content-Type: text/xml');
+        $message->removeHeader('Content-Type');
+
+        $this->assertNull($message->getHeader('Content-Type'));
+
+        $message->addHeader('Content-Type: text/xml');
+        $message->removeHeader('content-type');
+
+        $this->assertNull($message->getHeader('Content-Type'));
+    }
 }
