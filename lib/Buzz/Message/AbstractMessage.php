@@ -34,6 +34,20 @@ abstract class AbstractMessage
     }
 
     /**
+     * removeHeader
+     *
+     * @return
+     */
+    public function removeHeader($name)
+    {
+        foreach ($this->getHeaders() as $k => $header) {
+            if (0 === strpos(strtolower($header), strtolower($name))) {
+                unset($this->headers[$k]);
+            }
+        }
+    }
+
+    /**
      * Returns a header's attributes.
      * 
      * @param string $name A header name
