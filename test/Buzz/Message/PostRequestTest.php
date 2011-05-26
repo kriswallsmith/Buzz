@@ -13,8 +13,9 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
     {
         $message = new PostRequest();
         $message->addFormData('foo', 'bar');
+        $message->addFormData('bar', 'foo');
 
-        $expected = "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 8\r\n\r\n&foo=bar";
+        $expected = "foo=bar&bar=foo";
         $this->assertEquals($expected, $message->getContent());
     }
 
