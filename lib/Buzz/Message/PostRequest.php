@@ -34,6 +34,11 @@ class PostRequest extends Request
         return $this->fields;
     }
 
+    public function setFormData(array $data)
+    {
+        $this->fields = $data;
+    }
+
     public function setContent($content)
     {
         throw new \BadMethodCallException('It is not permitted to set the content.');
