@@ -43,6 +43,7 @@ class Jar
                 $request->addHeader($cookie->toCookieHeader());
             }
         }
+        $request->groupHeader('Cookie');
     }
 
     /**
