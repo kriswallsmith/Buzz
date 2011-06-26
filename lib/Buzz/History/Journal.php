@@ -4,7 +4,7 @@ namespace Buzz\History;
 
 use Buzz\Message;
 
-class Journal implements \Countable
+class Journal implements \Countable, \IteratorAggregate
 {
     protected $entries = array();
     protected $limit = 10;
@@ -54,5 +54,10 @@ class Journal implements \Countable
     public function getLimit()
     {
         return $this->limit;
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator(array_reverse($this->entries));
     }
 }
