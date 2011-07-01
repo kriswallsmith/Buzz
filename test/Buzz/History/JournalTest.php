@@ -79,4 +79,18 @@ class JournalTest extends \PHPUnit_Framework_TestCase
         $journal->clear();
         $this->assertEquals(count($journal), 0);
     }
+
+    /**
+     * @depends testGetLastReturnsTheLastEntry
+     */
+    public function testForeachIteratesReversedEntries(Journal $journal)
+    {
+        $requests = array($this->request2, $this->request1);
+        $responses = array($this->response2, $this->response1);
+
+        foreach ($journal as $index => $entry) {
+            $this->assertEquals($entry->getRequest(), $requests[$index]);
+            $this->assertEquals($entry->getResponse(), $responses[$index]);
+        }
+    }
 }

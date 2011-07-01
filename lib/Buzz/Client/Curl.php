@@ -4,11 +4,9 @@ namespace Buzz\Client;
 
 use Buzz\Message;
 
-class Curl implements ClientInterface
+class Curl extends AbstractClient implements ClientInterface
 {
     protected $curl;
-    protected $maxRedirects = 5;
-    protected $timeout = 5;
 
     static protected function createCurlHandle()
     {
@@ -50,26 +48,6 @@ class Curl implements ClientInterface
         return $this->curl;
     }
 
-    public function setMaxRedirects($maxRedirects)
-    {
-        $this->maxRedirects = $maxRedirects;
-    }
-
-    public function getMaxRedirects()
-    {
-        return $this->maxRedirects;
-    }
-
-    public function setTimeout($timeout)
-    {
-        $this->timeout = $timeout;
-    }
-
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
     public function send(Message\Request $request, Message\Response $response)
     {
         $this->prepare($request, $response, $this->curl);
@@ -83,6 +61,7 @@ class Curl implements ClientInterface
         curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->maxRedirects);
         curl_setopt($curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
+        curl_setopt($curl, CURLOPT_FAILONERROR, !$this->ignoreErrors);
     }
 
     public function __destruct()
