@@ -50,10 +50,10 @@ class Curl extends AbstractClient implements ClientInterface
 
     public function send(Message\Request $request, Message\Response $response)
     {
-        if (false === is_resource($this->curl))
-        {
+        if (false === is_resource($this->curl)) {
             $this->curl = static::createCurlHandle();
         }
+
         $this->prepare($request, $response, $this->curl);
         $response->fromString(static::getLastResponse(curl_exec($this->curl)));
     }
@@ -70,8 +70,7 @@ class Curl extends AbstractClient implements ClientInterface
 
     public function __destruct()
     {
-        if (is_resource($this->curl))
-        {
+        if (is_resource($this->curl)) {
             curl_close($this->curl);
         }
     }
