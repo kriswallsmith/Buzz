@@ -5,7 +5,7 @@ namespace Buzz\Client;
 use Buzz\Cookie;
 use Buzz\Message;
 
-class FileGetContents extends AbstractClient implements ClientInterface
+class FileGetContents extends AbstractStream implements ClientInterface
 {
     protected $cookieJar;
 
