@@ -26,7 +26,6 @@ class FormRequest extends Request
     public function addFormData($name, $value)
     {
         $this->fields[$name] = $value;
-        $this->setPostHeaders();
     }
 
     public function getFormData()
@@ -54,12 +53,11 @@ class FormRequest extends Request
         return http_build_query($this->fields);
     }
 
-    public function setPostHeaders()
+    public function getHeaders()
     {
-        $this->removeHeader('Content-Type');
-        $this->removeHeader('Content-Length');
-
-        $this->addHeader("Content-Type: application/x-www-form-urlencoded");
-        $this->addHeader(sprintf("Content-Length: %d", strlen($this->getContent())));
+        return array_merge(parent::getHeaders(), array(
+            'Content-Type: application/x-www-form-urlencoded',
+            'Content-Length: '.strlen($this->getContent()),
+        ));
     }
 }
