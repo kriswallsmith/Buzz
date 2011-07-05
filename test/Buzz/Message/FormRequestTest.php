@@ -12,8 +12,8 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     public function testGetContentGeneratesContent()
     {
         $message = new FormRequest();
-        $message->addFormData('foo', 'bar');
-        $message->addFormData('bar', 'foo');
+        $message->setField('foo', 'bar');
+        $message->setField('bar', 'foo');
 
         $expected = "foo=bar&bar=foo";
         $this->assertEquals($expected, $message->getContent());
@@ -22,9 +22,9 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     public function testAddDataAddsData()
     {
         $message = new FormRequest();
-        $message->addFormData('foo', 'bar');
+        $message->setField('foo', 'bar');
 
-        $this->assertEquals(array('foo' => 'bar'), $message->getFormData());
+        $this->assertEquals(array('foo' => 'bar'), $message->getFields());
     }
 
     /**
