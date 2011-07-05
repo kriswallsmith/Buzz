@@ -3,11 +3,11 @@
 namespace Buzz\Message;
 
 /**
- * PostRequest.
+ * FormRequest.
  *
  * @author Marc Weistroff <marc.weistroff@sensio.com>
  */
-class PostRequest extends Request
+class FormRequest extends Request
 {
     protected $fields = array();
 

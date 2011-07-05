@@ -3,15 +3,15 @@
 namespace Buzz\Message;
 
 /**
- * PostRequestTest
+ * FormRequestTest
  *
  * @author Marc Weistroff <marc.weistroff@sensio.com>
  */
-class PostRequestTest extends \PHPUnit_Framework_TestCase
+class FormRequestTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetContentGeneratesContent()
     {
-        $message = new PostRequest();
+        $message = new FormRequest();
         $message->addFormData('foo', 'bar');
         $message->addFormData('bar', 'foo');
 
@@ -21,7 +21,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 
     public function testAddDataAddsData()
     {
-        $message = new PostRequest();
+        $message = new FormRequest();
         $message->addFormData('foo', 'bar');
 
         $this->assertEquals(array('foo' => 'bar'), $message->getFormData());
@@ -32,7 +32,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetContentIsNotPermitted()
     {
-        $message = new PostRequest();
+        $message = new FormRequest();
         $message->setContent('foobar');
     }
 }
