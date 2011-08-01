@@ -4,7 +4,7 @@ namespace Buzz\Client;
 
 use Buzz\Message;
 
-class MultiCurlAsync extends MultiCurl implements BatchClientInterface
+class MultiCurlAsync extends MultiCurl implements AsyncBatchClientInterface
 {
     protected $queue = array();
     protected $curlsBeforeSent = array();
@@ -13,6 +13,7 @@ class MultiCurlAsync extends MultiCurl implements BatchClientInterface
     protected $active = null;
     protected $mrc = null;
     protected $counter = 0;
+
     public function __construct()
     {
         $this->curl = curl_multi_init();
@@ -22,22 +23,19 @@ class MultiCurlAsync extends MultiCurl implements BatchClientInterface
     {
         $i = $this->counter++;
         $this->queue[$i] = array($request, $response, $curl, $callback, $callbackParameters);
-        //list($request, $response, $curl) = $queue;
-        $url = $request->getUrl();
         if (null === $curl) {
             $curl = $this->queue[$i][2] = static::createCurlHandle();
         }
         $this->curlsNotSent[$i] = $curl;
-        
-        
+
         $this->prepare($request, $response, $curl);
         curl_multi_add_handle($this->curl, $curl);
-        
+
         $this->active = null;
         do {
             $this->mrc = curl_multi_exec($this->curl, $this->active);
             if (curl_getinfo($curl,CURLINFO_PRETRANSFER_TIME))  {
-                //check if everyone already sent the requet
+                //check if everyone already sent the request
                 //FIXME PERF could maybe be faster
                 foreach ($this->curlsNotSent as $j => $c) {
                     if ($c) {
@@ -69,13 +67,13 @@ class MultiCurlAsync extends MultiCurl implements BatchClientInterface
                     $this->mrc = curl_multi_exec($this->curl, $this->active);
                     if ($oldactive !== $this->active) {
                         foreach($this->curlsSent as $j => $c) {
-                            //looks like Content-Length vs. downloaded size is the only reliable way to 
+                            // looks like Content-Length vs. downloaded size is the only reliable way to
                             // check if the download finished.
                             // FIXME: Check if there's another way 
                                     
-                            //check if something is downloaded already
+                            // check if something is downloaded already
                             if ($downloaded = curl_getinfo($c,CURLINFO_SIZE_DOWNLOAD)) {
-                                //if Content-Length is not set, we can't decide when the download is finished
+                                // if Content-Length is not set, we can't decide when the download is finished
                                 // fire callback at the end.
                                 $contentLength = curl_getinfo($c,CURLINFO_CONTENT_LENGTH_DOWNLOAD);
                                 if ($contentLength < 0) {
@@ -89,7 +87,8 @@ class MultiCurlAsync extends MultiCurl implements BatchClientInterface
                                         if ($cb) {
                                             \call_user_func_array($cb, array_merge(array($response), $cbparams));
                                         }
-                                        //remove it from the queue
+
+                                        // remove it from the queue
                                         curl_multi_remove_handle($this->curl, $curl);
                                         unset($this->queue[$j]);
                                         unset($this->curlsSent[$j]);
@@ -103,7 +102,7 @@ class MultiCurlAsync extends MultiCurl implements BatchClientInterface
             }
         }
 
-        //fire the rest which wasn't caught before;
+        // fire the rest which wasn't caught before;
         foreach ($this->queue as $queue) {
             list($request, $response, $curl,$cb, $cbparams) = $queue;
             $response->fromString(static::getLastResponse(curl_multi_getcontent($curl)));
@@ -115,5 +114,4 @@ class MultiCurlAsync extends MultiCurl implements BatchClientInterface
 
         $this->queue = array();
     }
-
 }
