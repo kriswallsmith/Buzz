@@ -55,7 +55,16 @@ class Curl extends AbstractClient implements ClientInterface
         }
 
         $this->prepare($request, $response, $this->curl);
-        $response->fromString(static::getLastResponse(curl_exec($this->curl)));
+
+        $data = curl_exec($this->curl);
+        if (false === $data) {
+            $errorMsg = curl_error($this->curl);
+            $errorNo  = curl_errno($this->curl);
+
+            throw new \RuntimeException($errorMsg, $errorNo);
+        }
+
+        $response->fromString(static::getLastResponse($data));
     }
 
     protected function prepare(Message\Request $request, Message\Response $response, $curl)
