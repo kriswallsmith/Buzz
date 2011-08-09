@@ -31,7 +31,7 @@ class Request extends AbstractMessage
 
     public function setMethod($method)
     {
-        $this->method = $method;
+        $this->method = strtoupper($method);
     }
 
     public function getMethod()
