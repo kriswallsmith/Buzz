@@ -106,4 +106,11 @@ EOF;
 
         $this->assertEquals((string) $request, $expected);
     }
+
+    public function testMethodIsAlwaysUppercased()
+    {
+        $request = new Request('post', '/resource/123', 'http://example.com');
+
+        $this->assertEquals('POST', $request->getMethod());
+    }
 }
