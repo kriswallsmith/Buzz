@@ -12,7 +12,7 @@ class Response extends AbstractMessage
     public function getProtocolVersion()
     {
         if (isset($this->headers[0])) {
-            list($httpVersion) = explode(' ', $this->headers[0]);
+            list($httpVersion) = explode(' ', $this->headers[0], 1);
 
             return (float) $httpVersion;
         }
@@ -26,7 +26,7 @@ class Response extends AbstractMessage
     public function getStatusCode()
     {
         if (isset($this->headers[0])) {
-            list(, $statusCode) = explode(' ', $this->headers[0]);
+            list(, $statusCode) = explode(' ', $this->headers[0], 2);
 
             return (integer) $statusCode;
         }
@@ -49,16 +49,16 @@ class Response extends AbstractMessage
     public function fromString($raw)
     {
         $lines = preg_split('/(\\r?\\n)/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
-        for ($i = 0; $i < count($lines); $i += 2) {
+        for ($i = 0, $count = count($lines); $i < $count; $i += 2) {
             $line = $lines[$i];
-            $eol = isset($lines[$i + 1]) ? $lines[$i + 1] : '';
+            $eol  = isset($lines[$i + 1]) ? $lines[$i + 1] : '';
 
             if (empty($line)) {
                 $this->setContent(implode('', array_slice($lines, $i + 2)));
                 break;
-            } else {
-                $this->addHeader($line);
             }
+
+            $this->addHeader($line);
         }
     }
 }
