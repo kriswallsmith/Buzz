@@ -33,4 +33,26 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($client->getStreamContextArray($request), $expected);
     }
+
+    public function testSettingBasicAuthData()
+    {
+        $request = new Message\Request('GET', '/resource/123', 'http://example.com');
+
+        $client = new StreamClient();
+        $client->setAuth('kris', 'sirk');
+
+        $expected = array(
+            'http' => array(
+                'method'           => 'GET',
+                'header'           => 'Authorization: Basic a3JpczpzaXJr',
+                'content'          => '',
+                'protocol_version' => 1.0,
+                'ignore_errors'    => true,
+                'max_redirects'    => 5,
+                'timeout'          => 5,
+            )
+        );
+
+        $this->assertEquals($expected, $client->getStreamContextArray($request));
+    }
 }

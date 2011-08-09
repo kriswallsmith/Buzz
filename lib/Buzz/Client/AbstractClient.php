@@ -10,6 +10,22 @@ abstract class AbstractClient
     protected $maxRedirects = 5;
     protected $timeout = 5;
 
+    protected $auth = array(
+        'user' => null,
+        'pass' => null
+    );
+
+    public function setAuth($user, $pass = null)
+    {
+        $this->auth['user'] = $user;
+        $this->auth['pass'] = $pass;
+    }
+
+    public function getAuth()
+    {
+        return null !== $this->auth['user'] ? $this->auth['user'].':'.$this->auth['pass'] : null;
+    }
+
     public function setIgnoreErrors($ignoreErrors)
     {
         $this->ignoreErrors = $ignoreErrors;
