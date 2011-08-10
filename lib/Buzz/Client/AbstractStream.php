@@ -15,6 +15,10 @@ abstract class AbstractStream extends AbstractClient
      */
     public function getStreamContextArray(Message\Request $request)
     {
+        if (null !== $auth = $this->getAuth()) {
+            $request->addHeader(sprintf('Authorization: Basic %s', base64_encode($auth)));
+        }
+
         return array('http' => array(
             // values from the request
             'method'           => $request->getMethod(),
