@@ -17,7 +17,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     public function testGetReturnsAResponse()
     {
         $this->browser->getClient()->sendToQueue(new Message\Response());
-        $this->assertTrue($this->browser->get('http://www.google.com') instanceof Message\Response);
+        $this->assertInstanceOf('Buzz\\Message\\Response', $this->browser->get('http://www.google.com'));
     }
 
     public function testGetDomReturnsADomDocument()

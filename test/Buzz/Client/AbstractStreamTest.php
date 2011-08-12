@@ -31,6 +31,6 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
             'timeout'          => 10,
         ));
 
-        $this->assertEquals($client->getStreamContextArray($request), $expected);
+        $this->assertEquals($expected, $client->getStreamContextArray($request));
     }
 }
