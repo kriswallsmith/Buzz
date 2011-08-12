@@ -8,9 +8,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request('HEAD', '/resource/123', 'http://example.com');
 
-        $this->assertEquals($request->getMethod(), 'HEAD');
-        $this->assertEquals($request->getResource(), '/resource/123');
-        $this->assertEquals($request->getHost(), 'http://example.com');
+        $this->assertEquals('HEAD', $request->getMethod());
+        $this->assertEquals('/resource/123', $request->getResource());
+        $this->assertEquals('http://example.com', $request->getHost());
     }
 
     public function testGetUrlFormatsAUrl()
@@ -19,7 +19,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request->setHost('http://example.com');
         $request->setResource('/resource/123');
 
-        $this->assertEquals($request->getUrl(), 'http://example.com/resource/123');
+        $this->assertEquals('http://example.com/resource/123', $request->getUrl());
     }
 
     public function testFromUrlSetsRequestValues()
@@ -27,8 +27,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->fromUrl('http://example.com/resource/123?foo=bar#foobar');
 
-        $this->assertEquals($request->getHost(), 'http://example.com');
-        $this->assertEquals($request->getResource(), '/resource/123?foo=bar');
+        $this->assertEquals('http://example.com', $request->getHost());
+        $this->assertEquals('/resource/123?foo=bar', $request->getResource());
     }
 
     public function testFromUrlSetsADefaultResource()
@@ -36,12 +36,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->fromUrl('http://example.com');
 
-        $this->assertEquals($request->getResource(), '/');
+        $this->assertEquals('/', $request->getResource());
 
         $request = new Request();
         $request->fromUrl('http://example.com?foo=bar');
 
-        $this->assertEquals($request->getResource(), '/?foo=bar');
+        $this->assertEquals('/?foo=bar', $request->getResource());
     }
 
     public function testFromUrlSetsADefaultScheme()
@@ -49,8 +49,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->fromUrl('example.com/foo/bar');
 
-        $this->assertEquals($request->getHost(), 'http://example.com');
-        $this->assertEquals($request->getResource(), '/foo/bar');
+        $this->assertEquals('http://example.com', $request->getHost());
+        $this->assertEquals('/foo/bar', $request->getResource());
     }
 
     public function testFromUrlLeaveHostEmptyIfNoneIsProvided()
@@ -66,8 +66,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->fromUrl('http://localhost:3000/foo');
 
-        $this->assertEquals($request->getHost(), 'http://localhost:3000');
-        $this->assertEquals($request->getResource(), '/foo');
+        $this->assertEquals('http://localhost:3000', $request->getHost());
+        $this->assertEquals('/foo', $request->getResource());
     }
 
     public function testFromUrlRejectsInvalidUrl()
@@ -104,7 +104,7 @@ foo=bar&bar=baz
 
 EOF;
 
-        $this->assertEquals((string) $request, $expected);
+        $this->assertEquals($expected, (string) $request);
     }
 
     public function testMethodIsAlwaysUppercased()

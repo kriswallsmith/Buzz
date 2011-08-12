@@ -20,9 +20,9 @@ class JarTest extends \PHPUnit_Framework_TestCase
 
         $cookies = $jar->getCookies();
 
-        $this->assertEquals(count($cookies), 2);
+        $this->assertEquals(2, count($cookies));
         foreach ($cookies as $cookie) {
-            $this->assertEquals($cookie->getAttribute(Cookie::ATTR_DOMAIN), 'www.example.com');
+            $this->assertEquals('www.example.com', $cookie->getAttribute(Cookie::ATTR_DOMAIN));
             $this->assertTrue(in_array($cookie->getName(), array('SESSION1', 'SESSION2')));
         }
     }
@@ -41,7 +41,7 @@ class JarTest extends \PHPUnit_Framework_TestCase
         $jar->setCookies(array($cookie));
         $jar->addCookieHeaders($request);
 
-        $this->assertEquals($request->getHeader('Cookie'), 'SESSION=asdf');
+        $this->assertEquals('SESSION=asdf', $request->getHeader('Cookie'));
     }
 
     public function testClearExpiredCookiesRemovesExpiredCookies()
@@ -55,7 +55,7 @@ class JarTest extends \PHPUnit_Framework_TestCase
         $jar->addCookie($cookie);
         $jar->clearExpiredCookies();
 
-        $this->assertEquals(count($jar->getCookies()), 0);
+        $this->assertEquals(0, count($jar->getCookies()));
 
         $cookie = new Cookie();
         $cookie->setName('SESSION');
@@ -66,6 +66,6 @@ class JarTest extends \PHPUnit_Framework_TestCase
         $jar->addCookie($cookie);
         $jar->clearExpiredCookies();
 
-        $this->assertEquals(count($jar->getCookies()), 0);
+        $this->assertEquals(0, count($jar->getCookies()));
     }
 }

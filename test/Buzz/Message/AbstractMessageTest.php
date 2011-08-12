@@ -14,9 +14,9 @@ class AbstractMessageTest extends \PHPUnit_Framework_TestCase
         $message->addHeader('X-My-Header: foo');
         $message->addHeader('X-My-Header: bar');
 
-        $this->assertEquals($message->getHeader('X-My-Header'), 'foo'.PHP_EOL.'bar');
-        $this->assertEquals($message->getHeader('X-My-Header', ','), 'foo,bar');
-        $this->assertEquals($message->getHeader('X-My-Header', false), array('foo', 'bar'));
+        $this->assertEquals('foo'.PHP_EOL.'bar', $message->getHeader('X-My-Header'));
+        $this->assertEquals('foo,bar', $message->getHeader('X-My-Header', ','));
+        $this->assertEquals(array('foo', 'bar'), $message->getHeader('X-My-Header', false));
     }
 
     public function testGetHeaderReturnsNullIfHeaderDoesNotExist()
@@ -39,7 +39,7 @@ Foo: Bar
 
 EOF;
 
-        $this->assertEquals((string) $message, $expected);
+        $this->assertEquals($expected, (string) $message);
     }
 
     public function testGetHeaderAttributesReturnsHeaderAttributes()
@@ -47,6 +47,6 @@ EOF;
         $message = new Message();
         $message->addHeader('Content-Type: text/xml; charset=utf8');
 
-        $this->assertEquals($message->getHeaderAttribute('Content-Type', 'charset'), 'utf8');
+        $this->assertEquals('utf8', $message->getHeaderAttribute('Content-Type', 'charset'));
     }
 }
