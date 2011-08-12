@@ -31,6 +31,17 @@ class JournalTest extends \PHPUnit_Framework_TestCase
         $this->response3->setContent('response3');
     }
 
+    public function tearDown()
+    {
+        $this->request1 = null;
+        $this->request2 = null;
+        $this->request3 = null;
+
+        $this->response1 = null;
+        $this->response2 = null;
+        $this->response3 = null;
+    }
+
     public function testRecordEnforcesLimit()
     {
         $journal = new Journal();
@@ -40,7 +51,7 @@ class JournalTest extends \PHPUnit_Framework_TestCase
         $journal->record($this->request2, $this->response2);
         $journal->record($this->request3, $this->response3);
 
-        $this->assertEquals(count($journal), 2);
+        $this->assertEquals(2, count($journal));
     }
 
     public function testGetLastReturnsTheLastEntry()
@@ -50,7 +61,7 @@ class JournalTest extends \PHPUnit_Framework_TestCase
         $journal->record($this->request1, $this->response1);
         $journal->record($this->request2, $this->response2);
 
-        $this->assertEquals($journal->getLast()->getRequest(), $this->request2);
+        $this->assertEquals($this->request2, $journal->getLast()->getRequest());
 
         return $journal;
     }
@@ -60,7 +71,7 @@ class JournalTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLastRequestReturnsTheLastRequest(Journal $journal)
     {
-        $this->assertEquals($journal->getLastRequest(), $this->request2);
+        $this->assertEquals($this->request2, $journal->getLastRequest());
     }
 
     /**
@@ -68,7 +79,7 @@ class JournalTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLastResponseReturnsTheLastResponse(Journal $journal)
     {
-        $this->assertEquals($journal->getLastResponse(), $this->response2);
+        $this->assertEquals($this->response2, $journal->getLastResponse());
     }
 
     /**
@@ -77,7 +88,7 @@ class JournalTest extends \PHPUnit_Framework_TestCase
     public function testClearRemovesEntries(Journal $journal)
     {
         $journal->clear();
-        $this->assertEquals(count($journal), 0);
+        $this->assertEquals(0, count($journal));
     }
 
     /**
@@ -89,8 +100,8 @@ class JournalTest extends \PHPUnit_Framework_TestCase
         $responses = array($this->response2, $this->response1);
 
         foreach ($journal as $index => $entry) {
-            $this->assertEquals($entry->getRequest(), $requests[$index]);
-            $this->assertEquals($entry->getResponse(), $responses[$index]);
+            $this->assertEquals($requests[$index], $entry->getRequest());
+            $this->assertEquals($responses[$index], $entry->getResponse());
         }
     }
 }

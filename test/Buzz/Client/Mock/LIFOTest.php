@@ -22,6 +22,6 @@ class LIFOTest extends \PHPUnit_Framework_TestCase
         $response = new Message\Response();
         $client->send($request, $response);
 
-        $this->assertEquals($response->getContent(), 'last');
+        $this->assertEquals('last', $response->getContent());
     }
 }

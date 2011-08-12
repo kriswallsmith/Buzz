@@ -16,16 +16,16 @@ class FIFOTest extends \PHPUnit_Framework_TestCase
         $client->setQueue(array($response));
         $client->sendToQueue($response);
 
-        $this->assertEquals(count($client->getQueue()), 2);
+        $this->assertEquals(2, count($client->getQueue()));
 
         $request = new Message\Request();
         $response = new Message\Response();
         $client->send($request, $response);
 
-        $this->assertEquals(count($client->getQueue()), 1);
+        $this->assertEquals(1, count($client->getQueue()));
 
-        $this->assertEquals($response->getHeaders(), array('HTTP/1.0 200 OK'));
-        $this->assertEquals($response->getContent(), 'Hello World!');
+        $this->assertEquals(array('HTTP/1.0 200 OK'), $response->getHeaders());
+        $this->assertEquals('Hello World!', $response->getContent());
     }
 
     /**

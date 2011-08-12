@@ -8,22 +8,22 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $response = new Response();
 
-        $this->assertEquals($response->getProtocolVersion(), null);
+        $this->assertNull($response->getProtocolVersion());
 
         $response->addHeader('1.0 200 OK');
 
-        $this->assertEquals($response->getProtocolVersion(), 1.0);
+        $this->assertEquals(1.0, $response->getProtocolVersion());
     }
 
     public function testGetStatusCodeReturnsTheStatusCode()
     {
         $response = new Response();
 
-        $this->assertEquals($response->getStatusCode(), null);
+        $this->assertNull($response->getStatusCode());
 
         $response->addHeader('1.0 200 OK');
 
-        $this->assertEquals($response->getStatusCode(), 200);
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testGetReasonPhraseReturnsTheReasonPhrase()
@@ -34,17 +34,17 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $response->addHeader('1.0 200 OK');
 
-        $this->assertEquals($response->getReasonPhrase(), 'OK');
+        $this->assertEquals('OK', $response->getReasonPhrase());
     }
 
     public function testGetReasonPhraseReturnsAMultiwordReasonPhrase()
     {
         $response = new Response();
 
-        $this->assertEquals($response->getReasonPhrase(), null);
+        $this->assertNull($response->getReasonPhrase());
 
         $response->addHeader('1.0 500 Internal Server Error');
 
-        $this->assertEquals($response->getReasonPhrase(), 'Internal Server Error');
+        $this->assertEquals('Internal Server Error', $response->getReasonPhrase());
     }
 }

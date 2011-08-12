@@ -11,14 +11,14 @@ class CookieTest extends \PHPUnit_Framework_TestCase
         $cookie = new Cookie();
         $cookie->fromSetCookieHeader('SESSION=asdf; expires='.date('r', strtotime('2000-01-01 00:00:00')).'; path=/; domain=.example.com; secure', 'www.example.com');
 
-        $this->assertEquals($cookie->getName(), 'SESSION');
-        $this->assertEquals($cookie->getValue(), 'asdf');
-        $this->assertEquals($cookie->getAttributes(), array(
+        $this->assertEquals('SESSION', $cookie->getName());
+        $this->assertEquals('asdf', $cookie->getValue());
+        $this->assertEquals(array(
             'expires' => date('r', strtotime('2000-01-01 00:00:00')),
             'path'    => '/',
             'domain'  => '.example.com',
             'secure'  => null,
-        ));
+        ), $cookie->getAttributes());
     }
 
     public function testFromSetCookieHeaderFallsBackToIssuingDomain()
@@ -26,7 +26,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
         $cookie = new Cookie();
         $cookie->fromSetCookieHeader('SESSION=asdf', 'example.com');
 
-        $this->assertEquals($cookie->getAttribute(Cookie::ATTR_DOMAIN), 'example.com');
+        $this->assertEquals('example.com', $cookie->getAttribute(Cookie::ATTR_DOMAIN));
     }
 
     public function testToCookieHeaderFormatsACookieHeader()
@@ -35,7 +35,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
         $cookie->setName('SESSION');
         $cookie->setValue('asdf');
 
-        $this->assertEquals($cookie->toCookieHeader(), 'Cookie: SESSION=asdf');
+        $this->assertEquals('Cookie: SESSION=asdf', $cookie->toCookieHeader());
     }
 
     public function testMatchesDomainMatchesSimpleDomains()
