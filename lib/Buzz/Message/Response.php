@@ -4,6 +4,10 @@ namespace Buzz\Message;
 
 class Response extends AbstractMessage
 {
+    protected $httpVersion;
+    protected $statusCode;
+    protected $reasonPhrase;
+
     /**
      * Returns the protocol version of the current response.
      * 
@@ -11,11 +15,9 @@ class Response extends AbstractMessage
      */
     public function getProtocolVersion()
     {
-        if (isset($this->headers[0])) {
-            list($httpVersion) = explode(' ', $this->headers[0], 1);
+        $this->parseStatusHeader();
 
-            return (float) $httpVersion;
-        }
+        return $this->httpVersion;
     }
 
     /**
@@ -25,11 +27,9 @@ class Response extends AbstractMessage
      */
     public function getStatusCode()
     {
-        if (isset($this->headers[0])) {
-            list(, $statusCode) = explode(' ', $this->headers[0], 2);
+        $this->parseStatusHeader();
 
-            return (integer) $statusCode;
-        }
+        return $this->statusCode;
     }
 
     /**
@@ -39,11 +39,9 @@ class Response extends AbstractMessage
      */
     public function getReasonPhrase()
     {
-        if (isset($this->headers[0])) {
-            list(,, $reasonPhrase) = explode(' ', $this->headers[0], 3);
+        $this->parseStatusHeader();
 
-            return $reasonPhrase;
-        }
+        return $this->reasonPhrase;
     }
 
     public function fromString($raw)
@@ -51,7 +49,6 @@ class Response extends AbstractMessage
         $lines = preg_split('/(\\r?\\n)/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
         for ($i = 0, $count = count($lines); $i < $count; $i += 2) {
             $line = $lines[$i];
-            $eol  = isset($lines[$i + 1]) ? $lines[$i + 1] : '';
 
             if (empty($line)) {
                 $this->setContent(implode('', array_slice($lines, $i + 2)));
@@ -59,6 +56,17 @@ class Response extends AbstractMessage
             }
 
             $this->addHeader($line);
+        }
+    }
+
+    protected function parseStatusHeader()
+    {
+        if (!isset($this->httpVersion, $this->statusCode, $this->reasonPhrase) && isset($this->headers[0])) {
+            list($httpVersion, $statusCode, $reasonPhrase) = explode(' ', $this->headers[0], 3);
+
+            $this->httpVersion  = (float) $httpVersion;
+            $this->statusCode   = (integer) $statusCode;
+            $this->reasonPhrase = $reasonPhrase;
         }
     }
 }
