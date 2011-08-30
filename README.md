@@ -1,29 +1,38 @@
 Buzz is a lightweight PHP 5.3 library for issuing HTTP requests.
 
-    $browser = new Buzz\Browser();
-    $response = $browser->get('http://www.google.com');
+```php
+<?php
 
-    echo $browser->getJournal()->getLastRequest()."\n";
-    echo $response;
+require_once 'Buzz/ClassLoader.php';
+Buzz\ClassLoader::register();
+
+$browser = new Buzz\Browser();
+$response = $browser->get('http://www.google.com');
+
+echo $browser->getJournal()->getLastRequest()."\n";
+echo $response;
+```
 
 You can also use the low-level HTTP classes directly.
 
-    use Buzz\Message;
-    use Buzz\Client;
+```php
+<?php
 
-    $request = new Message\Request('HEAD', '/', 'http://google.com');
-    $response = new Message\Response();
+require_once 'Buzz/ClassLoader.php';
+Buzz\ClassLoader::register();
 
-    $client = new Client\FileGetContents();
-    $client->send($request, $response);
+use Buzz\Message;
+use Buzz\Client;
 
-    echo $request;
-    echo $response;
+$request = new Message\Request('HEAD', '/', 'http://google.com');
+$response = new Message\Response();
 
-Before doing any of this you need to register the Buzz class loader.
+$client = new Client\FileGetContents();
+$client->send($request, $response);
 
-    require_once 'Buzz/ClassLoader.php';
-    Buzz\ClassLoader::register();
+echo $request;
+echo $response;
+```
 
 Buzz is tested using PHPUnit. The run the test suite, execute the following
 command:
