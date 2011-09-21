@@ -7,6 +7,7 @@ use Buzz\Browser;
 use Buzz\Client;
 use Buzz\History;
 use Buzz\Message;
+use Buzz\BrowserAwareInterface;
 
 /**
  * Browser for profiling requests. Stores the time to send and receive
