@@ -9,9 +9,9 @@ class Journal implements \Countable, \IteratorAggregate
     protected $entries = array();
     protected $limit = 10;
 
-    public function record(Message\Request $request, Message\Response $response)
+    public function record(Message\Request $request, Message\Response $response, $time = 0)
     {
-        $this->addEntry(new Entry($request, $response));
+        $this->addEntry(new Entry($request, $response, $time));
     }
 
     public function addEntry(Entry $entry)
@@ -19,6 +19,11 @@ class Journal implements \Countable, \IteratorAggregate
         array_push($this->entries, $entry);
         $this->entries = array_slice($this->entries, $this->getLimit() * -1);
         end($this->entries);
+    }
+
+    public function getEntries()
+    {
+        return $this->entries;
     }
 
     public function getLast()
