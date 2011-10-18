@@ -47,9 +47,9 @@ class Curl extends AbstractClient implements ClientInterface
                 $curlMethodValue = $request->getMethod();
                 break;
         }
-		if($addContent) {
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
-		}
+        if($addContent) {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
+        }
         curl_setopt($curl, $curlHttpMethod, $curlMethodValue);
         curl_setopt($curl, CURLOPT_URL, $request->getUrl());
         curl_setopt($curl, CURLOPT_HTTPHEADER, $request->getHeaders());
