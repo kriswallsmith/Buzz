@@ -22,7 +22,7 @@ class Curl extends AbstractClient implements ClientInterface
     {
 
         $curlMethodValue = true;
-		$addContent = false;
+        $addContent = false;
         switch ($request->getMethod()) {
             case Message\Request::METHOD_GET:
                 $curlHttpMethod = CURLOPT_HTTPGET;
