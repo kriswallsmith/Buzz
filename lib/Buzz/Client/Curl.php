@@ -20,10 +20,39 @@ class Curl extends AbstractClient implements ClientInterface
 
     static protected function setCurlOptsFromRequest($curl, Message\Request $request)
     {
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
+
+        $curlMethodValue = true;
+        switch ($request->getMethod()) {
+            case Message\Request::METHOD_GET:
+                $curlHttpMethod = CURLOPT_HTTPGET;
+                break;
+
+            case Message\Request::METHOD_POST:
+                $curlHttpMethod = CURLOPT_POST;
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
+                break;
+
+            case Message\Request::METHOD_HEAD:
+                $curlHttpMethod = CURLOPT_NOBODY;
+                break;
+
+            case Message\Request::METHOD_PUT:
+                $curlHttpMethod = CURLOPT_UPLOAD;
+                break;
+
+            case Message\Request::METHOD_DELETE:
+                $curlHttpMethod = CURLOPT_CUSTOMREQUEST;
+                $curlMethodValue = $request->getMethod();
+                break;
+
+            default:
+                // For now, through an exception for unsupported request methods
+                $curlHttpMethod = $request->getMethod();
+                throw new \InvalidArgumentException("HTTP method '$curlHttpMethod' not supported.");
+        }
+        curl_setopt($curl, $curlHttpMethod, $curlMethodValue);
         curl_setopt($curl, CURLOPT_URL, $request->getUrl());
         curl_setopt($curl, CURLOPT_HTTPHEADER, $request->getHeaders());
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
     }
 
     static protected function getLastResponse($raw)
