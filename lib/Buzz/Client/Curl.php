@@ -22,6 +22,7 @@ class Curl extends AbstractClient implements ClientInterface
     {
 
         $curlMethodValue = true;
+		$addContent = false;
         switch ($request->getMethod()) {
             case Message\Request::METHOD_GET:
                 $curlHttpMethod = CURLOPT_HTTPGET;
@@ -29,7 +30,7 @@ class Curl extends AbstractClient implements ClientInterface
 
             case Message\Request::METHOD_POST:
                 $curlHttpMethod = CURLOPT_POST;
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
+				$addContent = true;
                 break;
 
             case Message\Request::METHOD_HEAD:
@@ -37,6 +38,7 @@ class Curl extends AbstractClient implements ClientInterface
                 break;
 
             case Message\Request::METHOD_PUT:
+				$addContent = true;
                 $curlHttpMethod = CURLOPT_UPLOAD;
                 break;
 
@@ -45,6 +47,9 @@ class Curl extends AbstractClient implements ClientInterface
                 $curlMethodValue = $request->getMethod();
                 break;
         }
+		if($addContent) {
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
+		}
         curl_setopt($curl, $curlHttpMethod, $curlMethodValue);
         curl_setopt($curl, CURLOPT_URL, $request->getUrl());
         curl_setopt($curl, CURLOPT_HTTPHEADER, $request->getHeaders());
