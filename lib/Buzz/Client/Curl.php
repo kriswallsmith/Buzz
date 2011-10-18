@@ -40,15 +40,10 @@ class Curl extends AbstractClient implements ClientInterface
                 $curlHttpMethod = CURLOPT_UPLOAD;
                 break;
 
-            case Message\Request::METHOD_DELETE:
+            default:
                 $curlHttpMethod = CURLOPT_CUSTOMREQUEST;
                 $curlMethodValue = $request->getMethod();
                 break;
-
-            default:
-                // For now, through an exception for unsupported request methods
-                $curlHttpMethod = $request->getMethod();
-                throw new \InvalidArgumentException("HTTP method '$curlHttpMethod' not supported.");
         }
         curl_setopt($curl, $curlHttpMethod, $curlMethodValue);
         curl_setopt($curl, CURLOPT_URL, $request->getUrl());
