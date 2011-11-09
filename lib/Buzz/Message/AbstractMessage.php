@@ -91,6 +91,23 @@ abstract class AbstractMessage
         return $document;
     }
 
+    public function groupHeader($name, $glue="; "){
+        $needle = $name.':';
+
+        $values = array();
+        foreach ($this->getHeaders() as $i=>$header) {
+            if (0 === strpos($header, $needle)) {
+                $values[] = trim(substr($header, strlen($needle)));
+                unset($this->headers[$i]);
+            }
+        }
+
+        if (count($values) > 0) {
+            $header = $needle . implode($glue, $values);
+            $this->addHeader($header);
+        }
+    }
+
     public function setHeaders(array $headers)
     {
         $this->headers = $headers;
