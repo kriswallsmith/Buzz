@@ -30,7 +30,7 @@ class Curl extends AbstractClient implements ClientInterface
 
             case Message\Request::METHOD_POST:
                 $curlHttpMethod = CURLOPT_POST;
-				$addContent = true;
+                $addContent = true;
                 break;
 
             case Message\Request::METHOD_HEAD:
@@ -38,7 +38,7 @@ class Curl extends AbstractClient implements ClientInterface
                 break;
 
             case Message\Request::METHOD_PUT:
-				$addContent = true;
+                $addContent = true;
                 $curlHttpMethod = CURLOPT_UPLOAD;
                 break;
 
