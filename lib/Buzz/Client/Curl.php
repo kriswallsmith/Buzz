@@ -20,37 +20,30 @@ class Curl extends AbstractClient implements ClientInterface
 
     static protected function setCurlOptsFromRequest($curl, Message\Request $request)
     {
-
-        $curlMethodValue = true;
-        $addContent = false;
         switch ($request->getMethod()) {
             case Message\Request::METHOD_GET:
-                $curlHttpMethod = CURLOPT_HTTPGET;
+                curl_setopt($curl, CURLOPT_HTTPGET, true);
                 break;
 
             case Message\Request::METHOD_POST:
-                $curlHttpMethod = CURLOPT_POST;
-                $addContent = true;
+                curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent);
                 break;
 
             case Message\Request::METHOD_HEAD:
-                $curlHttpMethod = CURLOPT_NOBODY;
+                curl_setopt($curl, CURLOPT_NOBODY, true);
                 break;
 
             case Message\Request::METHOD_PUT:
-                $addContent = true;
-                $curlHttpMethod = CURLOPT_UPLOAD;
+                curl_setopt($curl, CURLOPT_UPLOAD, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
                 break;
 
             default:
-                $curlHttpMethod = CURLOPT_CUSTOMREQUEST;
-                $curlMethodValue = $request->getMethod();
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
                 break;
         }
-        if($addContent) {
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
-        }
-        curl_setopt($curl, $curlHttpMethod, $curlMethodValue);
+
         curl_setopt($curl, CURLOPT_URL, $request->getUrl());
         curl_setopt($curl, CURLOPT_HTTPHEADER, $request->getHeaders());
     }
