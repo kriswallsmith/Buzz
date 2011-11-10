@@ -10,9 +10,9 @@ class HistoryListener implements ListenerInterface
     private $journal;
     private $startTime;
 
-    public function __construct(History\Journal $journal = null)
+    public function __construct(History\Journal $journal)
     {
-        $this->journal = $journal ?: new History\Journal();
+        $this->journal = $journal;
     }
 
     public function preSend(Message\Request $request)
