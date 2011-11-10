@@ -85,7 +85,7 @@ class MultiCurlAsync extends MultiCurl implements AsyncBatchClientInterface
                                         
                                         $response->fromString(static::getLastResponse(curl_multi_getcontent($curl)));
                                         if ($cb) {
-                                            \call_user_func_array($cb, array_merge(array($response), $cbparams));
+                                            call_user_func_array($cb, array_merge(array($response), $cbparams));
                                         }
 
                                         // remove it from the queue
@@ -107,7 +107,7 @@ class MultiCurlAsync extends MultiCurl implements AsyncBatchClientInterface
             list($request, $response, $curl,$cb, $cbparams) = $queue;
             $response->fromString(static::getLastResponse(curl_multi_getcontent($curl)));
             if ($cb) {
-                \call_user_func_array($cb, array_merge(array($response), $cbparams));
+                call_user_func_array($cb, array_merge(array($response), $cbparams));
             }
             curl_multi_remove_handle($this->curl, $curl);
         }

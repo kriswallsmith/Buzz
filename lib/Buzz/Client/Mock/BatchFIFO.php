@@ -12,7 +12,7 @@ class BatchFIFO extends AsyncBatchAbstractQueue
     {
         if (count($this->queue)) {
             $this->queueCounter = 0;
-            return array_pop($this->queue);
+            return array_shift($this->queue);
         }
     }
 

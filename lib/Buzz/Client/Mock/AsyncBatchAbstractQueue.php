@@ -21,7 +21,7 @@ abstract class AsyncBatchAbstractQueue extends AbstractQueue implements Client\A
                 throw new \LogicException('Queued item has not yet been send.');
             }
 
-            \call_user_func_array($item['callback'], array_merge(array($item['response']), $item['callbackParameters']));
+            call_user_func_array($item['callback'], array_merge(array($item['response']), $item['callbackParameters']));
         }
     }
 
