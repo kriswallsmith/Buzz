@@ -14,7 +14,7 @@ class JournalTest extends \PHPUnit_Framework_TestCase
     protected $response2;
     protected $response3;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->request1 = new Message\Request();
         $this->request1->setContent('request1');
@@ -31,7 +31,7 @@ class JournalTest extends \PHPUnit_Framework_TestCase
         $this->response3->setContent('response3');
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         $this->request1 = null;
         $this->request2 = null;

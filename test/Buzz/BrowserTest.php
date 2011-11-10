@@ -9,7 +9,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 {
     protected $browser;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->browser = new Browser(new Mock\LIFO());
     }
