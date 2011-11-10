@@ -27,7 +27,7 @@ class Curl extends AbstractClient implements ClientInterface
 
             case Message\Request::METHOD_POST:
                 curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
                 break;
 
             case Message\Request::METHOD_HEAD:
