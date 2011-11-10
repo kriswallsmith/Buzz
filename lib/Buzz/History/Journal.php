@@ -9,6 +9,13 @@ class Journal implements \Countable, \IteratorAggregate
     private $entries = array();
     private $limit = 10;
 
+    /**
+     * Records an entry in the journal.
+     *
+     * @param Message\Request  $request  The request
+     * @param Message\Response $response The response
+     * @param integer          $duration The duration in seconds
+     */
     public function record(Message\Request $request, Message\Response $response, $duration = null)
     {
         $this->addEntry(new Entry($request, $response, $duration));
