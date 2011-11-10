@@ -86,16 +86,6 @@ class Browser
         return $response;
     }
 
-    /**
-     * Returns a DOMDocument for the current response.
-     * 
-     * @return DOMDocument
-     */
-    public function getDom()
-    {
-        return $this->getJournal()->getLastResponse()->toDomDocument();
-    }
-
     public function setClient(Client\ClientInterface $client)
     {
         $this->client = $client;
