@@ -10,10 +10,10 @@ class Request extends AbstractMessage
     const METHOD_PUT    = 'PUT';
     const METHOD_DELETE = 'DELETE';
 
-    protected $method;
-    protected $resource;
-    protected $host;
-    protected $protocolVersion = 1.0;
+    private $method;
+    private $resource;
+    private $host;
+    private $protocolVersion = 1.0;
 
     /**
      * Constructor.
@@ -24,9 +24,9 @@ class Request extends AbstractMessage
      */
     public function __construct($method = self::METHOD_GET, $resource = '/', $host = null)
     {
-        $this->setMethod($method);
-        $this->setResource($resource);
-        $this->setHost($host);
+        $this->method = strtoupper($method);
+        $this->resource = $resource;
+        $this->host = $host;
     }
 
     public function setMethod($method)
