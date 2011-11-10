@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Listener;
+namespace Buzz\Test\Listener;
 
+use Buzz\Listener\LoggerListener;
 use Buzz\Message;
 
 class LoggerListenerTest extends \PHPUnit_Framework_TestCase

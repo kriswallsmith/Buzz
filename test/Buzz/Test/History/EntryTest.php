@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\History;
+namespace Buzz\Test\History;
 
+use Buzz\History\Entry;
 use Buzz\Message;
 
 class EntryTest extends \PHPUnit_Framework_TestCase

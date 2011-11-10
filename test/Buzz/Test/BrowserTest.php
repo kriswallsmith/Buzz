@@ -1,6 +1,8 @@
 <?php
 
-namespace Buzz;
+namespace Buzz\Test;
+
+use Buzz\Browser;
 
 class BrowserTest extends \PHPUnit_Framework_TestCase
 {

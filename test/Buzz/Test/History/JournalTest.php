@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\History;
+namespace Buzz\Test\History;
 
+use Buzz\History\Journal;
 use Buzz\Message;
 
 class JournalTest extends \PHPUnit_Framework_TestCase

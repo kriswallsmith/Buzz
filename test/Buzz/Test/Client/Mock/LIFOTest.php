@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Client\Mock;
+namespace Buzz\Test\Client\Mock;
 
+use Buzz\Client\Mock\LIFO;
 use Buzz\Message;
 
 class LIFOTest extends \PHPUnit_Framework_TestCase

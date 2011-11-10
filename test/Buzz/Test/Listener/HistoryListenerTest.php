@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Listener;
+namespace Buzz\Test\Listener;
 
+use Buzz\Listener\HistoryListener;
 use Buzz\Message;
 
 class HistoryListenerTest extends \PHPUnit_Framework_TestCase

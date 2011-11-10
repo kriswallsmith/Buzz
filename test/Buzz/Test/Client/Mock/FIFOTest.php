@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Client\Mock;
+namespace Buzz\Test\Client\Mock;
 
+use Buzz\Client\Mock\FIFO;
 use Buzz\Message;
 
 class FIFOTest extends \PHPUnit_Framework_TestCase

@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Listener;
+namespace Buzz\Test\Listener;
 
+use Buzz\Listener\CallbackListener;
 use Buzz\Message;
 
 class CallbackListenerTest extends \PHPUnit_Framework_TestCase

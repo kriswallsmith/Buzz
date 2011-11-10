@@ -1,6 +1,8 @@
 <?php
 
-namespace Buzz\Message;
+namespace Buzz\Test\Message;
+
+use Buzz\Message\AbstractMessage;
 
 class Message extends AbstractMessage
 {

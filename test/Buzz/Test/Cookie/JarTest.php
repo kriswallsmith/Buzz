@@ -1,7 +1,9 @@
 <?php
 
-namespace Buzz\Cookie;
+namespace Buzz\Test\Cookie;
 
+use Buzz\Cookie\Cookie;
+use Buzz\Cookie\Jar;
 use Buzz\Message;
 
 class JarTest extends \PHPUnit_Framework_TestCase

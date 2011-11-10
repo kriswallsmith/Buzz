@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Client;
+namespace Buzz\Test\Client;
 
+use Buzz\Client\FileGetContents;
 use Buzz\Message;
 
 class FileGetContentsTest extends \PHPUnit_Framework_TestCase

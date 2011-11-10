@@ -1,6 +1,9 @@
 <?php
 
-namespace Buzz\Message;
+namespace Buzz\Test\Message;
+
+use Buzz\Message\Factory;
+use Buzz\Message\Request;
 
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {

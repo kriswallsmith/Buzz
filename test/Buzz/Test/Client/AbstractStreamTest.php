@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Client;
+namespace Buzz\Test\Client;
 
+use Buzz\Client\AbstractStream;
 use Buzz\Message;
 
 class StreamClient extends AbstractStream

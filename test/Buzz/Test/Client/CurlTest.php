@@ -1,6 +1,8 @@
 <?php
 
-namespace Buzz\Client;
+namespace Buzz\Test\Client;
+
+use Buzz\Client\Curl;
 
 class CurlTest extends \PHPUnit_Framework_TestCase
 {

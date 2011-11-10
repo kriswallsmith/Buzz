@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Listener;
+namespace Buzz\Test\Listener;
 
+use Buzz\Listener\ListenerChain;
 use Buzz\Message;
 
 class ListenerChainTest extends \PHPUnit_Framework_TestCase

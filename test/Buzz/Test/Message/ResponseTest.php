@@ -1,6 +1,8 @@
 <?php
 
-namespace Buzz\Message;
+namespace Buzz\Test\Message;
+
+use Buzz\Message\Response;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
