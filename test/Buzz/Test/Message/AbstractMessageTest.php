@@ -51,4 +51,17 @@ EOF;
 
         $this->assertEquals('utf8', $message->getHeaderAttribute('Content-Type', 'charset'));
     }
+
+    public function testGetNotFoundHeaderAttribute()
+    {
+        $message = new Message();
+        $this->assertNull($message->getHeaderAttribute('Content-Type', 'charset'));
+    }
+
+    public function testAddHeaders()
+    {
+        $message = new Message();
+        $message->addHeaders(array('Content-Type: text/xml; charset=utf8'));
+        $this->assertEquals(1, count($message->getHeaders()));
+    }
 }

@@ -31,4 +31,9 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/foo', $request->getResource());
         $this->assertEquals('http://example.com', $request->getHost());
     }
+
+    public function testCreateResponse()
+    {
+        $this->assertInstanceOf('Buzz\\Message\\Response', $this->factory->createResponse());
+    }
 }

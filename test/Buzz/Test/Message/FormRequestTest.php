@@ -37,4 +37,11 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
         $message = new FormRequest();
         $message->setContent('foobar');
     }
+
+    public function testSetFields()
+    {
+        $request = new FormRequest();
+        $request->setFields(array('foo' => 'bar'));
+        $this->assertEquals(array('foo' => 'bar'), $request->getFields());
+    }
 }

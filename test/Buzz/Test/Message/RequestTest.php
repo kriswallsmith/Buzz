@@ -115,4 +115,11 @@ EOF;
 
         $this->assertEquals('POST', $request->getMethod());
     }
+
+    public function testSetMethod()
+    {
+        $request = new Request();
+        $request->setMethod('get');
+        $this->assertEquals('GET', $request->getMethod());
+    }
 }
