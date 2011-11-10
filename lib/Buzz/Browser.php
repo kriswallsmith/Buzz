@@ -11,6 +11,8 @@ class Browser
     private $client;
     private $factory;
     private $listener;
+    private $lastRequest;
+    private $lastResponse;
 
     public function __construct(Client\ClientInterface $client = null, Message\FactoryInterface $factory = null)
     {
@@ -85,11 +87,24 @@ class Browser
 
         $this->client->send($request, $response);
 
+        $this->lastRequest = $request;
+        $this->lastResponse = $response;
+
         if ($this->listener) {
             $this->listener->postSend($request, $response);
         }
 
         return $response;
+    }
+
+    public function getLastRequest()
+    {
+        return $this->lastRequest;
+    }
+
+    public function getLastResponse()
+    {
+        return $this->lastResponse;
     }
 
     public function setClient(Client\ClientInterface $client)
