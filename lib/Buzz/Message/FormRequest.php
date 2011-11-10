@@ -9,11 +9,13 @@ namespace Buzz\Message;
  */
 class FormRequest extends Request
 {
-    protected $fields = array();
+    private $fields = array();
 
     public function __construct($method = self::METHOD_POST, $resource = '/', $host = null)
     {
         parent::__construct($method, $resource, $host);
+
+        $this->addHeader('Content-Type: application/x-www-form-urlencoded');
     }
 
     public function setField($name, $value)
@@ -39,13 +41,5 @@ class FormRequest extends Request
     public function getContent()
     {
         return http_build_query($this->fields);
-    }
-
-    public function getHeaders()
-    {
-        return array_merge(parent::getHeaders(), array(
-            'Content-Type: application/x-www-form-urlencoded',
-            'Content-Length: '.strlen($this->getContent()),
-        ));
     }
 }
