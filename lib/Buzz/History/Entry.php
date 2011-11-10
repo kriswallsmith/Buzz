@@ -6,18 +6,22 @@ use Buzz\Message;
 
 class Entry
 {
-    protected $request;
-    protected $response;
+    private $request;
+    private $response;
+    private $duration;
 
-    public function __construct(Message\Request $request, Message\Response $response)
-    {
-        $this->setRequest($request);
-        $this->setResponse($response);
-    }
-
-    public function setRequest(Message\Request $request)
+    /**
+     * Constructor.
+     *
+     * @param Message\Request  $request  The request
+     * @param Message\Response $response The response
+     * @param integer          $duration The duration in seconds
+     */
+    public function __construct(Message\Request $request, Message\Response $response, $duration = null)
     {
         $this->request = $request;
+        $this->response = $response;
+        $this->duration = $duration;
     }
 
     public function getRequest()
@@ -25,13 +29,13 @@ class Entry
         return $this->request;
     }
 
-    public function setResponse(Message\Response $response)
-    {
-        $this->response = $response;
-    }
-
     public function getResponse()
     {
         return $this->response;
+    }
+
+    public function getDuration()
+    {
+        return $this->duration;
     }
 }

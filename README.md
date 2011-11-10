@@ -6,7 +6,7 @@ Buzz is a lightweight PHP 5.3 library for issuing HTTP requests.
 $browser = new Buzz\Browser();
 $response = $browser->get('http://www.google.com');
 
-echo $browser->getJournal()->getLastRequest()."\n";
+echo $browser->getLastRequest()."\n";
 echo $response;
 ```
 

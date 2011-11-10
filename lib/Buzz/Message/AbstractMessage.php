@@ -20,7 +20,7 @@ abstract class AbstractMessage
         $needle = $name.':';
 
         $values = array();
-        foreach ($this->getHeaders() as $header) {
+        foreach ($this->headers as $header) {
             if (0 === strpos($header, $needle)) {
                 $values[] = trim(substr($header, strlen($needle)));
             }
@@ -123,7 +123,7 @@ abstract class AbstractMessage
 
     public function __toString()
     {
-        $string = implode(PHP_EOL, $this->getHeaders()).PHP_EOL;
+        $string = implode(PHP_EOL, $this->headers).PHP_EOL;
 
         if ($this->getContent()) {
             $string .= PHP_EOL.$this->getContent().PHP_EOL;
