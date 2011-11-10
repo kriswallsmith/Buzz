@@ -8,11 +8,13 @@ class Entry
 {
     private $request;
     private $response;
+    private $duration;
 
-    public function __construct(Message\Request $request, Message\Response $response)
+    public function __construct(Message\Request $request, Message\Response $response, $duration = null)
     {
         $this->setRequest($request);
         $this->setResponse($response);
+        $this->duration = $duration;
     }
 
     public function setRequest(Message\Request $request)
@@ -33,5 +35,10 @@ class Entry
     public function getResponse()
     {
         return $this->response;
+    }
+
+    public function getDuration()
+    {
+        return $duration;
     }
 }
