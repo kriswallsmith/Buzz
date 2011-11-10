@@ -122,4 +122,25 @@ EOF;
         $request->setMethod('get');
         $this->assertEquals('GET', $request->getMethod());
     }
+
+    public function testCookieMerge()
+    {
+        $request = new Request();
+        $request->addHeader('Cookie: foo=bar');
+        $request->addHeader('Content-Type: text/plain');
+        $request->addHeader('Cookie: bar=foo');
+
+        $this->assertEquals(array(
+            'Cookie: foo=bar; bar=foo',
+            'Content-Type: text/plain',
+        ), $request->getHeaders());
+
+        $this->assertEquals(<<<EOF
+GET / HTTP/1.0
+Cookie: foo=bar; bar=foo
+Content-Type: text/plain
+
+EOF
+        , (string) $request);
+    }
 }

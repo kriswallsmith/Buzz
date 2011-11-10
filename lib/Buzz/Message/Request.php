@@ -125,15 +125,53 @@ class Request extends AbstractMessage
     }
 
     /**
+     * Merges cookie headers on the way out.
+     */
+    public function getHeaders()
+    {
+        return $this->mergeCookieHeaders(parent::getHeaders());
+    }
+
+    /**
      * Returns a string representation of the current request.
      *
      * @return string
      */
     public function __toString()
     {
-        return implode(PHP_EOL, array(
-            sprintf('%s %s HTTP/%.1f', $this->getMethod(), $this->getResource(), $this->getProtocolVersion()),
-            'Host: '.$this->getHost(),
-        )).PHP_EOL.parent::__toString();
+        $string = sprintf('%s %s HTTP/%.1f%s', $this->getMethod(), $this->getResource(), $this->getProtocolVersion(), PHP_EOL);
+
+        if ($host = $this->getHost()) {
+            $string .= 'Host: '.$host.PHP_EOL;
+        }
+
+        if ($parent = trim(parent::__toString())) {
+            $string .= $parent.PHP_EOL;
+        }
+
+        return $string;
+    }
+
+    // private
+
+    private function mergeCookieHeaders(array $headers)
+    {
+        $cookieHeader = null;
+        $needle = 'Cookie:';
+
+        foreach ($headers as $i => $header) {
+            if (0 !== strpos($header, $needle)) {
+                continue;
+            }
+
+            if (null === $cookieHeader) {
+                $cookieHeader = $i;
+            } else {
+                $headers[$cookieHeader] .= '; '.trim(substr($header, strlen($needle)));
+                unset($headers[$i]);
+            }
+        }
+
+        return array_values($headers);
     }
 }
