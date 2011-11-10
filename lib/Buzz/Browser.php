@@ -7,8 +7,8 @@ use Buzz\Message;
 
 class Browser
 {
-    protected $client;
-    protected $factory;
+    private $client;
+    private $factory;
 
     public function __construct(Client\ClientInterface $client = null, Message\FactoryInterface $factory = null)
     {
