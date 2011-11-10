@@ -20,10 +20,32 @@ class Curl extends AbstractClient implements ClientInterface
 
     static protected function setCurlOptsFromRequest($curl, Message\Request $request)
     {
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
+        switch ($request->getMethod()) {
+            case Message\Request::METHOD_GET:
+                curl_setopt($curl, CURLOPT_HTTPGET, true);
+                break;
+
+            case Message\Request::METHOD_POST:
+                curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent);
+                break;
+
+            case Message\Request::METHOD_HEAD:
+                curl_setopt($curl, CURLOPT_NOBODY, true);
+                break;
+
+            case Message\Request::METHOD_PUT:
+                curl_setopt($curl, CURLOPT_UPLOAD, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
+                break;
+
+            default:
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
+                break;
+        }
+
         curl_setopt($curl, CURLOPT_URL, $request->getUrl());
         curl_setopt($curl, CURLOPT_HTTPHEADER, $request->getHeaders());
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
     }
 
     static protected function getLastResponse($raw)
