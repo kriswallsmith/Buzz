@@ -12,24 +12,14 @@ class Entry
 
     public function __construct(Message\Request $request, Message\Response $response, $duration = null)
     {
-        $this->setRequest($request);
-        $this->setResponse($response);
-        $this->duration = $duration;
-    }
-
-    public function setRequest(Message\Request $request)
-    {
         $this->request = $request;
+        $this->response = $response;
+        $this->duration = $duration;
     }
 
     public function getRequest()
     {
         return $this->request;
-    }
-
-    public function setResponse(Message\Response $response)
-    {
-        $this->response = $response;
     }
 
     public function getResponse()
