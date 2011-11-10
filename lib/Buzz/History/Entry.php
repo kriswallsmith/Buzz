@@ -36,6 +36,6 @@ class Entry
 
     public function getDuration()
     {
-        return $duration;
+        return $this->duration;
     }
 }
