@@ -125,7 +125,7 @@ abstract class AbstractMessage
     {
         $string = implode(PHP_EOL, $this->headers).PHP_EOL;
 
-        if ($this->getContent()) {
+        if ($this->content) {
             $string .= PHP_EOL.$this->getContent().PHP_EOL;
         }
 
