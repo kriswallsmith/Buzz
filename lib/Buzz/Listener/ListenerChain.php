@@ -18,6 +18,11 @@ class ListenerChain implements ListenerInterface
         $this->listeners[] = $listener;
     }
 
+    public function getListeners()
+    {
+        return $this->listeners;
+    }
+
     public function preSend(Message\Request $request)
     {
         foreach ($this->listeners as $listener) {

@@ -15,6 +15,11 @@ class HistoryListener implements ListenerInterface
         $this->journal = $journal;
     }
 
+    public function getJournal()
+    {
+        return $this->journal;
+    }
+
     public function preSend(Message\Request $request)
     {
         $this->startTime = microtime(true);
