@@ -13,7 +13,7 @@ class Browser
 
     public function __construct(Client\ClientInterface $client = null)
     {
-        $this->setClient($client ?: new Client\FileGetContents());
+        $this->client = $client ?: new Client\FileGetContents();
     }
 
     public function get($url, $headers = array())
