@@ -8,12 +8,12 @@ use Buzz\Message;
 class Browser
 {
     protected $client;
-    protected $requestFactory;
-    protected $responseFactory;
+    protected $factory;
 
-    public function __construct(Client\ClientInterface $client = null)
+    public function __construct(Client\ClientInterface $client = null, Message\FactoryInterface $factory = null)
     {
         $this->client = $client ?: new Client\FileGetContents();
+        $this->factory = $factory ?: new Message\Factory();
     }
 
     public function get($url, $headers = array())
@@ -53,7 +53,7 @@ class Browser
      */
     public function call($url, $method, $headers = array(), $content = '')
     {
-        $request = $this->createRequest();
+        $request = $this->factory->createRequest();
 
         $request->setMethod($method);
         $request->fromUrl($url);
@@ -74,7 +74,7 @@ class Browser
     public function send(Message\Request $request, Message\Response $response = null)
     {
         if (null === $response) {
-            $response = $this->createResponse();
+            $response = $this->factory->createResponse();
         }
 
         $this->getClient()->send($request, $response);
@@ -92,41 +92,13 @@ class Browser
         return $this->client;
     }
 
-    public function setRequestFactory($callable)
+    public function setMessageFactory(Message\FactoryInterface $factory)
     {
-        $this->requestFactory = $callable;
+        $this->factory = $factory;
     }
 
-    public function getRequestFactory()
+    public function getMessageFactory()
     {
-        return $this->requestFactory;
-    }
-
-    public function setResponseFactory($callable)
-    {
-        $this->responseFactory = $callable;
-    }
-
-    public function getResponseFactory()
-    {
-        return $this->responseFactory;
-    }
-
-    public function createRequest()
-    {
-        if ($callable = $this->getRequestFactory()) {
-          return $callable();
-        }
-
-        return new Message\Request();
-    }
-
-    public function createResponse()
-    {
-        if ($callable = $this->getResponseFactory()) {
-          return $callable();
-        }
-
-        return new Message\Response();
+        return $this->factory;
     }
 }
