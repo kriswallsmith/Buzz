@@ -3,20 +3,17 @@
 namespace Buzz;
 
 use Buzz\Client;
-use Buzz\History;
 use Buzz\Message;
 
 class Browser
 {
     protected $client;
-    protected $journal;
     protected $requestFactory;
     protected $responseFactory;
 
-    public function __construct(Client\ClientInterface $client = null, History\Journal $journal = null)
+    public function __construct(Client\ClientInterface $client = null)
     {
         $this->setClient($client ?: new Client\FileGetContents());
-        $this->setJournal($journal ?: new History\Journal());
     }
 
     public function get($url, $headers = array())
@@ -45,7 +42,7 @@ class Browser
     }
 
     /**
-     * Sends a request and adds the call to the journal.
+     * Sends a request.
      * 
      * @param string $url     The URL to call
      * @param string $method  The request method to use
@@ -67,7 +64,7 @@ class Browser
     }
 
     /**
-     * Sends a request and records it to the journal.
+     * Sends a request.
      * 
      * @param Message\Request  $request  A request object
      * @param Message\Response $response A response object
@@ -81,7 +78,6 @@ class Browser
         }
 
         $this->getClient()->send($request, $response);
-        $this->getJournal()->record($request, $response);
 
         return $response;
     }
@@ -94,16 +90,6 @@ class Browser
     public function getClient()
     {
         return $this->client;
-    }
-
-    public function setJournal(History\Journal $journal)
-    {
-        $this->journal = $journal;
-    }
-
-    public function getJournal()
-    {
-        return $this->journal;
     }
 
     public function setRequestFactory($callable)
