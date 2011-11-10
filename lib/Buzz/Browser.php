@@ -77,7 +77,7 @@ class Browser
             $response = $this->factory->createResponse();
         }
 
-        $this->getClient()->send($request, $response);
+        $this->client->send($request, $response);
 
         return $response;
     }
