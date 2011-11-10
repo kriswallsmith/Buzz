@@ -17,7 +17,7 @@ class Request extends AbstractMessage
 
     /**
      * Constructor.
-     * 
+     *
      * @param string $method
      * @param string $resource
      * @param string $host
@@ -71,7 +71,7 @@ class Request extends AbstractMessage
 
     /**
      * A convenience method for getting the full URL of the current request.
-     * 
+     *
      * @return string
      */
     public function getUrl()
@@ -81,9 +81,9 @@ class Request extends AbstractMessage
 
     /**
      * A convenience method for populating the current request from a URL.
-     * 
+     *
      * @param string $url A URL
-     * 
+     *
      * @throws InvalidArgumentException If the URL is invalid
      */
     public function fromUrl($url)
@@ -116,7 +116,7 @@ class Request extends AbstractMessage
 
     /**
      * Returns true if the current request is secure.
-     * 
+     *
      * @return boolean
      */
     public function isSecure()
@@ -126,7 +126,7 @@ class Request extends AbstractMessage
 
     /**
      * Returns a string representation of the current request.
-     * 
+     *
      * @return string
      */
     public function __toString()

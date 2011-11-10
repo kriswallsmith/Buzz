@@ -47,12 +47,12 @@ class Browser
 
     /**
      * Sends a request.
-     * 
+     *
      * @param string $url     The URL to call
      * @param string $method  The request method to use
      * @param array  $headers An array of request headers
      * @param string $content The request content
-     * 
+     *
      * @return Message\Response The response object
      */
     public function call($url, $method, $headers = array(), $content = '')
@@ -69,10 +69,10 @@ class Browser
 
     /**
      * Sends a request.
-     * 
+     *
      * @param Message\Request  $request  A request object
      * @param Message\Response $response A response object
-     * 
+     *
      * @return Message\Response A response object
      */
     public function send(Message\Request $request, Message\Response $response = null)

@@ -6,7 +6,7 @@ class Response extends AbstractMessage
 {
     /**
      * Returns the protocol version of the current response.
-     * 
+     *
      * @return float
      */
     public function getProtocolVersion()
@@ -20,7 +20,7 @@ class Response extends AbstractMessage
 
     /**
      * Returns the status code of the current response.
-     * 
+     *
      * @return integer
      */
     public function getStatusCode()
@@ -34,7 +34,7 @@ class Response extends AbstractMessage
 
     /**
      * Returns the reason phrase for the current response.
-     * 
+     *
      * @return string
      */
     public function getReasonPhrase()

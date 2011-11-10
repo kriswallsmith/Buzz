@@ -8,9 +8,9 @@ abstract class AbstractStream extends AbstractClient
 {
     /**
      * Converts a request into an array for stream_context_create().
-     * 
+     *
      * @param Message\Request $request A request object
-     * 
+     *
      * @return array An array for stream_context_create()
      */
     public function getStreamContextArray(Message\Request $request)

@@ -8,7 +8,7 @@ interface ClientInterface
 {
     /**
      * Populates the supplied response with the response for the supplied request.
-     * 
+     *
      * @param Message\Request  $request  A request object
      * @param Message\Response $response A response object
      */

@@ -27,7 +27,7 @@ class Cookie
 
     /**
      * Returns true if the current cookie matches the supplied request.
-     * 
+     *
      * @return boolean
      */
     public function matchesRequest(Message\Request $request)
@@ -52,9 +52,9 @@ class Cookie
 
     /**
      * Returns true of the current cookie has expired.
-     * 
+     *
      * Checks the max-age and expires attributes.
-     * 
+     *
      * @return boolean Whether the current cookie has expired
      */
     public function isExpired()
@@ -74,9 +74,9 @@ class Cookie
 
     /**
      * Returns true if the current cookie matches the supplied domain.
-     * 
+     *
      * @param string $domain A domain hostname
-     * 
+     *
      * @return boolean
      */
     public function matchesDomain($domain)
@@ -93,9 +93,9 @@ class Cookie
 
     /**
      * Returns true if the current cookie matches the supplied path.
-     * 
+     *
      * @param string $path A path
-     * 
+     *
      * @return boolean
      */
     public function matchesPath($path)
@@ -106,7 +106,7 @@ class Cookie
 
     /**
      * Populates the current cookie with data from the supplied Set-Cookie header.
-     * 
+     *
      * @param string $header        A Set-Cookie header
      * @param string $issuingDomain The domain that issued the header
      */
@@ -139,7 +139,7 @@ class Cookie
 
     /**
      * Formats a Cookie header for the current cookie.
-     * 
+     *
      * @return string An HTTP request Cookie header
      */
     public function toCookieHeader()

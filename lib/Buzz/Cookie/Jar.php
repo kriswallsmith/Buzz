@@ -23,7 +23,7 @@ class Jar
 
     /**
      * Adds a cookie to the current cookie jar.
-     * 
+     *
      * @param Cookie $cookie A cookie object
      */
     public function addCookie(Cookie $cookie)
@@ -33,7 +33,7 @@ class Jar
 
     /**
      * Adds Cookie headers to the supplied request.
-     * 
+     *
      * @param Message\Request $request A request object
      */
     public function addCookieHeaders(Message\Request $request)
@@ -47,7 +47,7 @@ class Jar
 
     /**
      * Processes Set-Cookie headers from a request/response pair.
-     * 
+     *
      * @param Message\Request  $request  A request object
      * @param Message\Response $response A response object
      */

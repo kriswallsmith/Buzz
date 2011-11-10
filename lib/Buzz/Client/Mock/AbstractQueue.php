@@ -23,7 +23,7 @@ abstract class AbstractQueue implements Client\ClientInterface
 
     /**
      * Sends a response into the queue.
-     * 
+     *
      * @param Message\Response $response A response
      */
     public function sendToQueue(Message\Response $response)
@@ -33,7 +33,7 @@ abstract class AbstractQueue implements Client\ClientInterface
 
     /**
      * Receives a response from the queue.
-     * 
+     *
      * @return Message\Response|null
      */
     abstract public function receiveFromQueue();

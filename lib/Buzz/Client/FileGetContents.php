@@ -28,7 +28,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
 
     /**
      * @see ClientInterface
-     * 
+     *
      * @throws RuntimeException If file_get_contents() fires an error
      */
     public function send(Message\Request $request, Message\Response $response)
