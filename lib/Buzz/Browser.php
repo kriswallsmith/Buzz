@@ -3,12 +3,14 @@
 namespace Buzz;
 
 use Buzz\Client;
+use Buzz\Listener;
 use Buzz\Message;
 
 class Browser
 {
     private $client;
     private $factory;
+    private $listener;
 
     public function __construct(Client\ClientInterface $client = null, Message\FactoryInterface $factory = null)
     {
@@ -77,7 +79,15 @@ class Browser
             $response = $this->factory->createResponse();
         }
 
+        if ($this->listener) {
+            $this->listener->preSend($request);
+        }
+
         $this->client->send($request, $response);
+
+        if ($this->listener) {
+            $this->listener->postSend($request, $response);
+        }
 
         return $response;
     }
@@ -100,5 +110,15 @@ class Browser
     public function getMessageFactory()
     {
         return $this->factory;
+    }
+
+    public function setListener(Listener\ListenerInterface $listener)
+    {
+        $this->listener = $listener;
+    }
+
+    public function getListener()
+    {
+        return $this->listener;
     }
 }
