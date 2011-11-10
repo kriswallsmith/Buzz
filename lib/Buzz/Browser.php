@@ -136,4 +136,18 @@ class Browser
     {
         return $this->listener;
     }
+
+    public function addListener(Listener\ListenerInterface $listener)
+    {
+        if (!$this->listener) {
+            $this->listener = $listener;
+        } elseif ($this->listener instanceof Listener\ListenerChain) {
+            $this->listener->addListener($listener);
+        } else {
+            $this->listener = new Listener\ListenerChain(array(
+                $this->listener,
+                $listener,
+            ));
+        }
+    }
 }
