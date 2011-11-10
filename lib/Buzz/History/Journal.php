@@ -6,8 +6,8 @@ use Buzz\Message;
 
 class Journal implements \Countable, \IteratorAggregate
 {
-    protected $entries = array();
-    protected $limit = 10;
+    private $entries = array();
+    private $limit = 10;
 
     public function record(Message\Request $request, Message\Response $response)
     {

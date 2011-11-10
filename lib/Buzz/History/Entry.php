@@ -6,8 +6,8 @@ use Buzz\Message;
 
 class Entry
 {
-    protected $request;
-    protected $response;
+    private $request;
+    private $response;
 
     public function __construct(Message\Request $request, Message\Response $response)
     {
