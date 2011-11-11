@@ -4,8 +4,8 @@ namespace Buzz\Message;
 
 abstract class AbstractMessage
 {
-    protected $headers = array();
-    protected $content;
+    private $headers = array();
+    private $content;
 
     /**
      * Returns the value of a header.

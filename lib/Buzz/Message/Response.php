@@ -4,6 +4,10 @@ namespace Buzz\Message;
 
 class Response extends AbstractMessage
 {
+    private $protocolVersion;
+    private $statusCode;
+    private $reasonPhrase;
+
     /**
      * Returns the protocol version of the current response.
      *
@@ -11,11 +15,11 @@ class Response extends AbstractMessage
      */
     public function getProtocolVersion()
     {
-        if (isset($this->headers[0])) {
-            list($httpVersion) = explode(' ', $this->headers[0]);
-
-            return (float) $httpVersion;
+        if (null === $this->protocolVersion) {
+            $this->parseStatusLine();
         }
+
+        return $this->protocolVersion ?: null;
     }
 
     /**
@@ -25,11 +29,11 @@ class Response extends AbstractMessage
      */
     public function getStatusCode()
     {
-        if (isset($this->headers[0])) {
-            list(, $statusCode) = explode(' ', $this->headers[0]);
-
-            return (integer) $statusCode;
+        if (null === $this->statusCode) {
+            $this->parseStatusLine();
         }
+
+        return $this->statusCode ?: null;
     }
 
     /**
@@ -39,17 +43,38 @@ class Response extends AbstractMessage
      */
     public function getReasonPhrase()
     {
-        if (isset($this->headers[0])) {
-            list(,, $reasonPhrase) = explode(' ', $this->headers[0], 3);
-
-            return $reasonPhrase;
+        if (null === $this->reasonPhrase) {
+            $this->parseStatusLine();
         }
+
+        return $this->reasonPhrase ?: null;
+    }
+
+    public function setHeaders(array $headers)
+    {
+        parent::setHeaders($headers);
+
+        $this->resetStatusLine();
+    }
+
+    public function addHeader($header)
+    {
+        parent::addHeader($header);
+
+        $this->resetStatusLine();
+    }
+
+    public function addHeaders(array $headers)
+    {
+        parent::addHeaders($headers);
+
+        $this->resetStatusLine();
     }
 
     public function fromString($raw)
     {
         $lines = preg_split('/(\\r?\\n)/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
-        for ($i = 0; $i < count($lines); $i += 2) {
+        for ($i = 0, $count = count($lines); $i < $count; $i += 2) {
             $line = $lines[$i];
             $eol = isset($lines[$i + 1]) ? $lines[$i + 1] : '';
 
@@ -60,5 +85,25 @@ class Response extends AbstractMessage
                 $this->addHeader($line);
             }
         }
+    }
+
+    // private
+
+    private function parseStatusLine()
+    {
+        $headers = $this->getHeaders();
+
+        if (isset($headers[0]) && 3 == count($parts = explode(' ', $headers[0], 3))) {
+            $this->protocolVersion = (float) $parts[0];
+            $this->statusCode = (integer) $parts[1];
+            $this->reasonPhrase = $parts[2];
+        } else {
+            $this->protocolVersion = $this->statusCode = $this->reasonPhrase = false;
+        }
+    }
+
+    private function resetStatusLine()
+    {
+        $this->protocolVersion = $this->statusCode = $this->reasonPhrase = null;
     }
 }
