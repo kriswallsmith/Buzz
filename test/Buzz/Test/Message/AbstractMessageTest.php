@@ -64,4 +64,11 @@ EOF;
         $message->addHeaders(array('Content-Type: text/xml; charset=utf8'));
         $this->assertEquals(1, count($message->getHeaders()));
     }
+
+    public function testToDomDocument()
+    {
+        $message = new Message();
+        $message->setContent('<foo><bar></bar></foo>');
+        $this->assertInstanceOf('DOMDocument', $message->toDomDocument());
+    }
 }

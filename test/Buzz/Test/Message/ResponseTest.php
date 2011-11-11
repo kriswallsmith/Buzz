@@ -70,4 +70,12 @@ EOF
         $this->assertEquals(2, count($response->getHeaders()));
         $this->assertEquals($content, $response->getContent());
     }
+
+    public function testAddHeadersResetsStatusLine()
+    {
+        $response = new Response();
+        $this->assertNull($response->getStatusCode());
+        $response->addHeaders(array('1.0 200 OK'));
+        $this->assertEquals(200, $response->getStatusCode());
+    }
 }
