@@ -23,17 +23,30 @@ class FormRequest extends Request
 
     public function setField($name, $value)
     {
+        if (is_array($value)) {
+            $this->addFields(array($name => $value));
+            return;
+        }
+
         $this->fields[$name] = $value;
+    }
+
+    public function addFields(array $fields)
+    {
+        foreach ($this->flattenArray($fields) as $name => $value) {
+            $this->setField($name, $value);
+        }
+    }
+
+    public function setFields(array $fields)
+    {
+        $this->fields = array();
+        $this->addFields($fields);
     }
 
     public function getFields()
     {
         return $this->fields;
-    }
-
-    public function setFields(array $fields)
-    {
-        $this->fields = $fields;
     }
 
     public function setContent($content)
@@ -51,5 +64,24 @@ class FormRequest extends Request
     public function getContent()
     {
         return http_build_query($this->fields);
+    }
+
+    // private
+
+    private function flattenArray(array $values, $prefix = '', $format = '%s')
+    {
+        $flat = array();
+
+        foreach ($values as $name => $value) {
+            $flatName = $prefix.sprintf($format, $name);
+
+            if (is_array($value)) {
+                $flat += $this->flattenArray($value, $flatName, '[%s]');
+            } else {
+                $flat[$flatName] = $value;
+            }
+        }
+
+        return $flat;
     }
 }

@@ -50,4 +50,12 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
         $request = new FormRequest();
         $this->assertEquals('application/x-www-form-urlencoded', $request->getHeader('Content-Type'));
     }
+
+    public function testDeepArray()
+    {
+        $request = new FormRequest();
+        $request->setField('person', array('fname' => 'John', 'lname' => 'Doe'));
+        $this->assertEquals(array('person[fname]' => 'John', 'person[lname]' => 'Doe'), $request->getFields());
+        $this->assertEquals('person%5Bfname%5D=John&person%5Blname%5D=Doe', $request->getContent());
+    }
 }
