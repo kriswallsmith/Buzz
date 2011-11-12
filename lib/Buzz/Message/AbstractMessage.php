@@ -15,7 +15,7 @@ abstract class AbstractMessage
      *
      * @return string|array|null
      */
-    public function getHeader($name, $glue = PHP_EOL)
+    public function getHeader($name, $glue = "\r\n")
     {
         $needle = $name.':';
 
@@ -123,10 +123,10 @@ abstract class AbstractMessage
 
     public function __toString()
     {
-        $string = implode(PHP_EOL, $this->getHeaders()).PHP_EOL;
+        $string = implode("\r\n", $this->getHeaders())."\r\n";
 
         if ($content = $this->getContent()) {
-            $string .= PHP_EOL.$content.PHP_EOL;
+            $string .= "\r\n$content\r\n";
         }
 
         return $string;

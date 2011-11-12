@@ -97,14 +97,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request->addHeader('Content-Type: application/x-www-form-urlencoded');
         $request->setContent('foo=bar&bar=baz');
 
-        $expected = <<<EOF
-POST /resource/123 HTTP/1.1
-Host: http://example.com
-Content-Type: application/x-www-form-urlencoded
-
-foo=bar&bar=baz
-
-EOF;
+        $expected  = "POST /resource/123 HTTP/1.1\r\n";
+        $expected .= "Host: http://example.com\r\n";
+        $expected .= "Content-Type: application/x-www-form-urlencoded\r\n";
+        $expected .= "\r\n";
+        $expected .= "foo=bar&bar=baz\r\n";
 
         $this->assertEquals($expected, (string) $request);
     }
@@ -135,12 +132,10 @@ EOF;
             'Content-Type: text/plain',
         ), $request->getHeaders());
 
-        $this->assertEquals(<<<EOF
-GET / HTTP/1.0
-Cookie: foo=bar; bar=foo
-Content-Type: text/plain
+        $expected  = "GET / HTTP/1.0\r\n";
+        $expected .= "Cookie: foo=bar; bar=foo\r\n";
+        $expected .= "Content-Type: text/plain\r\n";
 
-EOF
-        , (string) $request);
+        $this->assertEquals($expected, (string) $request);
     }
 }

@@ -139,14 +139,14 @@ class Request extends AbstractMessage
      */
     public function __toString()
     {
-        $string = sprintf('%s %s HTTP/%.1f%s', $this->getMethod(), $this->getResource(), $this->getProtocolVersion(), PHP_EOL);
+        $string = sprintf("%s %s HTTP/%.1f\r\n", $this->getMethod(), $this->getResource(), $this->getProtocolVersion());
 
         if ($host = $this->getHost()) {
-            $string .= 'Host: '.$host.PHP_EOL;
+            $string .= 'Host: '.$host."\r\n";
         }
 
         if ($parent = trim(parent::__toString())) {
-            $string .= $parent.PHP_EOL;
+            $string .= $parent."\r\n";
         }
 
         return $string;

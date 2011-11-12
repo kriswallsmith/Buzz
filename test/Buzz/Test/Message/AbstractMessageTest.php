@@ -16,7 +16,7 @@ class AbstractMessageTest extends \PHPUnit_Framework_TestCase
         $message->addHeader('X-My-Header: foo');
         $message->addHeader('X-My-Header: bar');
 
-        $this->assertEquals('foo'.PHP_EOL.'bar', $message->getHeader('X-My-Header'));
+        $this->assertEquals('foo'."\r\n".'bar', $message->getHeader('X-My-Header'));
         $this->assertEquals('foo,bar', $message->getHeader('X-My-Header', ','));
         $this->assertEquals(array('foo', 'bar'), $message->getHeader('X-My-Header', false));
     }
@@ -34,12 +34,7 @@ class AbstractMessageTest extends \PHPUnit_Framework_TestCase
         $message->addHeader('Foo: Bar');
         $message->setContent('==CONTENT==');
 
-        $expected = <<<EOF
-Foo: Bar
-
-==CONTENT==
-
-EOF;
+        $expected = "Foo: Bar\r\n\r\n==CONTENT==\r\n";
 
         $this->assertEquals($expected, (string) $message);
     }
