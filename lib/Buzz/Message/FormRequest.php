@@ -11,11 +11,14 @@ class FormRequest extends Request
 {
     private $fields = array();
 
+    /**
+     * Constructor.
+     *
+     * Defaults to POST rather than GET.
+     */
     public function __construct($method = self::METHOD_POST, $resource = '/', $host = null)
     {
         parent::__construct($method, $resource, $host);
-
-        $this->addHeader('Content-Type: application/x-www-form-urlencoded');
     }
 
     public function setField($name, $value)
@@ -36,6 +39,13 @@ class FormRequest extends Request
     public function setContent($content)
     {
         throw new \BadMethodCallException('It is not permitted to set the content.');
+    }
+
+    public function getHeaders()
+    {
+        return array_merge(parent::getHeaders(), array(
+            'Content-Type: application/x-www-form-urlencoded',
+        ));
     }
 
     public function getContent()

@@ -44,4 +44,10 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
         $request->setFields(array('foo' => 'bar'));
         $this->assertEquals(array('foo' => 'bar'), $request->getFields());
     }
+
+    public function testContentType()
+    {
+        $request = new FormRequest();
+        $this->assertEquals('application/x-www-form-urlencoded', $request->getHeader('Content-Type'));
+    }
 }
