@@ -5,11 +5,17 @@ namespace Buzz\Message;
 /**
  * FormRequest.
  *
+ *     $request = new FormRequest();
+ *     $request->setField('user[name]', 'Kris Wallsmith');
+ *     $request->setField('user[image]', new FormUpload('/path/to/image.jpg'));
+ *
  * @author Marc Weistroff <marc.weistroff@sensio.com>
+ * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  */
 class FormRequest extends Request
 {
     private $fields = array();
+    private $boundary;
 
     /**
      * Constructor.
@@ -21,6 +27,12 @@ class FormRequest extends Request
         parent::__construct($method, $resource, $host);
     }
 
+    /**
+     * Sets the value of a form field.
+     *
+     * If the value is an array it will be flattened and one field value will
+     * be added for each leaf.
+     */
     public function setField($name, $value)
     {
         if (is_array($value)) {
@@ -28,7 +40,11 @@ class FormRequest extends Request
             return;
         }
 
-        $this->fields[$name] = $value;
+        if ('[]' == substr($name, -2)) {
+            $this->fields[substr($name, 0, -2)][] = $value;
+        } else {
+            $this->fields[$name] = $value;
+        }
     }
 
     public function addFields(array $fields)
@@ -56,14 +72,42 @@ class FormRequest extends Request
 
     public function getHeaders()
     {
-        return array_merge(parent::getHeaders(), array(
-            'Content-Type: application/x-www-form-urlencoded',
-        ));
+        $headers = parent::getHeaders();
+
+        if ($this->isMultipart()) {
+            $headers[] = 'Content-Type: multipart/form-data; boundary='.$this->getBoundary();
+        } else {
+            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+        }
+
+        return $headers;
     }
 
     public function getContent()
     {
-        return http_build_query($this->fields);
+        if (!$this->isMultipart()) {
+            return http_build_query($this->fields);
+        }
+
+        $content = '';
+
+        foreach ($this->fields as $name => $values) {
+            $content .= '--'.$this->getBoundary()."\r\n";
+            if ($values instanceof FormUpload) {
+                $values->setName($name);
+                $content .= (string) $values;
+            } else {
+                foreach (is_array($values) ? $values : array($values) as $value) {
+                    $content .= "Content-Disposition: form-data; name=\"$name\"\r\n";
+                    $content .= "\r\n";
+                    $content .= $value."\r\n";
+                }
+            }
+        }
+
+        $content .= '--'.$this->getBoundary().'--';
+
+        return $content;
     }
 
     // private
@@ -83,5 +127,25 @@ class FormRequest extends Request
         }
 
         return $flat;
+    }
+
+    private function isMultipart()
+    {
+        foreach ($this->fields as $name => $value) {
+            if (is_object($value) && $value instanceof FormUpload) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getBoundary()
+    {
+        if (!$this->boundary) {
+            $this->boundary = sha1(rand(11111, 99999).time().uniqid());
+        }
+
+        return $this->boundary;
     }
 }

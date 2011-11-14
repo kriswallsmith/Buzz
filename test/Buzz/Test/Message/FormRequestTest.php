@@ -3,6 +3,7 @@
 namespace Buzz\Test\Message;
 
 use Buzz\Message\FormRequest;
+use Buzz\Message\FormUpload;
 
 /**
  * FormRequestTest
@@ -55,7 +56,41 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     {
         $request = new FormRequest();
         $request->setField('person', array('fname' => 'John', 'lname' => 'Doe'));
-        $this->assertEquals(array('person[fname]' => 'John', 'person[lname]' => 'Doe'), $request->getFields());
+
         $this->assertEquals('person%5Bfname%5D=John&person%5Blname%5D=Doe', $request->getContent());
+    }
+
+    public function testFieldPush()
+    {
+        $request = new FormRequest();
+        $request->setField('colors[]', 'red');
+        $request->setField('colors[]', 'blue');
+
+        $this->assertEquals('colors%5B0%5D=red&colors%5B1%5D=blue', $request->getContent());
+    }
+
+    public function testMultipartHeaders()
+    {
+        $request = new FormRequest();
+        $request->setField('foo', array('bar' => new FormUpload()));
+
+        $headers = $request->getHeaders();
+
+        $this->assertStringStartsWith('Content-Type: multipart/form-data; boundary=', $headers[0]);
+    }
+
+    public function testMultipartContent()
+    {
+        $upload = new FormUpload();
+        $upload->setContent('foobar');
+
+        $request = new FormRequest();
+        $request->setField('user[name]', 'Kris');
+        $request->setField('user[image]', $upload);
+
+        $content = $request->getContent();
+
+        $this->assertContains("Content-Disposition: form-data; name=\"user[name]\"\r\n\r\nKris\r\n", $content);
+        $this->assertContains("Content-Disposition: form-data; name=\"user[image]\"\r\nContent-Type: text/plain\r\n\r\nfoobar\r\n", $content);
     }
 }
