@@ -2,7 +2,7 @@
 
 namespace Buzz\Message;
 
-abstract class AbstractMessage
+abstract class AbstractMessage implements MessageInterface
 {
     private $headers = array();
     private $content;

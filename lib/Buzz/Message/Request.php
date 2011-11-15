@@ -2,7 +2,7 @@
 
 namespace Buzz\Message;
 
-class Request extends AbstractMessage
+class Request extends AbstractMessage implements RequestInterface
 {
     const METHOD_GET    = 'GET';
     const METHOD_HEAD   = 'HEAD';
