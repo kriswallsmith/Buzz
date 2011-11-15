@@ -118,6 +118,23 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($data['INPUT']);
     }
 
+    /**
+     * @dataProvider provideClient
+     */
+    public function testPlus($client)
+    {
+        $request = new FormRequest();
+        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->setField('math', '1+1=2');
+        $response = new Response();
+        $client->send($request, $response);
+
+        $data = json_decode($response->getContent(), true);
+        parse_str($data['INPUT'], $fields);
+
+        $this->assertEquals(array('math' => '1+1=2'), $fields);
+    }
+
     public function provideClient()
     {
         return array(
