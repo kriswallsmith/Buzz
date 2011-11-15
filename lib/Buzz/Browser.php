@@ -68,6 +68,28 @@ class Browser
     }
 
     /**
+     * Sends a form request.
+     *
+     * @param string $url     The URL to submit to
+     * @param array  $fields  An array of fields
+     * @param string $method  The request method to use
+     * @param array  $headers An array of request headers
+     *
+     * @return Message\Response The response object
+     */
+    public function submit($url, array $fields, $method = Message\Request::METHOD_POST, $headers = array())
+    {
+        $request = $this->factory->createFormRequest();
+
+        $request->setMethod($method);
+        $request->fromUrl($url);
+        $request->addHeaders($headers);
+        $request->setFields($fields);
+
+        return $this->send($request);
+    }
+
+    /**
      * Sends a request.
      *
      * @param Message\Request  $request  A request object

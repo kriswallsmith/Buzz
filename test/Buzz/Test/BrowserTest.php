@@ -7,6 +7,7 @@ use Buzz\Browser;
 class BrowserTest extends \PHPUnit_Framework_TestCase
 {
     private $client;
+    private $factory;
     private $browser;
 
     protected function setUp()
@@ -65,6 +66,42 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
             array('put', 'content'),
             array('delete', 'content'),
         );
+    }
+
+    public function testSubmit()
+    {
+        $request = $this->getMockBuilder('Buzz\\Message\\FormRequest')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $response = $this->getMockBuilder('Buzz\\Message\\Response')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->factory->expects($this->once())
+            ->method('createFormRequest')
+            ->will($this->returnValue($request));
+        $request->expects($this->once())
+            ->method('setMethod')
+            ->with('PUT');
+        $request->expects($this->once())
+            ->method('fromUrl')
+            ->with('http://google.com');
+        $request->expects($this->once())
+            ->method('addHeaders')
+            ->with(array('X-Foo: bar'));
+        $request->expects($this->once())
+            ->method('setFields')
+            ->with(array('foo' => 'bar', 'bar' => 'foo'));
+        $this->factory->expects($this->once())
+            ->method('createResponse')
+            ->will($this->returnValue($response));
+        $this->client->expects($this->once())
+            ->method('send')
+            ->with($request, $response);
+
+        $actual = $this->browser->submit('http://google.com', array('foo' => 'bar', 'bar' => 'foo'), 'PUT', array('X-Foo: bar'));
+
+        $this->assertSame($response, $actual);
     }
 
     public function testListener()

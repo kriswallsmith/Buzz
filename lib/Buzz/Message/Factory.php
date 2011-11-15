@@ -9,6 +9,11 @@ class Factory implements FactoryInterface
         return new Request($method, $resource, $host);
     }
 
+    public function createFormRequest($method = Request::METHOD_POST, $resource = '/', $host = null)
+    {
+        return new FormRequest($method, $resource, $host);
+    }
+
     public function createResponse()
     {
         return new Response();
