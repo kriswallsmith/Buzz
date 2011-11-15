@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit bootstrap="./test/bootstrap.php" colors="true">
-  <testsuites>
-    <testsuite name="Buzz Test Suite">
-      <directory suffix="Test.php">./test/Buzz/</directory>
-    </testsuite>
-  </testsuites>
+    <testsuites>
+        <testsuite name="Buzz Test Suite">
+            <directory suffix="Test.php">./test/Buzz/</directory>
+        </testsuite>
+    </testsuites>
 
-  <filter>
-    <whitelist>
-      <directory suffix=".php">./lib/Buzz/</directory>
-    </whitelist>
-  </filter>
+    <php>
+        <!-- <server name="TEST_SERVER" value="http://localhost/buzz/test/server.php" /> -->
+    </php>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./lib/Buzz/</directory>
+        </whitelist>
+    </filter>
 </phpunit>
