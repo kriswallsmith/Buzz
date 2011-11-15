@@ -15,6 +15,9 @@
     "require": {
         "php": ">=5.3.0"
     },
+    "suggest": {
+        "ext-curl": "*"
+    },
     "autoload": {
         "psr-0": {
             "Buzz": "lib/"
