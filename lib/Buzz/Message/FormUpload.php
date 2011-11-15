@@ -91,6 +91,11 @@ class FormUpload extends AbstractMessage
         $this->file = null;
     }
 
+    public function getFile()
+    {
+        return $this->file;
+    }
+
     public function getContent()
     {
         return $this->file ? file_get_contents($this->file) : parent::getContent();

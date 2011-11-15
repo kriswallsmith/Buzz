@@ -20,32 +20,39 @@ class Curl extends AbstractClient implements ClientInterface
 
     static protected function setCurlOptsFromRequest($curl, Message\Request $request)
     {
+        $options = array(
+            CURLOPT_CUSTOMREQUEST => $request->getMethod(),
+            CURLOPT_URL           => $request->getUrl(),
+            CURLOPT_HTTPHEADER    => $request->getHeaders(),
+            CURLOPT_HTTPGET       => false,
+            CURLOPT_NOBODY        => false,
+            CURLOPT_POSTFIELDS    => null,
+        );
+
         switch ($request->getMethod()) {
+            case Message\Request::METHOD_HEAD:
+                $options[CURLOPT_NOBODY] = true;
+                break;
+
             case Message\Request::METHOD_GET:
-                curl_setopt($curl, CURLOPT_HTTPGET, true);
+                $options[CURLOPT_HTTPGET] = true;
                 break;
 
             case Message\Request::METHOD_POST:
-                curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
-                break;
-
-            case Message\Request::METHOD_HEAD:
-                curl_setopt($curl, CURLOPT_NOBODY, true);
-                break;
-
             case Message\Request::METHOD_PUT:
-                curl_setopt($curl, CURLOPT_UPLOAD, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $request->getContent());
-                break;
+                $options[CURLOPT_POSTFIELDS] = $fields = self::getPostFields($request);
 
-            default:
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod());
+                // remove the content-type header
+                if (is_array($fields)) {
+                    $options[CURLOPT_HTTPHEADER] = array_filter($options[CURLOPT_HTTPHEADER], function($header)
+                    {
+                        return 0 !== strpos($header, 'Content-Type: ');
+                    });
+                }
                 break;
         }
 
-        curl_setopt($curl, CURLOPT_URL, $request->getUrl());
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $request->getHeaders());
+        curl_setopt_array($curl, $options);
     }
 
     static protected function getLastResponse($raw)
@@ -58,6 +65,40 @@ class Curl extends AbstractClient implements ClientInterface
         }
 
         return $raw;
+    }
+
+    /**
+     * Returns a value for the CURLOPT_POSTFIELDS option.
+     *
+     * @return string|array A post fields value
+     */
+    static private function getPostFields(Message\Request $request)
+    {
+        if (!$request instanceof Message\FormRequest) {
+            return $request->getContent();
+        }
+
+        $fields = $request->getFields();
+        $multipart = false;
+
+        foreach ($fields as $name => $value) {
+            if ($value instanceof Message\FormUpload) {
+                $multipart = true;
+
+                if ($file = $value->getFile()) {
+                    // replace value with upload string
+                    $fields[$name] = '@'.$file;
+
+                    if ($contentType = $value->getContentType()) {
+                        $fields[$name] .= ';type='.$contentType;
+                    }
+                } else {
+                    return $request->getContent();
+                }
+            }
+        }
+
+        return $multipart ? $fields : http_build_query($fields);
     }
 
     public function __construct()
