@@ -14,6 +14,10 @@ class Browser
     private $lastRequest;
     private $lastResponse;
 
+    const AUTH_BASIC  = 'basic';
+    const AUTH_DIGEST = 'digest';
+    const AUTH_NTLM   = 'ntlm';
+
     public function __construct(Client\ClientInterface $client = null, Message\FactoryInterface $factory = null)
     {
         $this->client = $client ?: new Client\FileGetContents();
@@ -171,5 +175,10 @@ class Browser
                 $listener,
             ));
         }
+    }
+
+    public function setAuth($user, $password = null, $type = self::AUTH_BASIC)
+    {
+        $this->client->setAuth($user, $password, $type);
     }
 }

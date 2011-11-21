@@ -10,6 +10,9 @@ abstract class AbstractClient
     protected $maxRedirects = 5;
     protected $timeout = 5;
 
+    protected $authData;
+    protected $authType;
+
     public function setIgnoreErrors($ignoreErrors)
     {
         $this->ignoreErrors = $ignoreErrors;
@@ -38,5 +41,11 @@ abstract class AbstractClient
     public function getTimeout()
     {
         return $this->timeout;
+    }
+
+    public function setAuth($user, $password, $type)
+    {
+        $this->authData = $user . ':' . $password;
+        $this->authType = $type;
     }
 }
