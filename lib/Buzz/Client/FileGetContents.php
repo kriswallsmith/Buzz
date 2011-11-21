@@ -38,6 +38,14 @@ class FileGetContents extends AbstractStream implements ClientInterface
             $cookieJar->addCookieHeaders($request);
         }
 
+        if (null !== $this->auth) {
+            if ($this->authType !== Buzz\Browser::AUTH_BASIC) {
+                throw new \RuntimeException('This client supports only basic authorization.');
+            }
+
+            $request->addHeader(sprintf('Authorization: Basic %s', base64_encode($this->authData)));
+        }
+
         $context = stream_context_create($this->getStreamContextArray($request));
 
         $content = @file_get_contents($request->getUrl(), 0, $context);
