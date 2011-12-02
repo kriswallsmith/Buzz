@@ -105,6 +105,10 @@ class FormUpload extends AbstractMessage
 
     private function detectContentType()
     {
+        if (!class_exists('finfo')) {
+            return false;
+        }
+
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
 
         return $this->file ? $finfo->file($this->file) : $finfo->buffer(parent::getContent());
