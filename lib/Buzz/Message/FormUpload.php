@@ -105,7 +105,7 @@ class FormUpload extends AbstractMessage
 
     private function detectContentType()
     {
-        if (!class_exists('finfo')) {
+        if (!class_exists('finfo', false)) {
             return false;
         }
 
