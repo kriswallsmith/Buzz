@@ -82,6 +82,7 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     public function testMultipartContent()
     {
         $upload = new FormUpload();
+        $upload->setFilename('image.jpg');
         $upload->setContent('foobar');
 
         $request = new FormRequest();
@@ -91,6 +92,20 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
         $content = $request->getContent();
 
         $this->assertContains("Content-Disposition: form-data; name=\"user[name]\"\r\n\r\nKris\r\n", $content);
-        $this->assertContains("Content-Disposition: form-data; name=\"user[image]\"\r\nContent-Type: text/plain\r\n\r\nfoobar\r\n", $content);
+        $this->assertContains("Content-Disposition: form-data; name=\"user[image]\"; filename=\"image.jpg\"\r\nContent-Type: text/plain\r\n\r\nfoobar\r\n", $content);
+    }
+
+    public function testFilenamelessUpload()
+    {
+        $this->setExpectedException('LogicException');
+
+        $upload = new FormUpload();
+        $upload->setContent('foobar');
+
+        $request = new FormRequest();
+        $request->setField('user[name]', 'Kris');
+        $request->setField('user[image]', $upload);
+
+        $content = $request->getContent();
     }
 }

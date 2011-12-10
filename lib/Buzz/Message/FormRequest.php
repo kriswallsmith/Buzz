@@ -94,6 +94,10 @@ class FormRequest extends Request
         foreach ($this->fields as $name => $values) {
             $content .= '--'.$this->getBoundary()."\r\n";
             if ($values instanceof FormUpload) {
+                if (!$values->getFilename()) {
+                    throw new \LogicException(sprintf('Form upload at "%s" does not include a filename.', $name));
+                }
+
                 $values->setName($name);
                 $content .= (string) $values;
             } else {
