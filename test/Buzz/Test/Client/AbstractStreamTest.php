@@ -17,14 +17,16 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $request->addHeader('Content-Type: application/x-www-form-urlencoded');
         $request->addHeader('Content-Length: 15');
         $request->setContent('foo=bar&bar=baz');
-
+        $request->setAuthMethod(Message\Request::AUTH_METHOD_BASIC);
+        $request->setAuth('christian', 'secretpw');
+        
         $client = new StreamClient();
         $client->setMaxRedirects(5);
         $client->setIgnoreErrors(false);
         $client->setTimeout(10);
         $expected = array('http' => array(
             'method'           => 'POST',
-            'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15",
+            'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15\r\nAuthorization: Basic Y2hyaXN0aWFuOnNlY3JldHB3",
             'content'          => 'foo=bar&bar=baz',
             'protocol_version' => 1.0,
             'ignore_errors'    => false,

@@ -51,6 +51,13 @@ class Curl extends AbstractClient implements ClientInterface
                 }
                 break;
         }
+        
+        switch ($request->getAuthMethod()) {
+            case Message\Request::AUTH_METHOD_BASIC:
+                $options[CURLOPT_HTTPAUTH] = CURLAUTH_BASIC;
+                $options[CURLOPT_USERPWD] = $request->getAuth();
+                break;
+        }
 
         curl_setopt_array($curl, $options);
     }

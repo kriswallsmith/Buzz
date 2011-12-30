@@ -10,4 +10,6 @@ interface RequestInterface extends MessageInterface
     function getHost();
     function getUrl();
     function isSecure();
+    function getAuthMethod();
+    function getAuth();
 }
