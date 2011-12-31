@@ -138,4 +138,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, (string) $request);
     }
+    
+    public function testSetAuth()
+    {
+        $request = new Request();
+        $request->setAuth('christian', 'secretpw');
+        
+        $this->assertEquals('christian:secretpw', $request->getAuth());
+    }
+    
+    public function testSetAuthMethod()
+    {
+        $request = new Request();
+        $request->setAuthMethod(Request::AUTH_METHOD_BASIC);
+        
+        $this->assertEquals(Request::AUTH_METHOD_BASIC, $request->getAuthMethod());
+    }
 }

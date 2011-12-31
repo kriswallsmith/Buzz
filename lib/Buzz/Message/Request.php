@@ -9,11 +9,18 @@ class Request extends AbstractMessage implements RequestInterface
     const METHOD_POST   = 'POST';
     const METHOD_PUT    = 'PUT';
     const METHOD_DELETE = 'DELETE';
-
+    
+    const AUTH_METHOD_BASIC = 'BASIC';
+    
     private $method;
     private $resource;
     private $host;
     private $protocolVersion = 1.0;
+    private $authMethod;
+    private $auth = array(
+        'username' => null,
+        'password' => null,
+    );
 
     /**
      * Constructor.
@@ -67,6 +74,53 @@ class Request extends AbstractMessage implements RequestInterface
     public function getProtocolVersion()
     {
         return $this->protocolVersion;
+    }
+    
+    /**
+     * Return the HTTP authentication method
+     * 
+     * @return string 
+     */
+    public function getAuthMethod()
+    {
+        return $this->authMethod;
+    }
+
+    /**
+     * Set the HTTP authentication method
+     * 
+     * @param string $authMethod
+     * 
+     * @return void
+     */
+    public function setAuthMethod($authMethod)
+    {
+        $this->authMethod = $authMethod;
+    }
+    
+    /**
+     * Return the HTTP authentication data string
+     * Format: username:password
+     * 
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->auth['username'].':'.$this->auth['password'];
+    }
+
+    /**
+     * Set the HTTP authentication
+     * 
+     * @param string $username
+     * @param string $password 
+     * 
+     * @return void
+     */
+    public function setAuth($username, $password)
+    {
+        $this->auth['username'] = $username;
+        $this->auth['password'] = $password;
     }
 
     /**
