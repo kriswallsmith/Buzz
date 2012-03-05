@@ -138,6 +138,15 @@ class Curl extends AbstractClient implements ClientInterface
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->maxRedirects);
         curl_setopt($curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
         curl_setopt($curl, CURLOPT_FAILONERROR, !$this->ignoreErrors);
+
+        if (null !== $proxyIp = $this->getProxyIp()) {
+            curl_setopt($curl, CURLOPT_HTTPPROXYTUNNEL, true);
+            curl_setopt($curl, CURLOPT_PROXY, $proxyIp);
+
+            if (null !== $proxyAuth = $this->getProxyAuth()) {
+                curl_setopt($curl, CURLOPT_PROXYUSERPWD, $proxyAuth);
+            }
+        }
     }
 
     public function __destruct()

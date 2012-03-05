@@ -15,17 +15,28 @@ abstract class AbstractStream extends AbstractClient
      */
     public function getStreamContextArray(Message\Request $request)
     {
-        return array('http' => array(
-            // values from the request
-            'method'           => $request->getMethod(),
-            'header'           => implode("\r\n", $request->getHeaders()),
-            'content'          => $request->getContent(),
-            'protocol_version' => $request->getProtocolVersion(),
+        $options = array('http' => array(
+                // values from the request
+                'method'           => $request->getMethod(),
+                'header'           => implode("\r\n", $request->getHeaders()),
+                'content'          => $request->getContent(),
+                'protocol_version' => $request->getProtocolVersion(),
 
-            // values from the current client
-            'ignore_errors'    => $this->getIgnoreErrors(),
-            'max_redirects'    => $this->getMaxRedirects(),
-            'timeout'          => $this->getTimeout(),
+                // values from the current client
+                'ignore_errors'    => $this->getIgnoreErrors(),
+                'max_redirects'    => $this->getMaxRedirects(),
+                'timeout'          => $this->getTimeout(),
         ));
+
+        if (null !== $proxy = $this->getProxyIp()) {
+            if (null !== $proxyAuth = $this->getProxyAuth()) {
+                $proxy = $proxyAuth.'@'.$proxy;
+            }
+
+            $options['http']['proxy'] = 'tcp://'.$proxy;
+            $options['http']['request_fulluri'] = true;
+        }
+
+        return $options;
     }
 }
