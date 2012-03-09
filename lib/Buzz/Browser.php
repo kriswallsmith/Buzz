@@ -35,6 +35,11 @@ class Browser
         return $this->call($url, Message\Request::METHOD_HEAD, $headers);
     }
 
+    public function patch($url, $headers = array(), $content = '')
+    {
+        return $this->call($url, Message\Request::METHOD_PATCH, $headers, $content);
+    }
+
     public function put($url, $headers = array(), $content = '')
     {
         return $this->call($url, Message\Request::METHOD_PUT, $headers, $content);
