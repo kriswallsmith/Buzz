@@ -28,6 +28,14 @@ class AbstractMessageTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($message->getHeader('X-Nonexistant'));
     }
 
+    public function testGetHeaderIsCaseInsensitive()
+    {
+        $message = new Message();
+        $message->addHeader('X-zomg: test');
+
+        $this->assertEquals('test', $message->getHeader('X-ZOMG'));
+    }
+
     public function testToStringFormatsTheMessage()
     {
         $message = new Message();
