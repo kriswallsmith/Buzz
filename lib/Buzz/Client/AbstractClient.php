@@ -9,6 +9,7 @@ abstract class AbstractClient
     protected $ignoreErrors = true;
     protected $maxRedirects = 5;
     protected $timeout = 5;
+    protected $verifyPeer = false;
 
     public function setIgnoreErrors($ignoreErrors)
     {
@@ -38,5 +39,15 @@ abstract class AbstractClient
     public function getTimeout()
     {
         return $this->timeout;
+    }
+
+    public function setVerifyPeer($verifyPeer)
+    {
+        $this->verifyPeer = $verifyPeer;
+    }
+
+    public function getVerifyPeer()
+    {
+        return $this->verifyPeer;
     }
 }

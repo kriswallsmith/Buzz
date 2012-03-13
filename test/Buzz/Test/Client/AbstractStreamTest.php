@@ -22,16 +22,25 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $client->setMaxRedirects(5);
         $client->setIgnoreErrors(false);
         $client->setTimeout(10);
-        $expected = array('http' => array(
-            'method'           => 'POST',
-            'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15",
-            'content'          => 'foo=bar&bar=baz',
-            'protocol_version' => 1.0,
-            'ignore_errors'    => false,
-            'max_redirects'    => 5,
-            'timeout'          => 10,
-        ));
+        $expected = array(
+            'http' => array(
+                'method'           => 'POST',
+                'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15",
+                'content'          => 'foo=bar&bar=baz',
+                'protocol_version' => 1.0,
+                'ignore_errors'    => false,
+                'max_redirects'    => 5,
+                'timeout'          => 10,
+            ),
+            'ssl' => array(
+                'verify_peer'      => false,
+            ),
+        );
 
+        $this->assertEquals($expected, $client->getStreamContextArray($request));
+
+        $client->setVerifyPeer(true);
+        $expected['ssl']['verify_peer'] = true;
         $this->assertEquals($expected, $client->getStreamContextArray($request));
     }
 }
