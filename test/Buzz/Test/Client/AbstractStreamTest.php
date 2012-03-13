@@ -33,7 +33,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
                 'timeout'          => 10,
             ),
             'ssl' => array(
-                'verify_peer'      => false,
+                'verify_peer'      => true,
             ),
         );
 

@@ -9,7 +9,7 @@ abstract class AbstractClient
     protected $ignoreErrors = true;
     protected $maxRedirects = 5;
     protected $timeout = 5;
-    protected $verifyPeer = false;
+    protected $verifyPeer = true;
 
     public function setIgnoreErrors($ignoreErrors)
     {
