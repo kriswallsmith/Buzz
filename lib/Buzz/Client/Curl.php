@@ -40,6 +40,7 @@ class Curl extends AbstractClient implements ClientInterface
 
             case Message\Request::METHOD_POST:
             case Message\Request::METHOD_PUT:
+            case Message\Request::METHOD_DELETE:
                 $options[CURLOPT_POSTFIELDS] = $fields = self::getPostFields($request);
 
                 // remove the content-type header
