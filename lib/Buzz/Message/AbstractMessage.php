@@ -21,7 +21,7 @@ abstract class AbstractMessage implements MessageInterface
 
         $values = array();
         foreach ($this->getHeaders() as $header) {
-            if (0 === strpos($header, $needle)) {
+            if (0 === stripos($header, $needle)) {
                 $values[] = trim(substr($header, strlen($needle)));
             }
         }
