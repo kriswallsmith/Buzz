@@ -47,7 +47,7 @@ class Curl extends AbstractClient implements ClientInterface
                 if (is_array($fields)) {
                     $options[CURLOPT_HTTPHEADER] = array_filter($options[CURLOPT_HTTPHEADER], function($header)
                     {
-                        return 0 !== strpos($header, 'Content-Type: ');
+                        return 0 !== stripos($header, 'Content-Type: ');
                     });
                 }
                 break;

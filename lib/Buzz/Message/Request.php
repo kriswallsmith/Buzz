@@ -162,7 +162,7 @@ class Request extends AbstractMessage implements RequestInterface
         $needle = 'Cookie:';
 
         foreach ($headers as $i => $header) {
-            if (0 !== strpos($header, $needle)) {
+            if (0 !== stripos($header, $needle)) {
                 continue;
             }
 
