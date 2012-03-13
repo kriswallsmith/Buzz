@@ -15,17 +15,22 @@ abstract class AbstractStream extends AbstractClient
      */
     public function getStreamContextArray(Message\Request $request)
     {
-        return array('http' => array(
-            // values from the request
-            'method'           => $request->getMethod(),
-            'header'           => implode("\r\n", $request->getHeaders()),
-            'content'          => $request->getContent(),
-            'protocol_version' => $request->getProtocolVersion(),
+        return array(
+            'http' => array(
+                // values from the request
+                'method'           => $request->getMethod(),
+                'header'           => implode("\r\n", $request->getHeaders()),
+                'content'          => $request->getContent(),
+                'protocol_version' => $request->getProtocolVersion(),
 
-            // values from the current client
-            'ignore_errors'    => $this->getIgnoreErrors(),
-            'max_redirects'    => $this->getMaxRedirects(),
-            'timeout'          => $this->getTimeout(),
-        ));
+                // values from the current client
+                'ignore_errors'    => $this->getIgnoreErrors(),
+                'max_redirects'    => $this->getMaxRedirects(),
+                'timeout'          => $this->getTimeout(),
+            ),
+            'ssl' => array(
+                'verify_peer'      => $this->getVerifyPeer(),
+            ),
+        );
     }
 }
