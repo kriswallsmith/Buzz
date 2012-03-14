@@ -11,6 +11,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
 
     public function __construct(Cookie\Jar $cookieJar = null)
     {
+        parent::__construct();
         if ($cookieJar) {
             $this->setCookieJar($cookieJar);
         }

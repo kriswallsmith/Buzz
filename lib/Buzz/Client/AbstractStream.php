@@ -6,6 +6,26 @@ use Buzz\Message;
 
 abstract class AbstractStream extends AbstractClient
 {
+    protected function getProxyOption()
+    {
+        if ($proxyAuth = $this->getProxyAuth()) {
+            $proxyAuth .= '@';
+        }
+
+        $proxy = $this->getProxy();
+
+        if (0 === strpos($proxy, 'http://')) {
+            return str_replace('http://', 'tcp://'.$proxyAuth, $proxy);
+        } elseif (0 === strpos($proxy, 'https://')) {
+            if (!extension_loaded('openssl')) {
+                throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
+            }
+            return str_replace('https://', 'ssl://'.$proxyAuth, $proxy);
+        } else {
+            return 'tcp://'.$proxyAuth.$proxy;
+        }
+    }
+
     /**
      * Converts a request into an array for stream_context_create().
      *
@@ -15,7 +35,7 @@ abstract class AbstractStream extends AbstractClient
      */
     public function getStreamContextArray(Message\Request $request)
     {
-        return array(
+        $options = array(
             'http' => array(
                 // values from the request
                 'method'           => $request->getMethod(),
@@ -32,5 +52,10 @@ abstract class AbstractStream extends AbstractClient
                 'verify_peer'      => $this->getVerifyPeer(),
             ),
         );
+        if ($this->getProxyEnabled()) {
+            $options['http']['proxy'] = $this->getProxyOption();
+            $options['http']['request_fulluri'] = true;
+        }
+        return $options;
     }
 }
