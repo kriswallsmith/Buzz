@@ -13,28 +13,6 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
 {
     protected $originalEnv = array();
 
-    protected function getTestRequestAndExpectedStreamContextArray()
-    {
-        $request = new Message\Request('POST', '/resource/123', 'http://example.com');
-        $request->addHeader('Content-Type: application/x-www-form-urlencoded');
-        $request->addHeader('Content-Length: 15');
-        $request->setContent('foo=bar&bar=baz');
-        return array($request, array(
-            'http' => array(
-                'method'           => 'POST',
-                'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15",
-                'content'          => 'foo=bar&bar=baz',
-                'protocol_version' => 1.0,
-                'ignore_errors'    => true,
-                'max_redirects'    => 5,
-                'timeout'          => 5,
-            ),
-            'ssl' => array(
-                'verify_peer'      => true,
-            ),
-        ));
-    }
-
     public function setUp()
     {
         // Setup testing environment.
@@ -215,5 +193,27 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
             array('https://someuser:PRIVATE@proxy.example.com:3333', 'ssl://anotheruser:SECRET@proxy.example.com:3333', 'anotheruser', 'SECRET'),
             array('someuser:PRIVATE@proxy.example.com:3333',         'tcp://anotheruser:SECRET@proxy.example.com:3333', 'anotheruser', 'SECRET'),
         );
+    }
+
+    protected function getTestRequestAndExpectedStreamContextArray()
+    {
+        $request = new Message\Request('POST', '/resource/123', 'http://example.com');
+        $request->addHeader('Content-Type: application/x-www-form-urlencoded');
+        $request->addHeader('Content-Length: 15');
+        $request->setContent('foo=bar&bar=baz');
+        return array($request, array(
+            'http' => array(
+                'method'           => 'POST',
+                'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15",
+                'content'          => 'foo=bar&bar=baz',
+                'protocol_version' => 1.0,
+                'ignore_errors'    => true,
+                'max_redirects'    => 5,
+                'timeout'          => 5,
+            ),
+            'ssl' => array(
+                'verify_peer'      => true,
+            ),
+        ));
     }
 }

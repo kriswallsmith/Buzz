@@ -15,11 +15,6 @@ abstract class AbstractClient
     protected $proxyUsername;
     protected $proxyPassword;
 
-    protected function getProxyAuth()
-    {
-        return null !== $this->getProxyUsername() ? $this->getProxyUsername().':'.$this->getProxyPassword() : null;
-    }
-
     public function __construct()
     {
         $proxy = ProxyUtil::parseProxy();
@@ -179,5 +174,10 @@ abstract class AbstractClient
     public function getProxyPassword()
     {
         return $this->proxyPassword;
+    }
+
+    protected function getProxyAuth()
+    {
+        return null !== $this->getProxyUsername() ? $this->getProxyUsername().':'.$this->getProxyPassword() : null;
     }
 }

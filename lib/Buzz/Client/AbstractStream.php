@@ -6,26 +6,6 @@ use Buzz\Message;
 
 abstract class AbstractStream extends AbstractClient
 {
-    protected function getProxyOption()
-    {
-        if ($proxyAuth = $this->getProxyAuth()) {
-            $proxyAuth .= '@';
-        }
-
-        $proxy = $this->getProxy();
-
-        if (0 === strpos($proxy, 'http://')) {
-            return str_replace('http://', 'tcp://'.$proxyAuth, $proxy);
-        } elseif (0 === strpos($proxy, 'https://')) {
-            if (!extension_loaded('openssl')) {
-                throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
-            }
-            return str_replace('https://', 'ssl://'.$proxyAuth, $proxy);
-        } else {
-            return 'tcp://'.$proxyAuth.$proxy;
-        }
-    }
-
     /**
      * Converts a request into an array for stream_context_create().
      *
@@ -57,5 +37,27 @@ abstract class AbstractStream extends AbstractClient
             $options['http']['request_fulluri'] = true;
         }
         return $options;
+    }
+
+    protected function getProxyOption()
+    {
+        if ($proxyAuth = $this->getProxyAuth()) {
+            $proxyAuth .= '@';
+        }
+
+        $proxy = $this->getProxy();
+
+        if (0 === strpos($proxy, 'http://')) {
+            return str_replace('http://', 'tcp://'.$proxyAuth, $proxy);
+        }
+
+        if (0 === strpos($proxy, 'https://')) {
+            if (!extension_loaded('openssl')) {
+                throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
+            }
+            return str_replace('https://', 'ssl://'.$proxyAuth, $proxy);
+        }
+
+        return 'tcp://'.$proxyAuth.$proxy;
     }
 }
