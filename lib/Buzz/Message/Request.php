@@ -86,14 +86,16 @@ class Request extends AbstractMessage implements RequestInterface
     /**
      * A convenience method for populating the current request from a URL.
      *
-     * @param string $url A URL
+     * @param Util\Url|string $url An URL
      */
     public function fromUrl($url)
     {
-        $info = new Util\Url($url);
+        if (!$url instanceof Util\Url) {
+            $url = new Util\Url($url);
+        }
 
-        $this->setResource($info->getResource());
-        $this->setHost($info->getHost());
+        $this->setResource($url->getResource());
+        $this->setHost($url->getHost());
     }
 
     /**
