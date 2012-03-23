@@ -15,7 +15,7 @@ abstract class AbstractStream extends AbstractClient
      */
     public function getStreamContextArray(Message\Request $request)
     {
-        return array(
+        $options = array(
             'http' => array(
                 // values from the request
                 'method'           => $request->getMethod(),
@@ -32,5 +32,32 @@ abstract class AbstractStream extends AbstractClient
                 'verify_peer'      => $this->getVerifyPeer(),
             ),
         );
+        if ($this->getProxyEnabled()) {
+            $options['http']['proxy'] = $this->getProxyOption();
+            $options['http']['request_fulluri'] = true;
+        }
+        return $options;
+    }
+
+    protected function getProxyOption()
+    {
+        if ($proxyAuth = $this->getProxyAuth()) {
+            $proxyAuth .= '@';
+        }
+
+        $proxy = $this->getProxy();
+
+        if (0 === strpos($proxy, 'http://')) {
+            return str_replace('http://', 'tcp://'.$proxyAuth, $proxy);
+        }
+
+        if (0 === strpos($proxy, 'https://')) {
+            if (!extension_loaded('openssl')) {
+                throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
+            }
+            return str_replace('https://', 'ssl://'.$proxyAuth, $proxy);
+        }
+
+        return 'tcp://'.$proxyAuth.$proxy;
     }
 }
