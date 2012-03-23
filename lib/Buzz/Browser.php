@@ -62,9 +62,8 @@ class Browser
      */
     public function call($url, $method, $headers = array(), $content = '')
     {
-        $request = $this->factory->createRequest();
+        $request = $this->factory->createRequest($method);
 
-        $request->setMethod($method);
         $request->fromUrl($url);
         $request->addHeaders($headers);
         $request->setContent($content);

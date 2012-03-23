@@ -32,10 +32,8 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 
         $this->factory->expects($this->once())
             ->method('createRequest')
+            ->with(strtoupper($method))
             ->will($this->returnValue($request));
-        $request->expects($this->once())
-            ->method('setMethod')
-            ->with(strtoupper($method));
         $request->expects($this->once())
             ->method('fromUrl')
             ->with('http://google.com/');
