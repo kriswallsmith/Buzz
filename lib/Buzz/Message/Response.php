@@ -87,6 +87,106 @@ class Response extends AbstractMessage
         }
     }
 
+    /**
+     * Is response invalid?
+     *
+     * @return Boolean
+     */
+    public function isInvalid()
+    {
+        return $this->getStatusCode() < 100 || $this->getStatusCode() >= 600;
+    }
+
+    /**
+     * Is response informative?
+     *
+     * @return Boolean
+     */
+    public function isInformational()
+    {
+        return $this->getStatusCode() >= 100 && $this->getStatusCode() < 200;
+    }
+
+    /**
+     * Is response successful?
+     *
+     * @return Boolean
+     */
+    public function isSuccessful()
+    {
+        return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
+    }
+
+    /**
+     * Is the response a redirect?
+     *
+     * @return Boolean
+     */
+    public function isRedirection()
+    {
+        return $this->getStatusCode() >= 300 && $this->getStatusCode() < 400;
+    }
+
+    /**
+     * Is there a client error?
+     *
+     * @return Boolean
+     */
+    public function isClientError()
+    {
+        return $this->getStatusCode() >= 400 && $this->getStatusCode() < 500;
+    }
+
+    /**
+     * Was there a server side error?
+     *
+     * @return Boolean
+     */
+    public function isServerError()
+    {
+        return $this->getStatusCode() >= 500 && $this->getStatusCode() < 600;
+    }
+
+    /**
+     * Is the response OK?
+     *
+     * @return Boolean
+     */
+    public function isOk()
+    {
+        return 200 === $this->getStatusCode();
+    }
+
+    /**
+     * Is the reponse forbidden?
+     *
+     * @return Boolean
+     */
+    public function isForbidden()
+    {
+        return 403 === $this->getStatusCode();
+    }
+
+    /**
+     * Is the response a not found error?
+     *
+     * @return Boolean
+     */
+    public function isNotFound()
+    {
+        return 404 === $this->getStatusCode();
+    }
+
+    /**
+     * Is the response empty?
+     *
+     * @return Boolean
+     */
+    public function isEmpty()
+    {
+        return in_array($this->getStatusCode(), array(201, 204, 304));
+    }
+
     // private
 
     private function parseStatusLine()
