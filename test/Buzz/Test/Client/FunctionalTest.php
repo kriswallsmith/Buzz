@@ -148,7 +148,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         // HEAD is intentionally omitted
         // http://stackoverflow.com/questions/2603104/does-mod-php-honor-head-requests-properly
 
-        $methods = array('GET', 'POST', 'PUT', 'DELETE');
+        $methods = array('GET', 'POST', 'PUT', 'DELETE', 'PATCH');
         $clients = $this->provideClient();
 
         $data = array();
