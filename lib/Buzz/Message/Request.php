@@ -2,6 +2,8 @@
 
 namespace Buzz\Message;
 
+use Buzz\Util;
+
 class Request extends AbstractMessage implements RequestInterface
 {
     const METHOD_OPTIONS = 'OPTIONS';
@@ -85,35 +87,13 @@ class Request extends AbstractMessage implements RequestInterface
      * A convenience method for populating the current request from a URL.
      *
      * @param string $url A URL
-     *
-     * @throws InvalidArgumentException If the URL is invalid
      */
     public function fromUrl($url)
     {
-        $info = parse_url($url);
+        $info = new Util\Url($url);
 
-        if (false === $info) {
-            throw new \InvalidArgumentException(sprintf('The URL "%s" is invalid.', $url));
-        }
-
-        // support scheme-less URLs
-        if (!isset($info['host']) && 0 !== strpos($info['path'], '/')) {
-            list($host, $path) = explode('/', $info['path'], 2);
-            $info['host'] = $host;
-            $info['path'] = '/'.$path;
-        }
-
-        $resource = isset($info['path']) ? $info['path'] : '/';
-        if (isset($info['query'])) {
-            $resource .= '?'.$info['query'];
-        }
-        $this->setResource($resource);
-
-        if (isset($info['host'])) {
-            $scheme = isset($info['scheme']) ? $info['scheme'] : 'http';
-            $port = isset($info['port']) ? ':'.$info['port'] : '';
-            $this->setHost($scheme.'://'.$info['host'].$port);
-        }
+        $this->setResource($info->getResource());
+        $this->setHost($info->getHost());
     }
 
     /**
