@@ -23,10 +23,16 @@ class Url
         }
 
         // support scheme-less URLs
-        if (!isset($components['host']) && 0 !== strpos($components['path'], '/')) {
-            list($host, $path) = explode('/', $components['path'], 2);
-            $components['host'] = $host;
-            $components['path'] = '/'.$path;
+        if (!isset($components['host']) && isset($components['path'])) {
+            $pos = strpos($components['path'], '/');
+            if (false === $pos) {
+                $components['host'] = $components['path'];
+                unset($components['path']);
+            } elseif (0 !== $pos) {
+                list($host, $path) = explode('/', $components['path'], 2);
+                $components['host'] = $host;
+                $components['path'] = '/'.$path;
+            }
         }
 
         $this->url = $url;
