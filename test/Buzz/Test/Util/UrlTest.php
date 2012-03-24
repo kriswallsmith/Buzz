@@ -33,4 +33,25 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
         new Url('http://localhost:123456');
     }
+
+    /**
+     * @dataProvider providePattern
+     */
+    public function testFormat($input, $pattern, $expected)
+    {
+        $url = new Url($input);
+        $this->assertEquals($expected, $url->format($pattern));
+    }
+
+    public function providePattern()
+    {
+        $full = 'http://foo:bar@example.com:123/asdf?tweedle=dee#dum';
+        $host = 'example.com';
+
+        return array(
+            array($full, 's://u:a@h:op?q#f', 'http://foo:bar@example.com:123/asdf?tweedle=dee#dum'),
+            array($full, 'HR', 'http://example.com:123/asdf?tweedle=dee'),
+            array($host, 'HR', 'http://example.com/'),
+        );
+    }
 }

@@ -39,11 +39,6 @@ class Url
         $this->components = $components;
     }
 
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
     public function getScheme()
     {
         return $this->parseUrl('scheme');
@@ -125,6 +120,45 @@ class Url
         }
 
         return $resource;
+    }
+
+    /**
+     * Returns a formatted URL.
+     */
+    public function format($pattern)
+    {
+        static $map = array(
+            's' => 'getScheme',
+            'u' => 'getUser',
+            'a' => 'getPassword',
+            'h' => 'getHostname',
+            'o' => 'getPort',
+            'p' => 'getPath',
+            'q' => 'getQueryString',
+            'f' => 'getFragment',
+            'H' => 'getHost',
+            'R' => 'getResource',
+        );
+
+        $url = '';
+
+        $parts = str_split($pattern);
+        while ($part = current($parts)) {
+            if (isset($map[$part])) {
+                $method = $map[$part];
+                $url .= $this->$method();
+            } elseif ('\\' == $part) {
+                $url .= next($parts);
+            } elseif (!ctype_alpha($part)) {
+                $url .= $part;
+            } else {
+                throw new \InvalidArgumentException(sprintf('The format character "%s" is invalid.', $part));
+            }
+
+            next($parts);
+        }
+
+        return $url;
     }
 
     private function parseUrl($component = null, $default = null)
