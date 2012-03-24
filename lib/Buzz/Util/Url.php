@@ -91,12 +91,19 @@ class Url
      */
     public function getHost()
     {
+        // default ports
+        static $map = array(
+            'http'  => 80,
+            'https' => 443,
+        );
+
         if ($hostname = $this->parseUrl('host')) {
-            $host  = $this->parseUrl('scheme', 'http');
+            $host  = $scheme = $this->parseUrl('scheme', 'http');
             $host .= '://';
             $host .= $hostname;
 
-            if ($port = $this->parseUrl('port')) {
+            $port = $this->parseUrl('port');
+            if ($port && (!isset($map[$scheme]) || $map[$scheme] != $port)) {
                 $host .= ':'.$port;
             }
 
