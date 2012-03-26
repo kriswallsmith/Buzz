@@ -62,7 +62,7 @@ abstract class AbstractStream extends AbstractClient
         // port it matched the scheme default.
         $proxy = $this->proxy->getHostname() . ':' . $this->proxy->getPort();
 
-        if ('htttps' === $this->proxy->getScheme()) {
+        if ('https' === $this->proxy->getScheme()) {
             if (!extension_loaded('openssl')) {
                 throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
             }
