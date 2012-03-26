@@ -33,11 +33,42 @@ abstract class AbstractStream extends AbstractClient
             ),
         );
 
-        if ($proxy = $this->getProxy()) {
-            $options['http']['proxy'] = $proxy->getUrl();
+        if ($proxyOption = $this->getProxyOption()) {
+            $options['http']['proxy'] = $proxyOption;
             $options['http']['request_fulluri'] = true;
         }
 
         return $options;
+    }
+
+    protected function getProxyOption()
+    {
+        if (!$this->getProxy()) {
+            return null;
+        }
+
+        if ($user = $this->getProxy()->getUser()) {
+            if ($password = $this->getProxy()->getPassword()) {
+                $proxyAuth = $user.':'.$password.'@';
+            } else {
+                $proxyAuth = $user.'@';
+            }
+        } else {
+            $proxyAuth = '';
+        }
+
+        // We actually need the port otherwise stream croaks. Had initially
+        // tried proxy->getHost() and it did not work since it removed the
+        // port it matched the scheme default.
+        $proxy = $this->proxy->getHostname() . ':' . $this->proxy->getPort();
+
+        if ('https' === $this->proxy->getScheme()) {
+            if (!extension_loaded('openssl')) {
+                throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
+            }
+            return 'ssl://'.$proxyAuth.$proxy;
+        }
+
+        return 'tcp://'.$proxyAuth.$proxy;
     }
 }

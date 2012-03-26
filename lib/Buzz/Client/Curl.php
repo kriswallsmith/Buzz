@@ -143,6 +143,7 @@ class Curl extends AbstractClient implements ClientInterface
 
         if ($proxy = $this->getProxy()) {
             curl_setopt($curl, CURLOPT_PROXY, $proxy->getHostname());
+            curl_setopt($curl, CURLOPT_PROXYPORT, $proxy->getPort());
             if ($user = $proxy->getUser()) {
                 curl_setopt($curl, CURLOPT_PROXYUSERPWD, $user.':'.$proxy->getPassword());
             } else {

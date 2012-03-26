@@ -29,6 +29,17 @@ class Url
             $components['path'] = '/'.$path;
         }
 
+        if (isset($components['scheme']) && !isset($components['port'])) {
+            switch($components['scheme']) {
+                case 'http':
+                    $components['port'] = 80;
+                    break;
+                case 'https':
+                    $components['port'] = 443;
+                    break;
+            }
+        }
+
         $this->url = $url;
         $this->components = $components;
     }
