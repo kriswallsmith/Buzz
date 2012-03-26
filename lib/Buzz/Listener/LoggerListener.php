@@ -29,6 +29,6 @@ class LoggerListener implements ListenerInterface
     {
         $seconds = microtime(true) - $this->startTime;
 
-        call_user_func($this->logger, sprintf('%sSent "%s %s" in %dms', $this->prefix, $request->getMethod(), $request->getUrl(), round($seconds * 1000)));
+        call_user_func($this->logger, sprintf('%sSent "%s %s%s" in %dms', $this->prefix, $request->getMethod(), $request->getHost(), $request->getResource(), round($seconds * 1000)));
     }
 }

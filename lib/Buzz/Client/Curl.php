@@ -22,7 +22,7 @@ class Curl extends AbstractClient implements ClientInterface
     {
         $options = array(
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
-            CURLOPT_URL           => $request->getUrl(),
+            CURLOPT_URL           => $request->getHost().$request->getResource(),
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
             CURLOPT_HTTPGET       => false,
             CURLOPT_NOBODY        => false,

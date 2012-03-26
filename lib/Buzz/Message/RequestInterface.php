@@ -38,13 +38,6 @@ interface RequestInterface extends MessageInterface
     function getHost();
 
     /**
-     * Returns the URL of the current request.
-     *
-     * @return string As full an URL as possible
-     */
-    function getUrl();
-
-    /**
      * Checks if the current request is secure.
      *
      * @return Boolean True if the request is secure
