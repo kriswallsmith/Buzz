@@ -142,10 +142,8 @@ class Curl extends AbstractClient implements ClientInterface
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verifyPeer);
 
         if ($proxy = $this->getProxy()) {
-            // We actually need the port otherwise curl croaks. Had initially
-            // tried proxy->getHost() and it did not work since it removed the
-            // port it matched the scheme default.
-            curl_setopt($curl, CURLOPT_PROXY, $proxy->getHost().':'.$proxy->getPort());
+            curl_setopt($curl, CURLOPT_PROXY, $proxy->getHostname());
+            curl_setopt($curl, CURLOPT_PROXYPORT, $proxy->getPort());
             if ($user = $proxy->getUser()) {
                 curl_setopt($curl, CURLOPT_PROXYUSERPWD, $user.':'.$proxy->getPassword());
             } else {
