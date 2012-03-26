@@ -2,8 +2,8 @@
 
 namespace Buzz\Test\Message;
 
-use Buzz\Message\FormRequest;
-use Buzz\Message\FormUpload;
+use Buzz\Message\Form\FormRequest;
+use Buzz\Message\Form\FormUpload;
 
 /**
  * FormRequestTest

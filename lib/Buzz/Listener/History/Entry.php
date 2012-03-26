@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\History;
+namespace Buzz\Listener\History;
 
 use Buzz\Message;
 
@@ -13,11 +13,11 @@ class Entry
     /**
      * Constructor.
      *
-     * @param Message\Request  $request  The request
-     * @param Message\Response $response The response
-     * @param integer          $duration The duration in seconds
+     * @param Message\RequestInterface $request  The request
+     * @param Message\MessageInterface $response The response
+     * @param integer                  $duration The duration in seconds
      */
-    public function __construct(Message\Request $request, Message\Response $response, $duration = null)
+    public function __construct(Message\RequestInterface $request, Message\MessageInterface $response, $duration = null)
     {
         $this->request = $request;
         $this->response = $response;

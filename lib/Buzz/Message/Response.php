@@ -71,20 +71,6 @@ class Response extends AbstractMessage
         $this->resetStatusLine();
     }
 
-    public function fromString($raw)
-    {
-        $lines = preg_split('/(\\r?\\n)/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
-        for ($i = 0, $count = count($lines); $i < $count; $i += 2) {
-            $line = $lines[$i];
-            if (empty($line)) {
-                $this->setContent(implode('', array_slice($lines, $i + 2)));
-                break;
-            }
-
-            $this->addHeader($line);
-        }
-    }
-
     /**
      * Is response invalid?
      *

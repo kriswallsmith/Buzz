@@ -2,7 +2,7 @@
 
 namespace Buzz\Test\Cookie;
 
-use Buzz\Cookie\Cookie;
+use Buzz\Util\Cookie;
 use Buzz\Message;
 
 class CookieTest extends \PHPUnit_Framework_TestCase

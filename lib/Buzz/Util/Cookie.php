@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Cookie;
+namespace Buzz\Util;
 
 use Buzz\Message;
 
@@ -30,7 +30,7 @@ class Cookie
      *
      * @return boolean
      */
-    public function matchesRequest(Message\Request $request)
+    public function matchesRequest(Message\RequestInterface $request)
     {
         // domain
         if (!$this->matchesDomain(parse_url($request->getHost(), PHP_URL_HOST))) {

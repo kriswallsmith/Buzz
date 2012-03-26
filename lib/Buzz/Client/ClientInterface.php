@@ -9,8 +9,8 @@ interface ClientInterface
     /**
      * Populates the supplied response with the response for the supplied request.
      *
-     * @param Message\Request  $request  A request object
-     * @param Message\Response $response A response object
+     * @param Message\RequestInterface $request  A request object
+     * @param Message\MessageInterface $response A response object
      */
-    function send(Message\Request $request, Message\Response $response);
+    function send(Message\RequestInterface $request, Message\MessageInterface $response);
 }

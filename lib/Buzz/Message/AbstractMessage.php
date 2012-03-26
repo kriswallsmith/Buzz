@@ -2,6 +2,8 @@
 
 namespace Buzz\Message;
 
+use Buzz\Message\Parser\Parser;
+
 abstract class AbstractMessage implements MessageInterface
 {
     private $headers = array();
@@ -119,6 +121,12 @@ abstract class AbstractMessage implements MessageInterface
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function fromString($raw)
+    {
+        $parser = new Parser();
+        $parser->parse($raw, $this);
     }
 
     public function __toString()
