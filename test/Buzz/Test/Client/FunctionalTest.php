@@ -4,9 +4,10 @@ namespace Buzz\Test\Client;
 
 use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
-use Buzz\Message\FormRequest;
-use Buzz\Message\FormUpload;
+use Buzz\Message\Form\FormRequest;
+use Buzz\Message\Form\FormUpload;
 use Buzz\Message\Request;
+use Buzz\Message\RequestInterface;
 use Buzz\Message\Response;
 
 class FunctionalTest extends \PHPUnit_Framework_TestCase
@@ -107,7 +108,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
      */
     public function testJsonPayload($client)
     {
-        $request = new Request(Request::METHOD_POST);
+        $request = new Request(RequestInterface::METHOD_POST);
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->addHeader('Content-Type: application/json');
         $request->setContent(json_encode(array('foo' => 'bar')));
@@ -126,7 +127,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     public function testConsecutiveRequests($client)
     {
         // request 1
-        $request = new Request(Request::METHOD_PUT);
+        $request = new Request(RequestInterface::METHOD_PUT);
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->addHeader('Content-Type: application/json');
         $request->setContent(json_encode(array('foo' => 'bar')));
@@ -140,7 +141,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"foo":"bar"}', $data['INPUT']);
 
         // request 2
-        $request = new Request(Request::METHOD_GET);
+        $request = new Request(RequestInterface::METHOD_GET);
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $response = new Response();
         $client->send($request, $response);

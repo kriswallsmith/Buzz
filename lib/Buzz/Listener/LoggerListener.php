@@ -20,12 +20,12 @@ class LoggerListener implements ListenerInterface
         $this->prefix = $prefix;
     }
 
-    public function preSend(Message\Request $request)
+    public function preSend(Message\RequestInterface $request)
     {
         $this->startTime = microtime(true);
     }
 
-    public function postSend(Message\Request $request, Message\Response $response)
+    public function postSend(Message\RequestInterface $request, Message\MessageInterface $response)
     {
         $seconds = microtime(true) - $this->startTime;
 

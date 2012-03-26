@@ -2,21 +2,21 @@
 
 namespace Buzz\Client;
 
-use Buzz\Cookie;
+use Buzz\Util;
 use Buzz\Message;
 
 class FileGetContents extends AbstractStream implements ClientInterface
 {
     protected $cookieJar;
 
-    public function __construct(Cookie\Jar $cookieJar = null)
+    public function __construct(Cookie\CookieJar $cookieJar = null)
     {
         if ($cookieJar) {
             $this->setCookieJar($cookieJar);
         }
     }
 
-    public function setCookieJar(Cookie\Jar $cookieJar)
+    public function setCookieJar(Cookie\CookieJar $cookieJar)
     {
         $this->cookieJar = $cookieJar;
     }
@@ -31,7 +31,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
      *
      * @throws RuntimeException If file_get_contents() fires an error
      */
-    public function send(Message\Request $request, Message\Response $response)
+    public function send(Message\RequestInterface $request, Message\MessageInterface $response)
     {
         if ($cookieJar = $this->getCookieJar()) {
             $cookieJar->clearExpiredCookies();

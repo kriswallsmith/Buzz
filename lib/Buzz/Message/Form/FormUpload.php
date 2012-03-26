@@ -1,8 +1,10 @@
 <?php
 
-namespace Buzz\Message;
+namespace Buzz\Message\Form;
 
-class FormUpload extends AbstractMessage
+use Buzz\Message\AbstractMessage;
+
+class FormUpload extends AbstractMessage implements FormUploadInterface
 {
     private $name;
     private $filename;

@@ -1,6 +1,8 @@
 <?php
 
-namespace Buzz\Message;
+namespace Buzz\Message\Form;
+
+use Buzz\Message\Request;
 
 /**
  * FormRequest.
@@ -12,7 +14,7 @@ namespace Buzz\Message;
  * @author Marc Weistroff <marc.weistroff@sensio.com>
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  */
-class FormRequest extends Request
+class FormRequest extends Request implements FormRequestInterface
 {
     private $fields = array();
     private $boundary;
@@ -116,7 +118,7 @@ class FormRequest extends Request
 
         foreach ($this->fields as $name => $values) {
             $content .= '--'.$this->getBoundary()."\r\n";
-            if ($values instanceof FormUpload) {
+            if ($values instanceof FormUploadInterface) {
                 if (!$values->getFilename()) {
                     throw new \LogicException(sprintf('Form upload at "%s" does not include a filename.', $name));
                 }
@@ -164,7 +166,7 @@ class FormRequest extends Request
     private function isMultipart()
     {
         foreach ($this->fields as $name => $value) {
-            if (is_object($value) && $value instanceof FormUpload) {
+            if (is_object($value) && $value instanceof FormUploadInterface) {
                 return true;
             }
         }

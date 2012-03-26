@@ -3,6 +3,7 @@
 namespace Buzz\Client;
 
 use Buzz\Message;
+use Buzz\Message\Form;
 
 class Curl extends AbstractClient implements ClientInterface
 {
@@ -18,7 +19,7 @@ class Curl extends AbstractClient implements ClientInterface
         return $curl;
     }
 
-    static protected function setCurlOptsFromRequest($curl, Message\Request $request)
+    static protected function setCurlOptsFromRequest($curl, Message\RequestInterface $request)
     {
         $options = array(
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
@@ -27,18 +28,18 @@ class Curl extends AbstractClient implements ClientInterface
         );
 
         switch ($request->getMethod()) {
-            case Message\Request::METHOD_HEAD:
+            case Message\RequestInterface::METHOD_HEAD:
                 $options[CURLOPT_NOBODY] = true;
                 break;
 
-            case Message\Request::METHOD_GET:
+            case Message\RequestInterface::METHOD_GET:
                 $options[CURLOPT_HTTPGET] = true;
                 break;
 
-            case Message\Request::METHOD_POST:
-            case Message\Request::METHOD_PUT:
-            case Message\Request::METHOD_DELETE:
-            case Message\Request::METHOD_PATCH:
+            case Message\RequestInterface::METHOD_POST:
+            case Message\RequestInterface::METHOD_PUT:
+            case Message\RequestInterface::METHOD_DELETE:
+            case Message\RequestInterface::METHOD_PATCH:
                 $options[CURLOPT_POSTFIELDS] = $fields = self::getPostFields($request);
 
                 // remove the content-type header
@@ -73,9 +74,9 @@ class Curl extends AbstractClient implements ClientInterface
      *
      * @return string|array A post fields value
      */
-    static private function getPostFields(Message\Request $request)
+    static private function getPostFields(Message\RequestInterface $request)
     {
-        if (!$request instanceof Message\FormRequest) {
+        if (!$request instanceof Form\FormRequestInterface) {
             return $request->getContent();
         }
 
@@ -83,7 +84,7 @@ class Curl extends AbstractClient implements ClientInterface
         $multipart = false;
 
         foreach ($fields as $name => $value) {
-            if ($value instanceof Message\FormUpload) {
+            if ($value instanceof Form\FormUploadInterface) {
                 $multipart = true;
 
                 if ($file = $value->getFile()) {
@@ -119,7 +120,7 @@ class Curl extends AbstractClient implements ClientInterface
         }
     }
 
-    public function send(Message\Request $request, Message\Response $response)
+    public function send(Message\RequestInterface $request, Message\MessageInterface $response)
     {
         $curl = static::createCurlHandle();
 
@@ -141,7 +142,7 @@ class Curl extends AbstractClient implements ClientInterface
         curl_close($curl);
     }
 
-    protected function prepare(Message\Request $request, Message\Response $response, $curl)
+    protected function prepare(Message\RequestInterface $request, Message\MessageInterface $response, $curl)
     {
         static::setCurlOptsFromRequest($curl, $request);
 
