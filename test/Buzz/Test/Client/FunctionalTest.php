@@ -137,10 +137,16 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function provideClient()
     {
-        return array(
+        $return = array(
             array(new Curl()),
-            array(new FileGetContents()),
+            array(new FileGetContents())
         );
+
+        if (class_exists('Samson\Protocol\Protocol\HTTP', true)) {
+            $return[] = array(new \Buzz\Client\Protocol());
+        }
+
+        return $return;
     }
 
     public function provideClientAndMethod()
