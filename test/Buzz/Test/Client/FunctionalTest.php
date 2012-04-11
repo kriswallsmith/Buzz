@@ -142,7 +142,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
             array(new FileGetContents())
         );
 
-        if (class_exists('Samson\Protocol\Protocol\HTTP', true)) {
+        if (class_exists('Samson\Protocol\Protocol\HTTP')) {
             $return[] = array(new \Buzz\Client\Protocol());
         }
 

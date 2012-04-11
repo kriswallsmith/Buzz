@@ -17,7 +17,7 @@
     },
     "suggest": {
         "ext-curl": "*",
-        "samson/protocol": "dev-master"
+        "samson/protocol": "*"
     },
     "autoload": {
         "psr-0": {
