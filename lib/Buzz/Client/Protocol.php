@@ -11,6 +11,7 @@ class Protocol extends AbstractClient implements ClientInterface
     public function __construct()
     {
         $this->http = new HTTP();
+        $this->http->setTimeout($this->getTimeout());
     }
 
     public function send(Message\Request $request, Message\Response $response)
