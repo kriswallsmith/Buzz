@@ -49,7 +49,23 @@ class FileGetContents extends AbstractStream implements ClientInterface
             throw new \RuntimeException($error['message']);
         }
 
-        $response->setHeaders((array) $http_response_header);
+        $http_response_header = (array)$http_response_header;
+        end($http_response_header);
+
+        while(true) {
+            if (strpos(current($http_response_header), 'HTTP/') === 0) {
+                break;
+            } else {
+                if (false === prev($http_response_header)) {
+                    throw new \RuntimeException('No reason phrase found!');
+                }
+            }
+        }
+        $response->setHeaders(array_slice($http_response_header, key($http_response_header)));
+
+        if ($response->getStatusCode() == 302) {
+            throw new \RuntimeException('Maximum ('.$this->maxRedirects.') redirects followed');
+        }
         $response->setContent($content);
 
         if ($cookieJar) {
