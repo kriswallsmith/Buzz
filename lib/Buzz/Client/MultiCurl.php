@@ -13,7 +13,7 @@ class MultiCurl extends Curl implements BatchClientInterface
         $this->curl = curl_multi_init();
     }
 
-    public function send(Message\Request $request, Message\Response $response, $curl = null)
+    public function send(Message\RequestInterface $request, Message\MessageInterface $response, $curl = null)
     {
         $this->queue[] = array($request, $response, $curl);
     }
@@ -44,9 +44,10 @@ class MultiCurl extends Curl implements BatchClientInterface
             }
         }
 
+        $parser = $this->getMessageParser();
         foreach ($this->queue as $queue) {
             list($request, $response, $curl) = $queue;
-            $response->fromString(static::getLastResponse(curl_multi_getcontent($curl)));
+            $parser->parse(static::getLastResponse(curl_multi_getcontent($curl)), $response);
             curl_multi_remove_handle($this->curl, $curl);
         }
 

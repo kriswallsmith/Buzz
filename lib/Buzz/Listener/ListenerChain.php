@@ -23,14 +23,14 @@ class ListenerChain implements ListenerInterface
         return $this->listeners;
     }
 
-    public function preSend(Message\Request $request)
+    public function preSend(Message\RequestInterface $request)
     {
         foreach ($this->listeners as $listener) {
             $listener->preSend($request);
         }
     }
 
-    public function postSend(Message\Request $request, Message\Response $response)
+    public function postSend(Message\RequestInterface $request, Message\MessageInterface $response)
     {
         foreach ($this->listeners as $listener) {
             $listener->postSend($request, $response);

@@ -12,7 +12,7 @@ class HistoryListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->journal = $this->getMockBuilder('Buzz\\History\\Journal')
+        $this->journal = $this->getMockBuilder('Buzz\Listener\History\Journal')
             ->disableOriginalConstructor()
             ->getMock();
 

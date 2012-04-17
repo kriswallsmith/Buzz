@@ -2,11 +2,11 @@
 
 namespace Buzz\Test\Cookie;
 
-use Buzz\Cookie\Cookie;
-use Buzz\Cookie\Jar;
+use Buzz\Util\Cookie;
+use Buzz\Util\CookieJar;
 use Buzz\Message;
 
-class JarTest extends \PHPUnit_Framework_TestCase
+class CookieJarTest extends \PHPUnit_Framework_TestCase
 {
     public function testProcessSetCookieHeadersSetsCookies()
     {
@@ -17,7 +17,7 @@ class JarTest extends \PHPUnit_Framework_TestCase
         $response->addHeader('Set-Cookie: SESSION2=qwerty');
         $response->addHeader('Set-Cookie: SESSION1=asdf');
 
-        $jar = new Jar();
+        $jar = new CookieJar();
         $jar->processSetCookieHeaders($request, $response);
 
         $cookies = $jar->getCookies();
@@ -39,7 +39,7 @@ class JarTest extends \PHPUnit_Framework_TestCase
         $cookie->setValue('asdf');
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, '.example.com');
 
-        $jar = new Jar();
+        $jar = new CookieJar();
         $jar->setCookies(array($cookie));
         $jar->addCookieHeaders($request);
 
@@ -53,7 +53,7 @@ class JarTest extends \PHPUnit_Framework_TestCase
         $cookie->setValue('asdf');
         $cookie->setAttribute(Cookie::ATTR_EXPIRES, 'Fri, 01-Dec-1999 00:00:00 GMT');
 
-        $jar = new Jar();
+        $jar = new CookieJar();
         $jar->addCookie($cookie);
         $jar->clearExpiredCookies();
 
@@ -64,7 +64,7 @@ class JarTest extends \PHPUnit_Framework_TestCase
         $cookie->setValue('asdf');
         $cookie->setAttribute(Cookie::ATTR_MAX_AGE, '-60');
 
-        $jar = new Jar();
+        $jar = new CookieJar();
         $jar->addCookie($cookie);
         $jar->clearExpiredCookies();
 

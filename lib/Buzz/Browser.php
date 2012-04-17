@@ -5,6 +5,8 @@ namespace Buzz;
 use Buzz\Client;
 use Buzz\Listener;
 use Buzz\Message;
+use Buzz\Message\Factory;
+use Buzz\Util;
 
 class Browser
 {
@@ -14,40 +16,40 @@ class Browser
     private $lastRequest;
     private $lastResponse;
 
-    public function __construct(Client\ClientInterface $client = null, Message\FactoryInterface $factory = null)
+    public function __construct(Client\ClientInterface $client = null, Factory\FactoryInterface $factory = null)
     {
         $this->client = $client ?: new Client\FileGetContents();
-        $this->factory = $factory ?: new Message\Factory();
+        $this->factory = $factory ?: new Factory\Factory();
     }
 
     public function get($url, $headers = array())
     {
-        return $this->call($url, Message\Request::METHOD_GET, $headers);
+        return $this->call($url, Message\RequestInterface::METHOD_GET, $headers);
     }
 
     public function post($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\Request::METHOD_POST, $headers, $content);
+        return $this->call($url, Message\RequestInterface::METHOD_POST, $headers, $content);
     }
 
     public function head($url, $headers = array())
     {
-        return $this->call($url, Message\Request::METHOD_HEAD, $headers);
+        return $this->call($url, Message\RequestInterface::METHOD_HEAD, $headers);
     }
 
     public function patch($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\Request::METHOD_PATCH, $headers, $content);
+        return $this->call($url, Message\RequestInterface::METHOD_PATCH, $headers, $content);
     }
 
     public function put($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\Request::METHOD_PUT, $headers, $content);
+        return $this->call($url, Message\RequestInterface::METHOD_PUT, $headers, $content);
     }
 
     public function delete($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\Request::METHOD_DELETE, $headers, $content);
+        return $this->call($url, Message\RequestInterface::METHOD_DELETE, $headers, $content);
     }
 
     /**
@@ -64,8 +66,16 @@ class Browser
     {
         $request = $this->factory->createRequest($method);
 
-        $request->fromUrl($url);
-        $request->addHeaders($headers);
+        if (!$url instanceof Util\Url) {
+            $url = new Util\Url($url);
+        }
+
+        $url->applyToRequest($request);
+
+        foreach ($headers as $header) {
+            $request->addHeader($header);
+        }
+
         $request->setContent($content);
 
         return $this->send($request);
@@ -81,13 +91,21 @@ class Browser
      *
      * @return Message\Response The response object
      */
-    public function submit($url, array $fields, $method = Message\Request::METHOD_POST, $headers = array())
+    public function submit($url, array $fields, $method = Message\RequestInterface::METHOD_POST, $headers = array())
     {
         $request = $this->factory->createFormRequest();
 
+        if (!$url instanceof Util\Url) {
+            $url = new Util\Url($url);
+        }
+
+        $url->applyToRequest($request);
+
+        foreach ($headers as $header) {
+            $request->addHeader($header);
+        }
+
         $request->setMethod($method);
-        $request->fromUrl($url);
-        $request->addHeaders($headers);
         $request->setFields($fields);
 
         return $this->send($request);
@@ -96,12 +114,12 @@ class Browser
     /**
      * Sends a request.
      *
-     * @param Message\Request  $request  A request object
-     * @param Message\Response $response A response object
+     * @param Message\RequestInterface $request  A request object
+     * @param Message\MessageInterface $response A response object
      *
-     * @return Message\Response A response object
+     * @return Message\MessageInterface The response
      */
-    public function send(Message\Request $request, Message\Response $response = null)
+    public function send(Message\RequestInterface $request, Message\MessageInterface $response = null)
     {
         if (null === $response) {
             $response = $this->factory->createResponse();
@@ -143,7 +161,7 @@ class Browser
         return $this->client;
     }
 
-    public function setMessageFactory(Message\FactoryInterface $factory)
+    public function setMessageFactory(Factory\FactoryInterface $factory)
     {
         $this->factory = $factory;
     }

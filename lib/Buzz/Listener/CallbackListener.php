@@ -35,12 +35,12 @@ class CallbackListener implements ListenerInterface
         $this->callable = $callable;
     }
 
-    public function preSend(Message\Request $request)
+    public function preSend(Message\RequestInterface $request)
     {
         call_user_func($this->callable, $request);
     }
 
-    public function postSend(Message\Request $request, Message\Response $response)
+    public function postSend(Message\RequestInterface $request, Message\MessageInterface $response)
     {
         call_user_func($this->callable, $request, $response);
     }

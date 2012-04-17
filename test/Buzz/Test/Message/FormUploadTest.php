@@ -2,7 +2,7 @@
 
 namespace Buzz\Test\Message;
 
-use Buzz\Message\FormUpload;
+use Buzz\Message\Form\FormUpload;
 
 class FormUploadTest extends \PHPUnit_Framework_TestCase
 {

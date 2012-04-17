@@ -2,7 +2,7 @@
 
 namespace Buzz\Listener;
 
-use Buzz\History;
+use Buzz\Listener\History;
 use Buzz\Message;
 
 class HistoryListener implements ListenerInterface
@@ -20,12 +20,12 @@ class HistoryListener implements ListenerInterface
         return $this->journal;
     }
 
-    public function preSend(Message\Request $request)
+    public function preSend(Message\RequestInterface $request)
     {
         $this->startTime = microtime(true);
     }
 
-    public function postSend(Message\Request $request, Message\Response $response)
+    public function postSend(Message\RequestInterface $request, Message\MessageInterface $response)
     {
         $this->journal->record($request, $response, microtime(true) - $this->startTime);
     }
