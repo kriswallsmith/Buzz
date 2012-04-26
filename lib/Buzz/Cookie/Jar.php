@@ -28,7 +28,9 @@ class Jar
      */
     public function addCookie(Cookie $cookie)
     {
-        $this->cookies[] = $cookie;
+        $cookies = $this->getCookies();
+        $cookies[] = $cookie;
+        $this->setCookies($cookies);
     }
 
     /**
@@ -38,7 +40,7 @@ class Jar
      */
     public function addCookieHeaders(Message\Request $request)
     {
-        foreach ($this->cookies as $cookie) {
+        foreach ($this->getCookies() as $cookie) {
             if ($cookie->matchesRequest($request)) {
                 $request->addHeader($cookie->toCookieHeader());
             }
@@ -66,13 +68,14 @@ class Jar
      */
     public function clearExpiredCookies()
     {
-      foreach ($this->cookies as $i => $cookie) {
-          if ($cookie->isExpired()) {
-              unset($this->cookies[$i]);
-          }
-      }
+        $cookies = $this->getCookies();
+        foreach ($cookies as $i => $cookie) {
+            if ($cookie->isExpired()) {
+                unset($cookies[$i]);
+            }
+        }
 
-      // reset array keys
-      $this->cookies = array_values($this->cookies);
+        // reset array keys
+        $this->setCookies(array_values($cookies));
     }
 }
