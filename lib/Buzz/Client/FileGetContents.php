@@ -63,7 +63,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
         }
         $response->setHeaders(array_slice($http_response_header, key($http_response_header)));
 
-        if ($response->getStatusCode() == 302) {
+        if ($response->isRedirection()) {
             throw new \RuntimeException('Maximum ('.$this->maxRedirects.') redirects followed');
         }
         $response->setContent($content);
