@@ -9,7 +9,7 @@ class CurlTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideResponses
      */
-    public function testGetLastResponse($raw, $expected)
+    public function testGetLastResponse($headers, $content, $eol, $expected)
     {
         $curl = new Curl();
 
@@ -17,51 +17,50 @@ class CurlTest extends \PHPUnit_Framework_TestCase
         $m = $r->getMethod('getLastResponse');
         $m->setAccessible(true);
 
-        $this->assertEquals($expected, $m->invoke($curl, $raw));
+        $this->assertEquals($expected, $m->invoke($curl, $headers.str_repeat($eol, 2).$content, strlen($headers.str_repeat($eol, 2))));
     }
 
     public function provideResponses()
     {
-        $redirected = <<<EOD
-HTTP/1.0 302 Moved Temporarily
+        $redirectedHeader = "HTTP/1.0 302 Moved Temporarily
 Location: http://feeds.feedburner.com/KrisWallsmith
 
 Blah blah.
 
 HTTP/1.0 200 OK
-Content-Type: text/xml; charset=UTF-8
+Content-Type: text/xml; charset=UTF-8";
 
-<?xml version="1.0" encoding="UTF-8"?>
+        $redirectedBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <foo>
 
   <bar />
 
-</foo>
+</foo>";
 
-EOD;
+        $normalHeader = "HTTP/1.0 200 OK
+Content-Type: text/xml; charset=UTF-8";
 
-        $normal = <<<EOD
-HTTP/1.0 200 OK
-Content-Type: text/xml; charset=UTF-8
-
-<?xml version="1.0" encoding="UTF-8"?>
+        $normalBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <foo>
 
   <bar />
 
-</foo>
+</foo>";
 
-EOD;
+        $eol = "
+";
 
-        $eol = <<<EOD
+        $fakeBody = "HTTP/1.0 500 Fake error
+Content-Type: text/xml; charset=UTF-8
 
-EOD;
+Fake content";
 
         return array(
-            array($normal, $normal),
-            array($redirected, $normal),
-            array(str_replace($eol, "\n", $redirected), str_replace($eol, "\n", $normal)),
-            array(str_replace($eol, "\r\n", $redirected), str_replace($eol, "\r\n", $normal)),
+            array($normalHeader, $normalBody, $eol, array(explode($eol, $normalHeader), $normalBody)),
+            array($redirectedHeader, $redirectedBody, $eol, array(explode($eol, $normalHeader), $normalBody)),
+            array(str_replace($eol, "\n", $redirectedHeader), $redirectedBody, "\n", array(explode($eol, $normalHeader), $normalBody)),
+            array(str_replace($eol, "\r\n", $redirectedHeader), $redirectedBody, "\r\n", array(explode($eol, $normalHeader), $normalBody)),
+            array($normalHeader, $fakeBody, $eol, array(explode($eol, $normalHeader), $fakeBody)),
         );
     }
 }

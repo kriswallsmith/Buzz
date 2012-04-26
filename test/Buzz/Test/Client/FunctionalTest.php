@@ -135,6 +135,20 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('math' => '1+1=2'), $fields);
     }
 
+    /**
+     * @dataProvider provideClient
+     */
+    public function testClientHandlesContentWithFakeHeadersWell($client)
+    {
+        $request = new FormRequest();
+        $request->fromUrl($_SERVER['TEST_SERVER'].'?emulate=header');
+        $response = new Response();
+        $client->send($request, $response);
+
+        $this->assertEquals("HTTP/1.1 500 Fake error\r\nContent-length: 7\r\n\r\nContent", $response->getContent());
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
     public function provideClient()
     {
         return array(
