@@ -18,6 +18,10 @@ class Protocol extends AbstractClient implements ClientInterface
     {
         $this->http->setTimeout($this->getTimeout());
         $this->http->setMaxRedirects($this->getMaxRedirects());
-        $response->fromString($this->http->request($request->getUrl(), $request->getMethod(), $request->getHeaders(), $request->getContent()));
+
+        $raw = $this->http->request($request->getUrl(), $request->getMethod(), $request->getHeader
+        list($headersRaw, $content) = explode("\r\n\r\n", $raw, 2);
+        $response->setContent($content);
+        $response->setHeaders(explode("\r\n", $headersRaw));
     }
 }
