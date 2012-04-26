@@ -35,6 +35,7 @@ class Curl extends AbstractClient implements ClientInterface
                 break;
 
             case Message\Request::METHOD_GET:
+                $options[CURLOPT_POST] = false;
                 $options[CURLOPT_HTTPGET] = true;
                 break;
 
