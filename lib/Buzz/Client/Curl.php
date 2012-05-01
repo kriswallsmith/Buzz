@@ -57,16 +57,20 @@ class Curl extends AbstractClient implements ClientInterface
         curl_setopt_array($curl, $options);
     }
 
-    static protected function getLastResponse($raw)
+    static protected function getLastResponse($raw, $headerSize)
     {
-        $parts = preg_split('/((?:\\r?\\n){2})/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
-        for ($i = count($parts) - 3; $i >= 0; $i -= 2) {
-            if (0 === stripos($parts[$i], 'http')) {
-                return implode('', array_slice($parts, $i));
-            }
-        }
+        $headers = trim(substr($raw, 0, $headerSize));
+        $eol = substr($raw, strlen($headers), $headerSize - strlen($headers));
+        $body = substr($raw, $headerSize);
 
-        return $raw;
+        $parts = explode($eol,  $headers);
+
+        $lastHeader = end($parts);
+
+        if (0 === stripos($lastHeader, 'http')) {
+            return array(explode(substr($eol, 0, strlen($eol) / 2), $lastHeader), $body);
+        }
+        return array(array(), $raw);
     }
 
     /**
@@ -129,7 +133,9 @@ class Curl extends AbstractClient implements ClientInterface
             throw new \RuntimeException($errorMsg, $errorNo);
         }
 
-        $response->fromString(static::getLastResponse($data));
+        list($headers, $content) = static::getLastResponse($data, curl_getinfo($this->curl, CURLINFO_HEADER_SIZE));
+        $response->setHeaders($headers);
+        $response->setContent($content);
     }
 
     protected function prepare(Message\Request $request, Message\Response $response, $curl)

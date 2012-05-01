@@ -50,27 +50,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Internal Server Error', $response->getReasonPhrase());
     }
 
-    public function testFromString()
-    {
-        $content = <<<EOF
-This is the body.
-
-More body!
-
-EOF;
-        $response = new Response();
-        $response->fromString(<<<EOF
-HTTP/1.0 200 OK
-Content-Type: text/plain
-
-$content
-EOF
-        );
-
-        $this->assertEquals(2, count($response->getHeaders()));
-        $this->assertEquals($content, $response->getContent());
-    }
-
     public function testAddHeadersResetsStatusLine()
     {
         $response = new Response();
