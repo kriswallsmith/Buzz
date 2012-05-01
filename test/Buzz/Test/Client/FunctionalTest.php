@@ -136,6 +136,22 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('math' => '1+1=2'), $fields);
     }
 
+    /**
+     * @dataProvider provideClient
+     */
+    public function testGetShouldntSendContentType($client)
+    {
+        $request = new Request('GET');
+        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $response = new Response();
+        $client->send($request, $response);
+
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertNotEquals('application/x-www-form-urlencoded', $data['SERVER']['CONTENT_TYPE']);
+        $this->assertEmpty($data['SERVER']['CONTENT_TYPE']);
+    }
+
     public function provideClient()
     {
         return array(
