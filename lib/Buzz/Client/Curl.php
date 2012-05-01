@@ -26,7 +26,6 @@ class Curl extends AbstractClient implements ClientInterface
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
             CURLOPT_HTTPGET       => false,
             CURLOPT_NOBODY        => false,
-            CURLOPT_POSTFIELDS    => null,
         );
 
         switch ($request->getMethod()) {
@@ -115,9 +114,7 @@ class Curl extends AbstractClient implements ClientInterface
 
     public function send(Message\Request $request, Message\Response $response)
     {
-        if (false === is_resource($this->curl)) {
-            $this->curl = static::createCurlHandle();
-        }
+        $this->curl = static::createCurlHandle();
 
         $this->prepare($request, $response, $this->curl);
 
