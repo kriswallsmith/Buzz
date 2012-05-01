@@ -16,7 +16,8 @@
         "php": ">=5.3.0"
     },
     "suggest": {
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "samson/protocol": "*"
     },
     "autoload": {
         "psr-0": {

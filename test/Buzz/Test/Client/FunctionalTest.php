@@ -122,6 +122,34 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideClient
      */
+    public function testRedirection($client)
+    {
+        $request = new Request(Request::METHOD_GET);
+        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect=3');
+
+        $response = new Response();
+        $client->send($request, $response);
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertEquals('0', $data['GET']['redirect']);
+    }
+
+    /**
+     * @dataProvider provideClient
+     * @expectedException RuntimeException
+     */
+    public function testTooMuchRedirection($client)
+    {
+        $request = new Request(Request::METHOD_GET);
+        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect=8');
+
+        $response = new Response();
+        $client->send($request, $response);
+    }
+
+    /**
+     * @dataProvider provideClient
+     */
     public function testPlus($client)
     {
         $request = new FormRequest();
@@ -138,10 +166,16 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function provideClient()
     {
-        return array(
+        $return = array(
             array(new Curl()),
-            array(new FileGetContents()),
+            array(new FileGetContents())
         );
+
+        if (class_exists('Samson\Protocol\Protocol\HTTP')) {
+            $return[] = array(new \Buzz\Client\Protocol());
+        }
+
+        return $return;
     }
 
     public function provideClientAndMethod()
