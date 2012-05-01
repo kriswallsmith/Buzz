@@ -26,6 +26,7 @@ class Curl extends AbstractClient implements ClientInterface
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
             CURLOPT_HTTPGET       => false,
             CURLOPT_NOBODY        => false,
+            CURLOPT_POST          => false,
             CURLOPT_POSTFIELDS    => null,
         );
 
@@ -39,6 +40,8 @@ class Curl extends AbstractClient implements ClientInterface
                 break;
 
             case Message\Request::METHOD_POST:
+                $options[CURLOPT_POST] = true;
+                
             case Message\Request::METHOD_PUT:
             case Message\Request::METHOD_DELETE:
             case Message\Request::METHOD_PATCH:
