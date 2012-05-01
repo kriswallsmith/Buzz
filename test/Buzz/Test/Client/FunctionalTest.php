@@ -25,6 +25,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request($method);
         $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->setContent('test');
         $response = new Response();
         $client->send($request, $response);
 
