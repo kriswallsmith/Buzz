@@ -36,6 +36,21 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideClient
      */
+    public function testGetContentType($client)
+    {
+        $request = new Request();
+        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $response = new Response();
+        $client->send($request, $response);
+
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertArrayNotHasKey('CONTENT_TYPE', $data['SERVER']);
+    }
+
+    /**
+     * @dataProvider provideClient
+     */
     public function testFormPost($client)
     {
         $request = new FormRequest();
