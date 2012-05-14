@@ -6,6 +6,7 @@ use Buzz\Message;
 
 class MultiCurl extends Curl implements BatchClientInterface
 {
+    protected $curl;
     protected $queue = array();
 
     public function __construct()
