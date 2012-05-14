@@ -6,7 +6,7 @@ use Buzz\Message;
 
 class Curl extends AbstractClient implements ClientInterface
 {
-    protected $curl;
+    protected $options = array();
 
     static protected function createCurlHandle()
     {
@@ -24,9 +24,6 @@ class Curl extends AbstractClient implements ClientInterface
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
             CURLOPT_URL           => $request->getHost().$request->getResource(),
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
-            CURLOPT_HTTPGET       => false,
-            CURLOPT_NOBODY        => false,
-            CURLOPT_POSTFIELDS    => null,
         );
 
         switch ($request->getMethod()) {
@@ -46,11 +43,11 @@ class Curl extends AbstractClient implements ClientInterface
 
                 // remove the content-type header
                 if (is_array($fields)) {
-                    $options[CURLOPT_HTTPHEADER] = array_filter($options[CURLOPT_HTTPHEADER], function($header)
-                    {
+                    $options[CURLOPT_HTTPHEADER] = array_filter($options[CURLOPT_HTTPHEADER], function($header) {
                         return 0 !== stripos($header, 'Content-Type: ');
                     });
                 }
+
                 break;
         }
 
@@ -103,50 +100,54 @@ class Curl extends AbstractClient implements ClientInterface
         return $multipart ? $fields : http_build_query($fields);
     }
 
-    public function __construct()
+    /**
+     * Stashes a cURL option to be set on send, when the resource is created.
+     *
+     * If the supplied value it set to null the option will be removed.
+     *
+     * @param integer $option The option
+     * @param mixed   $value  The value
+     */
+    public function setOption($option, $value)
     {
-        $this->curl = static::createCurlHandle();
-    }
-
-    public function getCurl()
-    {
-        return $this->curl;
+        if (null === $value) {
+            unset($this->options[$option]);
+        } else {
+            $this->options[$option] = $value;
+        }
     }
 
     public function send(Message\Request $request, Message\Response $response)
     {
-        if (false === is_resource($this->curl)) {
-            $this->curl = static::createCurlHandle();
-        }
+        $curl = static::createCurlHandle();
 
-        $this->prepare($request, $response, $this->curl);
+        $this->prepare($request, $response, $curl);
 
-        $data = curl_exec($this->curl);
+        $data = curl_exec($curl);
+
         if (false === $data) {
-            $errorMsg = curl_error($this->curl);
-            $errorNo  = curl_errno($this->curl);
+            $errorMsg = curl_error($curl);
+            $errorNo  = curl_errno($curl);
 
             throw new \RuntimeException($errorMsg, $errorNo);
         }
 
         $response->fromString(static::getLastResponse($data));
+
+        curl_close($curl);
     }
 
     protected function prepare(Message\Request $request, Message\Response $response, $curl)
     {
         static::setCurlOptsFromRequest($curl, $request);
 
-        curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->maxRedirects);
-        curl_setopt($curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
-        curl_setopt($curl, CURLOPT_FAILONERROR, !$this->ignoreErrors);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verifyPeer);
-    }
+        curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->getMaxRedirects());
+        curl_setopt($curl, CURLOPT_MAXREDIRS, $this->getMaxRedirects());
+        curl_setopt($curl, CURLOPT_FAILONERROR, !$this->getIgnoreErrors());
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->getVerifyPeer());
 
-    public function __destruct()
-    {
-        if (is_resource($this->curl)) {
-            curl_close($this->curl);
-        }
+        // finally apply the manually set options
+        curl_setopt_array($curl, $this->options);
     }
 }
