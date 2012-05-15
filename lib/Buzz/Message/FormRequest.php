@@ -74,6 +74,10 @@ class FormRequest extends Request
     {
         $headers = parent::getHeaders();
 
+        if($this->getMethod() == self::METHOD_GET) {
+            return $headers;
+        }
+
         if ($this->isMultipart()) {
             $headers[] = 'Content-Type: multipart/form-data; boundary='.$this->getBoundary();
         } else {
@@ -83,8 +87,20 @@ class FormRequest extends Request
         return $headers;
     }
 
+    public function getUrl() {
+        if($this->getMethod() == self::METHOD_GET) {
+            return parent::getUrl() . '?' . http_build_query($this->getFields());
+        }
+
+        return parent::getUrl();
+    }
+
     public function getContent()
     {
+        if($this->getMethod() == self::METHOD_GET) {
+            return null;
+        }
+
         if (!$this->isMultipart()) {
             return http_build_query($this->fields);
         }

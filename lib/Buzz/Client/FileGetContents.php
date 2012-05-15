@@ -39,7 +39,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
         }
 
         $context = stream_context_create($this->getStreamContextArray($request));
-        $url = $request->getHost().$request->getResource();
+        $url = $request->getUrl();
 
         $level = error_reporting(0);
         $content = file_get_contents($url, 0, $context);
