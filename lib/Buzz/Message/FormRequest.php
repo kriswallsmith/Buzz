@@ -74,7 +74,7 @@ class FormRequest extends Request
     {
         $headers = parent::getHeaders();
 
-        if($this->getMethod() == self::METHOD_GET) {
+        if ($this->getMethod() == self::METHOD_GET) {
             return $headers;
         }
 
@@ -88,7 +88,7 @@ class FormRequest extends Request
     }
 
     public function getUrl() {
-        if($this->getMethod() == self::METHOD_GET) {
+        if ($this->getMethod() == self::METHOD_GET) {
             return parent::getUrl() . '?' . http_build_query($this->getFields());
         }
 
@@ -97,7 +97,7 @@ class FormRequest extends Request
 
     public function getContent()
     {
-        if($this->getMethod() == self::METHOD_GET) {
+        if ($this->getMethod() == self::METHOD_GET) {
             return null;
         }
 
