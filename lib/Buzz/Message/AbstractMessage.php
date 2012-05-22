@@ -44,13 +44,15 @@ abstract class AbstractMessage implements MessageInterface
     {
         $attributes = array();
         foreach ($this->getHeader($name, false) as $header) {
-            // remove header value
-            list(, $header) = explode(';', $header, 2);
+            if(strpos($header, ';') !== false) {
+                // remove header value
+                list(, $header) = explode(';', $header, 2);
 
-            // loop through attribute key=value pairs
-            foreach (array_map('trim', explode(';', trim($header))) as $pair) {
-                list($key, $value) = explode('=', $pair);
-                $attributes[$key] = $value;
+                // loop through attribute key=value pairs
+                foreach (array_map('trim', explode(';', trim($header))) as $pair) {
+                    list($key, $value) = explode('=', $pair);
+                    $attributes[$key] = $value;
+                }
             }
         }
 
