@@ -2,9 +2,11 @@
 
 namespace Buzz\Test\Client;
 
+use Buzz\Client\BatchClientInterface;
 use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
+use Buzz\Client\MultiCurl;
 use Buzz\Message\Form\FormRequest;
 use Buzz\Message\Form\FormUpload;
 use Buzz\Message\Request;
@@ -179,6 +181,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         return array(
             array(new Curl()),
             array(new FileGetContents()),
+            array(new MultiCurl()),
         );
     }
 
@@ -223,6 +226,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $response = new Response();
         $client->send($request, $response);
+
+        if ($client instanceof BatchClientInterface) {
+            $client->flush();
+        }
+
         return $response;
     }
 }
