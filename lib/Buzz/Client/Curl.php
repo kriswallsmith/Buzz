@@ -54,16 +54,18 @@ class Curl extends AbstractClient implements ClientInterface
         curl_setopt_array($curl, $options);
     }
 
-    static protected function getLastResponse($raw)
+    static protected function getLastHeaders($raw)
     {
-        $parts = preg_split('/((?:\\r?\\n){2})/', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
-        for ($i = count($parts) - 3; $i >= 0; $i -= 2) {
-            if (0 === stripos($parts[$i], 'http')) {
-                return implode('', array_slice($parts, $i));
+        $headers = array();
+        foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
+            if ($header) {
+                $headers[] = $header;
+            } else {
+                $headers = array();
             }
         }
 
-        return $raw;
+        return $headers;
     }
 
     /**
@@ -132,7 +134,9 @@ class Curl extends AbstractClient implements ClientInterface
             throw new \RuntimeException($errorMsg, $errorNo);
         }
 
-        $response->fromString(static::getLastResponse($data));
+        $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $response->setHeaders(self::getLastHeaders(rtrim(substr($data, 0, $pos))));
+        $response->setContent(substr($data, $pos));
 
         curl_close($curl);
     }

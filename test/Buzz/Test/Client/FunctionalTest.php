@@ -168,6 +168,20 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('math' => '1+1=2'), $fields);
     }
 
+    /**
+     * @dataProvider provideClient
+     */
+    public function testRedirectedResponse($client)
+    {
+        $request = new Request();
+        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect_to='.$_SERVER['TEST_SERVER']);
+        $response = new Response();
+        $client->send($request, $response);
+
+        $headers = $response->getHeaders();
+        $this->assertContains('200', $headers[0]);
+    }
+
     public function provideClient()
     {
         return array(

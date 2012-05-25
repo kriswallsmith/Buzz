@@ -49,11 +49,25 @@ class FileGetContents extends AbstractStream implements ClientInterface
             throw new \RuntimeException($error['message']);
         }
 
-        $response->setHeaders((array) $http_response_header);
+        $response->setHeaders($this->filterHeaders((array) $http_response_header));
         $response->setContent($content);
 
         if ($cookieJar) {
             $cookieJar->processSetCookieHeaders($request, $response);
         }
+    }
+
+    private function filterHeaders(array $headers)
+    {
+        $filtered = array();
+        foreach ($headers as $header) {
+            if (0 === stripos($header, 'http/')) {
+                $filtered = array();
+            }
+
+            $filtered[] = $header;
+        }
+
+        return $filtered;
     }
 }
