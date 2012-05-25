@@ -44,7 +44,7 @@ abstract class AbstractMessage implements MessageInterface
     {
         $attributes = array();
         foreach ($this->getHeader($name, false) as $header) {
-            if(strpos($header, ';') !== false) {
+            if (false !== strpos($header, ';')) {
                 // remove header value
                 list(, $header) = explode(';', $header, 2);
 
