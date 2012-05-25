@@ -65,6 +65,21 @@ class FormRequest extends Request
         return $this->fields;
     }
 
+    public function getResource()
+    {
+        $resource = parent::getResource();
+
+        if (!$this->isSafe() || !$this->fields) {
+            return $resource;
+        }
+
+        // append the query string
+        $resource .= false === strpos($resource, '?') ? '?' : '&';
+        $resource .= http_build_query($this->fields);
+
+        return $resource;
+    }
+
     public function setContent($content)
     {
         throw new \BadMethodCallException('It is not permitted to set the content.');
@@ -73,6 +88,10 @@ class FormRequest extends Request
     public function getHeaders()
     {
         $headers = parent::getHeaders();
+
+        if ($this->isSafe()) {
+            return $headers;
+        }
 
         if ($this->isMultipart()) {
             $headers[] = 'Content-Type: multipart/form-data; boundary='.$this->getBoundary();
@@ -85,6 +104,10 @@ class FormRequest extends Request
 
     public function getContent()
     {
+        if ($this->isSafe()) {
+            return;
+        }
+
         if (!$this->isMultipart()) {
             return http_build_query($this->fields);
         }
@@ -131,6 +154,11 @@ class FormRequest extends Request
         }
 
         return $flat;
+    }
+
+    private function isSafe()
+    {
+        return in_array($this->getMethod(), array(self::METHOD_GET, self::METHOD_HEAD));
     }
 
     private function isMultipart()

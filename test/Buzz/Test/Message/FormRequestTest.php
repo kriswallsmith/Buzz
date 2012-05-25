@@ -108,4 +108,13 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
 
         $content = $request->getContent();
     }
+
+    public function testGetRequest()
+    {
+        $request = new FormRequest(FormRequest::METHOD_GET, '/search');
+        $request->setField('q', 'cats');
+
+        $this->assertEquals('/search?q=cats', $request->getResource());
+        $this->assertEmpty($request->getContent());
+    }
 }

@@ -67,6 +67,23 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider provideClient
+     */
+    public function testFormGet($client)
+    {
+        $request = new FormRequest(FormRequest::METHOD_GET);
+        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->setField('search[query]', 'cats');
+        $response = new Response();
+        $client->send($request, $response);
+
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertArrayNotHasKey('CONTENT_TYPE', $data['SERVER']);
+        $this->assertEquals('cats', $data['GET']['search']['query']);
+    }
+
+    /**
      * @dataProvider provideClientAndUpload
      */
     public function testFileUpload($client, $upload)
