@@ -5,7 +5,7 @@ namespace Buzz\Client;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 
-class MultiCurl extends AbstractCurlClient implements BatchClientInterface
+class MultiCurl extends AbstractCurl implements BatchClientInterface
 {
     private $queue = array();
 

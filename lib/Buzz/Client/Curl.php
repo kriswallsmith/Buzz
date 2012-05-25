@@ -5,7 +5,7 @@ namespace Buzz\Client;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 
-class Curl extends AbstractCurlClient implements ClientInterface
+class Curl extends AbstractCurl implements ClientInterface
 {
     private $lastCurl;
 

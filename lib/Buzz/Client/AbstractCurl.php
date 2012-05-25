@@ -10,7 +10,7 @@ use Buzz\Message\RequestInterface;
 /**
  * Base client class with helpers for working with cURL.
  */
-abstract class AbstractCurlClient extends AbstractClient
+abstract class AbstractCurl extends AbstractClient
 {
     protected $options = array();
 
