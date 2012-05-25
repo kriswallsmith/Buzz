@@ -2,8 +2,6 @@
 
 namespace Buzz\Client;
 
-use Buzz\Message;
-
 abstract class AbstractClient
 {
     protected $ignoreErrors = true;

@@ -2,11 +2,15 @@
 
 namespace Buzz;
 
-use Buzz\Client;
-use Buzz\Listener;
-use Buzz\Message;
-use Buzz\Message\Factory;
-use Buzz\Util;
+use Buzz\Client\ClientInterface;
+use Buzz\Client\FileGetContents;
+use Buzz\Listener\ListenerChain;
+use Buzz\Listener\ListenerInterface;
+use Buzz\Message\Factory\Factory;
+use Buzz\Message\Factory\FactoryInterface;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
+use Buzz\Util\Url;
 
 class Browser
 {
@@ -16,40 +20,40 @@ class Browser
     private $lastRequest;
     private $lastResponse;
 
-    public function __construct(Client\ClientInterface $client = null, Factory\FactoryInterface $factory = null)
+    public function __construct(ClientInterface $client = null, FactoryInterface $factory = null)
     {
-        $this->client = $client ?: new Client\FileGetContents();
-        $this->factory = $factory ?: new Factory\Factory();
+        $this->client = $client ?: new FileGetContents();
+        $this->factory = $factory ?: new Factory();
     }
 
     public function get($url, $headers = array())
     {
-        return $this->call($url, Message\RequestInterface::METHOD_GET, $headers);
+        return $this->call($url, RequestInterface::METHOD_GET, $headers);
     }
 
     public function post($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\RequestInterface::METHOD_POST, $headers, $content);
+        return $this->call($url, RequestInterface::METHOD_POST, $headers, $content);
     }
 
     public function head($url, $headers = array())
     {
-        return $this->call($url, Message\RequestInterface::METHOD_HEAD, $headers);
+        return $this->call($url, RequestInterface::METHOD_HEAD, $headers);
     }
 
     public function patch($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\RequestInterface::METHOD_PATCH, $headers, $content);
+        return $this->call($url, RequestInterface::METHOD_PATCH, $headers, $content);
     }
 
     public function put($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\RequestInterface::METHOD_PUT, $headers, $content);
+        return $this->call($url, RequestInterface::METHOD_PUT, $headers, $content);
     }
 
     public function delete($url, $headers = array(), $content = '')
     {
-        return $this->call($url, Message\RequestInterface::METHOD_DELETE, $headers, $content);
+        return $this->call($url, RequestInterface::METHOD_DELETE, $headers, $content);
     }
 
     /**
@@ -60,14 +64,14 @@ class Browser
      * @param array  $headers An array of request headers
      * @param string $content The request content
      *
-     * @return Message\Response The response object
+     * @return Response The response object
      */
     public function call($url, $method, $headers = array(), $content = '')
     {
         $request = $this->factory->createRequest($method);
 
-        if (!$url instanceof Util\Url) {
-            $url = new Util\Url($url);
+        if (!$url instanceof Url) {
+            $url = new Url($url);
         }
 
         $url->applyToRequest($request);
@@ -89,14 +93,14 @@ class Browser
      * @param string $method  The request method to use
      * @param array  $headers An array of request headers
      *
-     * @return Message\Response The response object
+     * @return Response The response object
      */
-    public function submit($url, array $fields, $method = Message\RequestInterface::METHOD_POST, $headers = array())
+    public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
     {
         $request = $this->factory->createFormRequest();
 
-        if (!$url instanceof Util\Url) {
-            $url = new Util\Url($url);
+        if (!$url instanceof Url) {
+            $url = new Url($url);
         }
 
         $url->applyToRequest($request);
@@ -114,12 +118,12 @@ class Browser
     /**
      * Sends a request.
      *
-     * @param Message\RequestInterface $request  A request object
-     * @param Message\MessageInterface $response A response object
+     * @param RequestInterface $request  A request object
+     * @param MessageInterface $response A response object
      *
-     * @return Message\MessageInterface The response
+     * @return MessageInterface The response
      */
-    public function send(Message\RequestInterface $request, Message\MessageInterface $response = null)
+    public function send(RequestInterface $request, MessageInterface $response = null)
     {
         if (null === $response) {
             $response = $this->factory->createResponse();
@@ -151,7 +155,7 @@ class Browser
         return $this->lastResponse;
     }
 
-    public function setClient(Client\ClientInterface $client)
+    public function setClient(ClientInterface $client)
     {
         $this->client = $client;
     }
@@ -161,7 +165,7 @@ class Browser
         return $this->client;
     }
 
-    public function setMessageFactory(Factory\FactoryInterface $factory)
+    public function setMessageFactory(FactoryInterface $factory)
     {
         $this->factory = $factory;
     }
@@ -171,7 +175,7 @@ class Browser
         return $this->factory;
     }
 
-    public function setListener(Listener\ListenerInterface $listener)
+    public function setListener(ListenerInterface $listener)
     {
         $this->listener = $listener;
     }
@@ -181,14 +185,14 @@ class Browser
         return $this->listener;
     }
 
-    public function addListener(Listener\ListenerInterface $listener)
+    public function addListener(ListenerInterface $listener)
     {
         if (!$this->listener) {
             $this->listener = $listener;
-        } elseif ($this->listener instanceof Listener\ListenerChain) {
+        } elseif ($this->listener instanceof ListenerChain) {
             $this->listener->addListener($listener);
         } else {
-            $this->listener = new Listener\ListenerChain(array(
+            $this->listener = new ListenerChain(array(
                 $this->listener,
                 $listener,
             ));

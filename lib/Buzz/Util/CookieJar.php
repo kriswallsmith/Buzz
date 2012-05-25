@@ -2,7 +2,8 @@
 
 namespace Buzz\Util;
 
-use Buzz\Message;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
 
 class CookieJar
 {
@@ -34,9 +35,9 @@ class CookieJar
     /**
      * Adds Cookie headers to the supplied request.
      *
-     * @param Message\RequestInterface $request A request object
+     * @param RequestInterface $request A request object
      */
-    public function addCookieHeaders(Message\RequestInterface $request)
+    public function addCookieHeaders(RequestInterface $request)
     {
         foreach ($this->cookies as $cookie) {
             if ($cookie->matchesRequest($request)) {
@@ -48,10 +49,10 @@ class CookieJar
     /**
      * Processes Set-Cookie headers from a request/response pair.
      *
-     * @param Message\RequestInterface $request  A request object
-     * @param Message\MessageInterface $response A response object
+     * @param RequestInterface $request  A request object
+     * @param MessageInterface $response A response object
      */
-    public function processSetCookieHeaders(Message\RequestInterface $request, Message\MessageInterface $response)
+    public function processSetCookieHeaders(RequestInterface $request, MessageInterface $response)
     {
         foreach ($response->getHeader('Set-Cookie', false) as $header) {
             $cookie = new Cookie();

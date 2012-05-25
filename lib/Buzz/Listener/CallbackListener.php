@@ -2,7 +2,8 @@
 
 namespace Buzz\Listener;
 
-use Buzz\Message;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
 
 class CallbackListener implements ListenerInterface
 {
@@ -35,12 +36,12 @@ class CallbackListener implements ListenerInterface
         $this->callable = $callable;
     }
 
-    public function preSend(Message\RequestInterface $request)
+    public function preSend(RequestInterface $request)
     {
         call_user_func($this->callable, $request);
     }
 
-    public function postSend(Message\RequestInterface $request, Message\MessageInterface $response)
+    public function postSend(RequestInterface $request, MessageInterface $response)
     {
         call_user_func($this->callable, $request, $response);
     }

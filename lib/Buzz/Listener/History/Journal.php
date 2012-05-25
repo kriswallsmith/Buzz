@@ -2,7 +2,8 @@
 
 namespace Buzz\Listener\History;
 
-use Buzz\Message;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
 
 class Journal implements \Countable, \IteratorAggregate
 {
@@ -12,11 +13,11 @@ class Journal implements \Countable, \IteratorAggregate
     /**
      * Records an entry in the journal.
      *
-     * @param Message\RequestInterface $request  The request
-     * @param Message\MessageInterface $response The response
+     * @param RequestInterface $request  The request
+     * @param MessageInterface $response The response
      * @param integer          $duration The duration in seconds
      */
-    public function record(Message\RequestInterface $request, Message\MessageInterface $response, $duration = null)
+    public function record(RequestInterface $request, MessageInterface $response, $duration = null)
     {
         $this->addEntry(new Entry($request, $response, $duration));
     }

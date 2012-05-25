@@ -2,7 +2,8 @@
 
 namespace Buzz\Client;
 
-use Buzz\Message;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
 
 class MultiCurl extends Curl implements BatchClientInterface
 {
@@ -14,7 +15,7 @@ class MultiCurl extends Curl implements BatchClientInterface
         $this->curl = curl_multi_init();
     }
 
-    public function send(Message\RequestInterface $request, Message\MessageInterface $response, $curl = null)
+    public function send(RequestInterface $request, MessageInterface $response, $curl = null)
     {
         $this->queue[] = array($request, $response, $curl);
     }

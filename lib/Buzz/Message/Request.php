@@ -2,7 +2,7 @@
 
 namespace Buzz\Message;
 
-use Buzz\Util;
+use Buzz\Util\Url;
 
 class Request extends AbstractMessage implements RequestInterface
 {
@@ -100,12 +100,12 @@ class Request extends AbstractMessage implements RequestInterface
     /**
      * A convenience method for populating the current request from a URL.
      *
-     * @param Util\Url|string $url An URL
+     * @param Url|string $url An URL
      */
     public function fromUrl($url)
     {
-        if (!$url instanceof Util\Url) {
-            $url = new Util\Url($url);
+        if (!$url instanceof Url) {
+            $url = new Url($url);
         }
 
         $url->applyToRequest($this);

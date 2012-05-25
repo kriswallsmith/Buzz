@@ -2,7 +2,8 @@
 
 namespace Buzz\Listener;
 
-use Buzz\Message;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
 
 class ListenerChain implements ListenerInterface
 {
@@ -23,14 +24,14 @@ class ListenerChain implements ListenerInterface
         return $this->listeners;
     }
 
-    public function preSend(Message\RequestInterface $request)
+    public function preSend(RequestInterface $request)
     {
         foreach ($this->listeners as $listener) {
             $listener->preSend($request);
         }
     }
 
-    public function postSend(Message\RequestInterface $request, Message\MessageInterface $response)
+    public function postSend(RequestInterface $request, MessageInterface $response)
     {
         foreach ($this->listeners as $listener) {
             $listener->postSend($request, $response);

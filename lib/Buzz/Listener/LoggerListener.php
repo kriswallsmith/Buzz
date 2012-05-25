@@ -2,7 +2,8 @@
 
 namespace Buzz\Listener;
 
-use Buzz\Message;
+use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
 
 class LoggerListener implements ListenerInterface
 {
@@ -20,12 +21,12 @@ class LoggerListener implements ListenerInterface
         $this->prefix = $prefix;
     }
 
-    public function preSend(Message\RequestInterface $request)
+    public function preSend(RequestInterface $request)
     {
         $this->startTime = microtime(true);
     }
 
-    public function postSend(Message\RequestInterface $request, Message\MessageInterface $response)
+    public function postSend(RequestInterface $request, MessageInterface $response)
     {
         $seconds = microtime(true) - $this->startTime;
 
