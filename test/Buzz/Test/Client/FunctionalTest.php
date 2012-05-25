@@ -2,6 +2,7 @@
 
 namespace Buzz\Test\Client;
 
+use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Message\Form\FormRequest;
@@ -27,8 +28,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request = new Request($method);
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->setContent('test');
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -42,8 +42,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
         $request->fromUrl($_SERVER['TEST_SERVER']);
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -58,8 +57,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request = new FormRequest();
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->setField('company[name]', 'Google');
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -75,8 +73,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request = new FormRequest(FormRequest::METHOD_GET);
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->setField('search[query]', 'cats');
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -93,8 +90,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->setField('company[name]', 'Google');
         $request->setField('company[logo]', $upload);
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -112,8 +108,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->addHeader('Content-Type: application/json');
         $request->setContent(json_encode(array('foo' => 'bar')));
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -131,8 +126,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->addHeader('Content-Type: application/json');
         $request->setContent(json_encode(array('foo' => 'bar')));
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -143,8 +137,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         // request 2
         $request = new Request(RequestInterface::METHOD_GET);
         $request->fromUrl($_SERVER['TEST_SERVER']);
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
 
@@ -160,8 +153,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request = new FormRequest();
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $request->setField('math', '1+1=2');
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
         parse_str($data['INPUT'], $fields);
@@ -176,8 +168,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
         $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect_to='.$_SERVER['TEST_SERVER']);
-        $response = new Response();
-        $client->send($request, $response);
+        $response = $this->send($client, $request);
 
         $headers = $response->getHeaders();
         $this->assertContains('200', $headers[0]);
@@ -226,5 +217,12 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         }
 
         return $data;
+    }
+
+    private function send(ClientInterface $client, RequestInterface $request)
+    {
+        $response = new Response();
+        $client->send($request, $response);
+        return $response;
     }
 }
