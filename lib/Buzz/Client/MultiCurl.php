@@ -5,75 +5,48 @@ namespace Buzz\Client;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 
-class MultiCurl extends Curl implements BatchClientInterface
+class MultiCurl extends AbstractCurlClient implements BatchClientInterface
 {
-    protected $curl;
-    protected $queue = array();
+    private $queue = array();
 
-    public function __construct()
+    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
-        $this->curl = curl_multi_init();
-    }
-
-    public function send(RequestInterface $request, MessageInterface $response, $curl = null)
-    {
-        $this->queue[] = array($request, $response, $curl);
+        $this->queue[] = array($request, $response, $options);
     }
 
     public function flush()
     {
-        foreach ($this->queue as $i => $queue) {
-            list($request, $response, $curl) = $queue;
+        if (false === $curlm = curl_multi_init()) {
+            throw new \RuntimeException('Unable to create a new cURL multi handle');
+        }
 
-            if (null === $curl) {
-                $curl = $this->queue[$i][2] = static::createCurlHandle();
-            }
-
-            $this->prepare($request, $response, $curl);
-            curl_multi_add_handle($this->curl, $curl);
+        // prepare a cURL handle for each entry in the queue
+        foreach ($this->queue as $i => &$queue) {
+            list($request, $response, $options) = $queue;
+            $curl = $queue[] = static::createCurlHandle();
+            $this->prepare($curl, $request, $options);
+            curl_multi_add_handle($curlm, $curl);
         }
 
         $active = null;
         do {
-            $mrc = curl_multi_exec($this->curl, $active);
+            $mrc = curl_multi_exec($curlm, $active);
         } while (CURLM_CALL_MULTI_PERFORM == $mrc);
 
         while ($active && CURLM_OK == $mrc) {
-            if (-1 != curl_multi_select($this->curl)) {
+            if (-1 != curl_multi_select($curlm)) {
                 do {
-                    $mrc = curl_multi_exec($this->curl, $active);
+                    $mrc = curl_multi_exec($curlm, $active);
                 } while (CURLM_CALL_MULTI_PERFORM == $mrc);
             }
         }
 
-        foreach ($this->queue as $queue) {
-            list($request, $response, $curl) = $queue;
-
-            $data = curl_multi_getcontent($curl);
-            $pos  = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-            $response->setHeaders(self::getLastHeaders(rtrim(substr($data, 0, $pos))));
-            $response->setContent(substr($data, $pos));
-
-            curl_multi_remove_handle($this->curl, $curl);
+        // populate the responses
+        while (list($request, $response, $options, $curl) = array_shift($this->queue)) {
+            static::populateResponse($curl, curl_multi_getcontent($curl), $response);
+            curl_multi_remove_handle($curlm, $curl);
         }
 
-        $this->queue = array();
-    }
-
-    public function getCurl($i = null)
-    {
-        if (null === $i) {
-            return parent::getCurl();
-        } elseif (isset($this->queue[$i])) {
-            list($request, $response, $curl) = $this->queue[$i];
-            return $curl;
-        } else {
-            throw new \InvalidArgumentException(sprintf('There is no cURL handler queued at position %s.', $i));
-        }
-    }
-
-    public function __destruct()
-    {
-        curl_multi_close($this->curl);
+        curl_multi_close($curlm);
     }
 }
