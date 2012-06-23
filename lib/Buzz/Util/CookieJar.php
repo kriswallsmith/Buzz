@@ -29,6 +29,13 @@ class CookieJar
      */
     public function addCookie(Cookie $cookie)
     {
+        foreach ($this->cookies as $key => $_cookie) {
+            if ($_cookie->getName() == $cookie->getName()) {
+                $this->cookies[$key] = $cookie;
+                return;
+            }
+        }
+
         $this->cookies[] = $cookie;
     }
 
