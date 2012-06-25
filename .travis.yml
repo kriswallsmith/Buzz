@@ -11,5 +11,7 @@ before_script:
     - php-cgi -b 127.0.0.1:9000 &
     - nginx -v && sudo nginx -c nginx.conf.dist -p test
     - export TEST_SERVER="http://localhost:8080/server.php"
+    - wget http://getcomposer.org/composer.phar
+    - php composer.phar install --dev
 
 script: phpunit --coverage-text
