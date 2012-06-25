@@ -1,12 +1,15 @@
 <?php
 
-spl_autoload_register(function($class)
-{
-    if (0 === strpos($class, 'Buzz\\')) {
-        $file = __DIR__ . '/../lib/' . str_replace('\\', '/', $class) . '.php';
-        if (file_exists($file)) {
-            require_once $file;
-            return true;
-        }
-    }
-});
+if (!$loader = @include __DIR__.'/../vendor/autoload.php') {
+    echo <<<EOM
+You must set up the project dependencies by running the following commands:
+
+    curl -s http://getcomposer.org/installer | php
+    php composer.phar install
+
+EOM;
+
+    exit(1);
+}
+
+$loader->add('Buzz\Test', __DIR__);
