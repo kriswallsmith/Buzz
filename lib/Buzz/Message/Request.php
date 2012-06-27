@@ -29,7 +29,7 @@ class Request extends AbstractMessage implements RequestInterface
     {
         parent::setHeaders(array());
 
-        foreach ($headers as $header) {
+        foreach ($headers as $key => $header) {
             if (is_int($key)) {
                 $this->addHeader($header);
             } else {

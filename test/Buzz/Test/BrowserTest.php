@@ -21,7 +21,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideMethods
      */
-    public function testBasicMethods($method, $content)
+    public function testBasicMethods($method, $content, $headers)
     {
         $request = $this->getMock('Buzz\Message\RequestInterface');
         $response = $this->getMock('Buzz\Message\MessageInterface');
@@ -49,7 +49,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
             ->method('send')
             ->with($request, $response);
 
-        $actual = $this->browser->$method('http://google.com/', array('X-Foo: bar'), $content);
+        $actual = $this->browser->$method('http://google.com/', $headers, $content);
 
         $this->assertSame($response, $actual);
     }
@@ -57,11 +57,11 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     public function provideMethods()
     {
         return array(
-            array('get', ''),
-            array('head', ''),
-            array('post', 'content'),
-            array('put', 'content'),
-            array('delete', 'content'),
+            array('get',    '',        array('X-Foo: bar')),
+            array('head',   '',        array('X-Foo: bar')),
+            array('post',   'content', array('X-Foo: bar')),
+            array('put',    'content', array('X-Foo: bar')),
+            array('delete', 'content', array('X-Foo' => 'bar')),
         );
     }
 
