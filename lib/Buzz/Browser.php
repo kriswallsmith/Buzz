@@ -77,6 +77,9 @@ class Browser
         $url->applyToRequest($request);
 
         foreach ($headers as $header) {
+            if (!is_int($key)) {
+                throw new \UnexpectedValueException('Headers must be an array of complete header strings, e.g. "Name: value", got: '.$header);
+            }
             $request->addHeader($header);
         }
 
@@ -106,6 +109,9 @@ class Browser
         $url->applyToRequest($request);
 
         foreach ($headers as $header) {
+            if (!is_int($key)) {
+                throw new \UnexpectedValueException('Headers must be an array of complete header strings, e.g. "Name: value", got: '.$header);
+            }
             $request->addHeader($header);
         }
 
