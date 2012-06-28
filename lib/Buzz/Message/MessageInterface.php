@@ -22,12 +22,14 @@ interface MessageInterface
     /**
      * Returns an array of header lines.
      *
-     * @return array An array of header lines (integer indexes)
+     * @return array An array of header lines (integer indexes, e.g. ["Header: value"])
      */
     function getHeaders();
 
     /**
      * Sets all headers on the current message.
+     *
+     * Headers can be complete ["Header: value"] pairs or an associative array ["Header" => "value"]
      *
      * @param array $headers An array of header lines
      */
@@ -39,6 +41,15 @@ interface MessageInterface
      * @param string $header A header line
      */
     function addHeader($header);
+
+    /**
+     * Adds a set of headers to this message.
+     *
+     * Headers can be complete ["Header: value"] pairs or an associative array ["Header" => "value"]
+     *
+     * @param array $headers Headers
+     */
+    function addHeaders(array $headers);
 
     /**
      * Returns the content of the message.

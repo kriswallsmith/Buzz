@@ -95,7 +95,7 @@ abstract class AbstractMessage implements MessageInterface
 
     public function setHeaders(array $headers)
     {
-        $this->headers = $headers;
+        $this->headers = $this->flattenHeaders($headers);
     }
 
     public function addHeader($header)
@@ -105,7 +105,7 @@ abstract class AbstractMessage implements MessageInterface
 
     public function addHeaders(array $headers)
     {
-        $this->headers = array_merge($this->headers, $headers);
+        $this->headers = array_merge($this->headers, $this->flattenHeaders($headers));
     }
 
     public function getHeaders()
@@ -132,5 +132,19 @@ abstract class AbstractMessage implements MessageInterface
         }
 
         return $string;
+    }
+
+    protected function flattenHeaders(array $headers)
+    {
+        $flattened = array();
+        foreach ($headers as $key => $header) {
+            if (is_int($key)) {
+                $flattened[] = $header;
+            } else {
+                $flattened[] = $key.': '.$header;
+            }
+        }
+
+        return $flattened;
     }
 }

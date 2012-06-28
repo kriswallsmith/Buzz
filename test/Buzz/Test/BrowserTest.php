@@ -25,6 +25,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     {
         $request = $this->getMock('Buzz\Message\RequestInterface');
         $response = $this->getMock('Buzz\Message\MessageInterface');
+        $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
             ->method('createRequest')
@@ -37,8 +38,8 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
             ->method('setResource')
             ->with('/');
         $request->expects($this->once())
-            ->method('addHeader')
-            ->with('X-Foo: bar');
+            ->method('addHeaders')
+            ->with($headers);
         $request->expects($this->once())
             ->method('setContent')
             ->with($content);
@@ -49,7 +50,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
             ->method('send')
             ->with($request, $response);
 
-        $actual = $this->browser->$method('http://google.com/', array('X-Foo: bar'), $content);
+        $actual = $this->browser->$method('http://google.com/', $headers, $content);
 
         $this->assertSame($response, $actual);
     }
@@ -57,10 +58,10 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     public function provideMethods()
     {
         return array(
-            array('get', ''),
-            array('head', ''),
-            array('post', 'content'),
-            array('put', 'content'),
+            array('get',    ''),
+            array('head',   ''),
+            array('post',   'content'),
+            array('put',    'content'),
             array('delete', 'content'),
         );
     }
@@ -69,6 +70,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     {
         $request = $this->getMock('Buzz\Message\Form\FormRequestInterface');
         $response = $this->getMock('Buzz\Message\MessageInterface');
+        $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
             ->method('createFormRequest')
@@ -83,8 +85,8 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
             ->method('setResource')
             ->with('/');
         $request->expects($this->once())
-            ->method('addHeader')
-            ->with('X-Foo: bar');
+            ->method('addHeaders')
+            ->with($headers);
         $request->expects($this->once())
             ->method('setFields')
             ->with(array('foo' => 'bar', 'bar' => 'foo'));
@@ -95,7 +97,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
             ->method('send')
             ->with($request, $response);
 
-        $actual = $this->browser->submit('http://google.com', array('foo' => 'bar', 'bar' => 'foo'), 'PUT', array('X-Foo: bar'));
+        $actual = $this->browser->submit('http://google.com', array('foo' => 'bar', 'bar' => 'foo'), 'PUT', $headers);
 
         $this->assertSame($response, $actual);
     }
