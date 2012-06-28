@@ -76,14 +76,7 @@ class Browser
 
         $url->applyToRequest($request);
 
-        foreach ($headers as $key => $header) {
-            if (is_int($key)) {
-                $request->addHeader($header);
-            } else {
-                $request->addHeader($key.': '.$header);
-            }
-        }
-
+        $request->addHeaders($headers);
         $request->setContent($content);
 
         return $this->send($request);
@@ -109,14 +102,7 @@ class Browser
 
         $url->applyToRequest($request);
 
-        foreach ($headers as $key => $header) {
-            if (is_int($key)) {
-                $request->addHeader($header);
-            } else {
-                $request->addHeader($key.': '.$header);
-            }
-        }
-
+        $request->addHeaders($headers);
         $request->setMethod($method);
         $request->setFields($fields);
 
