@@ -2,6 +2,7 @@
 
 namespace Buzz\Client;
 
+use Buzz\Exception\ClientException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 
@@ -17,7 +18,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
     public function flush()
     {
         if (false === $curlm = curl_multi_init()) {
-            throw new \RuntimeException('Unable to create a new cURL multi handle');
+            throw new ClientException('Unable to create a new cURL multi handle');
         }
 
         // prepare a cURL handle for each entry in the queue
