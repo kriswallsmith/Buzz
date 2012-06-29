@@ -12,12 +12,12 @@ class Curl extends AbstractCurl implements ClientInterface
 
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
-        if ($this->nbSends++ > $this->getMaxRedirects()) {
-            throw new \RunTimeException(sprintf('Exceeded maximum redirect attempts (%d)', $this->nbSends));
-        }
-
         if (is_resource($this->lastCurl)) {
             curl_close($this->lastCurl);
+        }
+
+        if ($this->nbSends++ > $this->getMaxRedirects()) {
+            throw new \RunTimeException(sprintf('Exceeded maximum redirect attempts (%d)', $this->nbSends));
         }
 
         $this->lastCurl = static::createCurlHandle();
