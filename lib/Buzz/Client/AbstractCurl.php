@@ -168,14 +168,26 @@ abstract class AbstractCurl extends AbstractClient
     {
         static::setOptionsFromRequest($curl, $request);
 
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, false);
+        if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) {
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->getMaxRedirects());
+        }
+
         // apply settings from client
         curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->getMaxRedirects());
         curl_setopt($curl, CURLOPT_MAXREDIRS, $this->getMaxRedirects());
         curl_setopt($curl, CURLOPT_FAILONERROR, !$this->getIgnoreErrors());
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->getVerifyPeer());
 
         // apply additional options
         curl_setopt_array($curl, $options + $this->options);
+    }
+
+    /**
+     * Execute a cURL resource.
+     */
+    protected function exec($ch)
+    {
+        return curl_exec($ch);
     }
 }

@@ -8,6 +8,7 @@ use Buzz\Message\RequestInterface;
 class Curl extends AbstractCurl implements ClientInterface
 {
     private $lastCurl;
+    private $nbSends = 0;
 
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
@@ -15,10 +16,14 @@ class Curl extends AbstractCurl implements ClientInterface
             curl_close($this->lastCurl);
         }
 
+        if ($this->nbSends++ > $this->getMaxRedirects()) {
+            throw new \RunTimeException(sprintf('Exceeded maximum redirect attempts (%d)', $this->nbSends));
+        }
+
         $this->lastCurl = static::createCurlHandle();
         $this->prepare($this->lastCurl, $request, $options);
 
-        $data = curl_exec($this->lastCurl);
+        $data = $this->exec($this->lastCurl);
 
         if (false === $data) {
             $errorMsg = curl_error($this->lastCurl);
@@ -28,6 +33,12 @@ class Curl extends AbstractCurl implements ClientInterface
         }
 
         static::populateResponse($this->lastCurl, $data, $response);
+
+        if ($response->isRedirection()) {
+            $request->setResource($response->getHeader('Location'));
+            $request->setMethod(RequestInterface::METHOD_GET);
+            $this->send($request, $response, $options);
+        }
     }
 
     /**
