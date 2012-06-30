@@ -29,7 +29,7 @@ class Request extends AbstractMessage implements RequestInterface
     {
         parent::setHeaders(array());
 
-        foreach ($headers as $header) {
+        foreach ($this->flattenHeaders($headers) as $header) {
             $this->addHeader($header);
         }
     }

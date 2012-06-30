@@ -76,10 +76,7 @@ class Browser
 
         $url->applyToRequest($request);
 
-        foreach ($headers as $header) {
-            $request->addHeader($header);
-        }
-
+        $request->addHeaders($headers);
         $request->setContent($content);
 
         return $this->send($request);
@@ -105,10 +102,7 @@ class Browser
 
         $url->applyToRequest($request);
 
-        foreach ($headers as $header) {
-            $request->addHeader($header);
-        }
-
+        $request->addHeaders($headers);
         $request->setMethod($method);
         $request->setFields($fields);
 

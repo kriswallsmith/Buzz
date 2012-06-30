@@ -64,8 +64,21 @@ class AbstractMessageTest extends \PHPUnit_Framework_TestCase
     public function testAddHeaders()
     {
         $message = new Message();
-        $message->addHeaders(array('Content-Type: text/xml; charset=utf8'));
-        $this->assertEquals(1, count($message->getHeaders()));
+        $message->addHeaders(array('Content-Type: text/xml; charset=utf8', 'Foo' => 'test'));
+        $message->addHeaders(array('Test' => 'foo', 'Foo' => 'test'));
+
+        $expected = array('Content-Type: text/xml; charset=utf8', 'Foo: test', 'Test: foo', 'Foo: test');
+        $this->assertEquals($expected, $message->getHeaders());
+    }
+
+    public function testSetHeaders()
+    {
+        $message = new Message();
+        $message->setHeaders(array('Content-Type: text/xml; charset=utf8', 'Foo' => 'test'));
+        $message->setHeaders(array('Test: foo', 'Foo' => 'test'));
+
+        $expected = array('Test: foo', 'Foo: test');
+        $this->assertEquals($expected, $message->getHeaders());
     }
 
     public function testToDomDocument()
