@@ -36,6 +36,7 @@ class Curl extends AbstractCurl implements ClientInterface
 
         if ($response->isRedirection()) {
             $request->setResource($response->getHeader('Location'));
+            $request->setMethod(RequestInterface::METHOD_GET);
             $this->send($request, $response, $options);
         }
     }
