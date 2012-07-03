@@ -176,11 +176,13 @@ class Response extends AbstractMessage
     private function parseStatusLine()
     {
         $headers = $this->getHeaders();
-
-        if (isset($headers[0]) && 3 == count($parts = explode(' ', $headers[0], 3))) {
+        $count = count($parts = explode(' ', $headers[0], 3));
+        if (isset($headers[0]) && (2 == $count || 3 == $count)) {
             $this->protocolVersion = (float) $parts[0];
             $this->statusCode = (integer) $parts[1];
-            $this->reasonPhrase = $parts[2];
+            if (isset($parts[2])) {
+                $this->reasonPhrase = $parts[2];
+            }
         } else {
             $this->protocolVersion = $this->statusCode = $this->reasonPhrase = false;
         }
