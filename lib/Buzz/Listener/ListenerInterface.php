@@ -7,6 +7,6 @@ use Buzz\Message\RequestInterface;
 
 interface ListenerInterface
 {
-    function preSend(RequestInterface $request);
-    function postSend(RequestInterface $request, MessageInterface $response);
+    public function preSend(RequestInterface $request);
+    public function postSend(RequestInterface $request, MessageInterface $response);
 }
