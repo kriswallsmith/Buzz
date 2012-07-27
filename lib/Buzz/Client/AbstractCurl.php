@@ -58,6 +58,8 @@ abstract class AbstractCurl extends AbstractClient
             CURLOPT_URL           => $request->getHost().$request->getResource(),
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
         );
+        
+        $fields = static::getPostFields($request);
 
         switch ($request->getMethod()) {
             case RequestInterface::METHOD_HEAD:
@@ -72,7 +74,7 @@ abstract class AbstractCurl extends AbstractClient
             case RequestInterface::METHOD_PUT:
             case RequestInterface::METHOD_DELETE:
             case RequestInterface::METHOD_PATCH:
-                $options[CURLOPT_POSTFIELDS] = $fields = static::getPostFields($request);
+                $options[CURLOPT_POSTFIELDS] = http_build_query($fields);
 
                 // remove the content-type header
                 if (is_array($fields)) {
