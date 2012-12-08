@@ -23,7 +23,7 @@ abstract class AbstractCurl extends AbstractClient
      */
     static protected function createCurlHandle()
     {
-        if (false === $curl = curl_init()) {
+        if (!function_exists("curl_init") || false === $curl = curl_init()) {
             throw new \RuntimeException('Unable to create a new cURL handle');
         }
 
