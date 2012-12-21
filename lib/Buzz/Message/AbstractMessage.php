@@ -86,7 +86,13 @@ abstract class AbstractMessage implements MessageInterface
         $revert = libxml_use_internal_errors(true);
 
         $document = new \DOMDocument('1.0', $this->getHeaderAttribute('Content-Type', 'charset') ?: 'UTF-8');
-        $document->loadHTML($this->getContent());
+        $contentType = substr($this->getHeader('Content-Type'), strpos(';', $this->getHeader('Content-Type')));
+
+        if ('text/xml' === $contentType) {
+            $document->loadXML($this->getContent());
+        } else {
+            $document->loadHTML($this->getContent());
+        }
 
         libxml_use_internal_errors($revert);
 
