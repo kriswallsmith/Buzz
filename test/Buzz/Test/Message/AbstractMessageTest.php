@@ -113,7 +113,7 @@ XML;
         $this->assertEquals($expected, $message->toDomDocument()->saveXML());
     }
 
-    public function testToDomDocumentWithContentTypeTextXmlReturnsHTMLString()
+    public function testToDomDocumentWithContentTypeTextHTMLReturnsHTMLString()
     {
         $message = new Message();
         $expected = <<<HTML
