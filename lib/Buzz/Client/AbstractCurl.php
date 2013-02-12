@@ -12,7 +12,15 @@ use Buzz\Message\RequestInterface;
  */
 abstract class AbstractCurl extends AbstractClient
 {
-    protected $options = array();
+    protected $options;
+
+    public function __construct()
+    {
+        $this->options = array(
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+        );
+    }
 
     /**
      * Creates a new cURL resource.
