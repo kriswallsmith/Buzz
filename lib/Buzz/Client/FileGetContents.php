@@ -5,6 +5,7 @@ namespace Buzz\Client;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\CookieJar;
+use Buzz\Exception\TransmissionException;
 
 class FileGetContents extends AbstractStream implements ClientInterface
 {
@@ -30,7 +31,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
     /**
      * @see ClientInterface
      *
-     * @throws RuntimeException If file_get_contents() fires an error
+     * @throws TransmissionException If file_get_contents() fires an error
      */
     public function send(RequestInterface $request, MessageInterface $response)
     {
@@ -47,7 +48,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
-            throw new \RuntimeException($error['message']);
+            throw new TransmissionException($error['message']);
         }
 
         $response->setHeaders($this->filterHeaders((array) $http_response_header));

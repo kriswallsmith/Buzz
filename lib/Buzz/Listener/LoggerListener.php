@@ -4,6 +4,7 @@ namespace Buzz\Listener;
 
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
+use Buzz\Exception\InvalidArgumentException;
 
 class LoggerListener implements ListenerInterface
 {
@@ -14,7 +15,7 @@ class LoggerListener implements ListenerInterface
     public function __construct($logger, $prefix = null)
     {
         if (!is_callable($logger)) {
-            throw new \InvalidArgumentException('The logger must be a callable.');
+            throw new InvalidArgumentException('The logger must be a callable.');
         }
 
         $this->logger = $logger;
