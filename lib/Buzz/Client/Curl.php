@@ -4,6 +4,8 @@ namespace Buzz\Client;
 
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
+use Buzz\Exception\TransmissionException;
+use Buzz\Exception\LogicException;
 
 class Curl extends AbstractCurl implements ClientInterface
 {
@@ -24,7 +26,7 @@ class Curl extends AbstractCurl implements ClientInterface
             $errorMsg = curl_error($this->lastCurl);
             $errorNo  = curl_errno($this->lastCurl);
 
-            throw new \RuntimeException($errorMsg, $errorNo);
+            throw new TransmissionException($errorMsg, $errorNo);
         }
 
         static::populateResponse($this->lastCurl, $data, $response);
@@ -38,7 +40,7 @@ class Curl extends AbstractCurl implements ClientInterface
     public function getInfo($opt = 0)
     {
         if (!is_resource($this->lastCurl)) {
-            throw new \LogicException('There is no cURL resource');
+            throw new LogicException('There is no cURL resource');
         }
 
         return curl_getinfo($this->lastCurl, $opt);

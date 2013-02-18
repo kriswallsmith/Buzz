@@ -3,6 +3,7 @@
 namespace Buzz\Util;
 
 use Buzz\Message\RequestInterface;
+use Buzz\Exception\InvalidArgumentException;
 
 class Url
 {
@@ -26,7 +27,7 @@ class Url
         $components = parse_url($url);
 
         if (false === $components) {
-            throw new \InvalidArgumentException(sprintf('The URL "%s" is invalid.', $url));
+            throw new InvalidArgumentException(sprintf('The URL "%s" is invalid.', $url));
         }
 
         // support scheme-less URLs
@@ -158,7 +159,7 @@ class Url
             } elseif (!ctype_alpha($part)) {
                 $url .= $part;
             } else {
-                throw new \InvalidArgumentException(sprintf('The format character "%s" is invalid.', $part));
+                throw new InvalidArgumentException(sprintf('The format character "%s" is invalid.', $part));
             }
 
             next($parts);
