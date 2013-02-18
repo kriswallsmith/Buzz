@@ -28,7 +28,7 @@ class CallbackListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidCallback()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
         $listener = new CallbackListener(array(1, 2, 3));
     }
 }

@@ -5,6 +5,6 @@ namespace Buzz\Exception;
 /**
  * Thrown whenever a transmission process fails
  */
-class TransmissionException extends \RuntimeException
+class TransmissionException extends \RuntimeException implements BuzzException
 {
 }

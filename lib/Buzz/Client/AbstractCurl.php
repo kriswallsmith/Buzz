@@ -6,7 +6,7 @@ use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
-use Buss\Exception\TransmissionException;
+use Buzz\Exception\TransmissionException;
 
 /**
  * Base client class with helpers for working with cURL.
