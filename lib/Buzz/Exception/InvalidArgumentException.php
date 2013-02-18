@@ -3,8 +3,8 @@
 namespace Buzz\Exception;
 
 /**
- * Thrown when an invalid argument is provided
+ * Thrown when an invalid argument is provided.
  */
-class InvalidArgumentException extends \InvalidArgumentException implements BuzzException
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }

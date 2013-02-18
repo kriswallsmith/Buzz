@@ -4,7 +4,7 @@ namespace Buzz\Client;
 
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
-use Buzz\Exception\TransmissionException;
+use Buzz\Exception\ClientException;
 use Buzz\Exception\LogicException;
 
 class Curl extends AbstractCurl implements ClientInterface
@@ -26,7 +26,7 @@ class Curl extends AbstractCurl implements ClientInterface
             $errorMsg = curl_error($this->lastCurl);
             $errorNo  = curl_errno($this->lastCurl);
 
-            throw new TransmissionException($errorMsg, $errorNo);
+            throw new ClientException($errorMsg, $errorNo);
         }
 
         static::populateResponse($this->lastCurl, $data, $response);

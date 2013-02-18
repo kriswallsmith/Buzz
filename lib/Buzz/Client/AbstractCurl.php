@@ -6,7 +6,7 @@ use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
-use Buzz\Exception\TransmissionException;
+use Buzz\Exception\ClientException;
 
 /**
  * Base client class with helpers for working with cURL.
@@ -25,7 +25,7 @@ abstract class AbstractCurl extends AbstractClient
     static protected function createCurlHandle()
     {
         if (false === $curl = curl_init()) {
-            throw new TransmissionException('Unable to create a new cURL handle');
+            throw new ClientException('Unable to create a new cURL handle');
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

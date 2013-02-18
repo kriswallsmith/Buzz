@@ -12,7 +12,7 @@ class FileGetContentsTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendToInvalidUrl($host)
     {
-        $this->setExpectedException('Buzz\Exception\TransmissionException');
+        $this->setExpectedException('Buzz\Exception\ClientException');
 
         $request = new Message\Request();
         $request->fromUrl('http://'.$host.':12345');
