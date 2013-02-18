@@ -1,9 +1,4 @@
 <?php
-/**
- * Declares BuzzException
- * @author Sebastian Pleschko <sebastian.pleschko@finanzcheck.de>
- */
-
 namespace Buzz\Exception;
 
 /**
