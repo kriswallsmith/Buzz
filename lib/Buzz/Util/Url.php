@@ -7,7 +7,7 @@ use Buzz\Exception\InvalidArgumentException;
 
 class Url
 {
-    static private $defaultPorts = array(
+    private static $defaultPorts = array(
         'http'  => 80,
         'https' => 443,
     );
