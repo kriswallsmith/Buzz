@@ -9,8 +9,14 @@ use Buzz\Exception\ClientException;
 
 class FileGetContents extends AbstractStream
 {
+    /**
+     * @var CookieJar
+     */
     protected $cookieJar;
 
+    /**
+     * @param CookieJar|null $cookieJar
+     */
     public function __construct(CookieJar $cookieJar = null)
     {
         if ($cookieJar) {
@@ -18,11 +24,17 @@ class FileGetContents extends AbstractStream
         }
     }
 
+    /**
+     * @param CookieJar $cookieJar
+     */
     public function setCookieJar(CookieJar $cookieJar)
     {
         $this->cookieJar = $cookieJar;
     }
 
+    /**
+     * @return CookieJar
+     */
     public function getCookieJar()
     {
         return $this->cookieJar;
