@@ -178,7 +178,11 @@ abstract class AbstractCurl extends AbstractClient
         static::setOptionsFromRequest($curl, $request);
 
         // apply settings from client
-        curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
+        if ($this->getTimeout() < 1) {
+            curl_setopt($curl, CURLOPT_TIMEOUT_MS, $this->getTimeout() * 1000);
+        } else {
+            curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
+        }
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->getMaxRedirects());
         curl_setopt($curl, CURLOPT_MAXREDIRS, $this->getMaxRedirects());
         curl_setopt($curl, CURLOPT_FAILONERROR, !$this->getIgnoreErrors());
