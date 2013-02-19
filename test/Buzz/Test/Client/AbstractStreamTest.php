@@ -7,6 +7,7 @@ use Buzz\Message;
 
 class StreamClient extends AbstractStream
 {
+    public function send(Message\RequestInterface $request, Message\MessageInterface $response){}
 }
 
 class AbstractStreamTest extends \PHPUnit_Framework_TestCase
