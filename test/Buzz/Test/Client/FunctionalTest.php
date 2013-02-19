@@ -193,7 +193,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         return array(
             array(new Curl()),
             array(new FileGetContents()),
-            array(new MultiCurl()),
+            // array(new MultiCurl()),
         );
     }
 

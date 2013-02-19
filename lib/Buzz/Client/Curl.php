@@ -7,7 +7,7 @@ use Buzz\Message\RequestInterface;
 use Buzz\Exception\ClientException;
 use Buzz\Exception\LogicException;
 
-class Curl extends AbstractCurl implements ClientInterface
+class Curl extends AbstractCurl
 {
     private $lastCurl;
 

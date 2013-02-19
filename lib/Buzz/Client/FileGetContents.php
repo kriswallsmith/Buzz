@@ -7,7 +7,7 @@ use Buzz\Message\RequestInterface;
 use Buzz\Util\CookieJar;
 use Buzz\Exception\ClientException;
 
-class FileGetContents extends AbstractStream implements ClientInterface
+class FileGetContents extends AbstractStream
 {
     protected $cookieJar;
 

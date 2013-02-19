@@ -2,7 +2,7 @@
 
 namespace Buzz\Client;
 
-abstract class AbstractClient
+abstract class AbstractClient implements ClientInterface
 {
     protected $ignoreErrors = true;
     protected $maxRedirects = 5;
