@@ -6,8 +6,8 @@ use Buzz\Message\MessageInterface;
 
 interface FormUploadInterface extends MessageInterface
 {
-    function setName($name);
-    function getFile();
-    function getFilename();
-    function getContentType();
+    public function setName($name);
+    public function getFile();
+    public function getFilename();
+    public function getContentType();
 }

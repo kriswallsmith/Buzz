@@ -30,7 +30,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return resource A new cURL resource
      */
-    static protected function createCurlHandle()
+    protected static function createCurlHandle()
     {
         if (false === $curl = curl_init()) {
             throw new ClientException('Unable to create a new cURL handle');
@@ -49,7 +49,7 @@ abstract class AbstractCurl extends AbstractClient
      * @param string           $raw      The raw response string
      * @param MessageInterface $response The response object
      */
-    static protected function populateResponse($curl, $raw, MessageInterface $response)
+    protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
         $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 
@@ -60,7 +60,7 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Sets options on a cURL resource based on a request.
      */
-    static private function setOptionsFromRequest($curl, RequestInterface $request)
+    private static function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
@@ -101,7 +101,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return string|array A post fields value
      */
-    static private function getPostFields(RequestInterface $request)
+    private static function getPostFields(RequestInterface $request)
     {
         if (!$request instanceof FormRequestInterface) {
             return $request->getContent();
@@ -137,7 +137,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return array An array of header lines
      */
-    static private function getLastHeaders($raw)
+    private static function getLastHeaders($raw)
     {
         $headers = array();
         foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {

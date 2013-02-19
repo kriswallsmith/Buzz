@@ -7,5 +7,5 @@ interface BatchClientInterface extends ClientInterface
     /**
      * Processes the queued requests.
      */
-    function flush();
+    public function flush();
 }

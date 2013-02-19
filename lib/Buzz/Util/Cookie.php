@@ -85,6 +85,7 @@ class Cookie
 
         if (0 === strpos($cookieDomain, '.')) {
             $pattern = '/\b'.preg_quote(substr($cookieDomain, 1), '/').'$/i';
+
             return (boolean) preg_match($pattern, $domain);
         } else {
             return 0 == strcasecmp($cookieDomain, $domain);
@@ -101,6 +102,7 @@ class Cookie
     public function matchesPath($path)
     {
         $needle = $this->getAttribute(static::ATTR_PATH);
+
         return null === $needle || 0 === strpos($path, $needle);
     }
 

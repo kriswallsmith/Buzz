@@ -40,6 +40,7 @@ class FormRequest extends Request implements FormRequestInterface
     {
         if (is_array($value)) {
             $this->addFields(array($name => $value));
+
             return;
         }
 
