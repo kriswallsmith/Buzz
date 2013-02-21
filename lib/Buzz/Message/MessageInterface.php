@@ -17,14 +17,14 @@ interface MessageInterface
      *
      * @return string|array|null The header value(s)
      */
-    function getHeader($name, $glue = "\r\n");
+    public function getHeader($name, $glue = "\r\n");
 
     /**
      * Returns an array of header lines.
      *
      * @return array An array of header lines (integer indexes, e.g. ["Header: value"])
      */
-    function getHeaders();
+    public function getHeaders();
 
     /**
      * Sets all headers on the current message.
@@ -33,14 +33,14 @@ interface MessageInterface
      *
      * @param array $headers An array of header lines
      */
-    function setHeaders(array $headers);
+    public function setHeaders(array $headers);
 
     /**
      * Adds a header to this message.
      *
      * @param string $header A header line
      */
-    function addHeader($header);
+    public function addHeader($header);
 
     /**
      * Adds a set of headers to this message.
@@ -49,26 +49,26 @@ interface MessageInterface
      *
      * @param array $headers Headers
      */
-    function addHeaders(array $headers);
+    public function addHeaders(array $headers);
 
     /**
      * Returns the content of the message.
      *
      * @return string The message content
      */
-    function getContent();
+    public function getContent();
 
     /**
      * Sets the content of the message.
      *
      * @param string $content The message content
      */
-    function setContent($content);
+    public function setContent($content);
 
     /**
      * Returns the message document.
      *
      * @return string The message
      */
-    function __toString();
+    public function __toString();
 }

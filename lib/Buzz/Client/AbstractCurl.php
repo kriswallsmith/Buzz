@@ -6,6 +6,7 @@ use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
+use Buzz\Exception\ClientException;
 
 /**
  * Base client class with helpers for working with cURL.
@@ -14,6 +15,17 @@ abstract class AbstractCurl extends AbstractClient
 {
     protected $options = array();
 
+    public function __construct()
+    {
+        $curlVersion = curl_version();
+        if (version_compare($curlVersion['version'], '7.19.4', 'ge')) {
+            $this->options = array(
+                CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+                CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            );
+        }
+    }
+
     /**
      * Creates a new cURL resource.
      *
@@ -21,10 +33,10 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return resource A new cURL resource
      */
-    static protected function createCurlHandle()
+    protected static function createCurlHandle()
     {
         if (false === $curl = curl_init()) {
-            throw new \RuntimeException('Unable to create a new cURL handle');
+            throw new ClientException('Unable to create a new cURL handle');
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -40,7 +52,7 @@ abstract class AbstractCurl extends AbstractClient
      * @param string           $raw      The raw response string
      * @param MessageInterface $response The response object
      */
-    static protected function populateResponse($curl, $raw, MessageInterface $response)
+    protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
         $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 
@@ -51,7 +63,7 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Sets options on a cURL resource based on a request.
      */
-    static private function setOptionsFromRequest($curl, RequestInterface $request)
+    private static function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
@@ -92,7 +104,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return string|array A post fields value
      */
-    static private function getPostFields(RequestInterface $request)
+    private static function getPostFields(RequestInterface $request)
     {
         if (!$request instanceof FormRequestInterface) {
             return $request->getContent();
@@ -128,7 +140,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return array An array of header lines
      */
-    static private function getLastHeaders($raw)
+    private static function getLastHeaders($raw)
     {
         $headers = array();
         foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
@@ -169,7 +181,11 @@ abstract class AbstractCurl extends AbstractClient
         static::setOptionsFromRequest($curl, $request);
 
         // apply settings from client
-        curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
+        if ($this->getTimeout() < 1) {
+            curl_setopt($curl, CURLOPT_TIMEOUT_MS, $this->getTimeout() * 1000);
+        } else {
+            curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
+        }
         if (!ini_get('safe_mode') && !ini_get('open_basedir')) {
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->getMaxRedirects());
         }

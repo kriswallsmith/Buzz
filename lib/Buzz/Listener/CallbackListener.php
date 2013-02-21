@@ -4,6 +4,7 @@ namespace Buzz\Listener;
 
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
+use Buzz\Exception\InvalidArgumentException;
 
 class CallbackListener implements ListenerInterface
 {
@@ -30,7 +31,7 @@ class CallbackListener implements ListenerInterface
     public function __construct($callable)
     {
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException('The argument is not callable.');
+            throw new InvalidArgumentException('The argument is not callable.');
         }
 
         $this->callable = $callable;

@@ -10,7 +10,7 @@ class CallbackListenerTest extends \PHPUnit_Framework_TestCase
     public function testCallback()
     {
         $calls = array();
-        $listener = new CallbackListener(function() use(& $calls) {
+        $listener = new CallbackListener(function() use (& $calls) {
             $calls[] = func_get_args();
         });
 
@@ -28,7 +28,7 @@ class CallbackListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidCallback()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
         $listener = new CallbackListener(array(1, 2, 3));
     }
 }

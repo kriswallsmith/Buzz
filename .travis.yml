@@ -4,14 +4,15 @@ php:
   - 5.3
   - 5.4
 
+env: TEST_SERVER="http://localhost:8080/server.php"
+
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable && sudo apt-get update && sudo apt-get -qq install nginx > /dev/null 2>&1
 
 before_script:
     - php-cgi -b 127.0.0.1:9000 &
     - nginx -v && sudo nginx -c nginx.conf.dist -p test
-    - export TEST_SERVER="http://localhost:8080/server.php"
-    - wget http://getcomposer.org/composer.phar
-    - php composer.phar install --dev
+    - composer self-update
+    - composer install --dev
 
-script: phpunit --coverage-text
+script: ./bin/phpunit --coverage-text

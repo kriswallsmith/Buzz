@@ -5,11 +5,18 @@ namespace Buzz\Client;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\CookieJar;
+use Buzz\Exception\ClientException;
 
-class FileGetContents extends AbstractStream implements ClientInterface
+class FileGetContents extends AbstractStream
 {
+    /**
+     * @var CookieJar
+     */
     protected $cookieJar;
 
+    /**
+     * @param CookieJar|null $cookieJar
+     */
     public function __construct(CookieJar $cookieJar = null)
     {
         if ($cookieJar) {
@@ -17,11 +24,17 @@ class FileGetContents extends AbstractStream implements ClientInterface
         }
     }
 
+    /**
+     * @param CookieJar $cookieJar
+     */
     public function setCookieJar(CookieJar $cookieJar)
     {
         $this->cookieJar = $cookieJar;
     }
 
+    /**
+     * @return CookieJar
+     */
     public function getCookieJar()
     {
         return $this->cookieJar;
@@ -30,7 +43,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
     /**
      * @see ClientInterface
      *
-     * @throws RuntimeException If file_get_contents() fires an error
+     * @throws ClientException If file_get_contents() fires an error
      */
     public function send(RequestInterface $request, MessageInterface $response)
     {
@@ -47,7 +60,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
-            throw new \RuntimeException($error['message']);
+            throw new ClientException($error['message']);
         }
 
         $response->setHeaders($this->filterHeaders((array) $http_response_header));

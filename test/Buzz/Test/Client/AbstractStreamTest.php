@@ -3,17 +3,22 @@
 namespace Buzz\Test\Client;
 
 use Buzz\Client\AbstractStream;
-use Buzz\Message;
+use Buzz\Message\Request;
+use Buzz\Message\RequestInterface;
+use Buzz\Message\MessageInterface;
 
 class StreamClient extends AbstractStream
 {
+    public function send(RequestInterface $request, MessageInterface $response)
+    {
+    }
 }
 
 class AbstractStreamTest extends \PHPUnit_Framework_TestCase
 {
     public function testConvertsARequestToAContextArray()
     {
-        $request = new Message\Request('POST', '/resource/123', 'http://example.com');
+        $request = new Request('POST', '/resource/123', 'http://example.com');
         $request->addHeader('Content-Type: application/x-www-form-urlencoded');
         $request->addHeader('Content-Length: 15');
         $request->setContent('foo=bar&bar=baz');

@@ -10,7 +10,7 @@ class LoggerListenerTest extends \PHPUnit_Framework_TestCase
     public function testLogger()
     {
         $test = $this;
-        $logger = function($line) use($test) {
+        $logger = function($line) use ($test) {
             $test->assertRegExp('~^Sent "GET http://google.com/" in \d+ms$~', $line);
         };
 
@@ -25,7 +25,7 @@ class LoggerListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidLogger()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
         $listener = new LoggerListener(array(1, 2, 3));
     }
 }

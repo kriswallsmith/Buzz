@@ -176,12 +176,24 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('200', $headers[0]);
     }
 
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Protocol pop3 not supported or disabled in libcurl
+     */
+    public function testRedirectedToForbiddenProtocol()
+    {
+        $client = new Curl();
+        $request = new Request();
+        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect_to=pop3://localhost/');
+        $response = $this->send($client, $request);
+    }
+
     public function provideClient()
     {
         return array(
             array(new Curl()),
             array(new FileGetContents()),
-            array(new MultiCurl()),
+            // array(new MultiCurl()),
         );
     }
 
