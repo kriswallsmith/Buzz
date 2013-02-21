@@ -13,14 +13,17 @@ use Buzz\Exception\ClientException;
  */
 abstract class AbstractCurl extends AbstractClient
 {
-    protected $options;
+    protected $options = array();
 
     public function __construct()
     {
-        $this->options = array(
-            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-        );
+        $curlVersion = curl_version();
+        if (version_compare($curlVersion['version'], '7.19.4', 'ge')) {
+            $this->options = array(
+                CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+                CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            );
+        }
     }
 
     /**
