@@ -186,6 +186,11 @@ abstract class AbstractCurl extends AbstractClient
         } else {
             curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
         }
+
+        if ($this->proxy) {
+            curl_setopt($curl, CURLOPT_PROXY, $this->proxy);
+        }
+
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 0 < $this->getMaxRedirects());
         curl_setopt($curl, CURLOPT_MAXREDIRS, $this->getMaxRedirects());
         curl_setopt($curl, CURLOPT_FAILONERROR, !$this->getIgnoreErrors());
