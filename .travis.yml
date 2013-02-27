@@ -17,6 +17,6 @@ before_script:
     - sudo nginx -p test -c etc/nginx.conf
     - sudo squid3 -f test/etc/squid.conf
     - composer self-update
-    - composer install
+    - composer install --dev
 
 script: ./bin/phpunit
