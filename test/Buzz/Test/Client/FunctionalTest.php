@@ -177,6 +177,25 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider provideClient
+     */
+    public function testProxy($client)
+    {
+        if (!isset($_SERVER['TEST_PROXY'])) {
+            $this->markTestSkipped('The proxy server is not configured.');
+        }
+
+        $client->setProxy($_SERVER['TEST_PROXY']);
+
+        $request = new Request();
+        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $response = $this->send($client, $request);
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('HTTP_VIA', $data['SERVER']);
+    }
+
+    /**
      * @expectedException RuntimeException
      * @expectedExceptionMessage Protocol pop3 not supported or disabled in libcurl
      */
