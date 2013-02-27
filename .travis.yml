@@ -13,8 +13,8 @@ before_install:
     - sudo stop squid3
 
 before_script:
-    - php-cgi -b 127.0.0.1:9000 &
-    - sudo nginx -p test -c nginx.conf.dist
+    - php-cgi -b 127.0.0.1:8888 &
+    - sudo nginx -p test -c etc/nginx.conf
     - sudo squid3 -f test/squid.conf
     - composer self-update
     - composer install
