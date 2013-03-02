@@ -17,8 +17,7 @@ abstract class AbstractCurl extends AbstractClient
 
     public function __construct()
     {
-        $curlVersion = curl_version();
-        if (version_compare($curlVersion['version'], '7.19.4', 'ge')) {
+        if (defined('CURLOPT_PROTOCOLS')) {
             $this->options = array(
                 CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
                 CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
