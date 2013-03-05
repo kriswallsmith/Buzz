@@ -21,7 +21,7 @@ class Request extends AbstractMessage implements RequestInterface
     public function __construct($method = self::METHOD_GET, $resource = '/', $host = null)
     {
         $this->method = strtoupper($method);
-        $this->resource = $resource;
+        $this->resource = urlencode($resource);
         $this->host = $host;
     }
 
