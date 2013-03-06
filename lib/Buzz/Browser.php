@@ -64,7 +64,7 @@ class Browser
      * @param array  $headers An array of request headers
      * @param string $content The request content
      *
-     * @return \Buzz\Message\Response The response object
+     * @return MessageInterface The response object
      */
     public function call($url, $method, $headers = array(), $content = '')
     {
@@ -90,7 +90,7 @@ class Browser
      * @param string $method  The request method to use
      * @param array  $headers An array of request headers
      *
-     * @return \Buzz\Message\Response The response object
+     * @return MessageInterface The response object
      */
     public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
     {
