@@ -50,6 +50,9 @@ class Response extends AbstractMessage
         return $this->reasonPhrase ?: null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setHeaders(array $headers)
     {
         parent::setHeaders($headers);
@@ -57,6 +60,9 @@ class Response extends AbstractMessage
         $this->resetStatusLine();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function addHeader($header)
     {
         parent::addHeader($header);
@@ -64,6 +70,9 @@ class Response extends AbstractMessage
         $this->resetStatusLine();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function addHeaders(array $headers)
     {
         parent::addHeaders($headers);

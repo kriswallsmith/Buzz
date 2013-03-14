@@ -8,12 +8,7 @@ abstract class AbstractMessage implements MessageInterface
     private $content;
 
     /**
-     * Returns the value of a header.
-     *
-     * @param string         $name
-     * @param string|boolean $glue Glue for implode, or false to return an array
-     *
-     * @return string|array|null
+     * {@inheritDoc}
      */
     public function getHeader($name, $glue = "\r\n")
     {
@@ -97,36 +92,57 @@ abstract class AbstractMessage implements MessageInterface
         return $document;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setHeaders(array $headers)
     {
         $this->headers = $this->flattenHeaders($headers);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function addHeader($header)
     {
         $this->headers[] = $header;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function addHeaders(array $headers)
     {
         $this->headers = array_merge($this->headers, $this->flattenHeaders($headers));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getHeaders()
     {
         return $this->headers;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setContent($content)
     {
         $this->content = $content;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getContent()
     {
         return $this->content;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function __toString()
     {
         $string = implode("\r\n", $this->getHeaders())."\r\n";

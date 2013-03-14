@@ -51,6 +51,9 @@ class FormRequest extends Request implements FormRequestInterface
         }
     }
 
+    /**
+     * @param array $fields
+     */
     public function addFields(array $fields)
     {
         foreach ($this->flattenArray($fields) as $name => $value) {
@@ -58,17 +61,26 @@ class FormRequest extends Request implements FormRequestInterface
         }
     }
 
+    /**
+     * @param array $fields
+     */
     public function setFields(array $fields)
     {
         $this->fields = array();
         $this->addFields($fields);
     }
 
+    /**
+     * @return array
+     */
     public function getFields()
     {
         return $this->fields;
     }
 
+    /**
+     * @return string
+     */
     public function getResource()
     {
         $resource = parent::getResource();
@@ -84,11 +96,19 @@ class FormRequest extends Request implements FormRequestInterface
         return $resource;
     }
 
+    /**
+     * @param string $content
+     *
+     * @throws \BadMethodCallException
+     */
     public function setContent($content)
     {
         throw new \BadMethodCallException('It is not permitted to set the content.');
     }
 
+    /**
+     * @return array
+     */
     public function getHeaders()
     {
         $headers = parent::getHeaders();
@@ -106,6 +126,10 @@ class FormRequest extends Request implements FormRequestInterface
         return $headers;
     }
 
+    /**
+     * @return string
+     * @throws LogicException
+     */
     public function getContent()
     {
         if ($this->isSafe()) {

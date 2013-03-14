@@ -20,37 +20,81 @@ class Browser
     private $lastRequest;
     private $lastResponse;
 
+    /**
+     * @param ClientInterface  $client  A client object
+     * @param FactoryInterface $factory A factory object
+     */
     public function __construct(ClientInterface $client = null, FactoryInterface $factory = null)
     {
         $this->client = $client ?: new FileGetContents();
         $this->factory = $factory ?: new Factory();
     }
 
+    /**
+     * @param string $url     An URL
+     * @param array  $headers Some headers
+     *
+     * @return MessageInterface
+     */
     public function get($url, $headers = array())
     {
         return $this->call($url, RequestInterface::METHOD_GET, $headers);
     }
 
+    /**
+     * @param string $url     An URL
+     * @param array  $headers Some headers
+     * @param string $content A content
+     *
+     * @return MessageInterface
+     */
     public function post($url, $headers = array(), $content = '')
     {
         return $this->call($url, RequestInterface::METHOD_POST, $headers, $content);
     }
 
+    /**
+     * @param string $url     An URL
+     * @param array  $headers Some headers
+     *
+     * @return MessageInterface
+     */
     public function head($url, $headers = array())
     {
         return $this->call($url, RequestInterface::METHOD_HEAD, $headers);
     }
 
+    /**
+     * @param string $url     An URL
+     * @param array  $headers Some headers
+     * @param string $content A content
+     *
+     * @return MessageInterface
+     */
     public function patch($url, $headers = array(), $content = '')
     {
         return $this->call($url, RequestInterface::METHOD_PATCH, $headers, $content);
     }
 
+    /**
+     * @param string $url     An URL
+     * @param array  $headers Some headers
+     * @param string $content A content
+     *
+     * @return MessageInterface
+     */
     public function put($url, $headers = array(), $content = '')
     {
         return $this->call($url, RequestInterface::METHOD_PUT, $headers, $content);
     }
 
+    /**
+     * @param string $url     An URL
+     * @param array  $headers Some headers
+     * @param string $content A content
+     *
+     * @return MessageInterface
+     */
     public function delete($url, $headers = array(), $content = '')
     {
         return $this->call($url, RequestInterface::METHOD_DELETE, $headers, $content);
@@ -139,46 +183,73 @@ class Browser
         return $response;
     }
 
+    /**
+     * @return RequestInterface
+     */
     public function getLastRequest()
     {
         return $this->lastRequest;
     }
 
+    /**
+     * @return MessageInterface
+     */
     public function getLastResponse()
     {
         return $this->lastResponse;
     }
 
+    /**
+     * @param ClientInterface $client
+     */
     public function setClient(ClientInterface $client)
     {
         $this->client = $client;
     }
 
+    /**
+     * @return ClientInterface
+     */
     public function getClient()
     {
         return $this->client;
     }
 
+    /**
+     * @param FactoryInterface $factory
+     */
     public function setMessageFactory(FactoryInterface $factory)
     {
         $this->factory = $factory;
     }
 
+    /**
+     * @return FactoryInterface
+     */
     public function getMessageFactory()
     {
         return $this->factory;
     }
 
+    /**
+     * @param ListenerInterface $listener
+     */
     public function setListener(ListenerInterface $listener)
     {
         $this->listener = $listener;
     }
 
+    /**
+     * @return ListenerInterface
+     */
     public function getListener()
     {
         return $this->listener;
     }
 
+    /**
+     * @param ListenerInterface $listener
+     */
     public function addListener(ListenerInterface $listener)
     {
         if (!$this->listener) {

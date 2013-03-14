@@ -9,6 +9,9 @@ class CookieJar
 {
     protected $cookies = array();
 
+    /**
+     * @param Cookie[] $cookies
+     */
     public function setCookies($cookies)
     {
         $this->cookies = array();
@@ -17,6 +20,9 @@ class CookieJar
         }
     }
 
+    /**
+     * @return Cookie[]
+     */
     public function getCookies()
     {
         return $this->cookies;

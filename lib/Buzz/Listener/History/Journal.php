@@ -22,6 +22,9 @@ class Journal implements \Countable, \IteratorAggregate
         $this->addEntry(new Entry($request, $response, $duration));
     }
 
+    /**
+     * @param Entry $entry
+     */
     public function addEntry(Entry $entry)
     {
         array_push($this->entries, $entry);
@@ -29,46 +32,73 @@ class Journal implements \Countable, \IteratorAggregate
         end($this->entries);
     }
 
+    /**
+     * @return Entry[]
+     */
     public function getEntries()
     {
         return $this->entries;
     }
 
+    /**
+     * @return Entry
+     */
     public function getLast()
     {
         return end($this->entries);
     }
 
+    /**
+     * @return RequestInterface
+     */
     public function getLastRequest()
     {
         return $this->getLast()->getRequest();
     }
 
+    /**
+     * @return MessageInterface
+     */
     public function getLastResponse()
     {
         return $this->getLast()->getResponse();
     }
 
+    /**
+     * Clear the entries
+     */
     public function clear()
     {
         $this->entries = array();
     }
 
+    /**
+     * @return int
+     */
     public function count()
     {
         return count($this->entries);
     }
 
+    /**
+     * @param int $limit
+     */
     public function setLimit($limit)
     {
         $this->limit = $limit;
     }
 
+    /**
+     * @return int
+     */
     public function getLimit()
     {
         return $this->limit;
     }
 
+    /**
+     * @return \ArrayIterator
+     */
     public function getIterator()
     {
         return new \ArrayIterator(array_reverse($this->entries));
