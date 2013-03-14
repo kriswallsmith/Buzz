@@ -7,6 +7,7 @@ use Buzz\Message\RequestInterface;
 
 class ListenerChain implements ListenerInterface
 {
+    /** @var ListenerInterface[] */
     private $listeners;
 
     public function __construct(array $listeners = array())

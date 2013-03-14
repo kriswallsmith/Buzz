@@ -14,10 +14,19 @@ use Buzz\Util\Url;
 
 class Browser
 {
+    /** @var ClientInterface */
     private $client;
+
+    /** @var FactoryInterface */
     private $factory;
+
+    /** @var ListenerInterface */
     private $listener;
+
+    /** @var RequestInterface */
     private $lastRequest;
+
+    /** @var MessageInterface */
     private $lastResponse;
 
     public function __construct(ClientInterface $client = null, FactoryInterface $factory = null)
