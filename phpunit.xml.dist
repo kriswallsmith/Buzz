@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./test/bootstrap.php" colors="true">
+<phpunit backupGlobals="false" bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="Buzz Test Suite">
             <directory suffix="Test.php">./test/Buzz/</directory>
@@ -9,6 +9,7 @@
 
     <php>
         <!-- <server name="TEST_SERVER" value="http://localhost/buzz/test/server.php" /> -->
+        <!-- <server name="TEST_PROXY" value="localhost:3128" /> -->
     </php>
 
     <filter>
