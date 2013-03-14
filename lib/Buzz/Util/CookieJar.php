@@ -7,6 +7,7 @@ use Buzz\Message\RequestInterface;
 
 class CookieJar
 {
+    /** @var Cookie[] */
     protected $cookies = array();
 
     public function setCookies($cookies)
