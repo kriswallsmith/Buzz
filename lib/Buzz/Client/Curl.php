@@ -38,6 +38,9 @@ class Curl extends AbstractCurl
     /**
      * Introspects the last cURL request.
      *
+     * @return string|array
+     * @throws LogicException
+     *
      * @see curl_getinfo()
      *
      * @throws LogicException If there is no cURL resource
