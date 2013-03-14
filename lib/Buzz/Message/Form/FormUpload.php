@@ -56,6 +56,8 @@ class FormUpload extends AbstractMessage implements FormUploadInterface
 
     /**
      * Prepends Content-Disposition and Content-Type headers.
+     *
+     * @return array
      */
     public function getHeaders()
     {

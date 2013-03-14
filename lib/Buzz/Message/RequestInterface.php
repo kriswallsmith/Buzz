@@ -69,7 +69,7 @@ interface RequestInterface extends MessageInterface
     /**
      * Checks if the current request is secure.
      *
-     * @return Boolean True if the request is secure
+     * @return boolean True if the request is secure
      */
     public function isSecure();
 }
