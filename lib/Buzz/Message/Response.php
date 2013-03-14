@@ -142,7 +142,7 @@ class Response extends AbstractMessage
     }
 
     /**
-     * Is the reponse forbidden?
+     * Is the response forbidden?
      *
      * @return boolean
      */
