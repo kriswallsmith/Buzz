@@ -38,6 +38,8 @@ class Curl extends AbstractCurl
     /**
      * Introspects the last cURL request.
      *
+     * @param int $opt
+     *
      * @return string|array
      * @throws LogicException
      *
