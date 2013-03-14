@@ -80,6 +80,8 @@ class FormUpload extends AbstractMessage implements FormUploadInterface
 
     /**
      * Loads the content from a file.
+     *
+     * @param string $file
      */
     public function loadContent($file)
     {
