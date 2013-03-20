@@ -53,9 +53,6 @@ class Curl extends AbstractCurl
         return curl_getinfo($this->lastCurl, $opt);
     }
 
-    /**
-     * Destructor
-     */
     public function __destruct()
     {
         if (is_resource($this->lastCurl)) {

@@ -17,9 +17,6 @@ class Cookie
     protected $attributes = array();
     protected $createdAt;
 
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         $this->createdAt = time();

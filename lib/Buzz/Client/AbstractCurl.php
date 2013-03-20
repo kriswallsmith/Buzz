@@ -15,9 +15,6 @@ abstract class AbstractCurl extends AbstractClient
 {
     protected $options = array();
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         if (defined('CURLOPT_PROTOCOLS')) {
