@@ -79,7 +79,7 @@ abstract class AbstractMessage implements MessageInterface
     /**
      * Returns the current message as a DOMDocument.
      *
-     * @return DOMDocument
+     * @return \DOMDocument
      */
     public function toDomDocument()
     {
