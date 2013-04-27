@@ -10,7 +10,13 @@ class MultiCurl extends AbstractCurl implements AsyncClientInterface
 {
     protected $queue = array();
 
-    /** Pass options 'callback' to handle responses as they complete and 'errback' to handle transport errors (timeout etc.) */
+    /**
+     * Populates the supplied response with the response for the supplied request.
+     *
+     * @param RequestInterface $request  A request object
+     * @param MessageInterface $response A response object
+     * @param Array $options Pass options 'callback' to handle responses as they complete and 'errback' to handle transport errors (timeout etc.)
+     */
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
         $this->queue[] = array($request, $response, $options);
@@ -26,7 +32,6 @@ class MultiCurl extends AbstractCurl implements AsyncClientInterface
         return count($this->queue);
     }
 
-    /** This will execute a tick, which may be a lot of work or none at all. You should keep calling until isDone() */
     public function proceed()
     {
         if ($this->isDone()) {
@@ -97,7 +102,6 @@ class MultiCurl extends AbstractCurl implements AsyncClientInterface
         }
     }
 
-    /** Calling this will block until all items on the queue have completed */
     public function flush()
     {
         while (!$this->isDone()) {
