@@ -54,7 +54,7 @@ class MultiCurl extends AbstractCurl implements AsyncClientInterface
                 if (isset($options['callback'])) {
                     unset($options['callback']);
                 }
-                if ($options['errback']) {
+                if (isset($options['errback'])) {
                     unset($options['errback']);
                 }
                 $this->prepare($curl, $request, $options);
