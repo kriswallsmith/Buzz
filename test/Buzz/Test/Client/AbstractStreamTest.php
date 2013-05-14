@@ -47,5 +47,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $client->setVerifyPeer(true);
         $expected['ssl']['verify_peer'] = true;
         $this->assertEquals($expected, $client->getStreamContextArray($request));
+        $expected['http']['max_redirects'] = 42;
+        $this->assertEquals($expected, $client->getStreamContextArray($request, 42));
     }
 }

@@ -10,10 +10,11 @@ abstract class AbstractStream extends AbstractClient
      * Converts a request into an array for stream_context_create().
      *
      * @param RequestInterface $request A request object
+     * @param integer $maxRedirects     Optional override for max-redirects option. If not supplied, use `$this->getMaxRedirects()`
      *
      * @return array An array for stream_context_create()
      */
-    public function getStreamContextArray(RequestInterface $request)
+    public function getStreamContextArray(RequestInterface $request, $maxRedirects = null)
     {
         $options = array(
             'http' => array(
@@ -25,7 +26,7 @@ abstract class AbstractStream extends AbstractClient
 
                 // values from the current client
                 'ignore_errors'    => $this->getIgnoreErrors(),
-                'max_redirects'    => $this->getMaxRedirects(),
+                'max_redirects'    => is_null($maxRedirects) ? $this->getMaxRedirects() : $maxRedirects,
                 'timeout'          => $this->getTimeout(),
             ),
             'ssl' => array(

@@ -4,6 +4,8 @@ namespace Buzz\Client;
 
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
+use Buzz\Message\Response;
+use Buzz\Message\Request;
 use Buzz\Util\CookieJar;
 use Buzz\Exception\ClientException;
 
@@ -52,22 +54,63 @@ class FileGetContents extends AbstractStream
             $cookieJar->addCookieHeaders($request);
         }
 
-        $context = stream_context_create($this->getStreamContextArray($request));
         $url = $request->getHost().$request->getResource();
-
-        $level = error_reporting(0);
-        $content = file_get_contents($url, 0, $context);
-        error_reporting($level);
-        if (false === $content) {
-            $error = error_get_last();
-            throw new ClientException($error['message']);
-        }
-
-        $response->setHeaders($this->filterHeaders((array) $http_response_header));
-        $response->setContent($content);
-
-        if ($cookieJar) {
-            $cookieJar->processSetCookieHeaders($request, $response);
+        $currentRequest = $request;
+        $allowedRedirects = $this->getMaxRedirects();
+        while (true) {
+            if ($allowedRedirects == 0) {
+                throw new ClientException("Max number of redirects exceeded");
+            }
+            $context = stream_context_create($this->getStreamContextArray($currentRequest, 1));
+            $level = error_reporting(0);
+            $content = file_get_contents($url, 0, $context);
+            error_reporting($level);
+            if (false === $content) {
+                $error = error_get_last();
+                throw new ClientException($error['message']);
+            }
+            $tmp = new Response();
+            $responseHeaders = $this->filterHeaders((array) $http_response_header);
+            $tmp->setHeaders($responseHeaders);
+            if ($cookieJar) {
+                $cookieJar->processSetCookieHeaders($request, $tmp);
+            }
+            if ($tmp->isRedirection()) {
+                $location = $tmp->getHeader('Location', "");
+                if (!$location) {
+                    throw new ClientException("Redirect without a 'Location' header");
+                }
+                // Resolve redirect - Suprisingly complicated stuff
+                if ($location[0] === '/') { // Relative url - Not allowed, but very common.
+                    if (strlen($location) > 1 && $location[1] == '/') { // Special case - Protocol relative url
+                        // Prepend scheme from previous location
+                        $url = parse_url($url, PHP_URL_SCHEME).$location;
+                    } else {
+                        // Prepend authoritative part from previous location
+                        preg_match('~^([a-z]+://[^/]+)/~', $url, $regs);
+                        $url = $regs[1].$location;
+                    }
+                } elseif (preg_match('~^[a-z]+://[^/]+/~', $location)) { // Well-formed, absolute url
+                    $url = $location;
+                } else { // Relative url
+                    // Trim off any basename/qs-params from previous location and prepend
+                    $url = preg_replace('~/[^/]+$~', '/', $url).$location;
+                }
+                $newRequest = new Request();
+                $newRequest->setMethod('GET'); // Redirects are always GET
+                $newRequest->setProtocolVersion($currentRequest->getProtocolVersion());
+                $newRequest->fromUrl($url);
+                $newRequest->setHeaders($currentRequest->getHeaders());
+                $cookieJar->addCookieHeaders($newRequest);
+                $currentRequest = $newRequest;
+            } else {
+              // We have arrived at our final destination. Load into provided response and exit loop
+              $response->setLocation($url);
+              $response->setHeaders($responseHeaders);
+              $response->setContent($content);
+              break;
+          }
+          $allowedRedirects--;
         }
     }
 
