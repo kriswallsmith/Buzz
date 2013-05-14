@@ -90,9 +90,11 @@ class FileGetContents extends AbstractStream
                         preg_match('~^([a-z]+://[^/]+)/~', $url, $regs);
                         $url = $regs[1].$location;
                     }
+                } elseif ($location[0] == '?') { // Relative qs-params
+                    $url = preg_replace('~[?].*$~', '', $url).$location;
                 } elseif (preg_match('~^[a-z]+://[^/]+/~', $location)) { // Well-formed, absolute url
                     $url = $location;
-                } else { // Relative url
+                } else { // Relative location
                     // Trim off any basename/qs-params from previous location and prepend
                     $url = preg_replace('~/[^/]+$~', '/', $url).$location;
                 }
@@ -101,7 +103,9 @@ class FileGetContents extends AbstractStream
                 $newRequest->setProtocolVersion($currentRequest->getProtocolVersion());
                 $newRequest->fromUrl($url);
                 $newRequest->setHeaders($currentRequest->getHeaders());
-                $cookieJar->addCookieHeaders($newRequest);
+                if ($cookieJar) {
+                    $cookieJar->addCookieHeaders($newRequest);
+                }
                 $currentRequest = $newRequest;
             } else {
               // We have arrived at our final destination. Load into provided response and exit loop
