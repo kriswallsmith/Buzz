@@ -72,6 +72,26 @@ class Response extends AbstractMessage
     }
 
     /**
+     * Sets the location of the response
+     *
+     * @param String $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * Returns the location of the response, which may be different from the requested url, if aredirect occurred.
+     *
+     * @return String
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
      * Is response invalid?
      *
      * @return Boolean
