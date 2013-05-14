@@ -4,7 +4,7 @@ php:
     - 5.3.3
     - 5.4
 
-env: TEST_SERVER="http://127.0.0.1:8080/server.php" TEST_PROXY="127.0.0.1:3128"
+env: TEST_SERVER="http://127.0.0.1:8080/server.php" TEST_PROXY="127.0.0.1:3128" PHP_FCGI_CHILDREN=10 PHP_FCGI_MAX_REQUESTS=10
 
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
