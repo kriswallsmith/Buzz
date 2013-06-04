@@ -129,7 +129,7 @@ abstract class AbstractCurl extends AbstractClient
             }
         }
 
-        return $multipart ? $fields : http_build_query($fields);
+        return $multipart ? $fields : http_build_query($fields, '', '&');
     }
 
     /**
