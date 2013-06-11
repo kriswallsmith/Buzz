@@ -2,7 +2,7 @@
 
 namespace Buzz\Message;
 
-class Response extends AbstractMessage
+class Response extends AbstractMessage implements ResponseInterface
 {
     private $protocolVersion;
     private $statusCode;

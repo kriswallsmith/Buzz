@@ -24,7 +24,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     public function testBasicMethods($method, $content)
     {
         $request = $this->getMock('Buzz\Message\RequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $response = $this->getMock('Buzz\Message\ResponseInterface');
         $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
@@ -69,7 +69,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     public function testSubmit()
     {
         $request = $this->getMock('Buzz\Message\Form\FormRequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $response = $this->getMock('Buzz\Message\ResponseInterface');
         $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
@@ -106,7 +106,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     {
         $listener = $this->getMock('Buzz\Listener\ListenerInterface');
         $request = $this->getMock('Buzz\Message\RequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $response = $this->getMock('Buzz\Message\ResponseInterface');
 
         $listener->expects($this->once())
             ->method('preSend')
@@ -124,7 +124,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
     public function testLastMessages()
     {
         $request = $this->getMock('Buzz\Message\RequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $response = $this->getMock('Buzz\Message\ResponseInterface');
 
         $this->browser->send($request, $response);
 
