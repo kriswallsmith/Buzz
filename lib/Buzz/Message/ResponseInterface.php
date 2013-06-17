@@ -1,16 +1,12 @@
 <?php
-/**
- * @author Ryan Castle <ryan@dwd.com.au>
- */
 
 namespace Buzz\Message;
 
 /**
- * An HTTP request message.
- *
- * @author Ryan Castle <ryan.castle@gmail.com>
+ * An HTTP response message.
  */
-interface ResponseInterface extends MessageInterface {
+interface ResponseInterface extends MessageInterface
+{
     /**
      * Returns the protocol version of the current response.
      *
