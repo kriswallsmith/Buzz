@@ -123,6 +123,9 @@ abstract class AbstractCurl extends AbstractClient
                     if ($contentType = $value->getContentType()) {
                         $fields[$name] .= ';type='.$contentType;
                     }
+                    if (basename($file) != $value->getFilename()) {
+                        $fields[$name] .= ';filename='.$value->getFilename();
+                    }
                 } else {
                     return $request->getContent();
                 }
