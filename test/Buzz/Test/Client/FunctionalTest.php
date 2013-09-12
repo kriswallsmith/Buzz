@@ -104,6 +104,25 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideClient
      */
+    public function testRequestContentCastedToString($client)
+    {
+        $contentObject = new \SplFileObject(__FILE__);
+        $contentString = (string) $contentObject;
+
+        $request = new Request(RequestInterface::METHOD_POST);
+        $request->setContent($contentObject);
+
+        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $response = $this->send($client, $request);
+
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertEquals($contentString, $data['INPUT']);
+    }
+
+    /**
+     * @dataProvider provideClient
+     */
     public function testJsonPayload($client)
     {
         $request = new Request(RequestInterface::METHOD_POST);
