@@ -113,22 +113,23 @@ abstract class AbstractCurl extends AbstractClient
         $multipart = false;
 
         foreach ($fields as $name => $value) {
-            if ($value instanceof FormUploadInterface) {
-                $multipart = true;
+            if (!$value instanceof FormUploadInterface) {
+                continue;
+            }
+            if (!$file = $value->getFile()) {
+                return $request->getContent();
+            }
 
-                if ($file = $value->getFile()) {
-                    // replace value with upload string
-                    $fields[$name] = '@'.$file;
+            $multipart = true;
 
-                    if ($contentType = $value->getContentType()) {
-                        $fields[$name] .= ';type='.$contentType;
-                    }
-                    if (basename($file) != $value->getFilename()) {
-                        $fields[$name] .= ';filename='.$value->getFilename();
-                    }
-                } else {
-                    return $request->getContent();
-                }
+            // replace value with upload string
+            $fields[$name] = '@'.$file;
+
+            if ($contentType = $value->getContentType()) {
+                $fields[$name] .= ';type='.$contentType;
+            }
+            if (basename($file) != $value->getFilename()) {
+                $fields[$name] .= ';filename='.$value->getFilename();
             }
         }
 
