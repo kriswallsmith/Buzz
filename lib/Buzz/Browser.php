@@ -10,7 +10,7 @@ use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\Url;
 
-class Browser implements ClientInterface
+class Browser
 {
     /**
      * @var ClientInterface
@@ -82,7 +82,7 @@ class Browser implements ClientInterface
         $request->setContent($content);
 
         $response = $this->factory->createResponse();
-        $this->send($request, $response);
+        $this->client->send($request, $response);
 
         return $response;
     }
@@ -112,17 +112,9 @@ class Browser implements ClientInterface
         $request->setFields($fields);
 
         $response = $this->factory->createResponse();
-        $this->send($request, $response);
+        $this->client->send($request, $response);
 
         return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function send(RequestInterface $request, MessageInterface $response)
-    {
-        $this->client->send($request, $response);
     }
 
     public function setClient(ClientInterface $client)
