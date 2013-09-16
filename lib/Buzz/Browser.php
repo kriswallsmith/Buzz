@@ -4,21 +4,23 @@ namespace Buzz;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Client\FileGetContents;
-use Buzz\Listener\ListenerChain;
-use Buzz\Listener\ListenerInterface;
 use Buzz\Message\Factory\Factory;
 use Buzz\Message\Factory\FactoryInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\Url;
 
-class Browser
+class Browser implements ClientInterface
 {
+    /**
+     * @var ClientInterface
+     */
     private $client;
+
+    /**
+     * @var FactoryInterface
+     */
     private $factory;
-    private $listener;
-    private $lastRequest;
-    private $lastResponse;
 
     public function __construct(ClientInterface $client = null, FactoryInterface $factory = null)
     {
@@ -79,7 +81,10 @@ class Browser
         $request->addHeaders($headers);
         $request->setContent($content);
 
-        return $this->send($request);
+        $response = $this->factory->createResponse();
+        $this->send($request, $response);
+
+        return $response;
     }
 
     /**
@@ -106,47 +111,18 @@ class Browser
         $request->setMethod($method);
         $request->setFields($fields);
 
-        return $this->send($request);
-    }
-
-    /**
-     * Sends a request.
-     *
-     * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
-     *
-     * @return MessageInterface The response
-     */
-    public function send(RequestInterface $request, MessageInterface $response = null)
-    {
-        if (null === $response) {
-            $response = $this->factory->createResponse();
-        }
-
-        if ($this->listener) {
-            $this->listener->preSend($request);
-        }
-
-        $this->client->send($request, $response);
-
-        $this->lastRequest = $request;
-        $this->lastResponse = $response;
-
-        if ($this->listener) {
-            $this->listener->postSend($request, $response);
-        }
+        $response = $this->factory->createResponse();
+        $this->send($request, $response);
 
         return $response;
     }
 
-    public function getLastRequest()
+    /**
+     * {@inheritdoc}
+     */
+    public function send(RequestInterface $request, MessageInterface $response)
     {
-        return $this->lastRequest;
-    }
-
-    public function getLastResponse()
-    {
-        return $this->lastResponse;
+        $this->client->send($request, $response);
     }
 
     public function setClient(ClientInterface $client)
@@ -167,29 +143,5 @@ class Browser
     public function getMessageFactory()
     {
         return $this->factory;
-    }
-
-    public function setListener(ListenerInterface $listener)
-    {
-        $this->listener = $listener;
-    }
-
-    public function getListener()
-    {
-        return $this->listener;
-    }
-
-    public function addListener(ListenerInterface $listener)
-    {
-        if (!$this->listener) {
-            $this->listener = $listener;
-        } elseif ($this->listener instanceof ListenerChain) {
-            $this->listener->addListener($listener);
-        } else {
-            $this->listener = new ListenerChain(array(
-                $this->listener,
-                $listener,
-            ));
-        }
     }
 }
