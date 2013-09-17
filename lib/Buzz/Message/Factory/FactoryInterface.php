@@ -20,7 +20,7 @@ interface FactoryInterface
      * @param string      $resource Some resource
      * @param string|null $host     A request host
      *
-     * @return RequestInterface
+     * @return \Buzz\Message\Form\FormRequestInterface
      */
     public function createFormRequest($method = RequestInterface::METHOD_POST, $resource = '/', $host = null);
 
