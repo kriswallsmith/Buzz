@@ -76,9 +76,6 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
             ->method('createFormRequest')
             ->will($this->returnValue($request));
         $request->expects($this->once())
-            ->method('setMethod')
-            ->with('PUT');
-        $request->expects($this->once())
             ->method('setHost')
             ->with('http://google.com');
         $request->expects($this->once())

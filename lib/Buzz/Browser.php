@@ -68,23 +68,12 @@ class Browser
      *
      * @return MessageInterface The response object
      */
-    public function call($url, $method, $headers = array(), $content = '')
+    public function call($url, $method, array $headers = array(), $content = '')
     {
         $request = $this->factory->createRequest($method);
-
-        if (!$url instanceof Url) {
-            $url = new Url($url);
-        }
-
-        $url->applyToRequest($request);
-
-        $request->addHeaders($headers);
         $request->setContent($content);
 
-        $response = $this->factory->createResponse();
-        $this->client->send($request, $response);
-
-        return $response;
+        return $this->send($request, $url, $headers);
     }
 
     /**
@@ -97,24 +86,12 @@ class Browser
      *
      * @return MessageInterface The response object
      */
-    public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
+    public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, array $headers = array())
     {
-        $request = $this->factory->createFormRequest();
-
-        if (!$url instanceof Url) {
-            $url = new Url($url);
-        }
-
-        $url->applyToRequest($request);
-
-        $request->addHeaders($headers);
-        $request->setMethod($method);
+        $request = $this->factory->createFormRequest($method);
         $request->setFields($fields);
 
-        $response = $this->factory->createResponse();
-        $this->client->send($request, $response);
-
-        return $response;
+        return $this->send($request, $url, $headers);
     }
 
     public function setClient(ClientInterface $client)
@@ -135,5 +112,29 @@ class Browser
     public function getMessageFactory()
     {
         return $this->factory;
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param string|Url       $url
+     * @param array|null       $headers
+     *
+     * @return MessageInterface
+     */
+    private function send(RequestInterface $request, $url, array $headers = null)
+    {
+        if (!$url instanceof Url) {
+            $url = new Url($url);
+        }
+        $url->applyToRequest($request);
+
+        if ($headers) {
+            $request->addHeaders($headers);
+        }
+
+        $response = $this->factory->createResponse();
+        $this->client->send($request, $response);
+
+        return $response;
     }
 }
