@@ -18,7 +18,7 @@ class ListenerAwareClient implements ClientInterface
      */
     private $listeners;
 
-    public function __construct(ClientInterface $client, array $listeners =  array())
+    public function __construct(ClientInterface $client, array $listeners = array())
     {
         $this->client = $client;
         $this->listeners = $listeners;
@@ -53,7 +53,5 @@ class ListenerAwareClient implements ClientInterface
         foreach ($this->listeners as $listener) {
             $listener->postSend($request, $response);
         }
-
-        return $response;
     }
 }
