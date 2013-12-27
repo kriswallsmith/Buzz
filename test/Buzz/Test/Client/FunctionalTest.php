@@ -15,10 +15,19 @@ use Buzz\Message\Response;
 
 class FunctionalTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        if (!isset($_SERVER['TEST_SERVER'])) {
-            $this->markTestSkipped('The test server is not configured.');
+        if (!isset($_SERVER['TEST_SERVER']) || !isset($_SERVER['TEST_PHP_CGI'])) {
+            static::markTestSkipped('The test server is not configured.');
+        }
+
+        $server = parse_url($_SERVER['TEST_PHP_CGI']);
+        $connection = @fsockopen($server['host'], $server['port']);
+
+        if (is_resource($connection)) {
+            fclose($connection);
+        } else {
+            static::markTestSkipped('The test server is not running.');
         }
     }
 

@@ -5,7 +5,7 @@ php:
     - 5.4
     - 5.5
 
-env: TEST_SERVER="http://127.0.0.1:8080/server.php" TEST_PROXY="127.0.0.1:3128"
+env: TEST_SERVER="http://127.0.0.1:8080/server.php" TEST_PROXY="127.0.0.1:3128" TEST_PHP_CGI="127.0.0.1:8888"
 
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
@@ -14,7 +14,7 @@ before_install:
     - sudo stop squid3
 
 before_script:
-    - php-cgi -b 127.0.0.1:8888 &
+    - php-cgi -b $TEST_PHP_CGI &
     - sudo nginx -p test -c etc/nginx.conf
     - sudo squid3 -f test/etc/squid.conf
     - composer self-update
