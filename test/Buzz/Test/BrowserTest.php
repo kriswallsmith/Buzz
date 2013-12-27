@@ -179,4 +179,52 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Buzz\Listener\ListenerChain', $listenerChain);
         $this->assertEquals(3, count($listenerChain->getListeners()));
     }
+
+    public function testDefaultHeadersEmpty() {
+        $request = $this->getMock('Buzz\Message\RequestInterface');
+        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $headers = array('X-Foo: bar');
+
+        $this->factory->expects($this->once())
+            ->method('createRequest')
+            ->with('GET')
+            ->will($this->returnValue($request));
+        $this->factory->expects($this->once())
+            ->method('createResponse')
+            ->will($this->returnValue($response));
+
+        $request->expects($this->once())
+            ->method('addHeaders')
+            ->with($headers);
+
+        $this->assertSame(array(), $this->browser->getDefaultHeaders());
+
+        $this->browser->get('http://google.com/', $headers);
+
+    }
+
+    public function testDefaultHeaders() {
+        $request = $this->getMock('Buzz\Message\RequestInterface');
+        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $defaultHeader = 'X-Default: baz';
+        $header = 'X-Foo: bar';
+
+        $this->factory->expects($this->once())
+            ->method('createRequest')
+            ->with('GET')
+            ->will($this->returnValue($request));
+        $this->factory->expects($this->once())
+            ->method('createResponse')
+            ->will($this->returnValue($response));
+
+        $request->expects($this->once())
+            ->method('addHeaders')
+            ->with(array($defaultHeader, $header));
+
+        $this->browser->setDefaultHeaders(array($defaultHeader));
+        $this->assertSame(array($defaultHeader), $this->browser->getDefaultHeaders());
+
+        $this->browser->get('http://google.com/', array($header));
+
+    }
 }

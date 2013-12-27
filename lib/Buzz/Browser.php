@@ -19,6 +19,7 @@ class Browser
     private $listener;
     private $lastRequest;
     private $lastResponse;
+    private $headers = array();
 
     public function __construct(ClientInterface $client = null, FactoryInterface $factory = null)
     {
@@ -76,7 +77,7 @@ class Browser
 
         $url->applyToRequest($request);
 
-        $request->addHeaders($headers);
+        $request->addHeaders(array_merge($this->headers, $headers));
         $request->setContent($content);
 
         return $this->send($request);
@@ -102,7 +103,7 @@ class Browser
 
         $url->applyToRequest($request);
 
-        $request->addHeaders($headers);
+        $request->addHeaders(array_merge($this->headers, $headers));
         $request->setMethod($method);
         $request->setFields($fields);
 
@@ -191,5 +192,13 @@ class Browser
                 $listener,
             ));
         }
+    }
+
+    public function setDefaultHeaders(array $headers) {
+        $this->headers = $headers;
+    }
+
+    public function getDefaultHeaders() {
+        return $this->headers;
     }
 }
