@@ -117,15 +117,27 @@ abstract class AbstractCurl extends AbstractClient
                 $multipart = true;
 
                 if ($file = $value->getFile()) {
-                    // replace value with upload string
-                    $fields[$name] = '@'.$file;
+                    if (class_exists('\\CURLFile')) {
+                        $fields[$name] = new \CURLFile($file);
 
-                    if ($contentType = $value->getContentType()) {
-                        $fields[$name] .= ';type='.$contentType;
+                        if ($contentType = $value->getContentType()) {
+                            $fields[$name]->setMimeType($contentType);
+                        }
+                        if (basename($file) != $value->getFilename()) {
+                            $fields[$name]->setPostFilename($value->getFilename());
+                        }
+                    } else {
+                        // replace value with upload string
+                        $fields[$name] = '@'.$file;
+
+                        if ($contentType = $value->getContentType()) {
+                            $fields[$name] .= ';type='.$contentType;
+                        }
+                        if (basename($file) != $value->getFilename()) {
+                            $fields[$name] .= ';filename='.$value->getFilename();
+                        }
                     }
-                    if (basename($file) != $value->getFilename()) {
-                        $fields[$name] .= ';filename='.$value->getFilename();
-                    }
+
                 } else {
                     return $request->getContent();
                 }
@@ -192,7 +204,7 @@ abstract class AbstractCurl extends AbstractClient
         if ($this->proxy) {
             curl_setopt($curl, CURLOPT_PROXY, $this->proxy);
         }
-        
+
         $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir');
 
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow && $this->getMaxRedirects() > 0);
