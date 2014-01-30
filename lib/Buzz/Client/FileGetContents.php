@@ -63,6 +63,10 @@ class FileGetContents extends AbstractStream
             throw new ClientException($error['message']);
         }
 
+        if (!isset($http_response_header)) {
+            $http_response_header = array();
+        }
+
         $response->setHeaders($this->filterHeaders((array) $http_response_header));
         $response->setContent($content);
 
