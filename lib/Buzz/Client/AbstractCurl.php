@@ -56,7 +56,7 @@ abstract class AbstractCurl extends AbstractClient
         $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 
         $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
-        $response->setContent(substr($raw, $pos));
+        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
     }
 
     /**
