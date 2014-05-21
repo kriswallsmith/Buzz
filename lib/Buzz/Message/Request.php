@@ -25,6 +25,9 @@ class Request extends AbstractMessage implements RequestInterface
         $this->host = $host;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setHeaders(array $headers)
     {
         parent::setHeaders(array());
@@ -34,6 +37,9 @@ class Request extends AbstractMessage implements RequestInterface
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function addHeader($header)
     {
         if (0 === stripos(substr($header, -8), 'HTTP/1.') && 3 == count($parts = explode(' ', $header))) {
@@ -47,41 +53,65 @@ class Request extends AbstractMessage implements RequestInterface
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setMethod($method)
     {
         $this->method = strtoupper($method);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getMethod()
     {
         return $this->method;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setResource($resource)
     {
         $this->resource = $resource;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getResource()
     {
         return $this->resource;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setHost($host)
     {
         $this->host = $host;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getHost()
     {
         return $this->host;
     }
 
+    /**
+     * @param float $protocolVersion
+     */
     public function setProtocolVersion($protocolVersion)
     {
         $this->protocolVersion = $protocolVersion;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getProtocolVersion()
     {
         return $this->protocolVersion;
@@ -112,9 +142,7 @@ class Request extends AbstractMessage implements RequestInterface
     }
 
     /**
-     * Returns true if the current request is secure.
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function isSecure()
     {
@@ -123,6 +151,8 @@ class Request extends AbstractMessage implements RequestInterface
 
     /**
      * Merges cookie headers on the way out.
+     *
+     * {@inheritDoc}
      */
     public function getHeaders()
     {
@@ -132,7 +162,7 @@ class Request extends AbstractMessage implements RequestInterface
     /**
      * Returns a string representation of the current request.
      *
-     * @return string
+     * {@inheritDoc}
      */
     public function __toString()
     {

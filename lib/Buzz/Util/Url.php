@@ -52,41 +52,65 @@ class Url
         $this->components = $components;
     }
 
+    /**
+     * @return string|null
+     */
     public function getScheme()
     {
         return $this->parseUrl('scheme');
     }
 
+    /**
+     * @return string|null
+     */
     public function getHostname()
     {
         return $this->parseUrl('host');
     }
 
+    /**
+     * @return int|null
+     */
     public function getPort()
     {
         return $this->parseUrl('port');
     }
 
+    /**
+     * @return string|null
+     */
     public function getUser()
     {
         return $this->parseUrl('user');
     }
 
+    /**
+     * @return string|null
+     */
     public function getPassword()
     {
         return $this->parseUrl('pass');
     }
 
+    /**
+     * @return string|null
+     */
     public function getPath()
     {
         return $this->parseUrl('path');
     }
 
+    /**
+     * @return string|null
+     */
     public function getQueryString()
     {
         return $this->parseUrl('query');
     }
 
+    /**
+     * @return string|null
+     */
     public function getFragment()
     {
         return $this->parseUrl('fragment');

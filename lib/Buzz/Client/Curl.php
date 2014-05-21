@@ -11,6 +11,13 @@ class Curl extends AbstractCurl
 {
     private $lastCurl;
 
+    /**
+     * @param RequestInterface $request  A request object
+     * @param MessageInterface $response A response object
+     * @param array            $options  cURL options
+     *
+     * @throws \Buzz\Exception\ClientException
+     */
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
         if (is_resource($this->lastCurl)) {

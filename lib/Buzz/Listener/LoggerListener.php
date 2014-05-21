@@ -12,6 +12,12 @@ class LoggerListener implements ListenerInterface
     private $prefix;
     private $startTime;
 
+    /**
+     * @param Callable    $logger Some logger callable
+     * @param string|null $prefix The logging prefix
+     *
+     * @throws InvalidArgumentException
+     */
     public function __construct($logger, $prefix = null)
     {
         if (!is_callable($logger)) {
@@ -22,11 +28,17 @@ class LoggerListener implements ListenerInterface
         $this->prefix = $prefix;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function preSend(RequestInterface $request)
     {
         $this->startTime = microtime(true);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function postSend(RequestInterface $request, MessageInterface $response)
     {
         $seconds = microtime(true) - $this->startTime;

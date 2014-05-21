@@ -25,16 +25,25 @@ class Entry
         $this->duration = $duration;
     }
 
+    /**
+     * @return RequestInterface
+     */
     public function getRequest()
     {
         return $this->request;
     }
 
+    /**
+     * @return MessageInterface
+     */
     public function getResponse()
     {
         return $this->response;
     }
 
+    /**
+     * @return int|null
+     */
     public function getDuration()
     {
         return $this->duration;

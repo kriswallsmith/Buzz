@@ -17,9 +17,6 @@ class Cookie
     protected $attributes = array();
     protected $createdAt;
 
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         $this->createdAt = time();
@@ -149,42 +146,69 @@ class Cookie
         return 'Cookie: '.$this->getName().'='.$this->getValue();
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setValue($value)
     {
         $this->value = $value;
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * @param array $attributes
+     */
     public function setAttributes(array $attributes)
     {
         // attributes are case insensitive
         $this->attributes = array_change_key_case($attributes);
     }
 
+    /**
+     * @param string $name  A name
+     * @param mixed  $value A value
+     */
     public function setAttribute($name, $value)
     {
         $this->attributes[strtolower($name)] = $value;
     }
 
+    /**
+     * @return array
+     */
     public function getAttributes()
     {
         return $this->attributes;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function getAttribute($name)
     {
         $name = strtolower($name);
@@ -194,21 +218,35 @@ class Cookie
         }
     }
 
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
     public function hasAttribute($name)
     {
         return array_key_exists($name, $this->attributes);
     }
 
+    /**
+     * Clear the attributes
+     */
     public function clearAttributes()
     {
         $this->setAttributes(array());
     }
 
+    /**
+     * @param int $createdAt
+     */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
     }
 
+    /**
+     * @return int
+     */
     public function getCreatedAt()
     {
         return $this->createdAt;

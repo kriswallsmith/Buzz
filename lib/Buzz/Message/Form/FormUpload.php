@@ -11,6 +11,10 @@ class FormUpload extends AbstractMessage implements FormUploadInterface
     private $contentType;
     private $file;
 
+    /**
+     * @param null $file        A file
+     * @param null $contentType A Content-Type header
+     */
     public function __construct($file = null, $contentType = null)
     {
         if ($file) {
@@ -20,16 +24,25 @@ class FormUpload extends AbstractMessage implements FormUploadInterface
         $this->contentType = $contentType;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getFilename()
     {
         if ($this->filename) {
@@ -39,16 +52,25 @@ class FormUpload extends AbstractMessage implements FormUploadInterface
         }
     }
 
+    /**
+     * @param string $filename
+     */
     public function setFilename($filename)
     {
         $this->filename = $filename;
     }
 
+    /**
+     * @return string
+     */
     public function getContentType()
     {
         return $this->contentType ?: $this->detectContentType() ?: 'application/octet-stream';
     }
 
+    /**
+     * @param string $contentType
+     */
     public function setContentType($contentType)
     {
         $this->contentType = $contentType;
@@ -86,6 +108,9 @@ class FormUpload extends AbstractMessage implements FormUploadInterface
         parent::setContent(null);
     }
 
+    /**
+     * @param string $content
+     */
     public function setContent($content)
     {
         parent::setContent($content);
@@ -93,11 +118,17 @@ class FormUpload extends AbstractMessage implements FormUploadInterface
         $this->file = null;
     }
 
+    /**
+     * @return string
+     */
     public function getFile()
     {
         return $this->file;
     }
 
+    /**
+     * @return string
+     */
     public function getContent()
     {
         return $this->file ? file_get_contents($this->file) : parent::getContent();

@@ -10,11 +10,19 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 {
     private $queue = array();
 
+    /**
+     * @param RequestInterface $request  A request object
+     * @param MessageInterface $response A response object
+     * @param array            $options  cURL options
+     */
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
         $this->queue[] = array($request, $response, $options);
     }
 
+    /**
+     * @throws ClientException
+     */
     public function flush()
     {
         if (false === $curlm = curl_multi_init()) {
