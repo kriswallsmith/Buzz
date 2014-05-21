@@ -150,6 +150,33 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideClient
      */
+    public function testRedirection($client)
+    {
+        $request = new Request(Request::METHOD_GET);
+        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect=3');
+
+        $response = $this->send($client, $request);
+
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertEquals('0', $data['GET']['redirect']);
+    }
+
+    /**
+     * @dataProvider provideClient
+     * @expectedException RuntimeException
+     */
+    public function testTooMuchRedirection($client)
+    {
+        $request = new Request(Request::METHOD_GET);
+        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect=8');
+
+        $this->send($client, $request);
+    }
+
+    /**
+     * @dataProvider provideClient
+     */
     public function testPlus($client)
     {
         $request = new FormRequest();

@@ -66,6 +66,10 @@ class FileGetContents extends AbstractStream
         $response->setHeaders($this->filterHeaders((array) $http_response_header));
         $response->setContent($content);
 
+        if ($response->isRedirection()) {
+            throw new \RuntimeException('Maximum ('.$this->maxRedirects.') redirects followed');
+        }
+
         if ($cookieJar) {
             $cookieJar->processSetCookieHeaders($request, $response);
         }
