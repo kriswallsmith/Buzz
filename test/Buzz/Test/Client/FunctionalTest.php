@@ -45,7 +45,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->fromUrl($_SERVER['TEST_SERVER']);
         $response = $this->send($client, $request);
-
+        
         $data = json_decode($response->getContent(), true);
 
         $this->assertArrayNotHasKey('CONTENT_TYPE', $data['SERVER']);
