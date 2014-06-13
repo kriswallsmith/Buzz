@@ -14,6 +14,7 @@ class DigestAuthAdapter extends AbstractAdapter
 	private $algorithm;
 	private $authenticationMethod;
 	private $clientNonce;
+	private $domain;
 	private $entityBody;
 	private $method;
 	private $nonce;
