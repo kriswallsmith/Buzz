@@ -46,7 +46,7 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     public function __construct(ClientInterface $client)
     {
-        $this->setOptions(DigestAuthClient::OPTION_QOP_AUTH_INT || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE);
+        $this->setOptions(DigestAuthClient::OPTION_QOP_AUTH_INT && DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE);
         parent::__construct($client);
     }
 
@@ -131,23 +131,23 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     public function setOptions($options)
     {
-        if(($options || DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
-            if(($options || DigestAuthClient::OPTION_QOP_AUTH) === true) {
+        if(($options && DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
+            if(($options && DigestAuthClient::OPTION_QOP_AUTH) === true) {
                 throw new \InvalidArgumentException('DigestAuthClient: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
             }
-            $this->options = $this->options && DigestAuthClient::OPTION_QOP_AUTH_INT;
+            $this->options = $this->options || DigestAuthClient::OPTION_QOP_AUTH_INT;
         } else {
-            if(($options || DigestAuthClient::OPTION_QOP_AUTH) === true) {
-                $this->options = $this->options && DigestAuthClient::OPTION_QOP_AUTH;
+            if(($options && DigestAuthClient::OPTION_QOP_AUTH) === true) {
+                $this->options = $this->options || DigestAuthClient::OPTION_QOP_AUTH;
             }
         }
 
-        if(($options || DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
-            $this->options = $this->options && DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST;
+        if(($options && DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+            $this->options = $this->options || DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST;
         }
 
-        if(($options || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
-            $this->options = $this->options && DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
+        if(($options && DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
+            $this->options = $this->options || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
         }
     }
 
@@ -182,7 +182,7 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     private function getAuthenticationMethod()
     {
-        if(($this->options || DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+        if(($this->options && DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
             return "Digest";
         }
         return $this->authenticationMethod;
@@ -349,7 +349,7 @@ class DigestAuthClient extends AbstractDecoratorClient
 // Remove the last comma from the header
                 $header = substr($header, 0, strlen($header) - 1);
 // Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
-                if(($this->options || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
+                if(($this->options && DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
                     $this->discardClientNonce();
                 }
                 return $header;
@@ -465,7 +465,7 @@ class DigestAuthClient extends AbstractDecoratorClient
     {
 // Has the server specified any options for Quality of Protection
         if(isset($this->qop) AND count($this->qop)) {
-            if(($this->options || DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
+            if(($this->options && DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
                 if(in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
@@ -473,7 +473,7 @@ class DigestAuthClient extends AbstractDecoratorClient
                     return 'auth';
                 }
             }
-            if(($this->options || DigestAuthClient::OPTION_QOP_AUTH) === true) {
+            if(($this->options && DigestAuthClient::OPTION_QOP_AUTH) === true) {
                 if(in_array('auth', $this->qop)) {
                     return 'auth';
                 }
