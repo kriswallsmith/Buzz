@@ -433,7 +433,7 @@ class DigestAuthClient extends AbstractDecoratorClient
     private function getQOP()
     {
 // Has the server specified any options for Quality of Protection
-        if(count($this->qop)) {
+        if(isset($this->qop) AND count($this->qop)) {
             if(($this->options || DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
                 if(in_array('auth-int', $this->qop)) {
                     return 'auth-int';
