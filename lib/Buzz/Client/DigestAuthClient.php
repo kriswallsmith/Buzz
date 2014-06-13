@@ -111,11 +111,23 @@ class DigestAuthClient extends AbstractDecoratorClient
         $this->username = $username;
     }
 
+    /**
+     * Sets the options to be used by this class.
+     *
+     * @param int $options A bitmask of the constants defined in this class.
+     *
+     * @return void
+     */
     public function setOptions($options)
     {
 
     }
 
+    /**
+     * Discards the Client Nonce forcing the generation of a new Client Nonce on the next request.
+     *
+     * @return void
+     */
     private function discardClientNonce()
     {
         $this->clientNonce = null;
@@ -129,11 +141,22 @@ class DigestAuthClient extends AbstractDecoratorClient
         return $this->algorithm;
     }
 
+    /**
+     * Returns the authentication method requested by the server
+     *
+     * @return string Returns either "Digest" or "Basic".
+     */
     private function getAuthenticationMethod()
     {
         return $this->authenticationMethod;
     }
 
+    /**
+     * Returns either the current value of clientNonce or generates a new value if clientNonce is null.
+     * Also increments nonceCount.
+     *
+     * @return string Returns either the current value of clientNonce the newly generated clientNonce;
+     */
     private function getClientNonce()
     {
         if($this->clientNonce == null) {
@@ -150,16 +173,32 @@ class DigestAuthClient extends AbstractDecoratorClient
         return $this->clientNonce;
     }
 
+    /**
+     * Returns a space separated list of uris that the server nonce can be used to generate an authentication response against.
+     *
+     * @return string Space separated list of uris.
+     */
     private function getDomain()
     {
         return $this->domain;
     }
 
+    /**
+     * Returns the entity body of the current request.
+     * The entity body is the request before it has been encoded with the content-encoding and minus the request headers.
+     *
+     * @return string The full entity-body.
+     */
     private function getEntityBody()
     {
         return (string)$this->entityBody;
     }
 
+    /**
+     * Calculates the value of HA1 according to RFC 2617 and RFC 2069.
+     *
+     * @return string The value of HA1
+     */
     private function getHA1()
     {
         $username = $this->getUsername();
@@ -189,6 +228,11 @@ class DigestAuthClient extends AbstractDecoratorClient
         return null;
     }
 
+    /**
+     * Calculates the value of HA2 according to RFC 2617 and RFC 2069.
+     *
+     * @return string The value of HA2
+     */
     private function getHA2()
     {
         $method = $this->getMethod();
@@ -213,6 +257,11 @@ class DigestAuthClient extends AbstractDecoratorClient
         return null;
     }
 
+    /**
+     * Returns the full Authentication header for use in authenticating the client with either Digest or Basic authentication.
+     *
+     * @return string The Authentication header to be sent to the server.
+     */
     private function getHeader()
     {
         if($this->getAuthenticationMethod() == 'Digest') {
@@ -276,36 +325,72 @@ class DigestAuthClient extends AbstractDecoratorClient
         return null;
     }
 
+    /**
+     * Returns the HTTP method used in the current request.
+     *
+     * @return string One of GET,POST,PUT,DELETE or HEAD.
+     */
     private function getMethod()
     {
         return $this->method;
     }
 
+    /**
+     * Returns the value of nonce we have received in the server headers.
+     *
+     * @return string The value of the server nonce.
+     */
     private function getNonce()
     {
         return $this->nonce;
     }
 
+    /**
+     * Returns the current nonce counter for the client nonce.
+     *
+     * @return string An eight digit zero-padded string which reflects the number of times the clientNonce has been generated.
+     */
     private function getNonceCount()
     {
         return $this->nonceCount;
     }
 
+    /**
+     * Returns the opaque value that was sent to us from the server.
+     *
+     * @return string The value of opaque.
+     */
     private function getOpaque()
     {
         return $this->opaque;
     }
 
+    /**
+     * Returns the plaintext password for the client.
+     *
+     * @return string The value of password.
+     */
     private function getPassword()
     {
         return $this->password;
     }
 
+    /**
+     * Returns either the realm specified by the client, or the realm specified by the server.
+     * If the server set the value of realm then anything set by our client is overwritten.
+     *
+     * @return string The value of realm.
+     */
     private function getRealm()
     {
         return $this->realm;
     }
 
+    /**
+     * Calculates the value of response according to RFC 2617 and RFC 2069.
+     *
+     * @return string The value of response
+     */
     private function getResponse()
     {
         $HA1 = $this->getHA1();
@@ -330,16 +415,31 @@ class DigestAuthClient extends AbstractDecoratorClient
         return null;
     }
 
+    /**
+     * Returns the Quality of Protection to be used when authenticating with the server.
+     *
+     * @return string This will either be auth-int or auth.
+     */
     private function getQOP()
     {
         return $this->qop[0];
     }
 
+    /**
+     * Returns the username set by the client to authenticate with the server.
+     *
+     * @return string The value of username
+     */
     private function getUsername()
     {
         return $this->username;
     }
 
+    /**
+     * Returns the uri that we are requesting access to.
+     *
+     * @return string The value of uri
+     */
     private function getUri()
     {
         return $this->uri;
