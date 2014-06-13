@@ -50,6 +50,14 @@ class DigestAuthClient extends AbstractDecoratorClient
         parent::__construct($client);
     }
 
+    /**
+     * Passes the returned server headers to parseServerHeaders() to check if any authentication variables need to be set.
+     * Inteprets the returned status code and attempts authentication if status is 401 (Authentication Required) by resending
+     * the last request with an Authentication header.
+     *
+     * @param RequestInterface $request  A request object
+     * @param MessageInterface $response A response object
+     */
     public function postSend(RequestInterface $request, MessageInterface $response)
     {
         $statusCode = $response->getStatusCode();
@@ -60,6 +68,12 @@ class DigestAuthClient extends AbstractDecoratorClient
         }
     }
 
+    /**
+     * Populates uri, method and entityBody used to generate the Authentication header using the specified request object.
+     * Appends the Authentication header if it is present and has been able to be calculated.
+     *
+     * @param RequestInterface $request  A request object
+     */
     public function preSend(RequestInterface $request)
     {
         $this->setUri($request->getResource());
