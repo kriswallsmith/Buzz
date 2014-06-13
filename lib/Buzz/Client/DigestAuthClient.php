@@ -44,16 +44,37 @@ class DigestAuthClient extends AbstractDecoratorClient
         }
     }
 
+    /**
+     * Sets the password to be used to authenticate the client.
+     *
+     * @param string $password The password
+     *
+     * @return void
+     */
     public function setPassword($password)
     {
         $this->password = $password;
     }
 
+    /**
+     * Sets the realm to be used to authenticate the client.
+     *
+     * @param string $realm The realm
+     *
+     * @return void
+     */
     public function setRealm($realm)
     {
         $this->realm = $realm;
     }
 
+    /**
+     * Sets the username to be used to authenticate the client.
+     *
+     * @param string $username The username
+     *
+     * @return void
+     */
     public function setUsername($username)
     {
         $this->username = $username;
@@ -272,14 +293,31 @@ class DigestAuthClient extends AbstractDecoratorClient
         return $this->uri;
     }
 
+    /**
+     * Calculates the hash for a given value using the algorithm specified by the server.
+     *
+     * @param string $value The value to be hashed
+     *
+     * @return string The hashed value.
+     */
     private function hash($value)
     {
         $algorithm = $this->getAlgorithm();
         if(($algorithm == 'MD5') OR ($algorithm == 'MD5-sess')) {
             return hash('md5', $value);
         }
+        return null;
     }
 
+    /**
+     * Increments the value of nc that is sent to the server in the Authentication header.
+     * This function is called whenever the getClientNonce() finds the clientNonce value to be null.
+     * It should not be called directly.
+     *
+     * TODO: This function would probably be better suited to be incorporated inside the getClientNonce function instead.
+     *
+     * @return void
+     */
     private function incrementNonceCount()
     {
         if($this->nonceCount == null) {
@@ -289,6 +327,13 @@ class DigestAuthClient extends AbstractDecoratorClient
         }
     }
 
+    /**
+     * Parses the Authentication-Info header received from the server and calls the relevant setter method on each variable received.
+     *
+     * @param string $authenticationInfo The full Authentication-Info header.
+     *
+     * @return void
+     */
     private function parseAuthenticationInfoHeader($authenticationInfo)
     {
 // Remove "Authentication-Info: " from start of header
@@ -311,6 +356,13 @@ class DigestAuthClient extends AbstractDecoratorClient
         }
     }
 
+    /**
+     * Parses a string of name=value pairs separated by commas and returns and array with the name as the index.
+     *
+     * @param string $nameValuePairs The string containing the name=value pairs.
+     *
+     * @return array An array with the name used as the index and the values stored within.
+     */
     private function parseNameValuePairs($nameValuePairs)
     {
         $parsedNameValuePairs = array();
@@ -328,6 +380,14 @@ class DigestAuthClient extends AbstractDecoratorClient
         return $parsedNameValuePairs;
     }
 
+    /**
+     * Parses the server headers received and checks for WWW-Authenticate and Authentication-Info headers.
+     * Calls parseWwwAuthenticateHeader() and parseAuthenticationInfoHeader() respectively if either of these headers are present.
+     *
+     * @param array $headers An array of the headers received by the client.
+     *
+     * @return void
+     */
     private function parseServerHeaders(array $headers)
     {
         foreach($headers as $header) {
@@ -344,6 +404,13 @@ class DigestAuthClient extends AbstractDecoratorClient
         }
     }
 
+    /**
+     * Parses the WWW-Authenticate header received from the server and calls the relevant setter method on each variable received.
+     *
+     * @param string $wwwAuthenticate The full WWW-Authenticate header.
+     *
+     * @return void
+     */
     private function parseWwwAuthenticateHeader($wwwAuthenticate)
     {
 // Remove "WWW-Authenticate: " from start of header
@@ -395,59 +462,176 @@ class DigestAuthClient extends AbstractDecoratorClient
         }
     }
 
+    /**
+     * Sets the hashing algorithm to be used. Currently only uses MD5 specified by either MD5 or MD5-sess.
+     * RFCs are currently in draft stage for the proposal of SHA-256 and SHA-512-256.
+     * Support will be added once the RFC leaves the draft stage.
+     *
+     * @param string $algorithm The algorithm the server has requested to use.
+     *
+     * @throws \InvalidArgumentException If $algorithm is set to anything other than MD5 or MD5-sess.
+     *
+     * @return void
+     */
     private function setAlgorithm($algorithm)
     {
         if(($algorithm == 'MD5') OR ($algorithm == 'MD5-sess')) {
             $this->algorithm = $algorithm;
         } else {
-            throw new \InvalidArgumentException('DigestAuthAdapter: Only MD5 and MD5-sess algorithms are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthClient: Only MD5 and MD5-sess algorithms are currently supported.');
         }
     }
 
+    /**
+     * Sets authentication method to be used. Options are "Digest" and "Basic".
+     * If the server and the client are unable to authenticate using Digest then the RFCs state that the server should attempt
+     * to authenticate the client using Basic authentication. This ensures that we adhere to that behaviour.
+     * This does however create the possibilty of a downgrade attack so it may be an idea to add a way of disabling this functionality
+     * as Basic authentication is trivial to decrypt and exposes the username/password to a man-in-the-middle attack.
+     *
+     * @param string $authenticationMethod The authentication method requested by the server.
+     *
+     * @throws \InvalidArgumentException If $authenticationMethod is set to anything other than Digest or Basic
+     *
+     * @return void
+     */
     private function setAuthenticationMethod($authenticationMethod)
     {
         if(($authenticationMethod == 'Digest') OR ($authenticationMethod == 'Basic')) {
             $this->authenticationMethod = $authenticationMethod;
         } else {
-            throw new \InvalidArgumentException('DigestAuthAdapter: Only Digest and Basic authentication methods are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthClient: Only Digest and Basic authentication methods are currently supported.');
         }
     }
 
+    /**
+     * Sets the domain to be authenticated against. THIS IS NOT TO BE CONFUSED WITH THE HOSTNAME/DOMAIN.
+     * This is specified by the RFC to be a list of uris separated by spaces that the client will be allowed to access.
+     * An RFC in draft stage is proposing the removal of this functionality, it does not seem to be in widespread use.
+     *
+     * @param string $domain The list of uris separated by spaces that the client will be able to access upon successful authentication.
+     *
+     * @return void
+     */
     private function setDomain($value)
     {
         $this->domain = $value;
     }
 
+    /**
+     * Sets the Entity Body of the Request for use with qop=auth-int
+     *
+     * @param string $entityBody The body of the entity (The unencoded request minus the headers).
+     *
+     * @return void
+     */
     private function setEntityBody($entityBody = null)
     {
         $this->entityBody = $entityBody;
     }
 
+    /**
+     * Sets the HTTP method being used for the request
+     *
+     * @param string $method The HTTP method
+     *
+     * @throws \InvalidArgumentException If $method is set to anything other than GET,POST,PUT,DELETE or HEAD.
+     *
+     * @return void
+     */
     private function setMethod($method = null)
     {
-        $this->method = $method;
+        if($method == 'GET') {
+            $this->method = 'GET';
+            return;
+        }
+        if($method == 'POST') {
+            $this->method = 'POST';
+            return;
+        }
+        if($method == 'PUT') {
+            $this->method = 'PUT';
+            return;
+        }
+        if($method == 'DELETE') {
+            $this->method = 'DELETE';
+            return;
+        }
+        if($method == 'HEAD') {
+            $this->method = 'HEAD';
+            return;
+        }
+        throw new \InvalidArgumentException('DigestAuthClient: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
     }
 
+    /**
+     * Sets the value of nonce
+     *
+     * @param string $opaque The server nonce value
+     *
+     * @return void
+     */
     private function setNonce($nonce = null)
     {
         $this->nonce = $nonce;
     }
 
+    /**
+     * Sets the value of opaque
+     *
+     * @param string $opaque The opaque value
+     *
+     * @return void
+     */
     private function setOpaque($opaque)
     {
         $this->opaque = $opaque;
     }
 
+    /**
+     * Sets the acceptable value(s) for the quality of protection used by the server. Supported values are auth and auth-int.
+     * TODO: This method should give precedence to using qop=auth-int first as this offers integrity protection.
+     *
+     * @param array $qop An array with the values of qop that the server has specified it will accept.
+     *
+     * @throws \InvalidArgumentException If $qop contains any values other than auth-int or auth.
+     *
+     * @return void
+     */
     private function setQOP(array $qop = array())
     {
-        $this->qop = $qop;
+        $this->qop = array();
+        foreach($qop as $protection) {
+            $protection = trim($protection);
+            if($protection == 'auth-int') {
+                $this->qop[] = 'auth-int';
+            } elseif($protection == 'auth') {
+                $this->qop[] = 'auth';
+            } else {
+                throw new \InvalidArgumentException('DigestAuthClient: Only auth-int and auth are supported Quality of Protection mechanisms.')
+            }
+        }
     }
 
+    /**
+     * Sets the value of uri
+     *
+     * @param string $uri The uri
+     *
+     * @return void
+     */
     private function setUri($uri = null)
     {
         $this->uri = $uri;
     }
 
+    /**
+     * If a string contains quotation marks at either end this function will strip them. Otherwise it will remain unchanged.
+     *
+     * @param string $str The string to be stripped of quotation marks.
+     *
+     * @return string Returns the original string without the quotation marks at either end.
+     */
     private function unquoteString($str = null)
     {
         if($str) {
