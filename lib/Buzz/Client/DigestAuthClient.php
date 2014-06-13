@@ -328,9 +328,6 @@ class DigestAuthClient extends AbstractDecoratorClient
                 if($opaque) {
                     $header .= " opaque=\"" . $opaque . "\",";
                 }
-                if($domain) {
-                    $header .= " domain=\"" . $domain . "\",";
-                }
 
                 if($qop) {
                     $header .= " qop=" . $qop . ",";
