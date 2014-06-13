@@ -14,7 +14,9 @@ before_install:
     - sudo stop squid3
 
 before_script:
-    - php-cgi -b 127.0.0.1:8888 &
+    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo nginx -p test -c etc/nginx.conf
     - sudo squid3 -f test/etc/squid.conf
     - composer self-update
