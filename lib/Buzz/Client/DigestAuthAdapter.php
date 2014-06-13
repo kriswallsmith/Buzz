@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Adapter;
+namespace Buzz\Client;
 
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
