@@ -22,6 +22,37 @@ class DigestAuthClient extends AbstractDecoratorClient
     private $opaque;
     private $uri;
 
+    /**
+     *
+     * QOP options: Only one of the following can be set at any time. setOptions will throw an exception otherwise.
+     * OPTION_QOP_BEST_AVAILABLE - Use best available QOP (auth-int) if available, fallback to auth if auth-int not available.
+     * OPTION_QOP_AUTH_INT       - Always use auth-int   (if available)
+     * OPTION_QOP_AUTH           - Always use auth       (even if auth-int available)
+     */
+    const OPTION_QOP_BEST_AVAILABLE       = 1;
+    const OPTION_QOP_AUTH_INT             = 2;
+    const OPTION_QOP_AUTH                 = 4;
+    /**
+     * Ignore server request to downgrade authentication from Digest to Basic.
+     * Breaks RFC compatibility, but ensures passwords are never sent using base64 which is trivial for an attacker to decode.
+     */
+    const OPTION_IGNORE_DOWNGRADE_REQUEST = 8;
+    /**
+     * Discard Client Nonce on each request.
+     */
+    const OPTION_DISCARD_CLIENT_NONCE     = 16;
+
+    private $options;
+
+    /**
+     * Set OPTION_QOP_BEST_AVAILABLE and OPTION_DISCARD_CLIENT_NONCE by default.
+     */
+    public function __construct(ClientInterface $client)
+    {
+        $this->options = DigestAuthClient::OPTION_QOP_BEST_AVAILABLE || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
+        parent::__construct($client);
+    }
+
     public function postSend(RequestInterface $request, MessageInterface $response)
     {
         $statusCode = $response->getStatusCode();
@@ -80,6 +111,16 @@ class DigestAuthClient extends AbstractDecoratorClient
         $this->username = $username;
     }
 
+    public function setOptions($options)
+    {
+
+    }
+
+    private function discardClientNonce()
+    {
+        $this->clientNonce = null;
+    }
+
     private function getAlgorithm()
     {
         if($this->algorithm == null) {
@@ -97,7 +138,14 @@ class DigestAuthClient extends AbstractDecoratorClient
     {
         if($this->clientNonce == null) {
             $this->clientNonce = uniqid();
-            $this->incrementNonceCount();
+
+            if($this->nonceCount == null) {
+// If nonceCount is not set then set it to 00000001.
+                $this->nonceCount = '00000001';
+            } else {
+// If it is set then increment it.
+                $this->nonceCount++;
+            }
         }
         return $this->clientNonce;
     }
@@ -307,24 +355,6 @@ class DigestAuthClient extends AbstractDecoratorClient
             return hash('md5', $value);
         }
         return null;
-    }
-
-    /**
-     * Increments the value of nc that is sent to the server in the Authentication header.
-     * This function is called whenever the getClientNonce() finds the clientNonce value to be null.
-     * It should not be called directly.
-     *
-     * TODO: This function would probably be better suited to be incorporated inside the getClientNonce function instead.
-     *
-     * @return void
-     */
-    private function incrementNonceCount()
-    {
-        if($this->nonceCount == null) {
-            $this->nonceCount = '00000001';
-        } else {
-            $this->nonceCount++;
-        }
     }
 
     /**
@@ -608,7 +638,7 @@ class DigestAuthClient extends AbstractDecoratorClient
             } elseif($protection == 'auth') {
                 $this->qop[] = 'auth';
             } else {
-                throw new \InvalidArgumentException('DigestAuthClient: Only auth-int and auth are supported Quality of Protection mechanisms.')
+                throw new \InvalidArgumentException('DigestAuthClient: Only auth-int and auth are supported Quality of Protection mechanisms.');
             }
         }
     }
