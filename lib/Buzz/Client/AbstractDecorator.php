@@ -5,7 +5,7 @@ namespace Buzz\Client;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
 
-abstract class AbstractDecoratorClient implements ClientInterface
+abstract class AbstractDecorator implements ClientInterface
 {
     private $client;
 
