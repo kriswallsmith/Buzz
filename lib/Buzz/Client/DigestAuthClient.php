@@ -258,6 +258,10 @@ class DigestAuthClient extends AbstractDecoratorClient
 
 // Remove the last comma from the header
                 $header = substr($header, 0, strlen($header) - 1);
+// Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
+                if(($this->options || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
+                    $this->discardClientNonce();
+                }
                 return $header;
             }
         }
