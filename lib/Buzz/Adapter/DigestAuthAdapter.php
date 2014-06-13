@@ -400,7 +400,7 @@ class DigestAuthAdapter extends AbstractAdapter
         if(($algorithm == 'MD5') OR ($algorithm == 'MD5-sess')) {
             $this->algorithm = $algorithm;
         } else {
-            throw new Exception('DigestAuthAdapter: Only MD5 and MD5-sess algorithms are currently supported.');
+            throw new InvalidArgumentException('DigestAuthAdapter: Only MD5 and MD5-sess algorithms are currently supported.');
         }
     }
 
@@ -409,7 +409,7 @@ class DigestAuthAdapter extends AbstractAdapter
         if(($authenticationMethod == 'Digest') OR ($authenticationMethod == 'Basic')) {
             $this->authenticationMethod = $authenticationMethod;
         } else {
-            throw new Exception('DigestAuthAdapter: Only Digest and Basic authentication methods are currently supported.');
+            throw new InvalidArgumentException('DigestAuthAdapter: Only Digest and Basic authentication methods are currently supported.');
         }
     }
 
