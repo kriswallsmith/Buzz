@@ -23,24 +23,21 @@ class DigestAuthClient extends AbstractDecoratorClient
     private $uri;
 
     /**
-     *
      * QOP options: Only one of the following can be set at any time. setOptions will throw an exception otherwise.
-     * OPTION_QOP_BEST_AVAILABLE - Use best available QOP (auth-int) if available, fallback to auth if auth-int not available.
      * OPTION_QOP_AUTH_INT       - Always use auth-int   (if available)
      * OPTION_QOP_AUTH           - Always use auth       (even if auth-int available)
      */
-    const OPTION_QOP_BEST_AVAILABLE       = 1;
-    const OPTION_QOP_AUTH_INT             = 2;
-    const OPTION_QOP_AUTH                 = 4;
+    const OPTION_QOP_AUTH_INT             = 1;
+    const OPTION_QOP_AUTH                 = 2;
     /**
      * Ignore server request to downgrade authentication from Digest to Basic.
      * Breaks RFC compatibility, but ensures passwords are never sent using base64 which is trivial for an attacker to decode.
      */
-    const OPTION_IGNORE_DOWNGRADE_REQUEST = 8;
+    const OPTION_IGNORE_DOWNGRADE_REQUEST = 4;
     /**
      * Discard Client Nonce on each request.
      */
-    const OPTION_DISCARD_CLIENT_NONCE     = 16;
+    const OPTION_DISCARD_CLIENT_NONCE     = 8;
 
     private $options;
 
@@ -49,7 +46,7 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     public function __construct(ClientInterface $client)
     {
-        $this->options = DigestAuthClient::OPTION_QOP_BEST_AVAILABLE || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
+        $this->options = DigestAuthClient::OPTION_QOP_AUTH_INT || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
         parent::__construct($client);
     }
 
@@ -435,7 +432,27 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     private function getQOP()
     {
-        return $this->qop[0];
+// Has the server specified any options for Quality of Protection
+        if(count($this->qop)) {
+            if(($this->options || DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
+                if(in_array('auth-int', $this->qop)) {
+                    return 'auth-int';
+                }
+                if(in_array('auth', $this->qop)) {
+                    return 'auth';
+                }
+            }
+            if(($this->options || DigestAuthClient::OPTION_QOP_AUTH) === true) {
+                if(in_array('auth', $this->qop)) {
+                    return 'auth';
+                }
+                if(in_array('auth-int', $this->qop)) {
+                    return 'auth-int';
+                }
+            }            
+        }
+// Server has not specified any value for Quality of Protection so return null
+        return null;
     }
 
     /**
