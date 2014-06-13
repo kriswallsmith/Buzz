@@ -46,7 +46,7 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     public function __construct(ClientInterface $client)
     {
-        $this->options = DigestAuthClient::OPTION_QOP_AUTH_INT || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
+        $this->setOptions(DigestAuthClient::OPTION_QOP_AUTH_INT || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE);
         parent::__construct($client);
     }
 
@@ -117,7 +117,24 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     public function setOptions($options)
     {
+        if(($options || DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
+            if(($options || DigestAuthClient::OPTION_QOP_AUTH) === true) {
+                throw new \InvalidArgumentException('DigestAuthClient: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
+            }
+            $this->options = $this->options && DigestAuthClient::OPTION_QOP_AUTH_INT;
+        } else {
+            if(($options || DigestAuthClient::OPTION_QOP_AUTH) === true) {
+                $this->options = $this->options && DigestAuthClient::OPTION_QOP_AUTH;
+            }
+        }
 
+        if(($options || DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+            $this->options = $this->options && DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST;
+        }
+
+        if(($options || DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
+            $this->options = $this->options && DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
+        }
     }
 
     /**
