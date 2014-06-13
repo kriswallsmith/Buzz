@@ -5,7 +5,7 @@ namespace Buzz\Client;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
 
-class DigestAuthDecorator extends AbstractDecorator
+class DigestAuthClient extends AbstractDecoratorClient
 {
     private $username;
     private $password;
