@@ -147,12 +147,16 @@ class DigestAuthClient extends AbstractDecoratorClient
     }
 
     /**
-     * Returns the authentication method requested by the server
+     * Returns the authentication method requested by the server.
+     * If OPTION_IGNORE_DOWNGRADE_REQUEST is set this will always return "Digest"
      *
      * @return string Returns either "Digest" or "Basic".
      */
     private function getAuthenticationMethod()
     {
+        if(($this->$options || DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+            return "Digest";
+        }
         return $this->authenticationMethod;
     }
 
