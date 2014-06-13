@@ -133,6 +133,11 @@ class DigestAuthClient extends AbstractDecoratorClient
         $this->clientNonce = null;
     }
 
+    /**
+     * Returns the hashing algorithm to be used to generate the digest value. Currently only returns MD5.
+     *
+     * @return string The hashing algorithm to be used.
+     */
     private function getAlgorithm()
     {
         if($this->algorithm == null) {
@@ -168,6 +173,10 @@ class DigestAuthClient extends AbstractDecoratorClient
             } else {
 // If it is set then increment it.
                 $this->nonceCount++;
+// Ensure nonceCount is zero-padded at the start of the string to a length of 8
+                while(strlen($this->nonceCount) < 8) {
+                    $this->nonceCount = '0' . $this->nonceCount;
+                }
             }
         }
         return $this->clientNonce;
