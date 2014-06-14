@@ -15,7 +15,7 @@ class CookieClient extends AbstractDecoratorClient
     public function __construct(ClientInterface $client)
     {
         $this->cookieJar = new CookieJar();
-        parent::__construct();
+        parent::__construct($client);
     }
 
     public function setCookies($cookies)
