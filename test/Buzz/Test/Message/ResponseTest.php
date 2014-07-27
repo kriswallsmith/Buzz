@@ -12,7 +12,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($response->getProtocolVersion());
 
-        $response->addHeader('1.0 200 OK');
+        $response->addHeader('HTTP/1.0 200 OK');
 
         $this->assertEquals(1.0, $response->getProtocolVersion());
     }
@@ -23,7 +23,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($response->getStatusCode());
 
-        $response->addHeader('1.0 200 OK');
+        $response->addHeader('HTTP/1.0 200 OK');
 
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -34,7 +34,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($response->getReasonPhrase(), null);
 
-        $response->addHeader('1.0 200 OK');
+        $response->addHeader('HTTP/1.0 200 OK');
 
         $this->assertEquals('OK', $response->getReasonPhrase());
     }
@@ -45,7 +45,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($response->getReasonPhrase());
 
-        $response->addHeader('1.0 500 Internal Server Error');
+        $response->addHeader('HTTP/1.0 500 Internal Server Error');
 
         $this->assertEquals('Internal Server Error', $response->getReasonPhrase());
     }
@@ -54,7 +54,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $response = new Response();
         $this->assertNull($response->getStatusCode());
-        $response->addHeaders(array('1.0 200 OK'));
+        $response->addHeaders(array('HTTP/1.0 200 OK'));
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -66,7 +66,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function testIssers($code, $method, $expected)
     {
         $response = new Response();
-        $response->addHeaders(array('1.0 '.$code.' Status'));
+        $response->addHeaders(array('HTTP/1.0 '.$code.' Status'));
         $this->assertEquals($expected, $response->{$method}());
     }
 
