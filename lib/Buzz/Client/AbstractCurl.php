@@ -83,6 +83,7 @@ abstract class AbstractCurl extends AbstractClient
             case RequestInterface::METHOD_PUT:
             case RequestInterface::METHOD_DELETE:
             case RequestInterface::METHOD_PATCH:
+            case RequestInterface::METHOD_OPTIONS:
                 $options[CURLOPT_POSTFIELDS] = $fields = static::getPostFields($request);
 
                 // remove the content-type header
