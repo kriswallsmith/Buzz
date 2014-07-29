@@ -11,6 +11,7 @@ before_install:
     - sudo apt-get -qq update
     - sudo apt-get -qq install nginx squid
     - sudo stop squid3
+    - curl --version
 
 before_script:
     - php-cgi -b 127.0.0.1:8888 &
