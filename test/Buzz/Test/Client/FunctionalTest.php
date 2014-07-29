@@ -13,6 +13,22 @@ use Buzz\Message\Request;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\Response;
 
+class MultiCurlCallbackTarget
+{
+    public $success = array();
+    public $error = array();
+
+    function success()
+    {
+        $this->success[] = func_get_args();
+    }
+
+    function error()
+    {
+        $this->error[] = func_get_args();
+    }
+}
+
 class FunctionalTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
@@ -207,12 +223,31 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $response = $this->send($client, $request);
     }
 
+    public function testMultiCurlExecutesRequestsConcurently()
+    {
+        $listener = new MultiCurlCallbackTarget();
+        $client = new MultiCurl();
+        $client->setTimeout(10);
+        $t = microtime(true);
+        for ($i = 3; $i > 0; $i--) {
+            $request = new Request();
+            $request->fromUrl($_SERVER['TEST_SERVER'].'?delay='.$i);
+            $options = array('callback' => array($listener, 'success'), 'errback' => array($listener, 'error'));
+            $client->send($request, new Response(), $options);
+        }
+        $this->assertCount(0, $listener->success);
+        $client->flush();
+        $time = microtime(true) - $t;
+        $this->assertCount(3, $listener->success);
+        $this->assertLessThan(4, $time); // They should complete in ~3 secs.
+    }
+
     public function provideClient()
     {
         return array(
             array(new Curl()),
             array(new FileGetContents()),
-            // array(new MultiCurl()),
+            array(new MultiCurl()),
         );
     }
 
