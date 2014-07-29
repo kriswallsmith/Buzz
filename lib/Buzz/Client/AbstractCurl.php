@@ -65,6 +65,7 @@ abstract class AbstractCurl extends AbstractClient
     private static function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
+            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
             CURLOPT_URL           => $request->getHost().$request->getResource(),
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
