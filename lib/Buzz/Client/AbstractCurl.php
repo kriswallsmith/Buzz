@@ -31,6 +31,8 @@ abstract class AbstractCurl extends AbstractClient
      * @see curl_init()
      *
      * @return resource A new cURL resource
+     *
+     * @throws ClientException If unable to create a cURL resource
      */
     protected static function createCurlHandle()
     {
