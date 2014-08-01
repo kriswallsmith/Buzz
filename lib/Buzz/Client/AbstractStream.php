@@ -25,13 +25,17 @@ abstract class AbstractStream extends AbstractClient
 
                 // values from the current client
                 'ignore_errors'    => $this->getIgnoreErrors(),
-                'max_redirects'    => $this->getMaxRedirects() + 1,
+                'follow_location'  => $this->getMaxRedirects() > 0,
                 'timeout'          => $this->getTimeout(),
             ),
             'ssl' => array(
                 'verify_peer'      => $this->getVerifyPeer(),
             ),
         );
+
+        if ($this->getMaxRedirects() > 0) {
+            $options['http']['max_redirects'] = $this->getMaxRedirects() + 1;
+        }
 
         if ($this->proxy) {
             $options['http']['proxy'] = $this->proxy;
