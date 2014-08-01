@@ -25,7 +25,7 @@ abstract class AbstractStream extends AbstractClient
 
                 // values from the current client
                 'ignore_errors'    => $this->getIgnoreErrors(),
-                'max_redirects'    => $this->getMaxRedirects(),
+                'max_redirects'    => $this->getMaxRedirects() + 1,
                 'timeout'          => $this->getTimeout(),
             ),
             'ssl' => array(

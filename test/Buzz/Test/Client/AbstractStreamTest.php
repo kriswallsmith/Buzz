@@ -34,7 +34,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
                 'content'          => 'foo=bar&bar=baz',
                 'protocol_version' => 1.0,
                 'ignore_errors'    => false,
-                'max_redirects'    => 5,
+                'max_redirects'    => 6,
                 'timeout'          => 10,
             ),
             'ssl' => array(
