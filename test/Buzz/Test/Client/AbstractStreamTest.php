@@ -30,7 +30,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $expected = array(
             'http' => array(
                 'method'           => 'POST',
-                'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15",
+                'header'           => "Content-Type: application/x-www-form-urlencoded" . PHP_EOL . "Content-Length: 15",
                 'content'          => 'foo=bar&bar=baz',
                 'protocol_version' => 1.0,
                 'ignore_errors'    => false,
@@ -38,9 +38,9 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
                 'max_redirects'    => 6,
                 'timeout'          => 10,
             ),
-            'ssl' => array(
-                'verify_peer'      => true,
-                'verify_host'      => 2,
+            'ssl'  => array(
+                'verify_peer' => true,
+                'verify_host' => 2,
             ),
         );
 
