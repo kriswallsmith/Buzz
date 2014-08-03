@@ -51,7 +51,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
 
         $client->setMaxRedirects(0);
         $expected['http']['follow_location'] = false;
-        unset($expected['http']['max_redirects']);
+        $expected['http']['max_redirects'] = 1;
         $this->assertEquals($expected, $client->getStreamContextArray($request));
     }
 }
