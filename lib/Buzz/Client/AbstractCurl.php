@@ -127,7 +127,9 @@ abstract class AbstractCurl extends AbstractClient
                 continue;
             }
 
-            if (!$file = $value->getFile()) {
+            $file = $value->getFile();
+
+            if (empty($file)) {
                 return $request->getContent();
             }
 
