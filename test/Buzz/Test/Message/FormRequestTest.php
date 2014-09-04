@@ -22,7 +22,24 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $message->getContent());
     }
 
-    public function testAddDataAddsData()
+	public function testGetContentGeneratesContentWithCustomArgSeparatorOutput()
+	{
+
+		$argSeparatorOutput = ini_get('arg_separator.output');
+		ini_set('arg_separator.output', '&amp;');
+
+		$message = new FormRequest();
+		$message->setField('foo', 'bar');
+		$message->setField('bar', 'foo');
+
+		$expected = "foo=bar&bar=foo";
+		$this->assertEquals($expected, $message->getContent());
+
+		ini_set('arg_separator.output', $argSeparatorOutput);
+	}
+
+
+	public function testAddDataAddsData()
     {
         $message = new FormRequest();
         $message->setField('foo', 'bar');
