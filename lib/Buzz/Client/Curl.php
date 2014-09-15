@@ -2,9 +2,9 @@
 
 namespace Buzz\Client;
 
+use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
-use Buzz\Exception\ClientException;
 use Buzz\Exception\LogicException;
 
 class Curl extends AbstractCurl
@@ -26,7 +26,10 @@ class Curl extends AbstractCurl
             $errorMsg = curl_error($this->lastCurl);
             $errorNo  = curl_errno($this->lastCurl);
 
-            throw new ClientException($errorMsg, $errorNo);
+            $e = new RequestException($errorMsg, $errorNo);
+            $e->setRequest($request);
+
+            throw $e;
         }
 
         static::populateResponse($this->lastCurl, $data, $response);
