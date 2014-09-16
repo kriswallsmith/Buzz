@@ -19,7 +19,7 @@ abstract class AbstractStream extends AbstractClient
             'http' => array(
                 // values from the request
                 'method'           => $request->getMethod(),
-                'header'           => implode("\r\n", $request->getHeaders()),
+                'header'           => implode(PHP_EOL, $request->getHeaders()),
                 'content'          => $request->getContent(),
                 'protocol_version' => $request->getProtocolVersion(),
 
@@ -31,6 +31,7 @@ abstract class AbstractStream extends AbstractClient
             ),
             'ssl' => array(
                 'verify_peer'      => $this->getVerifyPeer(),
+                'verify_host'      => $this->getVerifyHost(),
             ),
         );
 
