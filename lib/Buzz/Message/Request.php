@@ -9,6 +9,7 @@ class Request extends AbstractMessage implements RequestInterface
     private $method;
     private $resource;
     private $host;
+    private $proxy;
     private $protocolVersion = 1.0;
 
     /**
@@ -75,6 +76,16 @@ class Request extends AbstractMessage implements RequestInterface
     public function getHost()
     {
         return $this->host;
+    }
+
+    public function setProxy($proxy)
+    {
+        $this->proxy = $proxy;
+    }
+
+    public function getProxy()
+    {
+        return $this->proxy;
     }
 
     public function setProtocolVersion($protocolVersion)

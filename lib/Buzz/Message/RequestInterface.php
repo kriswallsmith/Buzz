@@ -72,4 +72,18 @@ interface RequestInterface extends MessageInterface
      * @return Boolean True if the request is secure
      */
     public function isSecure();
+
+    /**
+     * Returns the value of the http proxy host.
+     *
+     * @return string|null The proxy host
+     */
+    public function getProxy();
+
+    /**
+     * Sets the http proxy host for the current request.
+     *
+     * @param string $proxy The proxy host
+     */
+    public function setProxy($proxy);
 }
