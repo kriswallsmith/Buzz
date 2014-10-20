@@ -70,6 +70,10 @@ abstract class AbstractCurl extends AbstractClient
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
         );
 
+        if ($request->getProxy()) {
+            $options[CURLOPT_PROXY] = $request->getProxy();
+        }
+
         switch ($request->getMethod()) {
             case RequestInterface::METHOD_HEAD:
                 $options[CURLOPT_NOBODY] = true;
