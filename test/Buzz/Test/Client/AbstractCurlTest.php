@@ -6,18 +6,6 @@ use Buzz\Client\AbstractCurl;
 
 class AbstractCurlTest extends \PHPUnit_Framework_TestCase
 {
-    public function testInstance()
-    {
-        $pseudoInstance = $this->getMockForAbstractClass(
-            'Buzz\Client\AbstractCurl'
-        );
-
-        $this->assertStringStartsWith(
-            'Mock_AbstractCurl',
-            get_class($pseudoInstance)
-        );
-    }
-
     public function testSetOption()
     {
         /**
