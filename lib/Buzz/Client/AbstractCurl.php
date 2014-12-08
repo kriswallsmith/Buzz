@@ -40,7 +40,7 @@ abstract class AbstractCurl extends AbstractClient
 
         if ($isCurlInitAvailable) {
 
-            $message = "PHP's cURL native support is disabled. Check more"
+            $message = "PHP's cURL native support is disabled. Check more "
                      . "details in "
                      . "http://php.net/manual/en/curl.installation.php";
 
