@@ -36,7 +36,9 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function createCurlHandle()
     {
-        if (false === self::isNativeCurlAvailable()) {
+        $isCurlInitAvailable =  function_exists('curl_init');
+
+        if ($isCurlInitAvailable) {
 
             $message = "PHP's cURL native support is disabled. Check more"
                      . "details in "
@@ -53,16 +55,6 @@ abstract class AbstractCurl extends AbstractClient
         curl_setopt($curl, CURLOPT_HEADER, true);
 
         return $curl;
-    }
-
-    /**
-     * Check if native cURL PHP support is available
-     *
-     * @return bool
-     */
-    public function isNativeCurlAvailable()
-    {
-        return function_exists('curl_init');
     }
 
     /**

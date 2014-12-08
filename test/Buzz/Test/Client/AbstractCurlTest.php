@@ -40,16 +40,4 @@ class AbstractCurlTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse(isset($options['lorem']));
     }
-
-    public function testIsNativeCurlAvailable()
-    {
-        /**
-         * @var AbstractCurl $pseudoInstance
-         */
-        $pseudoInstance = $this->getMockForAbstractClass(
-            'Buzz\Client\AbstractCurl'
-        );
-
-        $this->assertTrue($pseudoInstance->isNativeCurlAvailable());
-    }
 } 
