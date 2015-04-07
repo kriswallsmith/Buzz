@@ -67,8 +67,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
                 // remove custom option
                 unset($options['callback']);
 
-                $this->prepare($curl, $request, $options);
+                $file = fopen('php://memory', 'wt');
+                $this->prepare($curl, $file, $request, $options);
                 $this->queue[$i][] = $curl;
+                $this->queue[$i][] = $file;
                 curl_multi_add_handle($this->curlm, $curl);
             }
         }
@@ -82,15 +84,21 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
         // handle any completed requests
         while ($done = curl_multi_info_read($this->curlm)) {
             foreach (array_keys($this->queue) as $i) {
-                list($request, $response, $options, $curl) = $this->queue[$i];
+                list($request, $response, $options, $curl, $file) = $this->queue[$i];
 
                 if ($curl !== $done['handle']) {
                     continue;
                 }
 
+                // retrieve the header
+                $len = ftell($file);
+                rewind($file);
+                $header = fread($file, $len);
+                fclose($file);
+
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
-                    static::populateResponse($curl, curl_multi_getcontent($curl), $response);
+                    static::populateResponse($header, curl_multi_getcontent($curl), $response);
                 }
 
                 // remove from queue

@@ -41,7 +41,7 @@ abstract class AbstractCurl extends AbstractClient
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
 
         return $curl;
     }
@@ -49,22 +49,14 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Populates a response object.
      *
-     * @param resource         $curl     A cURL resource
-     * @param string           $raw      The raw response string
+     * @param string           $header   The raw response header
+     * @param string           $body     The response body
      * @param MessageInterface $response The response object
      */
-    protected static function populateResponse($curl, $raw, MessageInterface $response)
+    protected static function populateResponse($header, $body, MessageInterface $response)
     {
-        // fixes bug https://sourceforge.net/p/curl/bugs/1204/
-        $version = curl_version();
-        if (version_compare($version['version'], '7.30.0', '<')) {
-            $pos = strlen($raw) - curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
-        } else {
-            $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        }
-
-        $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
-        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
+        $response->setHeaders(static::getLastHeaders($header));
+        $response->setContent($body);
     }
 
     /**
@@ -170,7 +162,7 @@ abstract class AbstractCurl extends AbstractClient
     private static function getLastHeaders($raw)
     {
         $headers = array();
-        foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
+        foreach (preg_split('/(\\r?\\n)/', rtrim($raw)) as $header) {
             if ($header) {
                 $headers[] = $header;
             } else {
@@ -203,7 +195,7 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Prepares a cURL resource to send a request.
      */
-    protected function prepare($curl, RequestInterface $request, array $options = array())
+    protected function prepare($curl, $file, RequestInterface $request, array $options = array())
     {
         static::setOptionsFromRequest($curl, $request);
 
@@ -224,6 +216,7 @@ abstract class AbstractCurl extends AbstractClient
         curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $this->getMaxRedirects() : 0);
         curl_setopt($curl, CURLOPT_FAILONERROR, !$this->getIgnoreErrors());
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->getVerifyPeer());
+        curl_setopt($curl, CURLOPT_WRITEHEADER, $file);
 
         // apply additional options
         curl_setopt_array($curl, $options + $this->options);

@@ -18,9 +18,15 @@ class Curl extends AbstractCurl
         }
 
         $this->lastCurl = static::createCurlHandle();
-        $this->prepare($this->lastCurl, $request, $options);
+        $file = fopen('php://memory', 'wt');
+        $this->prepare($this->lastCurl, $file, $request, $options);
 
         $data = curl_exec($this->lastCurl);
+
+        $len = ftell($file);
+        rewind($file);
+        $header = fread($file, $len);
+        fclose($file);
 
         if (false === $data) {
             $errorMsg = curl_error($this->lastCurl);
@@ -32,7 +38,7 @@ class Curl extends AbstractCurl
             throw $e;
         }
 
-        static::populateResponse($this->lastCurl, $data, $response);
+        static::populateResponse($header, $data, $response);
     }
 
     /**
