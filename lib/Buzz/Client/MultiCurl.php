@@ -67,7 +67,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
                 // remove custom option
                 unset($options['callback']);
 
-                $file = fopen('php://memory', 'wt');
+                $file = fopen('php://memory', 'w+');
                 $this->prepare($curl, $file, $request, $options);
                 $this->queue[$i][] = $curl;
                 $this->queue[$i][] = $file;
@@ -93,6 +93,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
                 // retrieve the header
                 $len = ftell($file);
                 rewind($file);
+                if (! $len) {
+                    $stat = fstat($file);
+                    $len = $stat['size'] ?: 65536;
+                }
                 $header = fread($file, $len);
                 fclose($file);
 

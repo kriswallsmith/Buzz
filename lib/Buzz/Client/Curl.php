@@ -18,13 +18,17 @@ class Curl extends AbstractCurl
         }
 
         $this->lastCurl = static::createCurlHandle();
-        $file = fopen('php://memory', 'wt');
+        $file = fopen('php://memory', 'w+');
         $this->prepare($this->lastCurl, $file, $request, $options);
 
         $data = curl_exec($this->lastCurl);
 
         $len = ftell($file);
         rewind($file);
+        if (! $len) {
+            $stat = fstat($file);
+            $len = $stat['size'] ?: 65536;
+        }
         $header = fread($file, $len);
         fclose($file);
 
