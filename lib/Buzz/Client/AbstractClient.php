@@ -8,6 +8,7 @@ abstract class AbstractClient implements ClientInterface
     protected $maxRedirects = 5;
     protected $timeout = 5;
     protected $verifyPeer = true;
+    protected $verifyHost = true;
     protected $proxy;
 
     public function setIgnoreErrors($ignoreErrors)
@@ -58,5 +59,15 @@ abstract class AbstractClient implements ClientInterface
     public function getProxy()
     {
         return $this->proxy;
+    }
+
+    public function setVerifyHost($verifyHost)
+    {
+        $this->verifyHost = $verifyHost;
+    }
+
+    public function getVerifyHost()
+    {
+        return $this->verifyHost;
     }
 }
