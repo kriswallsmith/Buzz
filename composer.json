@@ -1,8 +1,8 @@
 {
-    "name": "kriswallsmith/buzz",
+    "name": "slavenin/buzz",
     "description": "Lightweight HTTP client",
     "keywords": ["http client", "curl"],
-    "homepage": "https://github.com/kriswallsmith/Buzz",
+    "homepage": "https://github.com/Slavenin/Buzz",
     "type": "library",
     "license": "MIT",
     "authors": [
