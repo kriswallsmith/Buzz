@@ -40,6 +40,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
             ),
             'ssl' => array(
                 'verify_peer'      => true,
+                'verify_host'      => true,
             ),
         );
 
@@ -47,6 +48,8 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
 
         $client->setVerifyPeer(true);
         $expected['ssl']['verify_peer'] = true;
+        $client->setVerifyHost(2);
+        $expected['ssl']['verify_host'] = 2;
         $this->assertEquals($expected, $client->getStreamContextArray($request));
 
         $client->setMaxRedirects(0);
