@@ -2,6 +2,28 @@
 
 Buzz is a lightweight PHP 5.3 library for issuing HTTP requests.
 
+## Instalation
+
+Package available on [Composer](https://packagist.org/packages/kriswallsmith/buzz).
+
+If you're using Composer to manage dependencies, you can use
+
+    $ composer require "kriswallsmith/buzz": "dev-master"
+
+Or
+
+You can include the following in your composer.json file:
+
+```json
+{
+    "require": {
+        "kriswallsmith/buzz": "dev-master"
+    }
+}
+```
+
+## Usage 
+
 ```php
 <?php
 
