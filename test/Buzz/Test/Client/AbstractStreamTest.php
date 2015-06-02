@@ -32,7 +32,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
                 'method'           => 'POST',
                 'header'           => "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: 15",
                 'content'          => 'foo=bar&bar=baz',
-                'protocol_version' => 1.0,
+                'protocol_version' => 1.1,
                 'ignore_errors'    => false,
                 'follow_location'  => true,
                 'max_redirects'    => 6,
