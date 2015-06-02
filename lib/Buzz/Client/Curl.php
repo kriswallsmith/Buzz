@@ -48,7 +48,7 @@ class Curl extends AbstractCurl
             throw new LogicException('There is no cURL resource');
         }
 
-        return curl_getinfo($this->lastCurl, $opt);
+        return 0 === $opt ? curl_getinfo($this->lastCurl) : curl_getinfo($this->lastCurl, $opt);
     }
 
     public function __destruct()
