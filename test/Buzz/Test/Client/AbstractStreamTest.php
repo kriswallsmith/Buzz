@@ -40,6 +40,7 @@ class AbstractStreamTest extends \PHPUnit_Framework_TestCase
             ),
             'ssl' => array(
                 'verify_peer'      => true,
+                'verify_host' => 2,
             ),
         );
 
