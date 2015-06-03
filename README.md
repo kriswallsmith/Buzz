@@ -8,7 +8,7 @@ Package available on [Composer](https://packagist.org/packages/kriswallsmith/buz
 
 If you're using Composer to manage dependencies, you can use
 
-    $ composer require "kriswallsmith/buzz": "dev-master"
+    $ composer require "kriswallsmith/buzz"
 
 Or
 
@@ -17,7 +17,7 @@ You can include the following in your composer.json file:
 ```json
 {
     "require": {
-        "kriswallsmith/buzz": "dev-master"
+        "kriswallsmith/buzz": "*"
     }
 }
 ```
