@@ -10,18 +10,6 @@ If you're using Composer to manage dependencies, you can use
 
     $ composer require "kriswallsmith/buzz"
 
-Or
-
-You can include the following in your composer.json file:
-
-```json
-{
-    "require": {
-        "kriswallsmith/buzz": "*"
-    }
-}
-```
-
 ## Usage 
 
 ```php
