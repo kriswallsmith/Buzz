@@ -1,11 +1,11 @@
 <?php
 
-namespace Buzz\Client;
+namespace Buzz\Listener;
 
-use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
+use Buzz\Message\RequestInterface;
 
-class DigestAuthClient extends AbstractDecoratorClient
+class DigestAuthListener implements ListenerInterface
 {
     private $username;
     private $password;
@@ -44,10 +44,12 @@ class DigestAuthClient extends AbstractDecoratorClient
     /**
      * Set OPTION_QOP_BEST_AVAILABLE and OPTION_DISCARD_CLIENT_NONCE by default.
      */
-    public function __construct(ClientInterface $client)
+    public function __construct($username = null, $password = null, $realm = null)
     {
-        $this->setOptions(DigestAuthClient::OPTION_QOP_AUTH_INT & DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE);
-        parent::__construct($client);
+        $this->setUsername($username);
+        $this->setPassword($password);
+        $this->setRealm($realm);
+        $this->setOptions(DigestAuthListener::OPTION_QOP_AUTH_INT & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE);
     }
 
     /**
@@ -62,10 +64,6 @@ class DigestAuthClient extends AbstractDecoratorClient
     {
         $statusCode = $response->getStatusCode();
         $this->parseServerHeaders($response->getHeaders(), $statusCode);
-        if($statusCode == 401) {
-            $request->addHeader($this->getHeader());
-            $this->resend($request, $response);
-        }
     }
 
     /**
@@ -131,23 +129,23 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     public function setOptions($options)
     {
-        if(($options & DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
-            if(($options & DigestAuthClient::OPTION_QOP_AUTH) === true) {
-                throw new \InvalidArgumentException('DigestAuthClient: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
+        if(($options & DigestAuthListener::OPTION_QOP_AUTH_INT) === true) {
+            if(($options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
+                throw new \InvalidArgumentException('DigestAuthListener: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
             }
-            $this->options = $this->options | DigestAuthClient::OPTION_QOP_AUTH_INT;
+            $this->options = $this->options | DigestAuthListener::OPTION_QOP_AUTH_INT;
         } else {
-            if(($options & DigestAuthClient::OPTION_QOP_AUTH) === true) {
-                $this->options = $this->options | DigestAuthClient::OPTION_QOP_AUTH;
+            if(($options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
+                $this->options = $this->options | DigestAuthListener::OPTION_QOP_AUTH;
             }
         }
 
-        if(($options & DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
-            $this->options = $this->options | DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST;
+        if(($options & DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+            $this->options = $this->options | DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST;
         }
 
-        if(($options & DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
-            $this->options = $this->options | DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE;
+        if(($options & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE) === true) {
+            $this->options = $this->options | DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE;
         }
     }
 
@@ -182,7 +180,7 @@ class DigestAuthClient extends AbstractDecoratorClient
      */
     private function getAuthenticationMethod()
     {
-        if(($this->options & DigestAuthClient::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+        if(($this->options & DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
             return "Digest";
         }
         return $this->authenticationMethod;
@@ -346,7 +344,7 @@ class DigestAuthClient extends AbstractDecoratorClient
 // Remove the last comma from the header
                 $header = substr($header, 0, strlen($header) - 1);
 // Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
-                if(($this->options & DigestAuthClient::OPTION_DISCARD_CLIENT_NONCE) === true) {
+                if(($this->options & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE) === true) {
                     $this->discardClientNonce();
                 }
                 return $header;
@@ -462,7 +460,7 @@ class DigestAuthClient extends AbstractDecoratorClient
     {
 // Has the server specified any options for Quality of Protection
         if(isset($this->qop) AND count($this->qop)) {
-            if(($this->options & DigestAuthClient::OPTION_QOP_AUTH_INT) === true) {
+            if(($this->options & DigestAuthListener::OPTION_QOP_AUTH_INT) === true) {
                 if(in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
@@ -470,7 +468,7 @@ class DigestAuthClient extends AbstractDecoratorClient
                     return 'auth';
                 }
             }
-            if(($this->options & DigestAuthClient::OPTION_QOP_AUTH) === true) {
+            if(($this->options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
                 if(in_array('auth', $this->qop)) {
                     return 'auth';
                 }
@@ -584,12 +582,12 @@ class DigestAuthClient extends AbstractDecoratorClient
     {
         foreach($headers as $header) {
 // Check to see if the WWW-Authenticate header is present and if so set $authHeader
-            if(substr(strtolower($header), 0, 18) == 'www-authenticate: ') {
+            if(strtolower(substr($header, 0, 18)) == 'www-authenticate: ') {
                 $wwwAuthenticate = $header;
                 $this->parseWwwAuthenticateHeader($wwwAuthenticate);
             }
 // Check to see if the Authentication-Info header is present and if so set $authInfo
-            if(substr(strtolower($header), 0, 21) == 'authentication-info: ') {
+            if(strtolower(substr($header, 0, 21)) == 'authentication-info: ') {
                 $authenticationInfo = $header;
                 $this->parseAuthenticationInfoHeader($wwwAuthenticate);
             }
@@ -670,7 +668,7 @@ class DigestAuthClient extends AbstractDecoratorClient
         if(($algorithm == 'MD5') OR ($algorithm == 'MD5-sess')) {
             $this->algorithm = $algorithm;
         } else {
-            throw new \InvalidArgumentException('DigestAuthClient: Only MD5 and MD5-sess algorithms are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthListener: Only MD5 and MD5-sess algorithms are currently supported.');
         }
     }
 
@@ -692,7 +690,7 @@ class DigestAuthClient extends AbstractDecoratorClient
         if(($authenticationMethod == 'Digest') OR ($authenticationMethod == 'Basic')) {
             $this->authenticationMethod = $authenticationMethod;
         } else {
-            throw new \InvalidArgumentException('DigestAuthClient: Only Digest and Basic authentication methods are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthListener: Only Digest and Basic authentication methods are currently supported.');
         }
     }
 
@@ -753,7 +751,7 @@ class DigestAuthClient extends AbstractDecoratorClient
             $this->method = 'HEAD';
             return;
         }
-        throw new \InvalidArgumentException('DigestAuthClient: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
+        throw new \InvalidArgumentException('DigestAuthListener: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
     }
 
     /**
@@ -800,7 +798,7 @@ class DigestAuthClient extends AbstractDecoratorClient
             } elseif($protection == 'auth') {
                 $this->qop[] = 'auth';
             } else {
-                throw new \InvalidArgumentException('DigestAuthClient: Only auth-int and auth are supported Quality of Protection mechanisms.');
+                throw new \InvalidArgumentException('DigestAuthListener: Only auth-int and auth are supported Quality of Protection mechanisms.');
             }
         }
     }
