@@ -113,7 +113,7 @@ class FormRequest extends Request implements FormRequestInterface
         }
 
         if (!$this->isMultipart()) {
-            return http_build_query($this->fields);
+            return http_build_query($this->fields, '', '&');
         }
 
         $content = '';

@@ -132,7 +132,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             'Content-Type: text/plain',
         ), $request->getHeaders());
 
-        $expected  = "GET / HTTP/1.0\r\n";
+        $expected  = "GET / HTTP/1.1\r\n";
         $expected .= "Cookie: foo=bar; bar=foo\r\n";
         $expected .= "Content-Type: text/plain\r\n";
 

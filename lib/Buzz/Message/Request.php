@@ -9,7 +9,7 @@ class Request extends AbstractMessage implements RequestInterface
     private $method;
     private $resource;
     private $host;
-    private $protocolVersion = 1.0;
+    private $protocolVersion = 1.1;
 
     /**
      * Constructor.
