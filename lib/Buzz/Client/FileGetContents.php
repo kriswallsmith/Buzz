@@ -2,6 +2,7 @@
 
 namespace Buzz\Client;
 
+use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\CookieJar;
@@ -60,7 +61,10 @@ class FileGetContents extends AbstractStream
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
-            throw new ClientException($error['message']);
+            $e = new RequestException($error['message']);
+            $e->setRequest($request);
+
+            throw $e;
         }
 
         $response->setHeaders($this->filterHeaders((array) $http_response_header));

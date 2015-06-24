@@ -1,20 +1,22 @@
 language: php
 
 php:
-    - 5.3
     - 5.4
     - 5.5
 
-env: TEST_SERVER="http://127.0.0.1:8080/server.php" TEST_PROXY="127.0.0.1:3128"
+env: TEST_SERVER="http://127.0.0.1:8080/server.php" TEST_PROXY="127.0.0.1:3128" PHP_FCGI_CHILDREN=10 PHP_FCGI_MAX_REQUESTS=10
 
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
     - sudo apt-get -qq update
     - sudo apt-get -qq install nginx squid
     - sudo stop squid3
+    - curl --version
 
 before_script:
-    - php-cgi -b 127.0.0.1:8888 &
+    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo nginx -p test -c etc/nginx.conf
     - sudo squid3 -f test/etc/squid.conf
     - composer self-update
