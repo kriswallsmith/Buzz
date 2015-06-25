@@ -8,7 +8,7 @@ use Buzz\Message\MessageInterface;
 use Buzz\Util\Cookie;
 use Buzz\Util\CookieJar;
 
-class CookieListener extends ListenerInterface
+class CookieListener implements ListenerInterface
 {
     private $cookieJar;
 
