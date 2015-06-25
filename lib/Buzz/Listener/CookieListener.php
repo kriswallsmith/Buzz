@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Client;
+namespace Buzz\Listener;
 
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
@@ -8,14 +8,13 @@ use Buzz\Message\MessageInterface;
 use Buzz\Util\Cookie;
 use Buzz\Util\CookieJar;
 
-class CookieClient extends AbstractDecoratorClient
+class CookieListener extends ListenerInterface
 {
     private $cookieJar;
 
-    public function __construct(ClientInterface $client)
+    public function __construct()
     {
         $this->cookieJar = new CookieJar();
-        parent::__construct($client);
     }
 
     public function setCookies($cookies)
