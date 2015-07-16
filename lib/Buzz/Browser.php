@@ -10,6 +10,7 @@ use Buzz\Message\Factory\Factory;
 use Buzz\Message\Factory\FactoryInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
+use Buzz\Message\ResponseInterface;
 use Buzz\Util\Url;
 
 class Browser
@@ -64,7 +65,7 @@ class Browser
      * @param array  $headers An array of request headers
      * @param string $content The request content
      *
-     * @return MessageInterface The response object
+     * @return ResponseInterface The response object
      */
     public function call($url, $method, $headers = array(), $content = '')
     {
@@ -90,7 +91,7 @@ class Browser
      * @param string $method  The request method to use
      * @param array  $headers An array of request headers
      *
-     * @return MessageInterface The response object
+     * @return ResponseInterface The response object
      */
     public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
     {
@@ -113,11 +114,11 @@ class Browser
      * Sends a request.
      *
      * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
+     * @param ResponseInterface $response A response object
      *
-     * @return MessageInterface The response
+     * @return ResponseInterface The response
      */
-    public function send(RequestInterface $request, MessageInterface $response = null)
+    public function send(RequestInterface $request, ResponseInterface $response = null)
     {
         if (null === $response) {
             $response = $this->factory->createResponse();
