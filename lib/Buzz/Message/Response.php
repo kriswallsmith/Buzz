@@ -140,7 +140,17 @@ class Response extends AbstractMessage
     {
         return 200 === $this->getStatusCode();
     }
-
+    
+    /**
+     * Is the response Not OK?
+     *
+     * @return Boolean
+     */
+    public function isNotOk()
+    {
+        return !$this->isOk();
+    }
+    
     /**
      * Is the reponse forbidden?
      *
