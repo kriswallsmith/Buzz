@@ -95,6 +95,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // remove from queue
                 curl_multi_remove_handle($this->curlm, $curl);
+                static::unsetWipHeader($curl);
                 curl_close($curl);
                 unset($this->queue[$i]);
 
