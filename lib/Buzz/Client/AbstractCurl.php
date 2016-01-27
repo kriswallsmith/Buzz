@@ -14,12 +14,14 @@ use Buzz\Exception\ClientException;
 abstract class AbstractCurl extends AbstractClient
 {
     protected $options = array();
+    protected static $headersSize = 0;
+    protected static $headers = array();
 
     public function __construct()
     {
         if (defined('CURLOPT_PROTOCOLS')) {
             $this->options = array(
-                CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+                CURLOPT_PROTOCOLS       => CURLPROTO_HTTP | CURLPROTO_HTTPS,
                 CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
             );
         }
@@ -36,12 +38,20 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function createCurlHandle()
     {
+        static::resetHeaders();
         if (false === $curl = curl_init()) {
             throw new ClientException('Unable to create a new cURL handle');
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt(
+            $curl,
+            CURLOPT_HEADERFUNCTION,
+            function ($curl, $headerLine) {
+                return static::addHeadersData($curl, $headerLine);
+            }
+        );
 
         return $curl;
     }
@@ -55,16 +65,8 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
-        // fixes bug https://sourceforge.net/p/curl/bugs/1204/
-        $version = curl_version();
-        if (version_compare($version['version'], '7.30.0', '<')) {
-            $pos = strlen($raw) - curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
-        } else {
-            $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        }
-
-        $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
-        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
+        $response->setHeaders(static::$headers);
+        $response->setContent(strlen($raw) > static::getHeadersSize() ? substr($raw, static::getHeadersSize()) : '');
     }
 
     /**
@@ -73,7 +75,8 @@ abstract class AbstractCurl extends AbstractClient
     private static function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
-            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
+            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion(
+            ) == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
             CURLOPT_URL           => $request->getHost().$request->getResource(),
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
@@ -97,9 +100,12 @@ abstract class AbstractCurl extends AbstractClient
 
                 // remove the content-type header
                 if (is_array($fields)) {
-                    $options[CURLOPT_HTTPHEADER] = array_filter($options[CURLOPT_HTTPHEADER], function($header) {
-                        return 0 !== stripos($header, 'Content-Type: ');
-                    });
+                    $options[CURLOPT_HTTPHEADER] = array_filter(
+                        $options[CURLOPT_HTTPHEADER],
+                        function ($header) {
+                            return 0 !== stripos($header, 'Content-Type: ');
+                        }
+                    );
                 }
 
                 break;
@@ -161,27 +167,6 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * A helper for getting the last set of headers.
-     *
-     * @param string $raw A string of many header chunks
-     *
-     * @return array An array of header lines
-     */
-    private static function getLastHeaders($raw)
-    {
-        $headers = array();
-        foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
-            if ($header) {
-                $headers[] = $header;
-            } else {
-                $headers = array();
-            }
-        }
-
-        return $headers;
-    }
-
-    /**
      * Stashes a cURL option to be set on send, when the resource is created.
      *
      * If the supplied value it set to null the option will be removed.
@@ -228,5 +213,44 @@ abstract class AbstractCurl extends AbstractClient
 
         // apply additional options
         curl_setopt_array($curl, $options + $this->options);
+    }
+
+    /**
+     * Resets headers data
+     */
+    private static function resetHeaders()
+    {
+        self::$headersSize = 0;
+        self::$headers = array();
+    }
+
+    /**
+     * Adds the provided head line length to the total header size of
+     * the current request.
+     *
+     * @param resource $curl       A cURL resource. It is not used in the method, but is necessary to declare it
+     *                             because this method is used as curl_setopt CURLOPT_HEADERFUNCTION callback
+     * @param string   $headerLine Header row
+     *
+     * @return int String length of the provided header line
+     */
+    protected static function addHeadersData($curl, $headerLine)
+    {
+        self::$headers[] = $headerLine;
+
+        $headerSize = strlen($headerLine);
+        self::$headersSize += $headerSize;
+
+        return $headerSize;
+    }
+
+    /**
+     * Returns the value of self::$headersSize
+     *
+     * @return int
+     */
+    private static function getHeadersSize()
+    {
+        return self::$headersSize;
     }
 }
