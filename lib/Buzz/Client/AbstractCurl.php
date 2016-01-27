@@ -246,7 +246,8 @@ abstract class AbstractCurl extends AbstractClient
             throw new InvalidArgumentException('Provied param is not a curl resource object.');
         }
 
-        return array_pop(explode('#', (string) $resource));
+        $resourceToString = (string) $resource;
+        return array_pop(explode('#', $resourceToString));
     }
 
     protected static function unsetWipHeader($curl)
