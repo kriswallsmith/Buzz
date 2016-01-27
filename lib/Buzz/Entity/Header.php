@@ -2,40 +2,10 @@
 
 namespace Buzz\Entity;
 
-use Buzz\Exception\InvalidArgumentException;
-
 class Header
 {
-    private $resource = null;
     private $size = 0;
     private $dataList = array();
-
-    public function __construct($resource)
-    {
-        $this->setResource($resource);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResource()
-    {
-        return $this->resource;
-    }
-
-    /**
-     * @param mixed $resource
-     */
-    private function setResource($resource)
-    {
-        if (is_resource($resource)) {
-            $this->resource = $resource;
-        } else {
-            throw new InvalidArgumentException('The Header object expects a curl resource.');
-        }
-
-        return $this;
-    }
 
     /**
      * @return mixed

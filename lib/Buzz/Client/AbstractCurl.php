@@ -65,7 +65,8 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
-        $headers = self::$wipHeaders[static::getResourceId($curl)];
+        $curlResourceId = static::getResourceId($curl);
+        $headers = self::$wipHeaders[$curlResourceId];
         $response->setHeaders($headers->getLastRedirectionDataList());
         $response->setContent(strlen($raw) > $headers->getSize() ? substr($raw, $headers->getSize()) : '');
     }
@@ -231,7 +232,7 @@ abstract class AbstractCurl extends AbstractClient
         $curlResourceId = static::getResourceId($curl);
 
         $headers = (!isset(self::$wipHeaders[$curlResourceId]))
-            ? self::$wipHeaders[$curlResourceId] = new Header($curl)
+            ? self::$wipHeaders[$curlResourceId] = new Header()
             : self::$wipHeaders[$curlResourceId];
 
         $headers->addDataList($headerLine);
