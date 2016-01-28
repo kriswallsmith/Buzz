@@ -2,11 +2,13 @@
 
 namespace Buzz\Client;
 
+use Buzz\Entity\Header;
 use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Exception\ClientException;
+use Buzz\Exception\InvalidArgumentException;
 
 /**
  * Base client class with helpers for working with cURL.
@@ -14,8 +16,7 @@ use Buzz\Exception\ClientException;
 abstract class AbstractCurl extends AbstractClient
 {
     protected $options = array();
-    protected static $headersSize = 0;
-    protected static $headers = array();
+    protected static $wipHeaders = array();
 
     public function __construct()
     {
@@ -38,7 +39,6 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function createCurlHandle()
     {
-        static::resetHeaders();
         if (false === $curl = curl_init()) {
             throw new ClientException('Unable to create a new cURL handle');
         }
@@ -65,8 +65,10 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
-        $response->setHeaders(static::$headers);
-        $response->setContent(strlen($raw) > static::getHeadersSize() ? substr($raw, static::getHeadersSize()) : '');
+        $curlResourceId = static::getResourceId($curl);
+        $headers = self::$wipHeaders[$curlResourceId];
+        $response->setHeaders($headers->getLastRedirectionDataList());
+        $response->setContent(strlen($raw) > $headers->getSize() ? substr($raw, $headers->getSize()) : '');
     }
 
     /**
@@ -216,15 +218,6 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * Resets headers data
-     */
-    private static function resetHeaders()
-    {
-        self::$headersSize = 0;
-        self::$headers = array();
-    }
-
-    /**
      * Adds the provided head line length to the total header size of
      * the current request.
      *
@@ -236,21 +229,47 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function addHeadersData($curl, $headerLine)
     {
-        self::$headers[] = $headerLine;
+        $curlResourceId = static::getResourceId($curl);
 
-        $headerSize = strlen($headerLine);
-        self::$headersSize += $headerSize;
+        $headers = (!isset(self::$wipHeaders[$curlResourceId]))
+            ? self::$wipHeaders[$curlResourceId] = new Header()
+            : self::$wipHeaders[$curlResourceId];
 
-        return $headerSize;
+        $headers->addDataList($headerLine);
+
+        return strlen($headerLine);
     }
 
     /**
-     * Returns the value of self::$headersSize
+     * Gets the curl resource id
      *
-     * @return int
+     * @param resource $resource cURL resource
+     *
+     * @throws InvalidArgumentException if the input param is not a valid resource
+     *
+     * @return int Resource id
      */
-    private static function getHeadersSize()
+    protected static function getResourceId($resource)
     {
-        return self::$headersSize;
+        if (!is_resource($resource)) {
+            throw new InvalidArgumentException('Provided param is not a curl resource object.');
+        }
+
+        $resourceToString = (string) $resource;
+        $explodedString = explode('#', $resourceToString);
+        return array_pop($explodedString);
+    }
+
+    /**
+     * Unset the headers from the $wipHeaders list for the selected curl resource
+     *
+     * @param resource $curl cURL resource
+     */
+    protected static function unsetWipHeader($curl)
+    {
+        $curlResourceId = static::getResourceId($curl);
+        if (isset(self::$wipHeaders[$curlResourceId])) {
+            unset(self::$wipHeaders[$curlResourceId]);
+        }
     }
 }
