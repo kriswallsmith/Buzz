@@ -243,7 +243,7 @@ abstract class AbstractCurl extends AbstractClient
     protected static function getResourceId($resource)
     {
         if (!is_resource($resource)) {
-            throw new InvalidArgumentException('Provied param is not a curl resource object.');
+            throw new InvalidArgumentException('Provided param is not a curl resource object.');
         }
 
         $resourceToString = (string) $resource;
