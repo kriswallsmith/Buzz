@@ -23,6 +23,11 @@ class Header
         return $this->dataList;
     }
 
+    /**
+     * Returns the last headers blocks despite the number of redirections
+     *
+     * @return array
+     */
     public function getLastRedirectionDataList()
     {
         $lastRedirectionDataList = array();

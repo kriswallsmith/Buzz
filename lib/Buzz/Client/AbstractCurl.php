@@ -240,6 +240,15 @@ abstract class AbstractCurl extends AbstractClient
         return strlen($headerLine);
     }
 
+    /**
+     * Gets the curl resource id
+     *
+     * @param resource $resource cURL resource
+     *
+     * @throws InvalidArgumentException if the input param is not a valid resource
+     *
+     * @return int Resource id
+     */
     protected static function getResourceId($resource)
     {
         if (!is_resource($resource)) {
@@ -251,6 +260,11 @@ abstract class AbstractCurl extends AbstractClient
         return array_pop($explodedString);
     }
 
+    /**
+     * Unset the headers from the $wipHeaders list for the selected curl resource
+     *
+     * @param resource $curl cURL resource
+     */
     protected static function unsetWipHeader($curl)
     {
         $curlResourceId = static::getResourceId($curl);
