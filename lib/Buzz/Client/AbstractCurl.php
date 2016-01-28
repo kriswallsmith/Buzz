@@ -247,7 +247,8 @@ abstract class AbstractCurl extends AbstractClient
         }
 
         $resourceToString = (string) $resource;
-        return array_pop(explode('#', $resourceToString));
+        $explodedString = explode('#', $resourceToString);
+        return array_pop($explodedString);
     }
 
     protected static function unsetWipHeader($curl)
