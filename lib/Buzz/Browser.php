@@ -73,6 +73,8 @@ class Browser
         if (!$url instanceof Url) {
             $url = new Url($url);
         }
+	
+	var_dump($headers)
 
         $url->applyToRequest($request);
 
