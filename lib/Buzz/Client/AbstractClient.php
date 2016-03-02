@@ -1,6 +1,8 @@
 <?php
 
 namespace Buzz\Client;
+use Rhumsaa\Uuid\Uuid;
+use Rhumsaa\Uuid\Exception\UnsatisfiedDependencyException;
 
 abstract class AbstractClient implements ClientInterface
 {
@@ -69,5 +71,28 @@ abstract class AbstractClient implements ClientInterface
     public function getProxy()
     {
         return $this->proxy;
+    }
+
+    //If headers doesn't have Cid. it will add Cid
+    function addCid($request){
+        $headers = $request->getHeaders();
+        if(empty($headers)){
+            $cid=$this->generateCid();
+            $headers=array($cid);
+        }else{
+            $cidPresent=false;
+            foreach ($headers as $value) {
+                if(strpos($value, 'Cid:')  !== false){
+                    $cidPresent = true;
+                    break;
+                }
+            }
+            if(! $cidPresent){
+                $cid=$this->generateCid();      
+                $headers[]=$cid;
+             }
+        }
+        $request->setHeaders($headers);
+        return $request;
     }
 }

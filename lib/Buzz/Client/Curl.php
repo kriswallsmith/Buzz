@@ -13,6 +13,7 @@ class Curl extends AbstractCurl
 
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
+        $request = $this->addCid($request);
         if (is_resource($this->lastCurl)) {
             curl_close($this->lastCurl);
         }

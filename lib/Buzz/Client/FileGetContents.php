@@ -17,6 +17,7 @@ class FileGetContents extends AbstractStream
      */
     public function send(RequestInterface $request, MessageInterface $response)
     {
+        $request = $this->addCid($request);
         $context = stream_context_create($this->getStreamContextArray($request));
         $url = $request->getHost().$request->getResource();
 

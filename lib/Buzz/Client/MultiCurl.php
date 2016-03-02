@@ -33,6 +33,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      */
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
+        $request = $this->addCid($request);
         $this->queue[] = array($request, $response, $options);
     }
 
