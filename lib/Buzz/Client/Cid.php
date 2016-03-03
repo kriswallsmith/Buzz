@@ -14,6 +14,7 @@ class Cid
 	            $cid=$this->generateCid();
 	            $cid="Cid: ".$cid;   
 	            $headers=array($cid);
+	            $request->setHeaders($headers);
 	        }else{
 	            $cidPresent=false;
 	            foreach ($headers as $value) {
@@ -25,10 +26,10 @@ class Cid
 	            if(! $cidPresent){
 	                $cid=$this->generateCid();  
 	                $cid="Cid: ".$cid;    
-	                $headers[]=$cid;
+	                array_push($headers, $cid);
+	                $request->setHeaders($headers);
 	             }
 	        }
-	        $request->setHeaders($headers);
    		}
         return $request;
     }

@@ -10,8 +10,6 @@ class CidTest extends \PHPUnit_Framework_TestCase
     public function testAddCidByLib()
     {
         $request = new Request();
-        $request->fromUrl('http://google.co.in');
-        $request->setContent('test');
         $cidObj = new Cid();
         $request = $cidObj->addCid($request);
         $headers = $request->getHeaders();
@@ -40,7 +38,7 @@ class CidTest extends \PHPUnit_Framework_TestCase
     public function testGetRequestWithoutCid()
     {
         $browser = new Browser();
-        $response = $browser->get('http://example.com');
+        $response = $browser->get('http://127.0.0.1:8080/server.php');
         $this->assertEquals($response->getStatusCode(), 200);
     }
 
@@ -50,7 +48,7 @@ class CidTest extends \PHPUnit_Framework_TestCase
         $headers = array(
             'Cid' => '123'
         );
-        $response = $browser->get('http://example.com', $headers);
+        $response = $browser->get('http://127.0.0.1:8080/server.php', $headers);
         $this->assertEquals($response->getStatusCode(), 200);
     }
 }    
