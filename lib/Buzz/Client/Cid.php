@@ -17,7 +17,7 @@ class Cid
 	        }else{
 	            $cidPresent=false;
 	            foreach ($headers as $value) {
-	                if(strpos($value, 'Cid:')  !== false){
+	                if(strpos(strtolower($value), 'cid:')  !== false){
 	                    $cidPresent = true;
 	                    break;
 	                }
