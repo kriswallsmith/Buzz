@@ -6,7 +6,7 @@ use Buzz\Message\RequestInterface;
 /**
  * Intercepts calls made using Buzz.
  */
-class RequestListener implements ListenerInterface
+class BuzzRequestListener implements ListenerInterface
 {
     /**
      * Intercept the outgoing request from Buzz
