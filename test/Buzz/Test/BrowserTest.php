@@ -121,6 +121,38 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
         $this->browser->send($request, $response);
     }
 
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage testExceptionListener
+     */
+    public function testExceptionListener()
+    {
+        $listener = $this->getMock('Buzz\Listener\ExceptionListenerInterface');
+        $request = $this->getMock('Buzz\Message\RequestInterface');
+        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $exception = new \Exception('testExceptionListener');
+
+        $client = $this->getMock('Buzz\Client\ClientInterface');
+        $client->expects($this->once())
+            ->method('send')
+            ->will($this->returnCallback(function () use ($exception) {
+                throw $exception;
+            }));
+        $browser = new Browser($client, $this->factory);
+
+        $listener->expects($this->once())
+            ->method('preSend')
+            ->with($request);
+        $listener->expects($this->once())
+            ->method('onException')
+            ->with($request, $exception);
+
+        $browser->setListener($listener);
+        $this->assertSame($listener, $browser->getListener());
+
+        $browser->send($request, $response);
+    }
+
     public function testLastMessages()
     {
         $request = $this->getMock('Buzz\Message\RequestInterface');

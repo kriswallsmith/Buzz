@@ -2,10 +2,11 @@
 
 namespace Buzz\Listener;
 
+use Buzz\Listener\ExceptionListenerInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 
-class ListenerChain implements ListenerInterface
+class ListenerChain implements ListenerInterface, ExceptionListenerInterface
 {
     private $listeners;
 
@@ -35,6 +36,15 @@ class ListenerChain implements ListenerInterface
     {
         foreach ($this->listeners as $listener) {
             $listener->postSend($request, $response);
+        }
+    }
+
+    public function onException(RequestInterface $request, \Exception $exception)
+    {
+        foreach ($this->listeners as $listener) {
+            if ($listener instanceof ExceptionListenerInterface) {
+                $listener->onException($request, $exception);
+            }
         }
     }
 }

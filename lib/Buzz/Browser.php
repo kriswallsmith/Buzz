@@ -11,6 +11,7 @@ use Buzz\Message\Factory\FactoryInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\Url;
+use Buzz\Listener\ExceptionListenerInterface;
 
 class Browser
 {
@@ -127,7 +128,14 @@ class Browser
             $this->listener->preSend($request);
         }
 
-        $this->client->send($request, $response);
+        try {
+            $this->client->send($request, $response);
+        } catch (\Exception $e) {
+            if ($this->listener && $this->listener instanceof ExceptionListenerInterface) {
+                $this->listener->onException($request, $e);
+            }
+            throw $e;
+        }
 
         $this->lastRequest = $request;
         $this->lastResponse = $response;

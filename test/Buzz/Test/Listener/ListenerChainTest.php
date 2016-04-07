@@ -33,4 +33,23 @@ class ListenerChainTest extends \PHPUnit_Framework_TestCase
         $listener->preSend($request);
         $listener->postSend($request, $response);
     }
+
+    public function testChainWithException()
+    {
+        $delegate = $this->getMock('Buzz\Listener\ExceptionListenerInterface');
+        $request = new Message\Request();
+        $response = new Message\Response();
+        $exception = new \Exception();
+
+        $delegate->expects($this->once())
+            ->method('preSend')
+            ->with($request);
+        $delegate->expects($this->once())
+            ->method('onException')
+            ->with($request, $exception);
+
+        $listener = new ListenerChain(array($delegate));
+        $listener->preSend($request);
+        $listener->onException($request, $exception);
+    }
 }
