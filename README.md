@@ -25,4 +25,6 @@ $client->send($request, $response);
 
 echo $request;
 echo $response;
+
+Added to packagist
 ```
