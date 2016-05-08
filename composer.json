@@ -1,17 +1,10 @@
 {
-    "name": "kriswallsmith/buzz",
+    "name": "xoza/buzz",
     "description": "Lightweight HTTP client",
     "keywords": ["http client", "curl"],
-    "homepage": "https://github.com/kriswallsmith/Buzz",
+    "homepage": "https://github.com/xoza/buzz",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Kris Wallsmith",
-            "email": "kris.wallsmith@gmail.com",
-            "homepage": "http://kriswallsmith.net/"
-        }
-    ],
     "require": {
         "php": ">=5.3.0"
     },
