@@ -1,15 +1,22 @@
 {
-    "name": "xoza/buzz",
+    "name": "kriswallsmith/buzz",
     "description": "Lightweight HTTP client",
     "keywords": ["http client", "curl"],
-    "homepage": "https://github.com/xoza/buzz",
+    "homepage": "https://github.com/kriswallsmith/Buzz",
     "type": "library",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Kris Wallsmith",
+            "email": "kris.wallsmith@gmail.com",
+            "homepage": "http://kriswallsmith.net/"
+        }
+    ],
     "require": {
-        "php": ">=5.5.12"
+        "php": ">=5.3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.2.*"
+        "phpunit/phpunit": "3.7.*"
     },
     "suggest": {
         "ext-curl": "*"
@@ -19,8 +26,7 @@
     },
     "autoload": {
         "psr-0": {
-            "buzz": "lib/"
+            "Buzz": "lib/"
         }
-    },
-    "minimum-stability": "stable"
+    }
 }

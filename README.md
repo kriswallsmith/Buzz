@@ -25,5 +25,4 @@ $client->send($request, $response);
 
 echo $request;
 echo $response;
-
 ```
