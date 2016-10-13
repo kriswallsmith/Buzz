@@ -2,6 +2,7 @@
 
 namespace Buzz\Client;
 
+use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Exception\ClientException;
@@ -91,6 +92,14 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
                     static::populateResponse($curl, curl_multi_getcontent($curl), $response);
+                } else {
+                    $errorMsg = curl_error($curl);
+                    $errorNo  = curl_errno($curl);
+
+                    $e = new RequestException($errorMsg, $errorNo);
+                    $e->setRequest($request);
+
+                    throw $e;
                 }
 
                 // remove from queue
