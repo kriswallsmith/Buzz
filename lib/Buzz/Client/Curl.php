@@ -13,12 +13,13 @@ class Curl extends AbstractCurl
 
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
-        if (is_resource($this->lastCurl)) {
-            curl_close($this->lastCurl);
-        }
-
-        $this->lastCurl = static::createCurlHandle();
-        $this->prepare($this->lastCurl, $request, $options);
+		if (!$this->reuseLastConnection && is_resource($this->lastCurl))
+			curl_close($this->lastCurl);
+		
+		if (!$this->reuseLastConnection || !is_resource($this->lastCurl))
+			$this->lastCurl = static::createCurlHandle();
+        
+		$this->prepare($this->lastCurl, $request, $options);
 
         $data = curl_exec($this->lastCurl);
 
