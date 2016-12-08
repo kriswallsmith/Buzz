@@ -31,7 +31,11 @@ class FileGetContents extends AbstractStream
             throw $e;
         }
 
-        $response->setHeaders($this->filterHeaders((array) $http_response_header));
+        // $http_response_header is not defined while 4xx or 5xx responses
+        if (isset($http_response_header)) {
+            $response->setHeaders($this->filterHeaders((array) $http_response_header));
+        }
+
         $response->setContent($content);
     }
 
