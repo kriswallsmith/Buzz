@@ -4,8 +4,6 @@ namespace Buzz;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Client\FileGetContents;
-use Buzz\Listener\ListenerChain;
-use Buzz\Listener\ListenerInterface;
 use Buzz\Message\Factory\Factory;
 use Buzz\Message\Factory\FactoryInterface;
 use Buzz\Message\MessageInterface;
@@ -14,11 +12,15 @@ use Buzz\Util\Url;
 
 class Browser
 {
+    /**
+     * @var ClientInterface
+     */
     private $client;
+
+    /**
+     * @var FactoryInterface
+     */
     private $factory;
-    private $listener;
-    private $lastRequest;
-    private $lastResponse;
 
     public function __construct(ClientInterface $client = null, FactoryInterface $factory = null)
     {
@@ -66,20 +68,12 @@ class Browser
      *
      * @return MessageInterface The response object
      */
-    public function call($url, $method, $headers = array(), $content = '')
+    public function call($url, $method, array $headers = array(), $content = '')
     {
         $request = $this->factory->createRequest($method);
-
-        if (!$url instanceof Url) {
-            $url = new Url($url);
-        }
-
-        $url->applyToRequest($request);
-
-        $request->addHeaders($headers);
         $request->setContent($content);
 
-        return $this->send($request);
+        return $this->send($request, $url, $headers);
     }
 
     /**
@@ -92,61 +86,12 @@ class Browser
      *
      * @return MessageInterface The response object
      */
-    public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
+    public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, array $headers = array())
     {
-        $request = $this->factory->createFormRequest();
-
-        if (!$url instanceof Url) {
-            $url = new Url($url);
-        }
-
-        $url->applyToRequest($request);
-
-        $request->addHeaders($headers);
-        $request->setMethod($method);
+        $request = $this->factory->createFormRequest($method);
         $request->setFields($fields);
 
-        return $this->send($request);
-    }
-
-    /**
-     * Sends a request.
-     *
-     * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
-     *
-     * @return MessageInterface The response
-     */
-    public function send(RequestInterface $request, MessageInterface $response = null)
-    {
-        if (null === $response) {
-            $response = $this->factory->createResponse();
-        }
-
-        if ($this->listener) {
-            $this->listener->preSend($request);
-        }
-
-        $this->client->send($request, $response);
-
-        $this->lastRequest = $request;
-        $this->lastResponse = $response;
-
-        if ($this->listener) {
-            $this->listener->postSend($request, $response);
-        }
-
-        return $response;
-    }
-
-    public function getLastRequest()
-    {
-        return $this->lastRequest;
-    }
-
-    public function getLastResponse()
-    {
-        return $this->lastResponse;
+        return $this->send($request, $url, $headers);
     }
 
     public function setClient(ClientInterface $client)
@@ -169,27 +114,27 @@ class Browser
         return $this->factory;
     }
 
-    public function setListener(ListenerInterface $listener)
+    /**
+     * @param RequestInterface $request
+     * @param string|Url       $url
+     * @param array|null       $headers
+     *
+     * @return MessageInterface
+     */
+    private function send(RequestInterface $request, $url, array $headers = null)
     {
-        $this->listener = $listener;
-    }
-
-    public function getListener()
-    {
-        return $this->listener;
-    }
-
-    public function addListener(ListenerInterface $listener)
-    {
-        if (!$this->listener) {
-            $this->listener = $listener;
-        } elseif ($this->listener instanceof ListenerChain) {
-            $this->listener->addListener($listener);
-        } else {
-            $this->listener = new ListenerChain(array(
-                $this->listener,
-                $listener,
-            ));
+        if (!$url instanceof Url) {
+            $url = new Url($url);
         }
+        $url->applyToRequest($request);
+
+        if ($headers) {
+            $request->addHeaders($headers);
+        }
+
+        $response = $this->factory->createResponse();
+        $this->client->send($request, $response);
+
+        return $response;
     }
 }
