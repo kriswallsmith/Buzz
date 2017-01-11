@@ -20,7 +20,7 @@ abstract class AbstractStream extends AbstractClient
                 // values from the request
                 'method'           => $request->getMethod(),
                 'header'           => implode("\r\n", $request->getHeaders()),
-                'content'          => $request->getContent(),
+                'content'          => (string) $request->getContent(),
                 'protocol_version' => $request->getProtocolVersion(),
 
                 // values from the current client

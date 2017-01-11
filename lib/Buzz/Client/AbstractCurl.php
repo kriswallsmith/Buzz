@@ -116,7 +116,7 @@ abstract class AbstractCurl extends AbstractClient
     private static function getPostFields(RequestInterface $request)
     {
         if (!$request instanceof FormRequestInterface) {
-            return $request->getContent();
+            return (string) $request->getContent();
         }
 
         $fields = $request->getFields();
