@@ -20,9 +20,7 @@ class FileGetContents extends AbstractStream
         $context = stream_context_create($this->getStreamContextArray($request));
         $url = $request->getHost().$request->getResource();
 
-        $level = error_reporting(0);
         $content = file_get_contents($url, 0, $context);
-        error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
             $e = new RequestException($error['message']);
