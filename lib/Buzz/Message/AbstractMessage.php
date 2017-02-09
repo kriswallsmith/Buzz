@@ -119,6 +119,10 @@ abstract class AbstractMessage implements MessageInterface
 
     public function setContent($content)
     {
+        if (is_array($content) || is_object($content)) {
+            $content = http_build_query($content);
+        }
+
         $this->content = $content;
     }
 

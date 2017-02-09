@@ -47,6 +47,28 @@ class AbstractMessageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, (string) $message);
     }
 
+    public function testToStringFormatsTheMessageWithArrayContent()
+    {
+        $message = new Message();
+        $message->addHeader('Foo: Bar');
+        $message->setContent(array('baz'=>'baz', 'bat'=>'bat'));
+
+        $expected = "Foo: Bar\r\n\r\nbaz=baz&bat=bat\r\n";
+
+        $this->assertEquals($expected, (string) $message);
+    }
+
+    public function testToStringFormatsTheMessageWithObjectContent()
+    {
+        $message = new Message();
+        $message->addHeader('Foo: Bar');
+        $message->setContent((object) array('baz'=>'baz', 'bat'=>'bat'));
+
+        $expected = "Foo: Bar\r\n\r\nbaz=baz&bat=bat\r\n";
+
+        $this->assertEquals($expected, (string) $message);
+    }
+
     public function testGetHeaderAttributesReturnsHeaderAttributes()
     {
         $message = new Message();
