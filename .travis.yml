@@ -6,7 +6,6 @@ cache:
         - $HOME/.composer/cache/files
 
 php:
-    - 5.3
     - 5.4
     - 5.5
 #    - 5.6
@@ -28,9 +27,10 @@ matrix:
           dist: trusty
     fast_finish: true
     include:
+        - php: 5.3
+          dist: precise
         - php: 5.5
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci"
-
 
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
