@@ -6,6 +6,7 @@ use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Exception\LogicException;
+use Buzz\Client\Cid;
 
 class Curl extends AbstractCurl
 {
@@ -13,6 +14,8 @@ class Curl extends AbstractCurl
 
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
+        $cidobj=new Cid();
+        $request = $cidobj->addCid($request);
         if (is_resource($this->lastCurl)) {
             curl_close($this->lastCurl);
         }

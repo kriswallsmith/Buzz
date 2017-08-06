@@ -5,8 +5,8 @@ namespace Buzz\Client;
 use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
-
 use Buzz\Exception\ClientException;
+use Buzz\Client\Cid;
 
 class FileGetContents extends AbstractStream
 {
@@ -17,6 +17,8 @@ class FileGetContents extends AbstractStream
      */
     public function send(RequestInterface $request, MessageInterface $response)
     {
+        $cidobj=new Cid();
+        $request = $cidobj->addCid($request);
         $context = stream_context_create($this->getStreamContextArray($request));
         $url = $request->getHost().$request->getResource();
 

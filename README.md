@@ -20,6 +20,7 @@ $response = $browser->get('http://www.google.com');
 
 echo $browser->getLastRequest()."\n";
 echo $response;
+
 ```
 
 You can also use the low-level HTTP classes directly.
