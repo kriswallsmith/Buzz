@@ -1,8 +1,6 @@
 <h1 align="center">Buzz - HTTP client made simple</h1>
 
-<p align="center">
-
-<hr>
+<div align="center">
 
 [![Build Status](https://img.shields.io/travis/kriswallsmith/Buzz.svg?branch=master&style=flat-square)](https://travis-ci.org/kriswallsmith/Buzz)
 [![Latest Version](https://img.shields.io/github/release/kriswallsmith/Buzz.svg?style=flat-square)](https://github.com/kriswallsmith/Buzz/releases)
@@ -10,7 +8,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/kriswallsmith/Buzz.svg?style=flat-square)](https://scrutinizer-ci.com/g/kriswallsmith/Buzz)
 [![Total Downloads](https://img.shields.io/packagist/dt/kriswallsmith/buzz.svg?style=flat-square)](https://packagist.org/packages/kriswallsmith/buzz)
 
-</p>
+</div>
 
 Buzz is a lightweight PHP 5.3 library for issuing HTTP requests.
 
