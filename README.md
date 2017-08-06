@@ -1,4 +1,4 @@
-<h1 align="center">Buzz - HTTP client made simple</h1>
+<h1 align="center">Buzz - Scripted HTTP browser</h1>
 
 <div align="center">
 
