@@ -1,8 +1,8 @@
 language: php
 
 php:
-    - 5.4
     - 5.5
+    - 7.0
 
 env: TEST_SERVER="http://127.0.0.1:8080/server.php" TEST_PROXY="127.0.0.1:3128" PHP_FCGI_CHILDREN=10 PHP_FCGI_MAX_REQUESTS=10
 
