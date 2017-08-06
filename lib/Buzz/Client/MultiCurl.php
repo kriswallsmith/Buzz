@@ -6,6 +6,7 @@ use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Exception\ClientException;
+use Buzz\Client\Cid;
 
 class MultiCurl extends AbstractCurl implements BatchClientInterface
 {
@@ -34,6 +35,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      */
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
+        $cidobj=new Cid();
+        $request = $cidobj->addCid($request);
         $this->queue[] = array($request, $response, $options);
     }
 
