@@ -37,15 +37,7 @@ echo $request;
 echo $response;
 ```
 
-## Installation
-
-Use composer: 
-
-```
-composer require kriswallsmith/buzz
-```
-
-## The idea of Buzz
+## The Idea of Buzz
 
 Buzz was created by Kris Wallsmith back in 2010. The project grown very popular over the years with more than 7 million 
 downloads.  
@@ -60,5 +52,16 @@ We do love PSRs and this is a wish list of what PSR we would like to support:
 * PSR-2 (Code style)
 * PSR-4 (Auto loading)
 * PSR-7 (HTTP messages)
+* PSR-15 (HTTP middlewares)
 * PSR-17 (HTTP factories)
 * PSR-18 (HTTP client)
+
+## Backwards Compatibility Promise
+
+We take backwards compatibility very seriously as you should do with any open source project. We strictly follow [Semver](http://semver.org/).
+Please note that Semver works a bit different prior version 1.0.0. Minor versions prior 1.0.0 are allow to break backwards
+compatibility. 
+
+Being greatly inspired by [Symfony's bc promise](https://symfony.com/doc/current/contributing/code/bc.html), we have adopted
+their method of deprecating classes, interfaces and functions. We also promise that no code or features will be removed 
+before 1.0.0.  
