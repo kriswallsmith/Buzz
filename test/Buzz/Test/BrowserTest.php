@@ -12,8 +12,8 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMock('Buzz\Client\ClientInterface');
-        $this->factory = $this->getMock('Buzz\Message\Factory\FactoryInterface');
+        $this->client = $this->getMockBuilder('Buzz\Client\ClientInterface')->getMock();
+        $this->factory = $this->getMockBuilder('Buzz\Message\Factory\FactoryInterface')->getMock();
 
         $this->browser = new Browser($this->client, $this->factory);
     }
@@ -23,8 +23,8 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
      */
     public function testBasicMethods($method, $content)
     {
-        $request = $this->getMock('Buzz\Message\RequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
+        $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
         $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
@@ -68,8 +68,8 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 
     public function testSubmit()
     {
-        $request = $this->getMock('Buzz\Message\Form\FormRequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $request = $this->getMockBuilder('Buzz\Message\Form\FormRequestInterface')->getMock();
+        $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
         $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
@@ -104,9 +104,9 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 
     public function testListener()
     {
-        $listener = $this->getMock('Buzz\Listener\ListenerInterface');
-        $request = $this->getMock('Buzz\Message\RequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
+        $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
+        $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
 
         $listener->expects($this->once())
             ->method('preSend')
@@ -123,8 +123,8 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 
     public function testLastMessages()
     {
-        $request = $this->getMock('Buzz\Message\RequestInterface');
-        $response = $this->getMock('Buzz\Message\MessageInterface');
+        $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
+        $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
 
         $this->browser->send($request, $response);
 
@@ -134,28 +134,28 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 
     public function testClientMethods()
     {
-        $client = $this->getMock('Buzz\Client\ClientInterface');
+        $client = $this->getMockBuilder('Buzz\Client\ClientInterface')->getMock();
         $this->browser->setClient($client);
         $this->assertSame($client, $this->browser->getClient());
     }
 
     public function testFactoryMethods()
     {
-        $factory = $this->getMock('Buzz\Message\Factory\FactoryInterface');
+        $factory = $this->getMockBuilder('Buzz\Message\Factory\FactoryInterface')->getMock();
         $this->browser->setMessageFactory($factory);
         $this->assertSame($factory, $this->browser->getMessageFactory());
     }
 
     public function testAddFirstListener()
     {
-        $listener = $this->getMock('Buzz\Listener\ListenerInterface');
+        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
         $this->browser->addListener($listener);
         $this->assertEquals($listener, $this->browser->getListener());
     }
 
     public function testAddSecondListener()
     {
-        $listener = $this->getMock('Buzz\Listener\ListenerInterface');
+        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
 
         $this->browser->addListener($listener);
         $this->browser->addListener($listener);
@@ -168,7 +168,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase
 
     public function testAddThirdListener()
     {
-        $listener = $this->getMock('Buzz\Listener\ListenerInterface');
+        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
 
         $this->browser->addListener($listener);
         $this->browser->addListener($listener);

@@ -197,7 +197,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage Protocol pop3 not supported or disabled in libcurl
+     * @expectedExceptionMessage not supported or disabled in libcurl
      */
     public function testRedirectedToForbiddenProtocol()
     {
