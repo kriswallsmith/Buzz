@@ -19,7 +19,9 @@ $browser = new Buzz\Browser();
 $response = $browser->get('http://www.google.com');
 
 echo $browser->getLastRequest()."\n";
-echo $response;
+// $response is an object. 
+// You can use $response->getContent() or $response->getHeaders() to get only one part of the response.
+echo $response; 
 ```
 
 You can also use the low-level HTTP classes directly.
