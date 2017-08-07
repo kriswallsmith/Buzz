@@ -28,6 +28,8 @@ class Cookie
     /**
      * Returns true if the current cookie matches the supplied request.
      *
+     * @param RequestInterface $request A request object
+     *
      * @return boolean
      */
     public function matchesRequest(RequestInterface $request)

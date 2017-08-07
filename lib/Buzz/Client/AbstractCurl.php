@@ -69,6 +69,9 @@ abstract class AbstractCurl extends AbstractClient
 
     /**
      * Sets options on a cURL resource based on a request.
+     *
+     * @param resource         $curl    A cURL resource
+     * @param RequestInterface $request A request object
      */
     private static function setOptionsFromRequest($curl, RequestInterface $request)
     {
@@ -110,6 +113,8 @@ abstract class AbstractCurl extends AbstractClient
 
     /**
      * Returns a value for the CURLOPT_POSTFIELDS option.
+     *
+     * @param RequestInterface $request A request object
      *
      * @return string|array A post fields value
      */
