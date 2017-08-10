@@ -50,6 +50,15 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Internal Server Error', $response->getReasonPhrase());
     }
 
+    public function testGetReasonPhraseReturnsEmptyReasonPhrase()
+    {
+        $response = new Response();
+
+        $response->addHeader('HTTP/1.0 200');
+
+        $this->assertNull($response->getReasonPhrase());
+    }
+
     public function testAddHeadersResetsStatusLine()
     {
         $response = new Response();
