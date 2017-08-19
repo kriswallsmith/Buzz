@@ -9,16 +9,16 @@ class ListenerChainTest extends \PHPUnit_Framework_TestCase
 {
     public function testListeners()
     {
-        $listener = new ListenerChain(array($this->getMock('Buzz\Listener\ListenerInterface')));
+        $listener = new ListenerChain(array($this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock()));
         $this->assertEquals(1, count($listener->getListeners()));
 
-        $listener->addListener($this->getMock('Buzz\Listener\ListenerInterface'));
+        $listener->addListener($this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock());
         $this->assertEquals(2, count($listener->getListeners()));
     }
 
     public function testChain()
     {
-        $delegate = $this->getMock('Buzz\Listener\ListenerInterface');
+        $delegate = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
         $request = new Message\Request();
         $response = new Message\Response();
 

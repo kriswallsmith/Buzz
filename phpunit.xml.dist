@@ -17,4 +17,8 @@
             <directory suffix=".php">./lib/Buzz/</directory>
         </whitelist>
     </filter>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+    </listeners>
 </phpunit>
