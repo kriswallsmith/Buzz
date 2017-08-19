@@ -25,8 +25,8 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-0": {
-            "Buzz": "lib/"
+        "psr-4": {
+            "Buzz\\": "lib/Buzz"
         }
     },
     "scripts": {
