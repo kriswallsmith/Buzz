@@ -177,10 +177,10 @@ class Response extends AbstractMessage
     {
         $headers = $this->getHeaders();
 
-        if (isset($headers[0]) && 3 == count($parts = explode(' ', $headers[0], 3))) {
+        if (isset($headers[0]) && 2 <= count($parts = explode(' ', $headers[0], 3))) {
             $this->protocolVersion = (float) substr($parts[0], 5);
             $this->statusCode = (integer) $parts[1];
-            $this->reasonPhrase = $parts[2];
+            $this->reasonPhrase = isset($parts[2]) ? $parts[2] : '';
         } else {
             $this->protocolVersion = $this->statusCode = $this->reasonPhrase = false;
         }
