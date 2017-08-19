@@ -11,6 +11,7 @@ php:
 #    - 5.6
     - 7.0
     - 7.1
+    - 7.2
 
 env:
     global:
@@ -40,7 +41,7 @@ before_install:
     - curl --version
 
 before_script:
-    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini; fi
+    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
     - sudo sh ./test/.travis/configure-php.sh $USER $(phpenv version-name)
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo nginx -p test -c .travis/etc/nginx.conf
