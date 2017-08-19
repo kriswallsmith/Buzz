@@ -13,13 +13,15 @@
 
 Buzz is a lightweight PHP 5.3 library for issuing HTTP requests.
 
-## Instalation
+## Installation
 
 Package available on [Composer](https://packagist.org/packages/kriswallsmith/buzz).
 
-If you're using Composer to manage dependencies, you can use
+Install by running: 
 
-    $ composer require "kriswallsmith/buzz"
+```bash
+composer require kriswallsmith/buzz
+```
 
 ## Usage 
 
@@ -77,4 +79,13 @@ compatibility.
 
 Being greatly inspired by [Symfony's bc promise](https://symfony.com/doc/current/contributing/code/bc.html), we have adopted
 their method of deprecating classes, interfaces and functions. We also promise that no code or features will be removed 
-before 1.0.0.  
+before 1.0.0. 
+
+## Running the tests
+
+To run the test we need to set up a webserver. Using PHP's build in one works perfectly. 
+
+```bash
+php -S 127.0.0.1:8080 test/server.php  &
+composer test
+```
