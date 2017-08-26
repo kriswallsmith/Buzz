@@ -59,6 +59,7 @@ class Curl extends AbstractCurl
     public function __destruct()
     {
         if (is_resource($this->lastCurl)) {
+            static::unsetWipHeader($this->lastCurl);
             curl_close($this->lastCurl);
         }
     }

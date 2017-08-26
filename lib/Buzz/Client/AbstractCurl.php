@@ -2,11 +2,13 @@
 
 namespace Buzz\Client;
 
+use Buzz\Entity\Header;
 use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Exception\ClientException;
+use Buzz\Exception\InvalidArgumentException;
 
 /**
  * Base client class with helpers for working with cURL.
@@ -14,12 +16,13 @@ use Buzz\Exception\ClientException;
 abstract class AbstractCurl extends AbstractClient
 {
     protected $options = array();
+    protected static $wipHeaders = array();
 
     public function __construct()
     {
         if (defined('CURLOPT_PROTOCOLS')) {
             $this->options = array(
-                CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+                CURLOPT_PROTOCOLS       => CURLPROTO_HTTP | CURLPROTO_HTTPS,
                 CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
             );
         }
@@ -42,6 +45,13 @@ abstract class AbstractCurl extends AbstractClient
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt(
+            $curl,
+            CURLOPT_HEADERFUNCTION,
+            function ($curl, $headerLine) {
+                return static::addHeadersData($curl, $headerLine);
+            }
+        );
 
         return $curl;
     }
@@ -55,16 +65,10 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
-        // fixes bug https://sourceforge.net/p/curl/bugs/1204/
-        $version = curl_version();
-        if (version_compare($version['version'], '7.30.0', '<')) {
-            $pos = strlen($raw) - curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
-        } else {
-            $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        }
-
-        $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
-        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
+        $curlResourceId = static::getResourceId($curl);
+        $headers = self::$wipHeaders[$curlResourceId];
+        $response->setHeaders($headers->getLastRedirectionDataList());
+        $response->setContent(strlen($raw) > $headers->getSize() ? substr($raw, $headers->getSize()) : '');
     }
 
     /**
@@ -76,7 +80,8 @@ abstract class AbstractCurl extends AbstractClient
     private static function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
-            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
+            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion(
+            ) == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
             CURLOPT_URL           => $request->getHost().$request->getResource(),
             CURLOPT_HTTPHEADER    => $request->getHeaders(),
@@ -100,9 +105,12 @@ abstract class AbstractCurl extends AbstractClient
 
                 // remove the content-type header
                 if (is_array($fields)) {
-                    $options[CURLOPT_HTTPHEADER] = array_filter($options[CURLOPT_HTTPHEADER], function($header) {
-                        return 0 !== stripos($header, 'Content-Type: ');
-                    });
+                    $options[CURLOPT_HTTPHEADER] = array_filter(
+                        $options[CURLOPT_HTTPHEADER],
+                        function ($header) {
+                            return 0 !== stripos($header, 'Content-Type: ');
+                        }
+                    );
                 }
 
                 break;
@@ -166,27 +174,6 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * A helper for getting the last set of headers.
-     *
-     * @param string $raw A string of many header chunks
-     *
-     * @return array An array of header lines
-     */
-    private static function getLastHeaders($raw)
-    {
-        $headers = array();
-        foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
-            if ($header) {
-                $headers[] = $header;
-            } else {
-                $headers = array();
-            }
-        }
-
-        return $headers;
-    }
-
-    /**
      * Stashes a cURL option to be set on send, when the resource is created.
      *
      * If the supplied value it set to null the option will be removed.
@@ -233,5 +220,61 @@ abstract class AbstractCurl extends AbstractClient
 
         // apply additional options
         curl_setopt_array($curl, $options + $this->options);
+    }
+
+    /**
+     * Adds the provided head line length to the total header size of
+     * the current request.
+     *
+     * @param resource $curl       A cURL resource. It is not used in the method, but is necessary to declare it
+     *                             because this method is used as curl_setopt CURLOPT_HEADERFUNCTION callback
+     * @param string   $headerLine Header row
+     *
+     * @return int String length of the provided header line
+     */
+    protected static function addHeadersData($curl, $headerLine)
+    {
+        $curlResourceId = static::getResourceId($curl);
+
+        $headers = (!isset(self::$wipHeaders[$curlResourceId]))
+            ? self::$wipHeaders[$curlResourceId] = new Header()
+            : self::$wipHeaders[$curlResourceId];
+
+        $headers->addDataList($headerLine);
+
+        return strlen($headerLine);
+    }
+
+    /**
+     * Gets the curl resource id
+     *
+     * @param resource $resource cURL resource
+     *
+     * @throws InvalidArgumentException if the input param is not a valid resource
+     *
+     * @return int Resource id
+     */
+    protected static function getResourceId($resource)
+    {
+        if (!is_resource($resource)) {
+            throw new InvalidArgumentException('Provided param is not a curl resource object.');
+        }
+
+        $resourceToString = (string) $resource;
+        $explodedString = explode('#', $resourceToString);
+        return array_pop($explodedString);
+    }
+
+    /**
+     * Unset the headers from the $wipHeaders list for the selected curl resource
+     *
+     * @param resource $curl cURL resource
+     */
+    protected static function unsetWipHeader($curl)
+    {
+        $curlResourceId = static::getResourceId($curl);
+        if (isset(self::$wipHeaders[$curlResourceId])) {
+            unset(self::$wipHeaders[$curlResourceId]);
+        }
     }
 }
