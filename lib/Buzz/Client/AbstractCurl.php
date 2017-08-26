@@ -14,6 +14,7 @@ use Buzz\Exception\ClientException;
 abstract class AbstractCurl extends AbstractClient
 {
     protected $options = array();
+	protected $reuseLastConnection = false;
 
     public function __construct()
     {
@@ -234,4 +235,14 @@ abstract class AbstractCurl extends AbstractClient
         // apply additional options
         curl_setopt_array($curl, $options + $this->options);
     }
+	
+    public function setReuseLastConnection($reuseLastConnection)
+    {
+        $this->reuseLastConnection = $reuseLastConnection;
+    }
+
+    public function getReuseLastConnection()
+    {
+        return $this->reuseLastConnection;
+    }	
 }
