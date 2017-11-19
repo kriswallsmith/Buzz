@@ -13,7 +13,8 @@
         }
     ],
     "require": {
-        "php": "^5.3.3 || ^7.0"
+        "php": "^5.3.3 || ^7.0",
+        "guzzlehttp/psr7": "^1.4"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.3"
