@@ -7,6 +7,11 @@ use Buzz\Message\Request;
 use Buzz\Message\RequestInterface;
 use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 
+/**
+ *
+ *
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
 class RequestConverter
 {
     /**
@@ -25,7 +30,7 @@ class RequestConverter
         return new \GuzzleHttp\Psr7\Request(
             $request->getMethod(),
             sprintf('%s://%s%s', $request->isSecure() ? 'https': 'http', $request->getHost(), $request->getResource()),
-            $request->getHeaders(),
+            HeaderConverter::toPsrHeaders($request->getHeaders()),
             $request->getContent(),
             $request->getProtocolVersion()
         );
@@ -50,7 +55,7 @@ class RequestConverter
             $uri->getHost()
         );
 
-        $buzzRequest->addHeaders($request->getHeaders());
+        $buzzRequest->addHeaders(HeaderConverter::toBuzzHeaders($request->getHeaders()));
         $buzzRequest->setContent($request->getBody()->__toString());
         $buzzRequest->setProtocolVersion($request->getProtocolVersion());
 

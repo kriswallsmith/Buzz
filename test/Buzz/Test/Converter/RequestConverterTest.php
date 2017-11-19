@@ -21,7 +21,7 @@ class RequestConverterTest extends TestCase
     }
     public function testBuzz()
     {
-        $psr = new \GuzzleHttp\Psr7\Request('GET', 'https://example.com/foo?bar', ['header'=>'value'], 'Body');
+        $psr = new \GuzzleHttp\Psr7\Request('GET', 'https://example.com/foo?bar', ['header'=>'value'], 'Foobar');
 
         $buzz = RequestConverter::buzz($psr);
         $this->assertEquals('GET', $buzz->getMethod());

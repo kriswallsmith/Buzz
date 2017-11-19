@@ -6,6 +6,11 @@ use Buzz\Exception\LogicException;
 use Buzz\Message\Response;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ *
+ *
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
 class ResponseConverter
 {
     /**
@@ -21,9 +26,13 @@ class ResponseConverter
         }
 
         // Convert the response to psr7
+        $headers = $response->getHeaders();
+        // Remove status line
+        array_shift($headers);
+
         return new \GuzzleHttp\Psr7\Response(
             $response->getStatusCode(),
-            $response->getHeaders(),
+            HeaderConverter::toPsrHeaders($headers),
             $response->getContent(),
             $response->getProtocolVersion(),
             $response->getReasonPhrase()
@@ -42,7 +51,7 @@ class ResponseConverter
         }
 
         // Convert the response to buzz response
-        $headers = $response->getHeaders();
+        $headers =HeaderConverter::toBuzzHeaders($response->getHeaders());
         array_unshift($headers, sprintf('HTTP/%s %d %s', $response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()));
 
         $buzzResponse = new Response();
