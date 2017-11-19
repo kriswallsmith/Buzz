@@ -60,4 +60,8 @@ class ResponseConverter
 
         return $buzzResponse;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Started to add request/response converter

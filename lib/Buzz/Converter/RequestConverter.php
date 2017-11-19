@@ -55,10 +55,13 @@ class RequestConverter
             $uri->getHost()
         );
 
-        $buzzRequest->addHeaders(HeaderConverter::toBuzzHeaders($request->getHeaders()));
+        $buzzRequest->addHeaders($request->getHeaders());
         $buzzRequest->setContent($request->getBody()->__toString());
         $buzzRequest->setProtocolVersion($request->getProtocolVersion());
 
         return $buzzRequest;
     }
 }
+=======
+}
+>>>>>>> Started to add request/response converter
