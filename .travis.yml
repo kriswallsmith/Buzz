@@ -27,8 +27,6 @@ matrix:
           dist: trusty
     fast_finish: true
     include:
-        - php: 5.3
-          dist: precise
         - php: 5.5
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci"
 
