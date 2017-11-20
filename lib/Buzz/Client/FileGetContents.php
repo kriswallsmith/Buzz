@@ -2,6 +2,8 @@
 
 namespace Buzz\Client;
 
+use Buzz\Converter\RequestConverter;
+use Buzz\Converter\ResponseConverter;
 use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
@@ -15,13 +17,13 @@ class FileGetContents extends AbstractStream
      *
      * @throws ClientException If file_get_contents() fires an error
      */
-    public function send(RequestInterface $request, MessageInterface $response)
+    public function send($request, $response)
     {
+        $request = RequestConverter::psr7($request);
         $context = stream_context_create($this->getStreamContextArray($request));
-        $url = $request->getHost().$request->getResource();
 
         $level = error_reporting(0);
-        $content = file_get_contents($url, 0, $context);
+        $content = file_get_contents($request->getUri()->__toString(), 0, $context);
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
@@ -33,6 +35,10 @@ class FileGetContents extends AbstractStream
 
         $response->setHeaders($this->filterHeaders((array) $http_response_header));
         $response->setContent($content);
+
+        $response = ResponseConverter::psr7($response);
+
+        return $response;
     }
 
     private function filterHeaders(array $headers)

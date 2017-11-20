@@ -2,11 +2,15 @@
 
 namespace Buzz\Client;
 
+use Buzz\Converter\HeaderConverter;
+use Buzz\Converter\ResponseConverter;
 use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface;
+use Buzz\Message\RequestInterface as BuzzRequestInterface;
 use Buzz\Exception\ClientException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Base client class with helpers for working with cURL.
@@ -52,6 +56,8 @@ abstract class AbstractCurl extends AbstractClient
      * @param resource         $curl     A cURL resource
      * @param string           $raw      The raw response string
      * @param MessageInterface $response The response object
+     *
+     * @return ResponseInterface
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
@@ -65,6 +71,10 @@ abstract class AbstractCurl extends AbstractClient
 
         $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
         $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
+
+        $response = ResponseConverter::psr7($response);
+
+        return $response;
     }
 
     /**
@@ -78,24 +88,24 @@ abstract class AbstractCurl extends AbstractClient
         $options = array(
             CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
-            CURLOPT_URL           => $request->getHost().$request->getResource(),
-            CURLOPT_HTTPHEADER    => $request->getHeaders(),
+            CURLOPT_URL           => $request->getUri()->__toString(),
+            CURLOPT_HTTPHEADER    => HeaderConverter::toBuzzHeaders($request->getHeaders()),
         );
 
         switch ($request->getMethod()) {
-            case RequestInterface::METHOD_HEAD:
+            case BuzzRequestInterface::METHOD_HEAD:
                 $options[CURLOPT_NOBODY] = true;
                 break;
 
-            case RequestInterface::METHOD_GET:
+            case BuzzRequestInterface::METHOD_GET:
                 $options[CURLOPT_HTTPGET] = true;
                 break;
 
-            case RequestInterface::METHOD_POST:
-            case RequestInterface::METHOD_PUT:
-            case RequestInterface::METHOD_DELETE:
-            case RequestInterface::METHOD_PATCH:
-            case RequestInterface::METHOD_OPTIONS:
+            case BuzzRequestInterface::METHOD_POST:
+            case BuzzRequestInterface::METHOD_PUT:
+            case BuzzRequestInterface::METHOD_DELETE:
+            case BuzzRequestInterface::METHOD_PATCH:
+            case BuzzRequestInterface::METHOD_OPTIONS:
                 $options[CURLOPT_POSTFIELDS] = $fields = static::getPostFields($request);
 
                 // remove the content-type header
@@ -114,16 +124,17 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Returns a value for the CURLOPT_POSTFIELDS option.
      *
-     * @param RequestInterface $request A request object
+     * @param BuzzRequestInterface $request A request object
      *
      * @return string|array A post fields value
      */
     private static function getPostFields(RequestInterface $request)
     {
         if (!$request instanceof FormRequestInterface) {
-            return $request->getContent();
+            return $request->getBody()->__toString();
         }
 
+        // TODO move this code to request converter... I think...
         $fields = $request->getFields();
         $multipart = false;
 
@@ -207,6 +218,10 @@ abstract class AbstractCurl extends AbstractClient
 
     /**
      * Prepares a cURL resource to send a request.
+     *
+     * @param $curl
+     * @param RequestInterface $request
+     * @param array $options
      */
     protected function prepare($curl, RequestInterface $request, array $options = array())
     {

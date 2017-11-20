@@ -16,5 +16,5 @@ interface ClientInterface
      *
      * @throws ClientException If something goes wrong
      */
-    public function send(RequestInterface $request, MessageInterface $response);
+    public function send($request, $response);
 }

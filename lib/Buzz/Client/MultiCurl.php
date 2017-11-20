@@ -2,6 +2,7 @@
 
 namespace Buzz\Client;
 
+use Buzz\Converter\RequestConverter;
 use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
@@ -32,8 +33,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      * @param MessageInterface $response A response object
      * @param array            $options  An array of options
      */
-    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
+    public function send($request, $response, array $options = array())
     {
+        $request = RequestConverter::psr7($request);
         $this->queue[] = array($request, $response, $options);
     }
 

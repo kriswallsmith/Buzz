@@ -3,18 +3,19 @@
 namespace Buzz\Exception;
 
 use Buzz\Message\RequestInterface;
+use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 
 class RequestException extends ClientException
 {
     /**
      * Request object
      *
-     * @var RequestInterface
+     * @var RequestInterface|Psr7RequestInterface
      */
     private $request;
 
     /**
-     * @return RequestInterface
+     * @return RequestInterface|Psr7RequestInterface
      */
     public function getRequest()
     {
@@ -22,9 +23,9 @@ class RequestException extends ClientException
     }
 
     /**
-     * @param RequestInterface $request
+     * @param RequestInterface|Psr7RequestInterface $request
      */
-    public function setRequest(RequestInterface $request)
+    public function setRequest($request)
     {
         $this->request = $request;
     }

@@ -4,6 +4,8 @@ namespace Buzz;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Client\FileGetContents;
+use Buzz\Converter\RequestConverter;
+use Buzz\Converter\ResponseConverter;
 use Buzz\Listener\ListenerChain;
 use Buzz\Listener\ListenerInterface;
 use Buzz\Message\Factory\Factory;
@@ -11,6 +13,8 @@ use Buzz\Message\Factory\FactoryInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\Url;
+use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
+use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
 
 class Browser
 {
@@ -126,7 +130,7 @@ class Browser
      *
      * @return MessageInterface The response
      */
-    public function send(RequestInterface $request, MessageInterface $response = null)
+    public function send($request, MessageInterface $response = null)
     {
         if (null === $response) {
             $response = $this->factory->createResponse();
@@ -136,7 +140,7 @@ class Browser
             $this->listener->preSend($request);
         }
 
-        $this->client->send($request, $response);
+        $this->client->send(RequestConverter::psr7($request), $response);
 
         $this->lastRequest = $request;
         $this->lastResponse = $response;
@@ -146,6 +150,19 @@ class Browser
         }
 
         return $response;
+    }
+
+    /**
+     * Send a PSR7 request.
+     *
+     * @param Psr7RequestInterface $request
+     * @return Psr7ResponseInterface
+     */
+    public function sendRequest(Psr7RequestInterface $request)
+    {
+        $response = $this->send(RequestConverter::buzz($request));
+
+        return ResponseConverter::psr7($response);
     }
 
     public function getLastRequest()

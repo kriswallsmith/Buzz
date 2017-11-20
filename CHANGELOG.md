@@ -1,5 +1,15 @@
 # Change log
 
+## 0.16.0
+
+### Changed
+
+* ClientInterface supports PSR7 requests and responses. 
+
+### Added 
+
+* Added Request and Response converters
+
 ## 0.15.2
 
 ### Added 

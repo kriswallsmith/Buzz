@@ -2,6 +2,8 @@
 
 namespace Buzz\Client;
 
+use Buzz\Converter\RequestConverter;
+use Buzz\Converter\ResponseConverter;
 use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
@@ -11,8 +13,9 @@ class Curl extends AbstractCurl
 {
     private $lastCurl;
 
-    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
+    public function send($request, $response, array $options = array())
     {
+        $request = RequestConverter::psr7($request);
         if (is_resource($this->lastCurl)) {
             curl_close($this->lastCurl);
         }
@@ -33,6 +36,8 @@ class Curl extends AbstractCurl
         }
 
         static::populateResponse($this->lastCurl, $data, $response);
+
+        return $response;
     }
 
     /**
