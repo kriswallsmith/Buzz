@@ -9,6 +9,7 @@ use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface as BuzzRequestInterface;
 use Buzz\Exception\ClientException;
+use Buzz\Message\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -58,6 +59,8 @@ abstract class AbstractCurl extends AbstractClient
      * @param MessageInterface $response The response object
      *
      * @return ResponseInterface
+     *
+     * @deprecated Will be removed in 1.0. Use createResponse instead.
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
@@ -69,6 +72,31 @@ abstract class AbstractCurl extends AbstractClient
             $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         }
 
+        $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
+        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
+
+        $response = ResponseConverter::psr7($response);
+
+        return $response;
+    }
+
+    /**
+     * @param $curl
+     * @param $raw
+     * @return ResponseInterface
+     */
+    protected function createResponse($curl, $raw)
+    {
+
+        // fixes bug https://sourceforge.net/p/curl/bugs/1204/
+        $version = curl_version();
+        if (version_compare($version['version'], '7.30.0', '<')) {
+            $pos = strlen($raw) - curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
+        } else {
+            $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        }
+
+        $response = new Response();
         $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
         $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
 

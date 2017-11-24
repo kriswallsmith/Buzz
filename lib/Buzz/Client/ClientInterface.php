@@ -6,6 +6,9 @@ use Buzz\Exception\ClientException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 
+/**
+ * @deprecated Will be removed in 1.0. Use PSR18 interface instead.
+ */
 interface ClientInterface
 {
     /**
@@ -16,5 +19,5 @@ interface ClientInterface
      *
      * @throws ClientException If something goes wrong
      */
-    public function send($request, $response);
+    public function send(RequestInterface $request, MessageInterface $response);
 }

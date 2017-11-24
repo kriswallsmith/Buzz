@@ -8,14 +8,38 @@ use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Exception\LogicException;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface as PSR7RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Curl extends AbstractCurl
 {
     private $lastCurl;
 
-    public function send($request, $response, array $options = array())
+    /**
+     * @param RequestInterface $request
+     * @param MessageInterface $response
+     * @param array $options
+     * @return MessageInterface
+     *
+     * @deprecated Will be removed in 1.0. Use sendRequest instead.
+     */
+    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
         $request = RequestConverter::psr7($request);
+        $response = $this->sendRequest($response);
+
+        return ResponseConverter::buzz($response);
+    }
+
+    /**
+     * @param PSR7RequestInterface $request
+     * @param array $options
+     *
+     * @return ResponseInterface
+     */
+    public function sendRequest(PSR7RequestInterface $request, $options = [])
+    {
         if (is_resource($this->lastCurl)) {
             curl_close($this->lastCurl);
         }
@@ -35,9 +59,7 @@ class Curl extends AbstractCurl
             throw $e;
         }
 
-        static::populateResponse($this->lastCurl, $data, $response);
-
-        return $response;
+        return $this->createResponse($this->lastCurl, $data);
     }
 
     /**

@@ -7,7 +7,8 @@ use Buzz\Converter\ResponseConverter;
 use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
-
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface as PSR7RequestInterface;
 use Buzz\Exception\ClientException;
 
 class FileGetContents extends AbstractStream
@@ -17,9 +18,21 @@ class FileGetContents extends AbstractStream
      *
      * @throws ClientException If file_get_contents() fires an error
      */
-    public function send($request, $response)
+    public function send(RequestInterface $request, MessageInterface $response)
     {
         $request = RequestConverter::psr7($request);
+        $response = $this->sendRequest($request);
+        $response = ResponseConverter::buzz($response);
+
+        return $response;
+    }
+
+    /**
+     * @param PSR7RequestInterface $request
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sendRequest(PSR7RequestInterface $request)
+    {
         $context = stream_context_create($this->getStreamContextArray($request));
 
         $level = error_reporting(0);
@@ -33,12 +46,11 @@ class FileGetContents extends AbstractStream
             throw $e;
         }
 
+        $response = new \Buzz\Message\Response();
         $response->setHeaders($this->filterHeaders((array) $http_response_header));
         $response->setContent($content);
 
-        $response = ResponseConverter::psr7($response);
-
-        return $response;
+        return ResponseConverter::psr7($response);
     }
 
     private function filterHeaders(array $headers)

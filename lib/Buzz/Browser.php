@@ -140,7 +140,7 @@ class Browser
             $this->listener->preSend($request);
         }
 
-        $this->client->send(RequestConverter::psr7($request), $response);
+        $this->client->send($request, $response);
 
         $this->lastRequest = $request;
         $this->lastResponse = $response;
@@ -160,9 +160,20 @@ class Browser
      */
     public function sendRequest(Psr7RequestInterface $request)
     {
-        $response = $this->send(RequestConverter::buzz($request));
+        if ($this->listener) {
+            $this->listener->preSend($request);
+        }
 
-        return ResponseConverter::psr7($response);
+        $response = $this->client->sendRequest($request);
+
+        $this->lastRequest = $request;
+        $this->lastResponse = $response;
+
+        if ($this->listener) {
+            $this->listener->postSend($request, $response);
+        }
+
+        return $response;
     }
 
     public function getLastRequest()

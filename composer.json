@@ -14,7 +14,8 @@
     ],
     "require": {
         "php": "^5.4 || ^7.0",
-        "guzzlehttp/psr7": "^1.4"
+        "guzzlehttp/psr7": "^1.4",
+        "php-http/httplug": "^1.1"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.4@rc || ^4.0"

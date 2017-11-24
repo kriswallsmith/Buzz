@@ -7,6 +7,7 @@ use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Exception\ClientException;
+use Psr\Http\Message\RequestInterface as PSR7RequestInterface;
 
 class MultiCurl extends AbstractCurl implements BatchClientInterface
 {
@@ -32,11 +33,18 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      * @param RequestInterface $request  A request object
      * @param MessageInterface $response A response object
      * @param array            $options  An array of options
+     *
+     * @deprecated Will be removed in 1.0. Use sendRequest instead.
      */
-    public function send($request, $response, array $options = array())
+    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
         $request = RequestConverter::psr7($request);
         $this->queue[] = array($request, $response, $options);
+    }
+
+    public function sendRequest(PSR7RequestInterface $request, $options = [])
+    {
+        $this->queue[] = array($request, null, $options);
     }
 
     public function count()
@@ -93,7 +101,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
-                    static::populateResponse($curl, curl_multi_getcontent($curl), $response);
+                    $response = $this->createResponse($curl, curl_multi_getcontent($curl));
                 } else if (!isset($e)) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);
