@@ -1,5 +1,15 @@
 # Change log
 
+## 0.15.2
+
+### Added 
+
+* A `.gitattributes` was added to exclude test files and metadata.
+
+### Changed
+
+* The reason phrase is allowed to be empty.  
+
 ## 0.15.1 
 
 ### Fixed
