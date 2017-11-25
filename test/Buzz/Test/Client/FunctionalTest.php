@@ -234,8 +234,7 @@ class FunctionalTest extends TestCase
         for ($i = 3; $i > 0; $i--) {
             $request = new Request();
             $request->fromUrl($_SERVER['TEST_SERVER'].'?delay='.$i);
-            $response = new Response();
-            $client->send($request, $response, array('callback' => $callback));
+            $client->send($request, new Response(), array('callback' => $callback));
         }
 
         $client->flush();

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class StreamClient extends AbstractStream
 {
-    public function send(RequestInterface $request, MessageInterface &$response)
+    public function send(RequestInterface $request, MessageInterface $response)
     {
     }
 }
