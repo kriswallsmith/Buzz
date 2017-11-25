@@ -14,9 +14,9 @@ class ClientTest extends TestCase
     public function testSendToInvalidUrl($host, $client)
     {
         if (method_exists($this, 'expectException')) {
-            $this->expectException(ClientException::class);
+            $this->expectException('Buzz\\Exception\\ClientException');
         } else {
-            $this->setExpectedException(ClientException::class);
+            $this->setExpectedException('Buzz\\Exception\\ClientException');
         }
 
         $request = new Message\Request();

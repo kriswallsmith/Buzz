@@ -28,9 +28,9 @@ class LoggerListenerTest extends TestCase
     public function testInvalidLogger()
     {
         if (method_exists($this, 'expectException')) {
-            $this->expectException(InvalidArgumentException::class);
+            $this->expectException('Buzz\Exception\InvalidArgumentException');
         } else {
-            $this->setExpectedException(InvalidArgumentException::class);
+            $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
         }
 
         $listener = new LoggerListener(array(1, 2, 3));

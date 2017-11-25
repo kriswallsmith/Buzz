@@ -33,9 +33,9 @@ class UrlTest extends TestCase
     public function testInvalidUrl()
     {
         if (method_exists($this, 'expectException')) {
-            $this->expectException(InvalidArgumentException::class);
+            $this->expectException('Buzz\Exception\InvalidArgumentException');
         } else {
-            $this->setExpectedException(InvalidArgumentException::class);
+            $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
         }
 
         new Url('http://localhost:123456');
