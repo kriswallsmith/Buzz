@@ -104,9 +104,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
-                    static::populateResponse($curl, curl_multi_getcontent($curl), $response);
-
-                    $psr7Response = ResponseConverter::psr7($response);
+                    $psr7Response = $this->createResponse($curl, curl_multi_getcontent($curl));
+                    ResponseConverter::copy(ResponseConverter::buzz($psr7Response), $response);
                 } else if (!isset($e)) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);

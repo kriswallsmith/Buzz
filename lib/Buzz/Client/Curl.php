@@ -20,7 +20,6 @@ class Curl extends AbstractCurl
      * @param RequestInterface $request
      * @param MessageInterface $response
      * @param array $options
-     * @return MessageInterface
      *
      * @deprecated Will be removed in 1.0. Use sendRequest instead.
      */
@@ -28,9 +27,7 @@ class Curl extends AbstractCurl
     {
         @trigger_error('Curl::send() is deprecated. Use Curl::sendRequest instead.', E_USER_DEPRECATED);
         $request = RequestConverter::psr7($request);
-        $response = ResponseConverter::buzz($this->sendRequest($request, $options));
-
-        return $response;
+        ResponseConverter::copy(ResponseConverter::buzz($this->sendRequest($request, $options)), $response);
     }
 
     /**
