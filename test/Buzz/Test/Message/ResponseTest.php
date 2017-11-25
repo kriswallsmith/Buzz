@@ -15,7 +15,7 @@ class ResponseTest extends TestCase
 
         $response->addHeader('HTTP/1.0 200 OK');
 
-        $this->assertEquals(1.0, $response->getProtocolVersion());
+        $this->assertEquals('1.0', $response->getProtocolVersion());
     }
 
     public function testGetStatusCodeReturnsTheStatusCode()
@@ -57,7 +57,7 @@ class ResponseTest extends TestCase
 
         $response->addHeader('HTTP/1.0 200');
 
-        $this->assertSame(1.0, $response->getProtocolVersion());
+        $this->assertSame('1.0', $response->getProtocolVersion());
         $this->assertSame(200, $response->getStatusCode());
         $this->assertNull($response->getReasonPhrase());
     }
