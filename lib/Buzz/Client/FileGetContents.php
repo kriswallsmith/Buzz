@@ -22,9 +22,8 @@ class FileGetContents extends AbstractStream
     {
         $request = RequestConverter::psr7($request);
         $response = $this->sendRequest($request);
-        $response = ResponseConverter::buzz($response);
 
-        return $response;
+        return ResponseConverter::buzz($response);
     }
 
     /**
@@ -46,6 +45,7 @@ class FileGetContents extends AbstractStream
             throw $e;
         }
 
+        // TODO rewrite to not use Buzz reponse
         $response = new \Buzz\Message\Response();
         $response->setHeaders($this->filterHeaders((array) $http_response_header));
         $response->setContent($content);

@@ -130,7 +130,7 @@ class Browser
      *
      * @return MessageInterface The response
      */
-    public function send($request, MessageInterface $response = null)
+    public function send(RequestInterface $request, MessageInterface $response = null)
     {
         if (null === $response) {
             $response = $this->factory->createResponse();

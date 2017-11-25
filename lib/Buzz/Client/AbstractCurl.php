@@ -3,6 +3,7 @@
 namespace Buzz\Client;
 
 use Buzz\Converter\HeaderConverter;
+use Buzz\Converter\RequestConverter;
 use Buzz\Converter\ResponseConverter;
 use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
@@ -58,8 +59,6 @@ abstract class AbstractCurl extends AbstractClient
      * @param string           $raw      The raw response string
      * @param MessageInterface $response The response object
      *
-     * @return ResponseInterface
-     *
      * @deprecated Will be removed in 1.0. Use createResponse instead.
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
@@ -74,10 +73,6 @@ abstract class AbstractCurl extends AbstractClient
 
         $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
         $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
-
-        $response = ResponseConverter::psr7($response);
-
-        return $response;
     }
 
     /**
@@ -87,7 +82,6 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected function createResponse($curl, $raw)
     {
-
         // fixes bug https://sourceforge.net/p/curl/bugs/1204/
         $version = curl_version();
         if (version_compare($version['version'], '7.30.0', '<')) {
@@ -96,6 +90,7 @@ abstract class AbstractCurl extends AbstractClient
             $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         }
 
+        // TODO rewrite me to avoid using BuzzRequest
         $response = new Response();
         $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
         $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
@@ -152,7 +147,7 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Returns a value for the CURLOPT_POSTFIELDS option.
      *
-     * @param BuzzRequestInterface $request A request object
+     * @param RequestInterface $request A request object
      *
      * @return string|array A post fields value
      */
@@ -251,8 +246,9 @@ abstract class AbstractCurl extends AbstractClient
      * @param RequestInterface $request
      * @param array $options
      */
-    protected function prepare($curl, RequestInterface $request, array $options = array())
+    protected function prepare($curl, $request, array $options = array())
     {
+        $request = RequestConverter::psr7($request);
         static::setOptionsFromRequest($curl, $request);
 
         // apply settings from client
