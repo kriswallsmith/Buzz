@@ -24,13 +24,13 @@ class Curl extends AbstractCurl
      *
      * @deprecated Will be removed in 1.0. Use sendRequest instead.
      */
-    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
+    public function send(RequestInterface $request, MessageInterface &$response, array $options = array())
     {
         @trigger_error('Curl::send() is deprecated. Use Curl::sendRequest instead.', E_USER_DEPRECATED);
         $request = RequestConverter::psr7($request);
-        $response = $this->sendRequest($request, $options);
+        $response = ResponseConverter::buzz($this->sendRequest($request, $options));
 
-        return ResponseConverter::buzz($response);
+        return $response;
     }
 
     /**

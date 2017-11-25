@@ -10,13 +10,13 @@ class RequestConverterTest extends TestCase
 {
     public function testPsr7()
     {
-        $buzz = new Request(Request::METHOD_GET, '/foo', 'example.com');
+        $buzz = new Request(Request::METHOD_GET, '/foo', 'https://example.com');
         $buzz->setContent('Foobar');
 
         $psr = RequestConverter::psr7($buzz);
         $this->assertEquals('GET', $psr->getMethod());
         $this->assertEquals('/foo', $psr->getUri()->getPath());
-        $this->assertEquals('example.com', $psr->getUri()->getHost());
+        $this->assertEquals('https://example.com/foo', $psr->getUri()->__toString());
         $this->assertEquals('Foobar', $psr->getBody()->__toString());
     }
     public function testBuzz()
@@ -26,7 +26,7 @@ class RequestConverterTest extends TestCase
         $buzz = RequestConverter::buzz($psr);
         $this->assertEquals('GET', $buzz->getMethod());
         $this->assertEquals('/foo?bar', $buzz->getResource());
-        $this->assertEquals('example.com', $buzz->getHost());
+        $this->assertEquals('https://example.com', $buzz->getHost());
         $this->assertEquals('Foobar', $buzz->getContent());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Buzz\Client;
 
+use Buzz\Converter\HeaderConverter;
 use Buzz\Converter\RequestConverter;
 use Buzz\Message\RequestInterface;
 use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
@@ -23,7 +24,7 @@ abstract class AbstractStream extends AbstractClient
             'http' => array(
                 // values from the request
                 'method'           => $request->getMethod(),
-                'header'           => implode("\r\n", $request->getHeaders()),
+                'header'           => implode("\r\n", HeaderConverter::toBuzzHeaders($request->getHeaders())),
                 'content'          => $request->getBody()->__toString(),
                 'protocol_version' => $request->getProtocolVersion(),
 

@@ -3,6 +3,7 @@
 namespace Buzz\Client;
 
 use Buzz\Converter\RequestConverter;
+use Buzz\Converter\ResponseConverter;
 use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
@@ -36,7 +37,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      *
      * @deprecated Will be removed in 1.0. Use sendRequest instead.
      */
-    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
+    public function send(RequestInterface $request, MessageInterface &$response, array $options = array())
     {
         @trigger_error('MultiCurl::send() is deprecated. Use MultiCurl::sendRequest instead.', E_USER_DEPRECATED);
 
@@ -103,7 +104,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
-                    $response = $this->createResponse($curl, curl_multi_getcontent($curl));
+                    static::populateResponse($curl, curl_multi_getcontent($curl), $response);
+
+                    $psr7Response = ResponseConverter::psr7($response);
                 } else if (!isset($e)) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);
@@ -119,7 +122,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // callback
                 if (isset($options['callback'])) {
-                    call_user_func($options['callback'], $this, $request, $response, $options, $done['result']);
+                    $returnResponse = isset($options['psr7_response']) && $options['psr7_response'] === true ? $psr7Response : $response;
+                    call_user_func($options['callback'], $this, $request, $returnResponse, $options, $done['result']);
                 }
             }
         }
