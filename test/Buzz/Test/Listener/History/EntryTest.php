@@ -4,8 +4,9 @@ namespace Buzz\Test\History;
 
 use Buzz\Listener\History\Entry;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class EntryTest extends \PHPUnit_Framework_TestCase
+class EntryTest extends TestCase
 {
     public function testDuration()
     {

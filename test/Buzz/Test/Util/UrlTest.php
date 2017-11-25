@@ -3,8 +3,9 @@
 namespace Buzz\Test\Util;
 
 use Buzz\Util\Url;
+use PHPUnit\Framework\TestCase;
 
-class UrlTest extends \PHPUnit_Framework_TestCase
+class UrlTest extends TestCase
 {
     /**
      * @dataProvider provideUrlAndHost
@@ -30,7 +31,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidUrl()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         new Url('http://localhost:123456');
     }
 

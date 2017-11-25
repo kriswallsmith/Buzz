@@ -3,12 +3,13 @@
 namespace Buzz\Test\Message;
 
 use Buzz\Message\AbstractMessage;
+use PHPUnit\Framework\TestCase;
 
 class Message extends AbstractMessage
 {
 }
 
-class AbstractMessageTest extends \PHPUnit_Framework_TestCase
+class AbstractMessageTest extends TestCase
 {
     public function testGetHeaderGluesHeadersTogether()
     {

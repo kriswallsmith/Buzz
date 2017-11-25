@@ -4,8 +4,9 @@ namespace Buzz\Test\Listener;
 
 use Buzz\Listener\DigestAuthListener;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class DigestAuthListenerTest extends \PHPUnit_Framework_TestCase
+class DigestAuthListenerTest extends TestCase
 {
     public function testDigestAuthHeader()
     {

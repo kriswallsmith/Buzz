@@ -4,8 +4,9 @@ namespace Buzz\Test\History;
 
 use Buzz\Listener\History\Journal;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class JournalTest extends \PHPUnit_Framework_TestCase
+class JournalTest extends TestCase
 {
     protected $request1;
     protected $request2;

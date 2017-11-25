@@ -4,8 +4,9 @@ namespace Buzz\Test\Listener;
 
 use Buzz\Listener\LoggerListener;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class LoggerListenerTest extends \PHPUnit_Framework_TestCase
+class LoggerListenerTest extends TestCase
 {
     public function testLogger()
     {
@@ -25,7 +26,7 @@ class LoggerListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidLogger()
     {
-        $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
+        $this->expectException('Buzz\Exception\InvalidArgumentException');
         $listener = new LoggerListener(array(1, 2, 3));
     }
 }

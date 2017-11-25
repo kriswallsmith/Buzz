@@ -4,8 +4,9 @@ namespace Buzz\Test\Listener;
 
 use Buzz\Listener\CallbackListener;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class CallbackListenerTest extends \PHPUnit_Framework_TestCase
+class CallbackListenerTest extends TestCase
 {
     public function testCallback()
     {

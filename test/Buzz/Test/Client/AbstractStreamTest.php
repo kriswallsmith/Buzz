@@ -6,6 +6,7 @@ use Buzz\Client\AbstractStream;
 use Buzz\Message\Request;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
+use PHPUnit\Framework\TestCase;
 
 class StreamClient extends AbstractStream
 {
@@ -14,7 +15,7 @@ class StreamClient extends AbstractStream
     }
 }
 
-class AbstractStreamTest extends \PHPUnit_Framework_TestCase
+class AbstractStreamTest extends TestCase
 {
     public function testConvertsARequestToAContextArray()
     {

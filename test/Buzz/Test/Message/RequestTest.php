@@ -3,8 +3,9 @@
 namespace Buzz\Test\Message;
 
 use Buzz\Message\Request;
+use PHPUnit\Framework\TestCase;
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
     public function testConstructorSetsMethodResourceAndHost()
     {
