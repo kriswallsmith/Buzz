@@ -22,16 +22,13 @@
     "suggest": {
         "ext-curl": "*"
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "autoload": {
         "psr-4": {
             "Buzz\\": "lib/Buzz"
         }
     },
     "scripts": {
-        "test": "./bin/simple-phpunit",
-        "test-ci": "./bin/simple-phpunit --coverage-text --coverage-clover=build/coverage.xml"
+        "test": "vendor/bin/simple-phpunit",
+        "test-ci": "vendor/bin/simple-phpunit --coverage-text --coverage-clover=build/coverage.xml"
     }
 }
