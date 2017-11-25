@@ -63,6 +63,8 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
+        @trigger_error('AbstractCurl::populateResponse() is deprecated. Use AbstractCurl::createResponse instead.', E_USER_DEPRECATED);
+
         // fixes bug https://sourceforge.net/p/curl/bugs/1204/
         $version = curl_version();
         if (version_compare($version['version'], '7.30.0', '<')) {

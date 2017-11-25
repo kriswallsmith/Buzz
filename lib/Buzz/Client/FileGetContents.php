@@ -7,7 +7,6 @@ use Buzz\Converter\ResponseConverter;
 use Buzz\Exception\RequestException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface as PSR7RequestInterface;
 use Buzz\Exception\ClientException;
 
@@ -17,9 +16,12 @@ class FileGetContents extends AbstractStream
      * @see ClientInterface
      *
      * @throws ClientException If file_get_contents() fires an error
+     *
+     * @deprecated Will be removed in 1.0. Use sendRequest instead.
      */
     public function send(RequestInterface $request, MessageInterface $response)
     {
+        @trigger_error('FileGetContents::send() is deprecated. FileGetContents Curl::sendRequest instead.', E_USER_DEPRECATED);
         $request = RequestConverter::psr7($request);
         $response = $this->sendRequest($request);
 

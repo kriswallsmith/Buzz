@@ -38,6 +38,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      */
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
+        @trigger_error('MultiCurl::send() is deprecated. Use MultiCurl::sendRequest instead.', E_USER_DEPRECATED);
+
         $request = RequestConverter::psr7($request);
         $this->queue[] = array($request, $response, $options);
     }
