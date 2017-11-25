@@ -188,6 +188,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testProxy($client)
     {
