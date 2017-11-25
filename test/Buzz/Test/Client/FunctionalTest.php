@@ -25,6 +25,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClientAndMethod
+     * @group legacy
      */
     public function testRequestMethods($client, $method)
     {
@@ -40,6 +41,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testGetContentType($client)
     {
@@ -54,6 +56,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testFormPost($client)
     {
@@ -70,6 +73,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testFormGet($client)
     {
@@ -86,6 +90,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClientAndUpload
+     * @group legacy
      */
     public function testFileUpload($client, $upload)
     {
@@ -104,6 +109,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testJsonPayload($client)
     {
@@ -121,6 +127,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testConsecutiveRequests($client)
     {
@@ -150,6 +157,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testPlus($client)
     {
@@ -166,6 +174,7 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
+     * @group legacy
      */
     public function testRedirectedResponse($client)
     {
@@ -199,6 +208,7 @@ class FunctionalTest extends TestCase
     /**
      * @expectedException RuntimeException
      * @expectedExceptionMessage not supported or disabled in libcurl
+     * @group legacy
      */
     public function testRedirectedToForbiddenProtocol()
     {
@@ -208,6 +218,9 @@ class FunctionalTest extends TestCase
         $response = $this->send($client, $request);
     }
 
+    /**
+     * @group legacy
+     */
     public function testMultiCurlExecutesRequestsConcurently()
     {
         $client = new MultiCurl();

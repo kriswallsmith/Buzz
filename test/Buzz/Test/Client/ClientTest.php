@@ -10,6 +10,7 @@ class ClientTest extends TestCase
 {
     /**
      * @dataProvider provideInvalidHosts
+     * @group legacy
      */
     public function testSendToInvalidUrl($host, $client)
     {

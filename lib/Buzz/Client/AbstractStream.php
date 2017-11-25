@@ -20,11 +20,13 @@ abstract class AbstractStream extends AbstractClient
     {
         $request = RequestConverter::psr7($request);
 
+        $headers = $request->getHeaders();
+        unset($headers['Host']);
         $options = array(
             'http' => array(
                 // values from the request
                 'method'           => $request->getMethod(),
-                'header'           => implode("\r\n", HeaderConverter::toBuzzHeaders($request->getHeaders())),
+                'header'           => implode("\r\n", HeaderConverter::toBuzzHeaders($headers)),
                 'content'          => $request->getBody()->__toString(),
                 'protocol_version' => $request->getProtocolVersion(),
 
