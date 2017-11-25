@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Buzz\Test\Integration;
 
 use Buzz\Client\Curl;
