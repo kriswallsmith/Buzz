@@ -6,9 +6,6 @@ use Buzz\Exception\ClientException;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 
-/**
- * @deprecated Will be removed in 1.0. Use PSR18 interface instead.
- */
 interface ClientInterface
 {
     /**

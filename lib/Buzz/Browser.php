@@ -4,8 +4,6 @@ namespace Buzz;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Client\FileGetContents;
-use Buzz\Converter\RequestConverter;
-use Buzz\Converter\ResponseConverter;
 use Buzz\Listener\ListenerChain;
 use Buzz\Listener\ListenerInterface;
 use Buzz\Message\Factory\Factory;
@@ -168,10 +166,6 @@ class Browser
 
         $this->lastRequest = $request;
         $this->lastResponse = $response;
-
-        if ($this->listener) {
-            $this->listener->postSend($request, $response);
-        }
 
         return $response;
     }

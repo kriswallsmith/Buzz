@@ -27,7 +27,7 @@ class Curl extends AbstractCurl
     public function send(RequestInterface $request, MessageInterface $response, array $options = array())
     {
         $request = RequestConverter::psr7($request);
-        $response = $this->sendRequest($response);
+        $response = $this->sendRequest($response, $options);
 
         return ResponseConverter::buzz($response);
     }
