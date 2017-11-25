@@ -4,8 +4,9 @@ namespace Buzz\Test\Listener;
 
 use Buzz\Listener\HistoryListener;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class HistoryListenerTest extends \PHPUnit_Framework_TestCase
+class HistoryListenerTest extends TestCase
 {
     private $journal;
     private $listener;

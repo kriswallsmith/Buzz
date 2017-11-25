@@ -4,13 +4,14 @@ namespace Buzz\Test\Message;
 
 use Buzz\Message\Form\FormRequest;
 use Buzz\Message\Form\FormUpload;
+use PHPUnit\Framework\TestCase;
 
 /**
  * FormRequestTest
  *
  * @author Marc Weistroff <marc.weistroff@sensio.com>
  */
-class FormRequestTest extends \PHPUnit_Framework_TestCase
+class FormRequestTest extends TestCase
 {
     public function testGetContentGeneratesContent()
     {

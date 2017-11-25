@@ -4,8 +4,9 @@ namespace Buzz\Test\Listener;
 
 use Buzz\Listener\ListenerChain;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class ListenerChainTest extends \PHPUnit_Framework_TestCase
+class ListenerChainTest extends TestCase
 {
     public function testListeners()
     {

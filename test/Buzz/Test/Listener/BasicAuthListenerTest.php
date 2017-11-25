@@ -4,8 +4,9 @@ namespace Buzz\Test\Listener;
 
 use Buzz\Listener\BasicAuthListener;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class BasicAuthListenerTest extends \PHPUnit_Framework_TestCase
+class BasicAuthListenerTest extends TestCase
 {
     public function testBasicAuthHeader()
     {

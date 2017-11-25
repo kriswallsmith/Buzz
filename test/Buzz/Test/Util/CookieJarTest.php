@@ -5,8 +5,9 @@ namespace Buzz\Test\Cookie;
 use Buzz\Util\Cookie;
 use Buzz\Util\CookieJar;
 use Buzz\Message;
+use PHPUnit\Framework\TestCase;
 
-class CookieJarTest extends \PHPUnit_Framework_TestCase
+class CookieJarTest extends TestCase
 {
     public function testProcessSetCookieHeadersSetsCookies()
     {

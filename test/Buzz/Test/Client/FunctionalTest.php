@@ -12,8 +12,9 @@ use Buzz\Message\Form\FormUpload;
 use Buzz\Message\Request;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\Response;
+use PHPUnit\Framework\TestCase;
 
-class FunctionalTest extends \PHPUnit_Framework_TestCase
+class FunctionalTest extends TestCase
 {
     protected function setUp()
     {

@@ -5,8 +5,9 @@ namespace Buzz\Test\Message;
 use Buzz\Message\Factory\Factory;
 use Buzz\Message\Request;
 use Buzz\Message\RequestInterface;
+use PHPUnit\Framework\TestCase;
 
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends TestCase
 {
     private $factory;
 
