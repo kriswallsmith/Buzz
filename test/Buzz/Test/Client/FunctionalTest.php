@@ -18,7 +18,7 @@ class FunctionalTest extends TestCase
 {
     protected function setUp()
     {
-        if (!isset($_SERVER['TEST_SERVER'])) {
+        if (!isset($_SERVER['BUZZ_TEST_SERVER'])) {
             $this->markTestSkipped('The test server is not configured.');
         }
     }
@@ -30,7 +30,7 @@ class FunctionalTest extends TestCase
     public function testRequestMethods($client, $method)
     {
         $request = new Request($method);
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $request->setContent('test');
         $response = $this->send($client, $request);
 
@@ -46,7 +46,7 @@ class FunctionalTest extends TestCase
     public function testGetContentType($client)
     {
         $request = new Request();
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
@@ -61,7 +61,7 @@ class FunctionalTest extends TestCase
     public function testFormPost($client)
     {
         $request = new FormRequest();
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $request->setField('company[name]', 'Google');
         $response = $this->send($client, $request);
 
@@ -78,7 +78,7 @@ class FunctionalTest extends TestCase
     public function testFormGet($client)
     {
         $request = new FormRequest(FormRequest::METHOD_GET);
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $request->setField('search[query]', 'cats');
         $response = $this->send($client, $request);
 
@@ -95,7 +95,7 @@ class FunctionalTest extends TestCase
     public function testFileUpload($client, $upload)
     {
         $request = new FormRequest();
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $request->setField('company[name]', 'Google');
         $request->setField('company[logo]', $upload);
         $response = $this->send($client, $request);
@@ -114,7 +114,7 @@ class FunctionalTest extends TestCase
     public function testJsonPayload($client)
     {
         $request = new Request(RequestInterface::METHOD_POST);
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $request->addHeader('Content-Type: application/json');
         $request->setContent(json_encode(array('foo' => 'bar')));
         $response = $this->send($client, $request);
@@ -133,7 +133,7 @@ class FunctionalTest extends TestCase
     {
         // request 1
         $request = new Request(RequestInterface::METHOD_PUT);
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $request->addHeader('Content-Type: application/json');
         $request->setContent(json_encode(array('foo' => 'bar')));
         $response = $this->send($client, $request);
@@ -146,7 +146,7 @@ class FunctionalTest extends TestCase
 
         // request 2
         $request = new Request(RequestInterface::METHOD_GET);
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
@@ -162,7 +162,7 @@ class FunctionalTest extends TestCase
     public function testPlus($client)
     {
         $request = new FormRequest();
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $request->setField('math', '1+1=2');
         $response = $this->send($client, $request);
 
@@ -179,7 +179,7 @@ class FunctionalTest extends TestCase
     public function testRedirectedResponse($client)
     {
         $request = new Request();
-        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect_to='.$_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER'].'?redirect_to='.$_SERVER['BUZZ_TEST_SERVER']);
         $response = $this->send($client, $request);
 
         $headers = $response->getHeaders();
@@ -199,7 +199,7 @@ class FunctionalTest extends TestCase
         $client->setProxy($_SERVER['TEST_PROXY']);
 
         $request = new Request();
-        $request->fromUrl($_SERVER['TEST_SERVER']);
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER']);
         $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
@@ -215,7 +215,7 @@ class FunctionalTest extends TestCase
     {
         $client = new Curl();
         $request = new Request();
-        $request->fromUrl($_SERVER['TEST_SERVER'].'?redirect_to=pop3://localhost/');
+        $request->fromUrl($_SERVER['BUZZ_TEST_SERVER'].'?redirect_to=pop3://localhost/');
         $response = $this->send($client, $request);
     }
 
@@ -234,7 +234,7 @@ class FunctionalTest extends TestCase
 
         for ($i = 3; $i > 0; $i--) {
             $request = new Request();
-            $request->fromUrl($_SERVER['TEST_SERVER'].'?delay='.$i);
+            $request->fromUrl($_SERVER['BUZZ_TEST_SERVER'].'?delay='.$i);
             $client->send($request, new Response(), array('callback' => $callback));
         }
 

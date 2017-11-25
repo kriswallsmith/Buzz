@@ -32,7 +32,7 @@ class ResponseConverter
             $response->getStatusCode(),
             HeaderConverter::toPsrHeaders($headers),
             $response->getContent(),
-            $response->getProtocolVersion(),
+            (string) $response->getProtocolVersion(),
             $response->getReasonPhrase()
         );
     }

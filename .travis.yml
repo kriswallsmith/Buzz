@@ -38,13 +38,16 @@ before_install:
     - sudo stop squid3
     - curl --version
 
-before_script:
+install:
     - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
     - sudo sh ./test/.travis/configure-php.sh $USER $(phpenv version-name)
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo nginx -p test -c .travis/etc/nginx.conf
     - sudo squid3 -f test/.travis/etc/squid.conf
     - composer update $COMPOSER_FLAGS
+
+before_script:
+    - vendor/bin/http_test_server > /dev/null 2>&1 &
 
 script:
     - $TEST_COMMAND

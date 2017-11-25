@@ -8,6 +8,7 @@
 * Removed type hint for second parameter for `AbstractCurl::prepare`.
 * Removed type hint for second parameter for `RequestException::setRequest`.
 * `RequestException` supports both PSR-7 requests and Buzz requests. 
+* `Response::getProtocolVersion` will return a string and not a float. 
 
 ### Added 
 
