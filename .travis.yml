@@ -21,7 +21,6 @@ env:
         - PHP_FCGI_CHILDREN=10
         - PHP_FCGI_MAX_REQUESTS=10
         - COMPOSER_FLAGS="--prefer-dist"
-        - SYMFONY_PHPUNIT_VERSION="5.7"
 
 matrix:
     allow_failures:

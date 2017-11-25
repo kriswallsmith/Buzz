@@ -2,6 +2,7 @@
 
 namespace Buzz\Test\Util;
 
+use Buzz\Exception\InvalidArgumentException;
 use Buzz\Util\Url;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +32,12 @@ class UrlTest extends TestCase
 
     public function testInvalidUrl()
     {
-        $this->expectException('InvalidArgumentException');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(InvalidArgumentException::class);
+        } else {
+            $this->setExpectedException(InvalidArgumentException::class);
+        }
+
         new Url('http://localhost:123456');
     }
 

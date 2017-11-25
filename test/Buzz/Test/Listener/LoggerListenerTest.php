@@ -2,6 +2,7 @@
 
 namespace Buzz\Test\Listener;
 
+use Buzz\Exception\InvalidArgumentException;
 use Buzz\Listener\LoggerListener;
 use Buzz\Message;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,12 @@ class LoggerListenerTest extends TestCase
 
     public function testInvalidLogger()
     {
-        $this->expectException('Buzz\Exception\InvalidArgumentException');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(InvalidArgumentException::class);
+        } else {
+            $this->setExpectedException(InvalidArgumentException::class);
+        }
+
         $listener = new LoggerListener(array(1, 2, 3));
     }
 }

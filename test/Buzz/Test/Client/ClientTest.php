@@ -2,6 +2,7 @@
 
 namespace Buzz\Test\Client;
 
+use Buzz\Exception\ClientException;
 use Buzz\Message;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +13,11 @@ class ClientTest extends TestCase
      */
     public function testSendToInvalidUrl($host, $client)
     {
-        $this->expectException('Buzz\\Exception\\ClientException');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException(ClientException::class);
+        } else {
+            $this->setExpectedException(ClientException::class);
+        }
 
         $request = new Message\Request();
         $request->fromUrl('http://'.$host.':12345');
