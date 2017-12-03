@@ -12,10 +12,8 @@ use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Middleware\MiddlewareInterface;
 use Buzz\Util\Url;
-use function Clue\StreamFilter\fun;
 use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
-use Psr\Http\Message\ResponseInterface;
 
 class Browser
 {
