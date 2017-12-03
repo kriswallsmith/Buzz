@@ -86,6 +86,7 @@ before 1.0.0.
 To run the test we need to set up a webserver. Using PHP's build in one works perfectly. 
 
 ```bash
+vendor/bin/http_test_server > /dev/null 2>&1 &
 php -S 127.0.0.1:8080 test/server.php  &
 composer test
 ```

@@ -11,7 +11,7 @@ class Response extends AbstractMessage
     /**
      * Returns the protocol version of the current response.
      *
-     * @return float
+     * @return string
      */
     public function getProtocolVersion()
     {
@@ -178,7 +178,7 @@ class Response extends AbstractMessage
         $headers = $this->getHeaders();
 
         if (isset($headers[0]) && 2 <= count($parts = explode(' ', $headers[0], 3))) {
-            $this->protocolVersion = (float) substr($parts[0], 5);
+            $this->protocolVersion = (string) substr($parts[0], 5);
             $this->statusCode = (integer) $parts[1];
             $this->reasonPhrase = isset($parts[2]) ? $parts[2] : '';
         } else {

@@ -8,7 +8,8 @@
     </testsuites>
 
     <php>
-        <!-- <server name="TEST_SERVER" value="http://localhost/buzz/test/server.php" /> -->
+        <server name="TEST_SERVER" value="http://127.0.0.1:10000/server.php" />
+        <!-- <server name="BUZZ_TEST_SERVER" value="http://localhost/buzz/test/server.php" /> -->
         <!-- <server name="TEST_PROXY" value="localhost:3128" /> -->
     </php>
 

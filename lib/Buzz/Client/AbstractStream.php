@@ -2,25 +2,32 @@
 
 namespace Buzz\Client;
 
+use Buzz\Converter\HeaderConverter;
+use Buzz\Converter\RequestConverter;
 use Buzz\Message\RequestInterface;
+use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 
 abstract class AbstractStream extends AbstractClient
 {
     /**
      * Converts a request into an array for stream_context_create().
      *
-     * @param RequestInterface $request A request object
+     * @param Psr7RequestInterface|RequestInterface $request A request object
      *
      * @return array An array for stream_context_create()
      */
-    public function getStreamContextArray(RequestInterface $request)
+    public function getStreamContextArray($request)
     {
+        $request = RequestConverter::psr7($request);
+
+        $headers = $request->getHeaders();
+        unset($headers['Host']);
         $options = array(
             'http' => array(
                 // values from the request
                 'method'           => $request->getMethod(),
-                'header'           => implode("\r\n", $request->getHeaders()),
-                'content'          => $request->getContent(),
+                'header'           => implode("\r\n", HeaderConverter::toBuzzHeaders($headers)),
+                'content'          => $request->getBody()->__toString(),
                 'protocol_version' => $request->getProtocolVersion(),
 
                 // values from the current client

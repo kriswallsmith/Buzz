@@ -2,11 +2,17 @@
 
 namespace Buzz\Client;
 
+use Buzz\Converter\HeaderConverter;
+use Buzz\Converter\RequestConverter;
+use Buzz\Converter\ResponseConverter;
 use Buzz\Message\Form\FormRequestInterface;
 use Buzz\Message\Form\FormUploadInterface;
 use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface;
+use Buzz\Message\RequestInterface as BuzzRequestInterface;
 use Buzz\Exception\ClientException;
+use Buzz\Message\Response;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Base client class with helpers for working with cURL.
@@ -52,9 +58,13 @@ abstract class AbstractCurl extends AbstractClient
      * @param resource         $curl     A cURL resource
      * @param string           $raw      The raw response string
      * @param MessageInterface $response The response object
+     *
+     * @deprecated Will be removed in 1.0. Use createResponse instead.
      */
     protected static function populateResponse($curl, $raw, MessageInterface $response)
     {
+        @trigger_error('AbstractCurl::populateResponse() is deprecated. Use AbstractCurl::createResponse instead.', E_USER_DEPRECATED);
+
         // fixes bug https://sourceforge.net/p/curl/bugs/1204/
         $version = curl_version();
         if (version_compare($version['version'], '7.30.0', '<')) {
@@ -68,6 +78,31 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
+     * @param $curl
+     * @param $raw
+     * @return ResponseInterface
+     */
+    protected function createResponse($curl, $raw)
+    {
+        // fixes bug https://sourceforge.net/p/curl/bugs/1204/
+        $version = curl_version();
+        if (version_compare($version['version'], '7.30.0', '<')) {
+            $pos = strlen($raw) - curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
+        } else {
+            $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        }
+
+        // TODO rewrite me to avoid using BuzzRequest
+        $response = new Response();
+        $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
+        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
+
+        $response = ResponseConverter::psr7($response);
+
+        return $response;
+    }
+
+    /**
      * Sets options on a cURL resource based on a request.
      *
      * @param resource         $curl    A cURL resource
@@ -78,24 +113,24 @@ abstract class AbstractCurl extends AbstractClient
         $options = array(
             CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
-            CURLOPT_URL           => $request->getHost().$request->getResource(),
-            CURLOPT_HTTPHEADER    => $request->getHeaders(),
+            CURLOPT_URL           => $request->getUri()->__toString(),
+            CURLOPT_HTTPHEADER    => HeaderConverter::toBuzzHeaders($request->getHeaders()),
         );
 
         switch ($request->getMethod()) {
-            case RequestInterface::METHOD_HEAD:
+            case BuzzRequestInterface::METHOD_HEAD:
                 $options[CURLOPT_NOBODY] = true;
                 break;
 
-            case RequestInterface::METHOD_GET:
+            case BuzzRequestInterface::METHOD_GET:
                 $options[CURLOPT_HTTPGET] = true;
                 break;
 
-            case RequestInterface::METHOD_POST:
-            case RequestInterface::METHOD_PUT:
-            case RequestInterface::METHOD_DELETE:
-            case RequestInterface::METHOD_PATCH:
-            case RequestInterface::METHOD_OPTIONS:
+            case BuzzRequestInterface::METHOD_POST:
+            case BuzzRequestInterface::METHOD_PUT:
+            case BuzzRequestInterface::METHOD_DELETE:
+            case BuzzRequestInterface::METHOD_PATCH:
+            case BuzzRequestInterface::METHOD_OPTIONS:
                 $options[CURLOPT_POSTFIELDS] = $fields = static::getPostFields($request);
 
                 // remove the content-type header
@@ -121,9 +156,10 @@ abstract class AbstractCurl extends AbstractClient
     private static function getPostFields(RequestInterface $request)
     {
         if (!$request instanceof FormRequestInterface) {
-            return $request->getContent();
+            return $request->getBody()->__toString();
         }
 
+        // TODO move this code to request converter... I think...
         $fields = $request->getFields();
         $multipart = false;
 
@@ -207,9 +243,14 @@ abstract class AbstractCurl extends AbstractClient
 
     /**
      * Prepares a cURL resource to send a request.
+     *
+     * @param $curl
+     * @param RequestInterface $request
+     * @param array $options
      */
-    protected function prepare($curl, RequestInterface $request, array $options = array())
+    protected function prepare($curl, $request, array $options = array())
     {
+        $request = RequestConverter::psr7($request);
         static::setOptionsFromRequest($curl, $request);
 
         // apply settings from client

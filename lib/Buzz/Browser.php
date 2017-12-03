@@ -11,6 +11,8 @@ use Buzz\Message\Factory\FactoryInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Util\Url;
+use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
+use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
 
 class Browser
 {
@@ -144,6 +146,26 @@ class Browser
         if ($this->listener) {
             $this->listener->postSend($request, $response);
         }
+
+        return $response;
+    }
+
+    /**
+     * Send a PSR7 request.
+     *
+     * @param Psr7RequestInterface $request
+     * @return Psr7ResponseInterface
+     */
+    public function sendRequest(Psr7RequestInterface $request)
+    {
+        if ($this->listener) {
+            $this->listener->preSend($request);
+        }
+
+        $response = $this->client->sendRequest($request);
+
+        $this->lastRequest = $request;
+        $this->lastResponse = $response;
 
         return $response;
     }

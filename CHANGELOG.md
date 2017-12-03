@@ -1,5 +1,25 @@
 # Change log
 
+## 0.16.0
+
+### Changed
+
+* ClientInterface supports PSR7 requests and responses. 
+* Removed type hint for second parameter for `AbstractCurl::prepare`.
+* Removed type hint for second parameter for `RequestException::setRequest`.
+* `RequestException` supports both PSR-7 requests and Buzz requests. 
+* `Response::getProtocolVersion` will return a string and not a float. 
+
+### Added 
+
+* Added Request and Response converters
+* Added `Curl::sendRequest()`, `MultiCurl::sendRequest()` and `FileGetContents::sendRequest()` that
+  supports sending PSR-7 requests.   
+
+### Deprecated
+
+*`Curl::send()`, `MultiCurl::send()` and `FileGetContents::send()` in favor for `sendRequest()`. 
+
 ## 0.15.2
 
 ### Added 

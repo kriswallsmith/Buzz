@@ -7,8 +7,6 @@ use Buzz\Message\Response;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- *
- *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
 class ResponseConverter
@@ -34,10 +32,11 @@ class ResponseConverter
             $response->getStatusCode(),
             HeaderConverter::toPsrHeaders($headers),
             $response->getContent(),
-            $response->getProtocolVersion(),
+            (string) $response->getProtocolVersion(),
             $response->getReasonPhrase()
         );
     }
+
     /**
      * @param ResponseInterface|Response $response
      * @return Response
@@ -59,5 +58,17 @@ class ResponseConverter
         $buzzResponse->setContent($response->getBody()->__toString());
 
         return $buzzResponse;
+    }
+
+    /**
+     * Copy one buzz request to another buzz request.
+     *
+     * @param Response $from
+     * @param Response $to
+     */
+    public static function copy(Response $from, Response $to)
+    {
+        $to->setHeaders($from->getHeaders());
+        $to->setContent($from->getContent());
     }
 }

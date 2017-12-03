@@ -29,7 +29,7 @@ class RequestConverter
         // Convert the response to psr7
         return new \GuzzleHttp\Psr7\Request(
             $request->getMethod(),
-            sprintf('%s://%s%s', $request->isSecure() ? 'https': 'http', $request->getHost(), $request->getResource()),
+            sprintf('%s%s', $request->getHost(), $request->getResource()),
             HeaderConverter::toPsrHeaders($request->getHeaders()),
             $request->getContent(),
             $request->getProtocolVersion()
@@ -52,7 +52,7 @@ class RequestConverter
         $buzzRequest = new Request(
             $request->getMethod(),
             sprintf('%s?%s', $uri->getPath(), $uri->getQuery()),
-            $uri->getHost()
+            $uri->getScheme().'://'.$uri->getHost().($uri->getPort() !== null ? $uri->getPort() : '')
         );
 
         $buzzRequest->addHeaders(HeaderConverter::toBuzzHeaders($request->getHeaders()));
