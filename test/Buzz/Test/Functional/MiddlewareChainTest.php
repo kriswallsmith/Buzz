@@ -20,33 +20,33 @@ class MiddlewareChainTest extends TestCase
         $browser = new Browser();
         $browser->addMiddleware(new MyMiddleware(
             function () {
-                MyMiddleware::$handleCount++;
+                ++MyMiddleware::$handleCount;
                 MyMiddleware::$hasBeenHandled = true;
                 $this->assertEquals(1, MyMiddleware::$handleCount);
             },
             function () {
                 $this->assertEquals(1, MyMiddleware::$handleCount);
-                MyMiddleware::$handleCount--;
+                --MyMiddleware::$handleCount;
             }
         ));
         $browser->addMiddleware(new MyMiddleware(
             function () {
-                MyMiddleware::$handleCount++;
+                ++MyMiddleware::$handleCount;
                 $this->assertEquals(2, MyMiddleware::$handleCount);
             },
             function () {
                 $this->assertEquals(2, MyMiddleware::$handleCount);
-                MyMiddleware::$handleCount--;
+                --MyMiddleware::$handleCount;
             }
         ));
         $browser->addMiddleware(new MyMiddleware(
             function () {
-                MyMiddleware::$handleCount++;
+                ++MyMiddleware::$handleCount;
                 $this->assertEquals(3, MyMiddleware::$handleCount);
             },
             function () {
                 $this->assertEquals(3, MyMiddleware::$handleCount);
-                MyMiddleware::$handleCount--;
+                --MyMiddleware::$handleCount;
             }
         ));
 
@@ -55,7 +55,6 @@ class MiddlewareChainTest extends TestCase
 
         $this->assertEquals(0, MyMiddleware::$handleCount);
         $this->assertTrue(MyMiddleware::$hasBeenHandled);
-
     }
 }
 
