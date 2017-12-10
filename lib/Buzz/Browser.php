@@ -10,6 +10,7 @@ use Buzz\Message\Factory\Factory;
 use Buzz\Message\Factory\FactoryInterface;
 use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
+use Buzz\Middleware\MiddlewareInterface;
 use Buzz\Util\Url;
 use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
@@ -24,6 +25,11 @@ class Browser
 
     /** @var ListenerInterface */
     private $listener;
+
+    /**
+     * @var MiddlewareInterface[]
+     */
+    private $middlewares;
 
     /** @var RequestInterface */
     private $lastRequest;
@@ -158,16 +164,60 @@ class Browser
      */
     public function sendRequest(Psr7RequestInterface $request)
     {
-        if ($this->listener) {
-            $this->listener->preSend($request);
+        $chain = $this->createMiddlewareChain($this->middlewares, function(Psr7RequestInterface $request) {
+            return $this->client->sendRequest($request);
+        }, function (Psr7RequestInterface $request, Psr7ResponseInterface $response) {
+            $this->lastRequest = $request;
+            $this->lastResponse = $response;
+        });
+
+        // Call the chain
+        $chain($request);
+
+        return $this->lastResponse;
+    }
+
+    /**
+     * @param MiddlewareInterface[] $middlewares
+     * @param callable $requestChainLast
+     * @param callable $responseChainLast
+     *
+     * @return callable
+     */
+    private function createMiddlewareChain(array $middlewares, callable $requestChainLast, callable $responseChainLast)
+    {
+        $responseChainNext = $responseChainLast;
+
+        // Build response chain
+        /** @var MiddlewareInterface $middleware */
+        foreach ($middlewares as $middleware) {
+            $lastCallable = function (Psr7RequestInterface $request, Psr7ResponseInterface $response) use ($middleware, $responseChainNext) {
+                return $middleware->handleResponse($request, $response, $responseChainNext);
+            };
+
+            $responseChainNext = $lastCallable;
         }
 
-        $response = $this->client->sendRequest($request);
+        $requestChainLast = function (Psr7RequestInterface $request) use ($requestChainLast, $responseChainNext) {
+            // Send the actual request and get the response
+            $response = $requestChainLast($request);
+            $responseChainNext($request, $response);
+        };
 
-        $this->lastRequest = $request;
-        $this->lastResponse = $response;
+        $middlewares = array_reverse($middlewares);
 
-        return $response;
+        // Build request chain
+        $requestChainNext = $requestChainLast;
+        /** @var MiddlewareInterface $middleware */
+        foreach ($middlewares as $middleware) {
+            $lastCallable = function (Psr7RequestInterface $request) use ($middleware, $requestChainNext) {
+                return $middleware->handleRequest($request, $requestChainNext);
+            };
+
+            $requestChainNext = $lastCallable;
+        }
+
+        return $requestChainNext;
     }
 
     public function getLastRequest()
@@ -209,6 +259,18 @@ class Browser
     {
         return $this->listener;
     }
+
+    /**
+     * Add a new middleware to the stack.
+     *
+     * @param MiddlewareInterface $middleware
+     */
+    public function addMiddleware(MiddlewareInterface $middleware)
+    {
+        $this->middlewares[] = $middleware;
+    }
+
+
 
     public function addListener(ListenerInterface $listener)
     {
