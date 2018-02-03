@@ -1,5 +1,7 @@
 # Change log
 
+The change log shows what have been Added, Changed, Deprecated and Removed between versions. 
+
 ## 0.16.0
 
 ### Changed
@@ -7,18 +9,28 @@
 * ClientInterface supports PSR7 requests and responses. 
 * Removed type hint for second parameter for `AbstractCurl::prepare`.
 * Removed type hint for second parameter for `RequestException::setRequest`.
+* Removed type hint for first parameter for `AbstractStream::getStreamContextArray`.
 * `RequestException` supports both PSR-7 requests and Buzz requests. 
 * `Response::getProtocolVersion` will return a string and not a float. 
+* Using PHPUnit namespaces.
 
 ### Added 
 
 * Added Request and Response converters
 * Added `Curl::sendRequest()`, `MultiCurl::sendRequest()` and `FileGetContents::sendRequest()` that
-  supports sending PSR-7 requests.   
+  supports sending PSR-7 requests. 
+* Added `Browser::sendRequest()` that supports middlewares.  
+* Added `MiddlewareInterface` and `Browser::addMiddleware()`.
+* Added `HeaderConverter` to convert between PSR-7 styled headers and Buzz styled headers. 
 
 ### Deprecated
 
-*`Curl::send()`, `MultiCurl::send()` and `FileGetContents::send()` in favor for `sendRequest()`. 
+* `Curl::send()`, `MultiCurl::send()` and `FileGetContents::send()` in favor for `*::sendRequest()`. 
+* `AbstractCurl::populateResponse()` was deprecated in favor of `AbstractCurl::createResponse()`.
+
+### Removed
+
+* Support for PHP 5.3.
 
 ## 0.15.2
 
