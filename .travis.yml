@@ -45,9 +45,11 @@ install:
     - sudo nginx -p test -c .travis/etc/nginx.conf
     - sudo squid3 -f test/.travis/etc/squid.conf
     - composer update $COMPOSER_FLAGS
+    - ./vendor/bin/simple-phpunit install
 
 before_script:
     - vendor/bin/http_test_server > /dev/null 2>&1 &
+    - php -S 127.0.0.1:8080 test/server.php  &
 
 script:
     - $TEST_COMMAND
