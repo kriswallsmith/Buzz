@@ -75,7 +75,11 @@ class RequestTest extends TestCase
 
     public function testFromUrlRejectsInvalidUrl()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('InvalidArgumentException');
+        } else {
+            $this->setExpectedException('InvalidArgumentException');
+        }
 
         // port number is too high
         $request = new Request();

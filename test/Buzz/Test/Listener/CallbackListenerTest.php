@@ -29,7 +29,12 @@ class CallbackListenerTest extends TestCase
 
     public function testInvalidCallback()
     {
-        $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('Buzz\Exception\InvalidArgumentException');
+        } else {
+            $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
+        }
+
         $listener = new CallbackListener(array(1, 2, 3));
     }
 }

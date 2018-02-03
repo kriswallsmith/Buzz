@@ -115,7 +115,11 @@ class FormRequestTest extends TestCase
 
     public function testFilenamelessUpload()
     {
-        $this->setExpectedException('LogicException');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('LogicException');
+        } else {
+            $this->setExpectedException('LogicException');
+        }
 
         $upload = new FormUpload();
         $upload->setContent('foobar');
