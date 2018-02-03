@@ -5,4 +5,5 @@ the index of the documentation. Please use the table of contents below to start
 reading. 
 
 
+* [Submit forms](/doc/forms.md) 
 * [Middlewares](/doc/middlewares.md) 
