@@ -9,8 +9,6 @@ php:
     - 5.4
     - 5.5
 #    - 5.6
-    - 7.0
-    - 7.1
 #    - 7.2
 
 env:
@@ -30,6 +28,10 @@ matrix:
     include:
         - php: 5.5
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci"
+        - php: 7.0
+          env: SYMFONY_PHPUNIT_VERSION=6.3
+        - php: 7.1
+          env: SYMFONY_PHPUNIT_VERSION=6.3
 
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
