@@ -138,13 +138,14 @@ class FunctionalTest extends TestCase
      */
     public function testFileUploadWithRequestBuilder($client, $upload)
     {
-        if (empty($upload->getFile()) || $client instanceof MultiCurl) {
+        $file = $upload->getFile();
+        if (empty($file) || $client instanceof MultiCurl) {
             $this->markTestSkipped('Invalid input');
         }
 
         $builder = new FormRequestBuilder();
         $builder->addField('company[name]', 'Google');
-        $builder->addFile('company[logo]', $upload->getFile(), $upload->getContentType(), $upload->getFilename());
+        $builder->addFile('company[logo]', $file, $upload->getContentType(), $upload->getFilename());
         $browser = new Browser($client);
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], $builder->build());
 
