@@ -14,7 +14,8 @@
 
 * Added Request and Response converters
 * Added `Curl::sendRequest()`, `MultiCurl::sendRequest()` and `FileGetContents::sendRequest()` that
-  supports sending PSR-7 requests.   
+  supports sending PSR-7 requests. 
+* Added a `MiddlewareInterface`. 
 
 ### Deprecated
 
