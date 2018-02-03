@@ -25,6 +25,8 @@ composer require kriswallsmith/buzz
 
 ## Usage 
 
+This page will just show you the basics, please [read the full documentation](doc/index.md).
+
 ```php
 <?php
 
