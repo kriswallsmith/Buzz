@@ -67,7 +67,6 @@ We do love PSRs and this is a wish list of what PSR we would like to support:
 * PSR-2 (Code style)
 * PSR-4 (Auto loading)
 * PSR-7 (HTTP messages)
-* PSR-15 (HTTP middlewares)
 * PSR-17 (HTTP factories)
 * PSR-18 (HTTP client)
 
