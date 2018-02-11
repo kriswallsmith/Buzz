@@ -92,7 +92,7 @@ abstract class AbstractCurl extends AbstractClient
             $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         }
 
-        // TODO rewrite me to avoid using BuzzRequest
+        // TODO rewrite me to avoid using BuzzResponse
         $response = new Response();
         $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
         $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
@@ -131,74 +131,31 @@ abstract class AbstractCurl extends AbstractClient
             case BuzzRequestInterface::METHOD_DELETE:
             case BuzzRequestInterface::METHOD_PATCH:
             case BuzzRequestInterface::METHOD_OPTIONS:
-                $options[CURLOPT_POSTFIELDS] = $fields = static::getPostFields($request);
+                $body = $request->getBody();
+                $bodySize = $body->getSize();
+                if ($bodySize !== 0) {
+                    if ($body->isSeekable()) {
+                        $body->rewind();
+                    }
 
-                // remove the content-type header
-                if (is_array($fields)) {
-                    $options[CURLOPT_HTTPHEADER] = array_filter($options[CURLOPT_HTTPHEADER], function($header) {
-                        return 0 !== stripos($header, 'Content-Type: ');
-                    });
+                    // Message has non empty body.
+                    if (null === $bodySize || $bodySize > 1024 * 1024) {
+                        // Avoid full loading large or unknown size body into memory
+                        $options[CURLOPT_UPLOAD] = true;
+                        if (null !== $bodySize) {
+                            $options[CURLOPT_INFILESIZE] = $bodySize;
+                        }
+                        $options[CURLOPT_READFUNCTION] = function ($ch, $fd, $length) use ($body) {
+                            return $body->read($length);
+                        };
+                    } else {
+                        // Small body can be loaded into memory
+                        $options[CURLOPT_POSTFIELDS] = (string) $body;
+                    }
                 }
-
-                break;
         }
 
         curl_setopt_array($curl, $options);
-    }
-
-    /**
-     * Returns a value for the CURLOPT_POSTFIELDS option.
-     *
-     * @param RequestInterface $request A request object
-     *
-     * @return string|array A post fields value
-     */
-    private static function getPostFields(RequestInterface $request)
-    {
-        if (!$request instanceof FormRequestInterface) {
-            return $request->getBody()->__toString();
-        }
-
-        // TODO move this code to request converter... I think...
-        $fields = $request->getFields();
-        $multipart = false;
-
-        foreach ($fields as $name => $value) {
-            if (!$value instanceof FormUploadInterface) {
-                continue;
-            }
-
-            if (!$file = $value->getFile()) {
-                return $request->getContent();
-            }
-
-            $multipart = true;
-
-            if (version_compare(PHP_VERSION, '5.5', '>=')) {
-                $curlFile = new \CURLFile($file);
-                if ($contentType = $value->getContentType()) {
-                    $curlFile->setMimeType($contentType);
-                }
-
-                if (basename($file) != $value->getFilename()) {
-                    $curlFile->setPostFilename($value->getFilename());
-                }
-
-                $fields[$name] = $curlFile;
-            } else {
-                // replace value with upload string
-                $fields[$name] = '@'.$file;
-
-                if ($contentType = $value->getContentType()) {
-                    $fields[$name] .= ';type='.$contentType;
-                }
-                if (basename($file) != $value->getFilename()) {
-                    $fields[$name] .= ';filename='.$value->getFilename();
-                }
-            }
-        }
-
-        return $multipart ? $fields : http_build_query($fields, '', '&');
     }
 
     /**
