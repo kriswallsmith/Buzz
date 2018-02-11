@@ -12,8 +12,11 @@ use Buzz\Message\MessageInterface;
 use Buzz\Message\RequestInterface;
 use Buzz\Middleware\MiddlewareInterface;
 use Buzz\Util\Url;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 class Browser
 {
@@ -29,7 +32,7 @@ class Browser
     /**
      * @var MiddlewareInterface[]
      */
-    private $middlewares;
+    private $middlewares = [];
 
     /** @var RequestInterface */
     private $lastRequest;
@@ -108,6 +111,7 @@ class Browser
      * @param array  $headers An array of request headers
      *
      * @return MessageInterface The response object
+     * @deprecated Will be used in version 1.0. Use submitForm instead.
      */
     public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
     {
@@ -154,6 +158,44 @@ class Browser
         }
 
         return $response;
+    }
+
+    /**
+     * @param string|UriInterface $url
+     * @param array $fields
+     * @param string $method
+     * @param array $headers
+     */
+    public function submitForm($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
+    {
+        $body = [];
+        $files = '';
+        $boundary = uniqid('', true);
+        foreach ($fields as $name => $field) {
+            if (!isset($field['path'])) {
+                 $body[$name] = $field;
+            } else {
+                // This is a file
+                $fileContent = file_get_contents($field['path']);
+                $files .= $this->prepareMultipart($name, $fileContent, $boundary, $field);
+            }
+        }
+
+        if (empty($files)) {
+            $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            $body = http_build_query($body);
+        } else {
+            $headers['Content-Type'] = 'multipart/form-data; boundary='.$boundary;
+
+            foreach ($body as $name => $value) {
+                $files .= $this->prepareMultipart($name, $value, $boundary);
+            }
+            $body = "$files--{$boundary}--\r\n";
+        }
+
+        $request = new Request($method, $url, $headers, $body);
+
+        return $this->sendRequest($request);
     }
 
     /**
@@ -282,5 +324,44 @@ class Browser
                 $listener,
             ));
         }
+    }
+
+    /**
+     * @param $name
+     * @param $content
+     * @param $boundary
+     * @param array $data
+     * @return string
+     */
+    private function prepareMultipart($name, $content, $boundary, array $data = [])
+    {
+        $output = '';
+        $fileHeaders = [];
+
+        // Set a default content-disposition header
+        $fileHeaders['Content-Disposition'] = sprintf('form-data; name="%s"', $name);
+        if (isset($data['filename'])) {
+            $fileHeaders['Content-Disposition'] .= sprintf('; filename="%s"', $data['filename']);
+        }
+
+        // Set a default content-length header
+        if ($length = strlen($content)) {
+            $fileHeaders['Content-Length'] = (string)$length;
+        }
+
+        if (isset($data['contentType'])) {
+            $fileHeaders['Content-Type'] = $data['contentType'];
+        }
+
+        // Add start
+        $output .= "--$boundary\r\n";
+        foreach ($fileHeaders as $key => $value) {
+            $output .= sprintf("%s: %s\r\n", $key, $value);
+        }
+        $output .= "\r\n";
+        $output .= $content;
+        $output .= "\r\n";
+
+        return $output;
     }
 }

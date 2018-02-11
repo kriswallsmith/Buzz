@@ -2,6 +2,7 @@
 
 namespace Buzz\Test\Client;
 
+use Buzz\Browser;
 use Buzz\Client\BatchClientInterface;
 use Buzz\Client\ClientInterface;
 use Buzz\Client\Curl;
@@ -9,6 +10,7 @@ use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
 use Buzz\Message\Form\FormRequest;
 use Buzz\Message\Form\FormUpload;
+use Buzz\Message\FormRequestBuilder;
 use Buzz\Message\Request;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\Response;
@@ -75,6 +77,27 @@ class FunctionalTest extends TestCase
      * @dataProvider provideClient
      * @group legacy
      */
+    public function testFormPostWithRequestBuilder($client)
+    {
+        if ($client instanceof MultiCurl) {
+            $this->markTestSkipped('Invalid input');
+        }
+
+        $builder = new FormRequestBuilder();
+        $builder->addField('company[name]', 'Google');
+        $browser = new Browser($client);
+        $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], $builder->build());
+
+        $data = json_decode($response->getBody()->__toString(), true);
+
+        $this->assertStringStartsWith('application/x-www-form-urlencoded', $data['SERVER']['CONTENT_TYPE']);
+        $this->assertEquals('Google', $data['POST']['company']['name']);
+    }
+
+    /**
+     * @dataProvider provideClient
+     * @group legacy
+     */
     public function testFormGet($client)
     {
         $request = new FormRequest(FormRequest::METHOD_GET);
@@ -101,6 +124,32 @@ class FunctionalTest extends TestCase
         $response = $this->send($client, $request);
 
         $data = json_decode($response->getContent(), true);
+
+        $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);
+        $this->assertEquals('Google', $data['POST']['company']['name']);
+        $this->assertEquals('google.png', $data['FILES']['company']['name']['logo']);
+    }
+
+    /**
+     * @dataProvider provideClientAndUpload
+     *
+     * @param $client
+     * @param FormUpload $upload
+     */
+    public function testFileUploadWithRequestBuilder($client, $upload)
+    {
+        $file = $upload->getFile();
+        if (empty($file) || $client instanceof MultiCurl) {
+            $this->markTestSkipped('Invalid input');
+        }
+
+        $builder = new FormRequestBuilder();
+        $builder->addField('company[name]', 'Google');
+        $builder->addFile('company[logo]', $file, $upload->getContentType(), $upload->getFilename());
+        $browser = new Browser($client);
+        $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], $builder->build());
+
+        $data = json_decode($response->getBody()->__toString(), true);
 
         $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);
         $this->assertEquals('Google', $data['POST']['company']['name']);
