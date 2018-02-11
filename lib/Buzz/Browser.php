@@ -270,8 +270,6 @@ class Browser
         $this->middlewares[] = $middleware;
     }
 
-
-
     public function addListener(ListenerInterface $listener)
     {
         if (!$this->listener) {
