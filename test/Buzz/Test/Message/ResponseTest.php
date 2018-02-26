@@ -26,7 +26,7 @@ class ResponseTest extends TestCase
 
         $response->addHeader('HTTP/1.0 200 OK');
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testGetReasonPhraseReturnsTheReasonPhrase()
@@ -58,7 +58,7 @@ class ResponseTest extends TestCase
         $response->addHeader('HTTP/1.0 200');
 
         $this->assertSame('1.0', $response->getProtocolVersion());
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertNull($response->getReasonPhrase());
     }
 
@@ -67,13 +67,15 @@ class ResponseTest extends TestCase
         $response = new Response();
         $this->assertNull($response->getStatusCode());
         $response->addHeaders(array('HTTP/1.0 200 OK'));
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
     /**
      * @dataProvider statusProvider
      *
-     *
+     * @param int $code
+     * @param string $method
+     * @param boolean $expected
      */
     public function testIssers($code, $method, $expected)
     {
@@ -82,45 +84,48 @@ class ResponseTest extends TestCase
         $this->assertEquals($expected, $response->{$method}());
     }
 
+    /**
+     * @return array
+     */
     public function statusProvider()
     {
         return array(
             array(50, 'isInvalid', true),
             array(700, 'isInvalid', true),
-            array(100, 'isInvalid', false),
+            array(Response::HTTP_CONTINUE, 'isInvalid', false),
 
-            array(100, 'isInformational', true),
+            array(Response::HTTP_CONTINUE, 'isInformational', true),
             array(199, 'isInformational', true),
-            array(200, 'isInformational', false),
+            array(Response::HTTP_OK, 'isInformational', false),
 
-            array(200, 'isSuccessful', true),
+            array(Response::HTTP_OK, 'isSuccessful', true),
             array(299, 'isSuccessful', true),
-            array(300, 'isSuccessful', false),
+            array(Response::HTTP_MULTIPLE_CHOICES, 'isSuccessful', false),
 
-            array(301, 'isRedirection', true),
-            array(302, 'isRedirection', true),
-            array(400, 'isRedirection', false),
+            array(Response::HTTP_MOVED_PERMANENTLY, 'isRedirection', true),
+            array(Response::HTTP_FOUND, 'isRedirection', true),
+            array(Response::HTTP_BAD_REQUEST, 'isRedirection', false),
 
-            array(404, 'isClientError', true),
-            array(401, 'isClientError', true),
-            array(500, 'isClientError', false),
+            array(Response::HTTP_NOT_FOUND, 'isClientError', true),
+            array(Response::HTTP_UNAUTHORIZED, 'isClientError', true),
+            array(Response::HTTP_INTERNAL_SERVER_ERROR, 'isClientError', false),
 
-            array(500, 'isServerError', true),
-            array(400, 'isServerError', false),
+            array(Response::HTTP_INTERNAL_SERVER_ERROR, 'isServerError', true),
+            array(Response::HTTP_BAD_REQUEST, 'isServerError', false),
 
-            array(200, 'isOk', true),
-            array(201, 'isOk', false),
+            array(Response::HTTP_OK, 'isOk', true),
+            array(Response::HTTP_CREATED, 'isOk', false),
 
-            array(403, 'isForbidden', true),
-            array(404, 'isForbidden', false),
+            array(Response::HTTP_FORBIDDEN, 'isForbidden', true),
+            array(Response::HTTP_NOT_FOUND, 'isForbidden', false),
 
-            array(404, 'isNotFound', true),
-            array(403, 'isNotFound', false),
+            array(Response::HTTP_NOT_FOUND, 'isNotFound', true),
+            array(Response::HTTP_FORBIDDEN, 'isNotFound', false),
 
-            array(201, 'isEmpty', true),
-            array(204, 'isEmpty', true),
-            array(304, 'isEmpty', true),
-            array(203, 'isEmpty', false),
+            array(Response::HTTP_CREATED, 'isEmpty', true),
+            array(Response::HTTP_NO_CONTENT, 'isEmpty', true),
+            array(Response::HTTP_NOT_MODIFIED, 'isEmpty', true),
+            array(Response::HTTP_NON_AUTHORITATIVE_INFORMATION, 'isEmpty', false),
         );
     }
 }
