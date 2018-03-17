@@ -42,6 +42,17 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected static function createCurlHandle()
     {
+        $isCurlInitAvailable =  function_exists('curl_init');
+
+        if ($isCurlInitAvailable) {
+
+            $message = "PHP's cURL native support is disabled. Check more "
+                     . "details in "
+                     . "http://php.net/manual/en/curl.installation.php";
+
+            throw new ClientException($message);
+        }
+
         if (false === $curl = curl_init()) {
             throw new ClientException('Unable to create a new cURL handle');
         }
