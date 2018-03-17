@@ -3,8 +3,8 @@
 namespace Buzz\Test\Functional;
 
 use Buzz\Browser;
+use Buzz\Client\AbstractClient;
 use Buzz\Client\BatchClientInterface;
-use Buzz\Client\ClientInterface;
 use Buzz\Middleware\MiddlewareInterface;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\Tests\PHPUnitUtility;
@@ -20,7 +20,7 @@ class MiddlewareChainTest extends TestCase
     /**
      * @dataProvider getHttpClients
      */
-    public function testChainOrder(ClientInterface $client)
+    public function testChainOrder(AbstractClient $client)
     {
         MyMiddleware::$hasBeenHandled = false;
         MyMiddleware::$handleCount = 0;

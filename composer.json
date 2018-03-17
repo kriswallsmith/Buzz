@@ -13,11 +13,12 @@
         }
     ],
     "require": {
-        "php": "^5.4 || ^7.0",
-        "guzzlehttp/psr7": "^1.4"
+        "php": "^7.1",
+        "psr/http-client": "dev-master",
+        "nyholm/psr7": "^0.3"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.4 || ^4.0",
+        "symfony/phpunit-bridge": "^4.0",
         "php-http/client-integration-tests": "^0.6.2"
     },
     "suggest": {
@@ -36,5 +37,8 @@
     "scripts": {
         "test": "vendor/bin/simple-phpunit",
         "test-ci": "vendor/bin/simple-phpunit --coverage-text --coverage-clover=build/coverage.xml"
-    }
+    },
+    "repositories": [
+        { "type": "vcs", "url": "https://github.com/php-fig/http-client"}
+    ]
 }
