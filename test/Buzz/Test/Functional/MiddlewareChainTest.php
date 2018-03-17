@@ -3,6 +3,8 @@
 namespace Buzz\Test\Functional;
 
 use Buzz\Browser;
+use Buzz\Client\BatchClientInterface;
+use Buzz\Client\ClientInterface;
 use Buzz\Middleware\MiddlewareInterface;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\Tests\PHPUnitUtility;
@@ -15,9 +17,15 @@ use Psr\Http\Message\ResponseInterface;
  */
 class MiddlewareChainTest extends TestCase
 {
-    public function testChainOrder()
+    /**
+     * @dataProvider getHttpClients
+     */
+    public function testChainOrder(ClientInterface $client)
     {
-        $browser = new Browser();
+        MyMiddleware::$hasBeenHandled = false;
+        MyMiddleware::$handleCount = 0;
+
+        $browser = new Browser($client);
         $browser->addMiddleware(new MyMiddleware(
             function () {
                 ++MyMiddleware::$handleCount;
@@ -53,8 +61,22 @@ class MiddlewareChainTest extends TestCase
         $request = new Request('GET', PHPUnitUtility::getUri());
         $browser->sendRequest($request);
 
+        if ($client instanceof BatchClientInterface) {
+            $this->assertEquals(3, MyMiddleware::$handleCount);
+            $client->flush();
+        }
+
         $this->assertEquals(0, MyMiddleware::$handleCount);
         $this->assertTrue(MyMiddleware::$hasBeenHandled);
+    }
+
+    public function getHttpClients()
+    {
+        return [
+            [new \Buzz\Client\MultiCurl()],
+            [new \Buzz\Client\FileGetContents()],
+            [new \Buzz\Client\Curl()],
+        ];
     }
 }
 
