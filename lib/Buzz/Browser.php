@@ -166,6 +166,8 @@ class Browser
      * @param array $fields
      * @param string $method
      * @param array $headers
+     *
+     * @return Psr7ResponseInterface
      */
     public function submitForm($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
     {
