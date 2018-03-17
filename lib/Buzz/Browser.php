@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz;
 
 use Buzz\Client\BatchClientInterface;
@@ -30,7 +32,7 @@ class Browser
     /** @var ResponseInterface */
     private $lastResponse;
 
-    public function __construct(ClientInterface $client = null)
+    public function __construct($client = null)
     {
         $this->client = $client ?: new FileGetContents();
         $this->factory = new MessageFactory();
@@ -127,7 +129,7 @@ class Browser
     /**
      * Send a PSR7 request.
      */
-    public function sendRequest(RequestInterface $request): ResponseInterface
+    public function sendRequest(RequestInterface $request): ?ResponseInterface
     {
         $chain = $this->createMiddlewareChain($this->middlewares, function(RequestInterface $request, callable $responseChain) {
             if ($this->client instanceof BatchClientInterface) {

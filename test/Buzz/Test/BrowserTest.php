@@ -4,18 +4,15 @@ namespace Buzz\Test;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-use Buzz\Message\Factory\FactoryInterface;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
+
+use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 class BrowserTest extends TestCase
 {
     /** @var Curl */
     private $client;
-
-    /** @var FactoryInterface */
-    private $factory;
 
     /** @var Browser */
     private $browser;
@@ -23,9 +20,8 @@ class BrowserTest extends TestCase
     protected function setUp()
     {
         $this->client = $this->getMockBuilder('Buzz\Client\Curl')->getMock();
-        $this->factory = $this->getMockBuilder('Buzz\Message\Factory\FactoryInterface')->getMock();
 
-        $this->browser = new Browser($this->client, $this->factory);
+        $this->browser = new Browser($this->client);
     }
 
     /**
@@ -33,34 +29,17 @@ class BrowserTest extends TestCase
      */
     public function testBasicMethods($method, $content)
     {
-        $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
         $response = new Response(200, [], 'foobar');
-        $headers = array('X-Foo: bar');
+        $headers = ['X-Foo'=>'bar'];
 
-        $this->factory->expects($this->once())
-            ->method('createRequest')
-            ->with(strtoupper($method))
-            ->will($this->returnValue($request));
-        $request->expects($this->once())
-            ->method('setHost')
-            ->with('http://google.com');
-        $request->expects($this->once())
-            ->method('setResource')
-            ->with('/');
-        $request->expects($this->once())
-            ->method('addHeaders')
-            ->with($headers);
-        $request->expects($this->once())
-            ->method('setContent')
-            ->with($content);
         $this->client->expects($this->once())
             ->method('sendRequest')
             ->will($this->returnValue($response));
 
         $actual = $this->browser->$method('http://google.com/', $headers, $content);
 
-        $this->assertInstanceOf('Buzz\Message\Response', $actual);
-        $this->assertEquals($response->getBody()->__toString(), $actual->getContent());
+        $this->assertInstanceOf(ResponseInterface::class, $actual);
+        $this->assertEquals($response->getBody()->__toString(), $actual->getBody()->__toString());
     }
 
     public function provideMethods()

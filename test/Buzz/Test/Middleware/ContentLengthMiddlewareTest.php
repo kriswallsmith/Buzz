@@ -2,10 +2,8 @@
 
 namespace Buzz\Test\Listener;
 
-use Buzz\Listener\BearerAuthListener;
-use Buzz\Message;
 use Buzz\Middleware\ContentLengthMiddleware;
-use GuzzleHttp\Psr7\Request;
+use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 

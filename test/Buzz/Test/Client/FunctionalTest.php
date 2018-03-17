@@ -7,7 +7,6 @@ use Buzz\Client\BatchClientInterface;
 use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
-use Buzz\Message\Form\FormUpload;
 use Buzz\Message\FormRequestBuilder;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
@@ -62,7 +61,7 @@ class FunctionalTest extends TestCase
             'POST',
             $_SERVER['BUZZ_TEST_SERVER'],
             ['Content-Type'=>'application/x-www-form-urlencoded'],
-            http_build_url(['company[name]'=>'Google'])
+            http_build_query(['company[name]'=>'Google'])
         );
         $response = $this->send($client, $request);
 
