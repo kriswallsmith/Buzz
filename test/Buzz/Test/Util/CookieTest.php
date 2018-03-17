@@ -3,7 +3,7 @@
 namespace Buzz\Test\Cookie;
 
 use Buzz\Util\Cookie;
-use Buzz\Message;
+use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
 class CookieTest extends TestCase
@@ -37,7 +37,7 @@ class CookieTest extends TestCase
         $cookie->setName('SESSION');
         $cookie->setValue('asdf');
 
-        $this->assertEquals('Cookie: SESSION=asdf', $cookie->toCookieHeader());
+        $this->assertEquals('SESSION=asdf', $cookie->toCookieHeader());
     }
 
     public function testMatchesDomainMatchesSimpleDomains()
@@ -100,8 +100,7 @@ class CookieTest extends TestCase
 
     public function testMatchesRequestChecksDomain()
     {
-        $request = new Message\Request();
-        $request->setHost('http://example.com');
+        $request = new Request('GET', 'http://www.example.com');
 
         $cookie = new Cookie();
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
@@ -116,9 +115,7 @@ class CookieTest extends TestCase
 
     public function testMatchesRequestChecksPath()
     {
-        $request = new Message\Request();
-        $request->setHost('http://example.com');
-        $request->setResource('/foo/bar');
+        $request = new Request('GET', 'http://www.example.com/foo/bar');
 
         $cookie = new Cookie();
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
@@ -135,8 +132,7 @@ class CookieTest extends TestCase
 
     public function testMatchesRequestChecksSecureAttribute()
     {
-        $request = new Message\Request();
-        $request->setHost('https://example.com');
+        $request = new Request('GET', 'https://www.example.com');
 
         $cookie = new Cookie();
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
@@ -144,9 +140,7 @@ class CookieTest extends TestCase
 
         $this->assertTrue($cookie->matchesRequest($request));
 
-        $request = new Message\Request();
-        $request->setHost('http://example.com');
-
+        $request = new Request('GET', 'http://www.example.com');
         $this->assertFalse($cookie->matchesRequest($request));
     }
 }
