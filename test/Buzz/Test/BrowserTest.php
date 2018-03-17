@@ -3,13 +3,21 @@
 namespace Buzz\Test;
 
 use Buzz\Browser;
+use Buzz\Client\Curl;
+use Buzz\Message\Factory\FactoryInterface;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class BrowserTest extends TestCase
 {
+    /** @var Curl */
     private $client;
+
+    /** @var FactoryInterface */
     private $factory;
+
+    /** @var Browser */
     private $browser;
 
     protected function setUp()
@@ -66,6 +74,9 @@ class BrowserTest extends TestCase
         );
     }
 
+    /**
+     * @group legacy
+     */
     public function testSubmit()
     {
         $request = $this->getMockBuilder('Buzz\Message\Form\FormRequestInterface')->getMock();
@@ -102,6 +113,9 @@ class BrowserTest extends TestCase
         $this->assertSame($response, $actual);
     }
 
+    /**
+     * @group legacy
+     */
     public function testListener()
     {
         $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
@@ -121,12 +135,30 @@ class BrowserTest extends TestCase
         $this->browser->send($request, $response);
     }
 
-    public function testLastMessages()
+    /**
+     * @group legacy
+     */
+    public function testLastMessagesLegacy()
     {
         $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
         $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
 
         $this->browser->send($request, $response);
+
+        $this->assertSame($request, $this->browser->getLastRequest());
+        $this->assertSame($response, $this->browser->getLastResponse());
+    }
+
+    public function testLastMessages()
+    {
+        $request = new Request('GET', 'http://www.google.se');
+        $response = new Response(200, [], 'foobar');
+
+        $this->client->expects($this->once())
+            ->method('sendRequest')
+            ->will($this->returnValue($response));
+
+        $this->browser->sendRequest($request);
 
         $this->assertSame($request, $this->browser->getLastRequest());
         $this->assertSame($response, $this->browser->getLastResponse());
