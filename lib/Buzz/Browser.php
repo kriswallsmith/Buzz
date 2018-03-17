@@ -203,7 +203,7 @@ class Browser
         return $this->lastResponse;
     }
 
-    public function setClient(ClientInterface $client)
+    public function setClient($client)
     {
         $this->client = $client;
     }
