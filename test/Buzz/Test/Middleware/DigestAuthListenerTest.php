@@ -33,15 +33,15 @@ the credentials required.</p>
 </body></html>");
 
         // Simulate the First Request/Response, where the server returns 401
-        $listener = new DigestAuthMiddleware('user1', 'user1');
-        $listener->handleRequest($request);
-        $listener->handleResponse($request, $response);
+        $middleware = new DigestAuthMiddleware('user1', 'user1');
+        $middleware->handleRequest($request);
+        $middleware->handleResponse($request, $response);
 
         // Simulate sending the second Request using the calculated Authorization Header
         $request = new Request('GET', 'http://test.webdav.org/auth-digest');
         $this->assertEmpty($request->getHeader('Authorization'));
 
-        $listener->handleRequest($request);
+        $middleware->handleRequest($request);
 
         $this->assertEquals(
         	'Digest username="user1", realm="test", nonce="5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6", response="b2cf05a5d3f51d84a8866309aed6cb5d", uri="/auth-digest"',

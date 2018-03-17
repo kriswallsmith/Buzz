@@ -1,7 +1,6 @@
 <?php
 
-namespace Buzz\Listener;
-
+namespace Buzz\Middleware;
 
 use Buzz\Middleware\MiddlewareInterface;
 use Psr\Http\Message\RequestInterface;
@@ -51,7 +50,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         $this->setUsername($username);
         $this->setPassword($password);
         $this->setRealm($realm);
-        $this->setOptions(DigestAuthListener::OPTION_QOP_AUTH_INT & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE);
+        $this->setOptions(self::OPTION_QOP_AUTH_INT & self::OPTION_DISCARD_CLIENT_NONCE);
     }
 
 
@@ -131,23 +130,23 @@ class DigestAuthMiddleware implements MiddlewareInterface
      */
     public function setOptions($options)
     {
-        if(($options & DigestAuthListener::OPTION_QOP_AUTH_INT) === true) {
-            if(($options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
-                throw new \InvalidArgumentException('DigestAuthListener: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
+        if(($options & self::OPTION_QOP_AUTH_INT) === true) {
+            if(($options & self::OPTION_QOP_AUTH) === true) {
+                throw new \InvalidArgumentException('DigestAuthMiddleware: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
             }
-            $this->options = $this->options | DigestAuthListener::OPTION_QOP_AUTH_INT;
+            $this->options = $this->options | self::OPTION_QOP_AUTH_INT;
         } else {
-            if(($options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
-                $this->options = $this->options | DigestAuthListener::OPTION_QOP_AUTH;
+            if(($options & self::OPTION_QOP_AUTH) === true) {
+                $this->options = $this->options | self::OPTION_QOP_AUTH;
             }
         }
 
-        if(($options & DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
-            $this->options = $this->options | DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST;
+        if(($options & self::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+            $this->options = $this->options | self::OPTION_IGNORE_DOWNGRADE_REQUEST;
         }
 
-        if(($options & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE) === true) {
-            $this->options = $this->options | DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE;
+        if(($options & self::OPTION_DISCARD_CLIENT_NONCE) === true) {
+            $this->options = $this->options | self::OPTION_DISCARD_CLIENT_NONCE;
         }
     }
 
@@ -182,7 +181,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      */
     private function getAuthenticationMethod()
     {
-        if(($this->options & DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+        if(($this->options & self::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
             return "Digest";
         }
         return $this->authenticationMethod;
@@ -346,7 +345,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 // Remove the last comma from the header
                 $header = substr($header, 0, strlen($header) - 1);
                 // Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
-                if(($this->options & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE) === true) {
+                if(($this->options & self::OPTION_DISCARD_CLIENT_NONCE) === true) {
                     $this->discardClientNonce();
                 }
                 return $header;
@@ -462,7 +461,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
     {
         // Has the server specified any options for Quality of Protection
         if(isset($this->qop) AND count($this->qop)) {
-            if(($this->options & DigestAuthListener::OPTION_QOP_AUTH_INT) === true) {
+            if(($this->options & self::OPTION_QOP_AUTH_INT) === true) {
                 if(in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
@@ -470,7 +469,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                     return 'auth';
                 }
             }
-            if(($this->options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
+            if(($this->options & self::OPTION_QOP_AUTH) === true) {
                 if(in_array('auth', $this->qop)) {
                     return 'auth';
                 }
@@ -664,7 +663,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         if(($algorithm == 'MD5') OR ($algorithm == 'MD5-sess')) {
             $this->algorithm = $algorithm;
         } else {
-            throw new \InvalidArgumentException('DigestAuthListener: Only MD5 and MD5-sess algorithms are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthMiddleware: Only MD5 and MD5-sess algorithms are currently supported.');
         }
     }
 
@@ -686,7 +685,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         if(($authenticationMethod == 'Digest') OR ($authenticationMethod == 'Basic')) {
             $this->authenticationMethod = $authenticationMethod;
         } else {
-            throw new \InvalidArgumentException('DigestAuthListener: Only Digest and Basic authentication methods are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthMiddleware: Only Digest and Basic authentication methods are currently supported.');
         }
     }
 
@@ -747,7 +746,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
             $this->method = 'HEAD';
             return;
         }
-        throw new \InvalidArgumentException('DigestAuthListener: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
+        throw new \InvalidArgumentException('DigestAuthMiddleware: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
     }
 
     /**
@@ -794,7 +793,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
             } elseif($protection == 'auth') {
                 $this->qop[] = 'auth';
             } else {
-                throw new \InvalidArgumentException('DigestAuthListener: Only auth-int and auth are supported Quality of Protection mechanisms.');
+                throw new \InvalidArgumentException('DigestAuthMiddleware: Only auth-int and auth are supported Quality of Protection mechanisms.');
             }
         }
     }

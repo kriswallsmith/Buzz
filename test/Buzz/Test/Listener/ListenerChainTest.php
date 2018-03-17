@@ -10,11 +10,11 @@ class ListenerChainTest extends TestCase
 {
     public function testListeners()
     {
-        $listener = new ListenerChain(array($this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock()));
-        $this->assertEquals(1, count($listener->getListeners()));
+        $middleware = new ListenerChain(array($this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock()));
+        $this->assertEquals(1, count($middleware->getListeners()));
 
-        $listener->addListener($this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock());
-        $this->assertEquals(2, count($listener->getListeners()));
+        $middleware->addListener($this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock());
+        $this->assertEquals(2, count($middleware->getListeners()));
     }
 
     public function testChain()
@@ -30,8 +30,8 @@ class ListenerChainTest extends TestCase
             ->method('postSend')
             ->with($request, $response);
 
-        $listener = new ListenerChain(array($delegate));
-        $listener->preSend($request);
-        $listener->postSend($request, $response);
+        $middleware = new ListenerChain(array($delegate));
+        $middleware->preSend($request);
+        $middleware->postSend($request, $response);
     }
 }

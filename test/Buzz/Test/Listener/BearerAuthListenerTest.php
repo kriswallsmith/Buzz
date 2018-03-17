@@ -13,8 +13,8 @@ class BearerAuthListenerTest extends TestCase
         $request = new Message\Request();
         $this->assertEmpty($request->getHeader('Authorization'));
 
-        $listener = new BearerAuthListener('superSecretAccessTokenGeneratedByTheNsaItself');
-        $listener->preSend($request);
+        $middleware = new BearerAuthListener('superSecretAccessTokenGeneratedByTheNsaItself');
+        $middleware->preSend($request);
 
         $this->assertEquals('Bearer superSecretAccessTokenGeneratedByTheNsaItself', $request->getHeader('Authorization'));
     }

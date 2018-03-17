@@ -38,9 +38,9 @@ the credentials required.</p>
 </body></html>");
 
 // Simulate the First Request/Response, where the server returns 401
-        $listener = new DigestAuthListener('user1', 'user1');
-        $listener->preSend($request);
-        $listener->postSend($request, $response);
+        $middleware = new DigestAuthListener('user1', 'user1');
+        $middleware->preSend($request);
+        $middleware->postSend($request, $response);
 
 // Simulate sending the second Request using the calculated Authorization Header
         $request = new Message\Request();
@@ -51,7 +51,7 @@ the credentials required.</p>
 
         $this->assertEmpty($request->getHeader('Authorization'));
 
-        $listener->preSend($request);
+        $middleware->preSend($request);
 
         $this->assertEquals(
         	'Digest username="user1", realm="test", nonce="5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6", response="b2cf05a5d3f51d84a8866309aed6cb5d", uri="/auth-digest"',

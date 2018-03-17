@@ -20,9 +20,9 @@ class LoggerListenerTest extends TestCase
         $request->fromUrl('http://google.com/');
         $response = new Message\Response();
 
-        $listener = new LoggerListener($logger);
-        $listener->preSend($request);
-        $listener->postSend($request, $response);
+        $middleware = new LoggerListener($logger);
+        $middleware->preSend($request);
+        $middleware->postSend($request, $response);
     }
 
     public function testInvalidLogger()
@@ -33,6 +33,6 @@ class LoggerListenerTest extends TestCase
             $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
         }
 
-        $listener = new LoggerListener(array(1, 2, 3));
+        $middleware = new LoggerListener(array(1, 2, 3));
     }
 }

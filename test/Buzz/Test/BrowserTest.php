@@ -95,28 +95,6 @@ class BrowserTest extends TestCase
     /**
      * @group legacy
      */
-    public function testListener()
-    {
-        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
-        $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
-        $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
-
-        $listener->expects($this->once())
-            ->method('preSend')
-            ->with($request);
-        $listener->expects($this->once())
-            ->method('postSend')
-            ->with($request, $response);
-
-        $this->browser->setListener($listener);
-        $this->assertSame($listener, $this->browser->getListener());
-
-        $this->browser->send($request, $response);
-    }
-
-    /**
-     * @group legacy
-     */
     public function testLastMessagesLegacy()
     {
         $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
@@ -159,35 +137,35 @@ class BrowserTest extends TestCase
 
     public function testAddFirstListener()
     {
-        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
-        $this->browser->addListener($listener);
-        $this->assertEquals($listener, $this->browser->getListener());
+        $middleware = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
+        $this->browser->addListener($middleware);
+        $this->assertEquals($middleware, $this->browser->getListener());
     }
 
     public function testAddSecondListener()
     {
-        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
+        $middleware = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
 
-        $this->browser->addListener($listener);
-        $this->browser->addListener($listener);
+        $this->browser->addListener($middleware);
+        $this->browser->addListener($middleware);
 
-        $listenerChain = $this->browser->getListener();
+        $middlewareChain = $this->browser->getListener();
 
-        $this->assertInstanceOf('Buzz\Listener\ListenerChain', $listenerChain);
-        $this->assertEquals(2, count($listenerChain->getListeners()));
+        $this->assertInstanceOf('Buzz\Listener\ListenerChain', $middlewareChain);
+        $this->assertEquals(2, count($middlewareChain->getListeners()));
     }
 
     public function testAddThirdListener()
     {
-        $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
+        $middleware = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
 
-        $this->browser->addListener($listener);
-        $this->browser->addListener($listener);
-        $this->browser->addListener($listener);
+        $this->browser->addListener($middleware);
+        $this->browser->addListener($middleware);
+        $this->browser->addListener($middleware);
 
-        $listenerChain = $this->browser->getListener();
+        $middlewareChain = $this->browser->getListener();
 
-        $this->assertInstanceOf('Buzz\Listener\ListenerChain', $listenerChain);
-        $this->assertEquals(3, count($listenerChain->getListeners()));
+        $this->assertInstanceOf('Buzz\Listener\ListenerChain', $middlewareChain);
+        $this->assertEquals(3, count($middlewareChain->getListeners()));
     }
 }

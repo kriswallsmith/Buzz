@@ -17,7 +17,7 @@ class CallbackMiddleware implements MiddlewareInterface
      * The callback should expect either one or two arguments, depending on
      * whether it is receiving a pre or post send notification.
      *
-     *     $listener = new CallbackListener(function($request, $response = null) {
+     *     $middleware = new CallbackMiddleware(function($request, $response = null) {
      *         if ($response) {
      *             // postSend
      *         } else {

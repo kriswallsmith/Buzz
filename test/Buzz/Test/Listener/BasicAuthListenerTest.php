@@ -13,8 +13,8 @@ class BasicAuthListenerTest extends TestCase
         $request = new Message\Request();
         $this->assertEmpty($request->getHeader('Authorization'));
 
-        $listener = new BasicAuthListener('foo', 'bar');
-        $listener->preSend($request);
+        $middleware = new BasicAuthListener('foo', 'bar');
+        $middleware->preSend($request);
 
         $this->assertEquals('Basic '.base64_encode('foo:bar'), $request->getHeader('Authorization'));
     }

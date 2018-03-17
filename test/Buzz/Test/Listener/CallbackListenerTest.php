@@ -11,15 +11,15 @@ class CallbackListenerTest extends TestCase
     public function testCallback()
     {
         $calls = array();
-        $listener = new CallbackListener(function() use (& $calls) {
+        $middleware = new CallbackListener(function() use (& $calls) {
             $calls[] = func_get_args();
         });
 
         $request = new Message\Request();
         $response = new Message\Response();
 
-        $listener->preSend($request);
-        $listener->postSend($request, $response);
+        $middleware->preSend($request);
+        $middleware->postSend($request, $response);
 
         $this->assertEquals(array(
             array($request),
@@ -35,6 +35,6 @@ class CallbackListenerTest extends TestCase
             $this->setExpectedException('Buzz\Exception\InvalidArgumentException');
         }
 
-        $listener = new CallbackListener(array(1, 2, 3));
+        $middleware = new CallbackListener(array(1, 2, 3));
     }
 }

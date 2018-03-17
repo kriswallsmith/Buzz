@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class HistoryListenerTest extends TestCase
 {
     private $journal;
-    private $listener;
+    private $middleware;
 
     protected function setUp()
     {

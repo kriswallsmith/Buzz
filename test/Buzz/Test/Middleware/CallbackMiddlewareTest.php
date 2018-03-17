@@ -13,15 +13,15 @@ class CallbackMiddlewareTest extends TestCase
     public function testCallback()
     {
         $calls = array();
-        $listener = new CallbackMiddleware(function() use (& $calls) {
+        $middleware = new CallbackMiddleware(function() use (& $calls) {
             $calls[] = func_get_args();
         });
 
         $request = new Request('GET', '/');
         $response = new Response();
 
-        $listener->handleRequest($request, function() {});
-        $listener->handleResponse($request, $response, function() {});
+        $middleware->handleRequest($request, function() {});
+        $middleware->handleResponse($request, $response, function() {});
 
         $this->assertEquals(array(
             array($request),
