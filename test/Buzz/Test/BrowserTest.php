@@ -3,6 +3,7 @@
 namespace Buzz\Test;
 
 use Buzz\Browser;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class BrowserTest extends TestCase
@@ -13,7 +14,7 @@ class BrowserTest extends TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMockBuilder('Buzz\Client\ClientInterface')->getMock();
+        $this->client = $this->getMockBuilder('Buzz\Client\Curl')->getMock();
         $this->factory = $this->getMockBuilder('Buzz\Message\Factory\FactoryInterface')->getMock();
 
         $this->browser = new Browser($this->client, $this->factory);
@@ -25,7 +26,7 @@ class BrowserTest extends TestCase
     public function testBasicMethods($method, $content)
     {
         $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
-        $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
+        $response = new Response(200, [], 'foobar');
         $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
@@ -44,16 +45,14 @@ class BrowserTest extends TestCase
         $request->expects($this->once())
             ->method('setContent')
             ->with($content);
-        $this->factory->expects($this->once())
-            ->method('createResponse')
-            ->will($this->returnValue($response));
         $this->client->expects($this->once())
-            ->method('send')
-            ->with($request, $response);
+            ->method('sendRequest')
+            ->will($this->returnValue($response));
 
         $actual = $this->browser->$method('http://google.com/', $headers, $content);
 
-        $this->assertSame($response, $actual);
+        $this->assertInstanceOf('Buzz\Message\Response', $actual);
+        $this->assertEquals($response->getBody()->__toString(), $actual->getContent());
     }
 
     public function provideMethods()
