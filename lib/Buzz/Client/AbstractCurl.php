@@ -222,9 +222,11 @@ abstract class AbstractCurl extends AbstractClient
         }
 
         $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir');
+        $postAll = defined('CURL_REDIR_POST_ALL') ? CURL_REDIR_POST_ALL : 7;
 
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow && $this->getMaxRedirects() > 0);
         curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $this->getMaxRedirects() : 0);
+        curl_setopt($curl, CURLOPT_POSTREDIR, $canFollow ? $postAll : 0);
         curl_setopt($curl, CURLOPT_FAILONERROR, !$this->getIgnoreErrors());
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->getVerifyPeer());
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $this->getVerifyHost());
