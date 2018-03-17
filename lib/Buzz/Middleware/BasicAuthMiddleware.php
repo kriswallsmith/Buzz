@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Middleware;
+declare(strict_types=1);
 
+namespace Buzz\Middleware;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

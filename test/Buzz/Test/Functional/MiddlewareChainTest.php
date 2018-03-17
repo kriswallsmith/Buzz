@@ -3,11 +3,11 @@
 namespace Buzz\Test\Functional;
 
 use Buzz\Browser;
+use Buzz\Client\AbstractClient;
 use Buzz\Client\BatchClientInterface;
-use Buzz\Client\ClientInterface;
 use Buzz\Middleware\MiddlewareInterface;
-use GuzzleHttp\Psr7\Request;
 use Http\Client\Tests\PHPUnitUtility;
+use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -20,7 +20,7 @@ class MiddlewareChainTest extends TestCase
     /**
      * @dataProvider getHttpClients
      */
-    public function testChainOrder(ClientInterface $client)
+    public function testChainOrder(AbstractClient $client)
     {
         MyMiddleware::$hasBeenHandled = false;
         MyMiddleware::$handleCount = 0;

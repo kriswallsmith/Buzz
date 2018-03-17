@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Buzz\Exception;
 
-use Psr\Http\Client\Exception\RequestException as PsrRequestException;
+use Psr\Http\Client\Exception\NetworkException as PsrNetworkException;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class RequestException extends ClientException implements PsrRequestException
+class NetworkException extends ClientException implements PsrNetworkException
 {
     /**
      * @var RequestInterface

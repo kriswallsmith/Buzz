@@ -2,8 +2,8 @@
 
 namespace Buzz\Test\Client;
 
-use Buzz\Exception\ClientException;
-use Buzz\Message;
+use Buzz\Client\AbstractClient;
+use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
@@ -20,14 +20,12 @@ class ClientTest extends TestCase
             $this->setExpectedException('Buzz\\Exception\\ClientException');
         }
 
-        $request = new Message\Request();
-        $request->fromUrl('http://'.$host.':12345');
+        $request = new Request('GET', 'http://'.$host.':12345');
 
-        $response = new Message\Response();
-
+        /** @var AbstractClient $client */
         $client = new $client();
         $client->setTimeout(0.05);
-        $client->send($request, $response);
+        $client->sendRequest($request);
     }
 
     public function provideInvalidHosts()

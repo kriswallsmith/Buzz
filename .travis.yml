@@ -1,15 +1,13 @@
 language: php
 sudo: required
-dist: trusty
 cache:
     directories:
         - $HOME/.composer/cache/files
+        - $HOME/symfony-bridge/.phpunit
 
 php:
-    - 5.4
-    - 5.5
-#    - 5.6
-#    - 7.2
+    - 7.1
+    - 7.2
 
 env:
     global:
@@ -19,19 +17,10 @@ env:
         - PHP_FCGI_CHILDREN=10
         - PHP_FCGI_MAX_REQUESTS=10
         - COMPOSER_FLAGS="--prefer-dist"
+        - SYMFONY_PHPUNIT_VERSION=6.3
 
 matrix:
-    allow_failures:
-        - php: hhvm
-          dist: trusty
     fast_finish: true
-    include:
-        - php: 5.5
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" COVERAGE=true TEST_COMMAND="composer test-ci"
-        - php: 7.0
-          env: SYMFONY_PHPUNIT_VERSION=6.3
-        - php: 7.1
-          env: SYMFONY_PHPUNIT_VERSION=6.3
 
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
@@ -53,6 +42,7 @@ before_script:
     - vendor/bin/http_test_server > /dev/null 2>&1 &
 
 script:
+    - composer validate --strict --no-check-lock
     - $TEST_COMMAND
 
 after_success:

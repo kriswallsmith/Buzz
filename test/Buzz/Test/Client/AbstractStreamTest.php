@@ -3,14 +3,14 @@
 namespace Buzz\Test\Client;
 
 use Buzz\Client\AbstractStream;
-use Buzz\Message\Request;
-use Buzz\Message\RequestInterface;
-use Buzz\Message\MessageInterface;
+use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class StreamClient extends AbstractStream
 {
-    public function send(RequestInterface $request, MessageInterface $response)
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
     }
 }
@@ -19,10 +19,10 @@ class AbstractStreamTest extends TestCase
 {
     public function testConvertsARequestToAContextArray()
     {
-        $request = new Request('POST', '/resource/123', 'http://example.com');
-        $request->addHeader('Content-Type: application/x-www-form-urlencoded');
-        $request->addHeader('Content-Length: 15');
-        $request->setContent('foo=bar&bar=baz');
+        $request = new Request('POST', 'http://example.com/resource/123', [
+            'Content-Type'=>'application/x-www-form-urlencoded',
+            'Content-Length'=> '15',
+        ], 'foo=bar&bar=baz');
 
         $client = new StreamClient();
         $client->setMaxRedirects(5);

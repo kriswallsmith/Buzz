@@ -1,14 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Buzz\Client;
 
-use Buzz\Converter\RequestConverter;
-use Buzz\Converter\ResponseConverter;
 use Buzz\Exception\RequestException;
-use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface;
 use Buzz\Exception\ClientException;
-use Psr\Http\Message\RequestInterface as PSR7RequestInterface;
+use Psr\Http\Message\RequestInterface;
 
 class MultiCurl extends AbstractCurl implements BatchClientInterface
 {
@@ -31,21 +28,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      *         }
      *     };
      *
-     * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
-     * @param array            $options  An array of options
-     *
-     * @deprecated Will be removed in 1.0. Use sendRequest instead.
      */
-    public function send(RequestInterface $request, MessageInterface $response, array $options = array())
-    {
-        @trigger_error('MultiCurl::send() is deprecated. Use MultiCurl::sendRequest instead.', E_USER_DEPRECATED);
-
-        $request = RequestConverter::psr7($request);
-        $this->queue[] = array($request, $response, $options);
-    }
-
-    public function sendRequest(PSR7RequestInterface $request, $options = [])
+    public function sendRequest(RequestInterface $request, array $options = []): void
     {
         $this->queue[] = array($request, null, $options);
     }
@@ -76,7 +60,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
             if (3 == count($this->queue[$i])) {
                 // prepare curl handle
                 list($request, , $options) = $this->queue[$i];
-                $curl = static::createCurlHandle();
+                $curl = $this->createCurlHandle();
 
                 // remove custom option
                 unset($options['callback']);
@@ -105,16 +89,12 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
-                    $psr7Response = $this->createResponse($curl, curl_multi_getcontent($curl));
-                    if ($response !== null) {
-                        ResponseConverter::copy(ResponseConverter::buzz($psr7Response), $response);
-                    }
+                    $response = $this->createResponse($curl, curl_multi_getcontent($curl));
                 } else if (!isset($e)) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);
 
-                    $e = new RequestException($errorMsg, $errorNo);
-                    $e->setRequest($request);
+                    $e = new RequestException($request, $errorMsg, $errorNo);
                 }
 
                 // remove from queue
@@ -124,8 +104,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // callback
                 if (isset($options['callback'])) {
-                    $returnResponse = $response === null || (isset($options['psr7_response']) && $options['psr7_response'] === true) ? $psr7Response : $response;
-                    call_user_func($options['callback'], $this, $request, $returnResponse, $options, $done['result']);
+                    call_user_func($options['callback'], $this, $request, $response, $options, $done['result']);
                 }
             }
         }

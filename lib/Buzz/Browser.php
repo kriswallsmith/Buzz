@@ -1,24 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz;
 
 use Buzz\Client\BatchClientInterface;
-use Buzz\Client\ClientInterface;
 use Buzz\Client\FileGetContents;
-use Buzz\Converter\RequestConverter;
-use Buzz\Converter\ResponseConverter;
-use Buzz\Listener\ListenerChain;
-use Buzz\Listener\ListenerInterface;
-use Buzz\Message\Factory\Factory;
-use Buzz\Message\Factory\FactoryInterface;
-use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface;
 use Buzz\Middleware\MiddlewareInterface;
-use Buzz\Util\Url;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Stream;
-use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
-use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
+use Nyholm\Psr7\Factory\MessageFactory;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
 class Browser
@@ -26,11 +18,8 @@ class Browser
     /** @var ClientInterface */
     private $client;
 
-    /** @var FactoryInterface */
+    /** @var MessageFactory */
     private $factory;
-
-    /** @var ListenerInterface */
-    private $listener;
 
     /**
      * @var MiddlewareInterface[]
@@ -40,43 +29,43 @@ class Browser
     /** @var RequestInterface */
     private $lastRequest;
 
-    /** @var MessageInterface */
+    /** @var ResponseInterface */
     private $lastResponse;
 
-    public function __construct(ClientInterface $client = null, FactoryInterface $factory = null)
+    public function __construct($client = null)
     {
         $this->client = $client ?: new FileGetContents();
-        $this->factory = $factory ?: new Factory();
+        $this->factory = new MessageFactory();
     }
 
     public function get($url, $headers = array())
     {
-        return $this->call($url, RequestInterface::METHOD_GET, $headers);
+        return $this->call($url, 'GET', $headers);
     }
 
     public function post($url, $headers = array(), $content = '')
     {
-        return $this->call($url, RequestInterface::METHOD_POST, $headers, $content);
+        return $this->call($url, 'POST', $headers, $content);
     }
 
     public function head($url, $headers = array())
     {
-        return $this->call($url, RequestInterface::METHOD_HEAD, $headers);
+        return $this->call($url, 'HEAD', $headers);
     }
 
     public function patch($url, $headers = array(), $content = '')
     {
-        return $this->call($url, RequestInterface::METHOD_PATCH, $headers, $content);
+        return $this->call($url, 'PATCH', $headers, $content);
     }
 
     public function put($url, $headers = array(), $content = '')
     {
-        return $this->call($url, RequestInterface::METHOD_PUT, $headers, $content);
+        return $this->call($url, 'PUT', $headers, $content);
     }
 
     public function delete($url, $headers = array(), $content = '')
     {
-        return $this->call($url, RequestInterface::METHOD_DELETE, $headers, $content);
+        return $this->call($url, 'DELETE', $headers, $content);
     }
 
     /**
@@ -85,89 +74,17 @@ class Browser
      * @param string $url     The URL to call
      * @param string $method  The request method to use
      * @param array  $headers An array of request headers
-     * @param string $content The request content
+     * @param string $body The request content
      *
-     * @return MessageInterface The response object
+     * @return ResponseInterface The response object
      */
-    public function call($url, $method, $headers = array(), $content = '')
+    public function call(string $url, string $method, array $headers = array(), string $body = ''): ResponseInterface
     {
-        $request = $this->factory->createRequest($method);
+        $request = $this->factory->createRequest($method, $url, $headers, $body);
 
-        if (!$url instanceof Url) {
-            $url = new Url($url);
-        }
-
-        $url->applyToRequest($request);
-
-        $request->addHeaders($headers);
-        $request->setContent($content);
-
-        $psr7Request = RequestConverter::psr7($request);
-        $psr7Response = $this->sendRequest($psr7Request);
-
-        return ResponseConverter::buzz($psr7Response);
+        return $this->sendRequest($request);
     }
 
-    /**
-     * Sends a form request.
-     *
-     * @param string $url     The URL to submit to
-     * @param array  $fields  An array of fields
-     * @param string $method  The request method to use
-     * @param array  $headers An array of request headers
-     *
-     * @return MessageInterface The response object
-     * @deprecated Will be removed in version 1.0. Use submitForm instead.
-     */
-    public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
-    {
-        @trigger_error('Broswer::send() is deprecated. Use Broswer::submitForm instead.', E_USER_DEPRECATED);
-        $request = $this->factory->createFormRequest();
-
-        if (!$url instanceof Url) {
-            $url = new Url($url);
-        }
-
-        $url->applyToRequest($request);
-
-        $request->addHeaders($headers);
-        $request->setMethod($method);
-        $request->setFields($fields);
-
-        return $this->send($request);
-    }
-
-    /**
-     * Sends a request.
-     *
-     * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
-     *
-     * @return MessageInterface The response
-     * @deprecated Will be removed in version 1.0. Use sendRequest instead.
-     */
-    public function send(RequestInterface $request, MessageInterface $response = null)
-    {
-        @trigger_error('Broswer::send() is deprecated. Use Broswer::sendRequest instead.', E_USER_DEPRECATED);
-        if (null === $response) {
-            $response = $this->factory->createResponse();
-        }
-
-        if ($this->listener) {
-            $this->listener->preSend($request);
-        }
-
-        $this->client->send($request, $response);
-
-        $this->lastRequest = $request;
-        $this->lastResponse = $response;
-
-        if ($this->listener) {
-            $this->listener->postSend($request, $response);
-        }
-
-        return $response;
-    }
 
     /**
      * @param string|UriInterface $url
@@ -175,9 +92,9 @@ class Browser
      * @param string $method
      * @param array $headers
      *
-     * @return Psr7ResponseInterface
+     * @return ResponseInterface
      */
-    public function submitForm($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
+    public function submitForm(string $url, array $fields, string $method = 'POST', array $headers = array()): ResponseInterface
     {
         $body = [];
         $files = '';
@@ -204,20 +121,17 @@ class Browser
             $body = "$files--{$boundary}--\r\n";
         }
 
-        $request = new Request($method, $url, $headers, $body);
+        $request = $this->factory->createRequest($method, $url, $headers, $body);
 
         return $this->sendRequest($request);
     }
 
     /**
      * Send a PSR7 request.
-     *
-     * @param Psr7RequestInterface $request
-     * @return Psr7ResponseInterface
      */
-    public function sendRequest(Psr7RequestInterface $request)
+    public function sendRequest(RequestInterface $request): ?ResponseInterface
     {
-        $chain = $this->createMiddlewareChain($this->middlewares, function(Psr7RequestInterface $request, callable $responseChain) {
+        $chain = $this->createMiddlewareChain($this->middlewares, function(RequestInterface $request, callable $responseChain) {
             if ($this->client instanceof BatchClientInterface) {
                 $this->client->sendRequest($request, ['callback' => function(BatchClientInterface $client, $request, $response, $options, $result) use ($responseChain) {
                     return $responseChain($request, $response);
@@ -226,7 +140,7 @@ class Browser
                 $response = $this->client->sendRequest($request);
                 $responseChain($request, $response);
             }
-        }, function (Psr7RequestInterface $request, Psr7ResponseInterface $response) {
+        }, function (RequestInterface $request, ResponseInterface $response) {
             $this->lastRequest = $request;
             $this->lastResponse = $response;
         });
@@ -251,14 +165,14 @@ class Browser
         // Build response chain
         /** @var MiddlewareInterface $middleware */
         foreach ($middlewares as $middleware) {
-            $lastCallable = function (Psr7RequestInterface $request, Psr7ResponseInterface $response) use ($middleware, $responseChainNext) {
+            $lastCallable = function (RequestInterface $request, ResponseInterface $response) use ($middleware, $responseChainNext) {
                 return $middleware->handleResponse($request, $response, $responseChainNext);
             };
 
             $responseChainNext = $lastCallable;
         }
 
-        $requestChainLast = function (Psr7RequestInterface $request) use ($requestChainLast, $responseChainNext) {
+        $requestChainLast = function (RequestInterface $request) use ($requestChainLast, $responseChainNext) {
             // Send the actual request and get the response
             $requestChainLast($request, $responseChainNext);
         };
@@ -269,7 +183,7 @@ class Browser
         $requestChainNext = $requestChainLast;
         /** @var MiddlewareInterface $middleware */
         foreach ($middlewares as $middleware) {
-            $lastCallable = function (Psr7RequestInterface $request) use ($middleware, $requestChainNext) {
+            $lastCallable = function (RequestInterface $request) use ($middleware, $requestChainNext) {
                 return $middleware->handleRequest($request, $requestChainNext);
             };
 
@@ -299,26 +213,6 @@ class Browser
         return $this->client;
     }
 
-    public function setMessageFactory(FactoryInterface $factory)
-    {
-        $this->factory = $factory;
-    }
-
-    public function getMessageFactory()
-    {
-        return $this->factory;
-    }
-
-    public function setListener(ListenerInterface $listener)
-    {
-        $this->listener = $listener;
-    }
-
-    public function getListener()
-    {
-        return $this->listener;
-    }
-
     /**
      * Add a new middleware to the stack.
      *
@@ -329,28 +223,7 @@ class Browser
         $this->middlewares[] = $middleware;
     }
 
-    public function addListener(ListenerInterface $listener)
-    {
-        if (!$this->listener) {
-            $this->listener = $listener;
-        } elseif ($this->listener instanceof ListenerChain) {
-            $this->listener->addListener($listener);
-        } else {
-            $this->listener = new ListenerChain(array(
-                $this->listener,
-                $listener,
-            ));
-        }
-    }
-
-    /**
-     * @param $name
-     * @param $content
-     * @param $boundary
-     * @param array $data
-     * @return string
-     */
-    private function prepareMultipart($name, $content, $boundary, array $data = [])
+    private function prepareMultipart(string $name, string $content, string $boundary, array $data = []): string
     {
         $output = '';
         $fileHeaders = [];
