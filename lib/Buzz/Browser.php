@@ -209,8 +209,9 @@ class Browser
     {
         $chain = $this->createMiddlewareChain($this->middlewares, function(Psr7RequestInterface $request, callable $responseChain) {
             if ($this->client instanceof BatchClientInterface) {
-                // TODO make this check better.
-                $this->client->sendRequest($request, ['callback' => $responseChain]);
+                $this->client->sendRequest($request, ['callback' => function(BatchClientInterface $client, $request, $response, $options, $result) use ($responseChain) {
+                    return $responseChain($request, $response);
+                }]);
             } else {
                 $response = $this->client->sendRequest($request);
                 $responseChain($request, $response);

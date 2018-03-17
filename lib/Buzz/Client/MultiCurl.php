@@ -80,6 +80,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // remove custom option
                 unset($options['callback']);
+                unset($options['psr7_response']);
 
                 $this->prepare($curl, $request, $options);
                 $this->queue[$i][] = $curl;
@@ -105,7 +106,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
                     $psr7Response = $this->createResponse($curl, curl_multi_getcontent($curl));
-                    ResponseConverter::copy(ResponseConverter::buzz($psr7Response), $response);
+                    if ($response !== null) {
+                        ResponseConverter::copy(ResponseConverter::buzz($psr7Response), $response);
+                    }
                 } else if (!isset($e)) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);
@@ -121,7 +124,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
                 // callback
                 if (isset($options['callback'])) {
-                    $returnResponse = isset($options['psr7_response']) && $options['psr7_response'] === true ? $psr7Response : $response;
+                    $returnResponse = $response === null || (isset($options['psr7_response']) && $options['psr7_response'] === true) ? $psr7Response : $response;
                     call_user_func($options['callback'], $this, $request, $returnResponse, $options, $done['result']);
                 }
             }
