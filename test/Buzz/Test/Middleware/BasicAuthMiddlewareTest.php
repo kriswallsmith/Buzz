@@ -13,8 +13,11 @@ class BasicAuthMiddlewareTest extends TestCase
         $request = new Request('GET', '/');
 
         $middleware = new BasicAuthMiddleware('foo', 'bar');
-        $middleware->handleRequest($request, function() {});
+        $newRequest = null;
+        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+            $newRequest = $request;
+        });
 
-        $this->assertEquals('Basic '.base64_encode('foo:bar'), $request->getHeaderLine('Authorization'));
+        $this->assertEquals('Basic '.base64_encode('foo:bar'), $newRequest->getHeaderLine('Authorization'));
     }
 }

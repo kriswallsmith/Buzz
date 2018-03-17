@@ -100,7 +100,7 @@ class CookieTest extends TestCase
 
     public function testMatchesRequestChecksDomain()
     {
-        $request = new Request('GET', 'http://www.example.com');
+        $request = new Request('GET', 'http://example.com');
 
         $cookie = new Cookie();
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
@@ -115,7 +115,7 @@ class CookieTest extends TestCase
 
     public function testMatchesRequestChecksPath()
     {
-        $request = new Request('GET', 'http://www.example.com/foo/bar');
+        $request = new Request('GET', 'http://example.com/foo/bar');
 
         $cookie = new Cookie();
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
@@ -132,7 +132,7 @@ class CookieTest extends TestCase
 
     public function testMatchesRequestChecksSecureAttribute()
     {
-        $request = new Request('GET', 'https://www.example.com');
+        $request = new Request('GET', 'https://example.com');
 
         $cookie = new Cookie();
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, 'example.com');
@@ -140,7 +140,7 @@ class CookieTest extends TestCase
 
         $this->assertTrue($cookie->matchesRequest($request));
 
-        $request = new Request('GET', 'http://www.example.com');
+        $request = new Request('GET', 'http://example.com');
         $this->assertFalse($cookie->matchesRequest($request));
     }
 }

@@ -19,9 +19,9 @@ class JournalTest extends TestCase
 
     protected function setUp()
     {
-        $this->request1 = new Request('GET', '/', [], 'request1');
-        $this->request2 = new Request('GET', '/', [], 'request2');
-        $this->request3 = new Request('GET', '/', [], 'request3');
+        $this->request1 = new Request('GET', '/r1', [], 'request1');
+        $this->request2 = new Request('GET', '/r2', [], 'request2');
+        $this->request3 = new Request('GET', '/r3', [], 'request3');
         $this->response1 = new Response(200, [], 'response1');
         $this->response2 = new Response(200, [], 'response2');
         $this->response3 = new Response(200, [], 'response3');
@@ -67,7 +67,7 @@ class JournalTest extends TestCase
      */
     public function testGetLastRequestReturnsTheLastRequest(Journal $journal)
     {
-        $this->assertEquals($this->request2, $journal->getLastRequest());
+        $this->assertEquals($this->request2->getBody()->__toString(), $journal->getLastRequest()->getBody()->__toString());
     }
 
     /**
@@ -75,7 +75,7 @@ class JournalTest extends TestCase
      */
     public function testGetLastResponseReturnsTheLastResponse(Journal $journal)
     {
-        $this->assertEquals($this->response2, $journal->getLastResponse());
+        $this->assertEquals($this->response2->getBody()->__toString(), $journal->getLastResponse()->getBody()->__toString());
     }
 
     /**

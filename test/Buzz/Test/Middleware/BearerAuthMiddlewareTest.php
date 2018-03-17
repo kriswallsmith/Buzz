@@ -12,8 +12,11 @@ class BearerAuthMiddlewareTest extends TestCase
     {
         $request = new Request('GET', '/');
         $middleware = new BearerAuthMiddleware('superSecretAccessTokenGeneratedByTheNsaItself');
-        $middleware->handleRequest($request, function () {});
-
-        $this->assertEquals('Bearer superSecretAccessTokenGeneratedByTheNsaItself', $request->getHeaderLine('Authorization'));
+        $newRequest = null;
+        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+            $newRequest = $request;
+        });
+        
+        $this->assertEquals('Bearer superSecretAccessTokenGeneratedByTheNsaItself', $newRequest->getHeaderLine('Authorization'));
     }
 }

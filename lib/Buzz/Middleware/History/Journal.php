@@ -18,54 +18,56 @@ class Journal implements \Countable, \IteratorAggregate
      * @param ResponseInterface $response The response
      * @param integer          $duration The duration in seconds
      */
-    public function record(RequestInterface $request, ResponseInterface $response, $duration = null)
+    public function record(RequestInterface $request, ResponseInterface $response, $duration = null): void
     {
         $this->addEntry(new Entry($request, $response, $duration));
     }
 
-    public function addEntry(Entry $entry)
+    public function addEntry(Entry $entry): void
     {
         array_push($this->entries, $entry);
         $this->entries = array_slice($this->entries, $this->getLimit() * -1);
         end($this->entries);
     }
 
-    public function getEntries()
+    public function getEntries(): array
     {
         return $this->entries;
     }
 
-    public function getLast()
+    public function getLast(): ?Entry
     {
-        return end($this->entries);
+        $entry = end($this->entries);
+
+        return $entry === false ? null: $entry;
     }
 
-    public function getLastRequest()
+    public function getLastRequest(): RequestInterface
     {
         return $this->getLast()->getRequest();
     }
 
-    public function getLastResponse()
+    public function getLastResponse(): ResponseInterface
     {
         return $this->getLast()->getResponse();
     }
 
-    public function clear()
+    public function clear(): void
     {
         $this->entries = array();
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->entries);
     }
 
-    public function setLimit($limit)
+    public function setLimit(int $limit): void
     {
         $this->limit = $limit;
     }
 
-    public function getLimit()
+    public function getLimit(): int
     {
         return $this->limit;
     }

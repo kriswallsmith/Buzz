@@ -7,17 +7,19 @@ use Buzz\Middleware\LoggerMiddleware;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 
 class LoggerMiddlewareTest extends TestCase
 {
     public function testLogger()
     {
-        $test = $this;
+        $that = $this;
 
         // TODO Use PSR3 logger
-        $logger = function($line) use ($test) {
-            $test->assertRegExp('~^Sent "GET http://google.com/" in \d+ms$~', $line);
-        };
+        $logger = new CallbackLogger(function($level, $message, array $context) use ($that) {
+            $that->assertRegExp('~^Sent "GET http://google.com/" in \d+ms$~', $message);
+        });
 
         $request = new Request('GET', 'http://google.com/');
         $response = new Response();
@@ -26,11 +28,26 @@ class LoggerMiddlewareTest extends TestCase
         $middleware->handleRequest($request, function() {});
         $middleware->handleResponse($request, $response, function() {});
     }
+}
 
-    public function testInvalidLogger()
+class CallbackLogger implements LoggerInterface
+{
+    use LoggerTrait;
+
+    private $callback;
+
+    /**
+     *
+     * @param $callback
+     */
+    public function __construct(callable  $callback)
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->callback = $callback;
+    }
 
-        new LoggerMiddleware(array(1, 2, 3));
+    public function log($level, $message, array $context = array())
+    {
+        $f = $this->callback;
+        $f($level, $message, $context);
     }
 }

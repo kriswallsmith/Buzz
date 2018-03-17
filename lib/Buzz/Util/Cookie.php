@@ -37,7 +37,7 @@ class Cookie
     {
         $uri = $request->getUri();
         // domain
-        if (!$this->matchesDomain(parse_url($uri->getHost(), PHP_URL_HOST))) {
+        if (!$this->matchesDomain($uri->getHost())) {
             return false;
         }
 
@@ -47,7 +47,7 @@ class Cookie
         }
 
         // secure
-        if ($this->hasAttribute(static::ATTR_SECURE) && !$uri->getScheme() === 'https') {
+        if ($this->hasAttribute(static::ATTR_SECURE) && $uri->getScheme() !== 'https') {
             return false;
         }
 

@@ -47,7 +47,7 @@ class CallbackMiddleware implements MiddlewareInterface
 
     public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
-        call_user_func($this->callable, $request, $request);
+        call_user_func($this->callable, $request, $response);
 
         return $next($request, $response);
     }

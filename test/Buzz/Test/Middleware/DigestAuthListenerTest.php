@@ -2,7 +2,7 @@
 
 namespace Buzz\Test\Middleware;
 
-use Buzz\Listener\DigestAuthMiddleware;
+use Buzz\Middleware\DigestAuthMiddleware;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -34,18 +34,28 @@ the credentials required.</p>
 
         // Simulate the First Request/Response, where the server returns 401
         $middleware = new DigestAuthMiddleware('user1', 'user1');
-        $middleware->handleRequest($request);
-        $middleware->handleResponse($request, $response);
+        $newRequest = null;
+        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+            $newRequest = $request;
+        });
+
+        $newResponse = null;
+        $middleware->handleResponse($request, $response, function($request, $response) use (&$newResponse) {
+            $newResponse = $response;
+        });
 
         // Simulate sending the second Request using the calculated Authorization Header
         $request = new Request('GET', 'http://test.webdav.org/auth-digest');
         $this->assertEmpty($request->getHeader('Authorization'));
 
-        $middleware->handleRequest($request);
+        $newRequest = null;
+        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+            $newRequest = $request;
+        });
 
         $this->assertEquals(
         	'Digest username="user1", realm="test", nonce="5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6", response="b2cf05a5d3f51d84a8866309aed6cb5d", uri="/auth-digest"',
-        	$request->getHeader('Authorization')
+            $newRequest->getHeaderLine('Authorization')
         );
     }
 }

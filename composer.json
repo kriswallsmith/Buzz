@@ -19,7 +19,8 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^4.0",
-        "php-http/client-integration-tests": "^0.6.2"
+        "php-http/client-integration-tests": "^0.6.2",
+        "psr/log": "^1.0"
     },
     "suggest": {
         "ext-curl": "*"
