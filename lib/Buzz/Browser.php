@@ -85,7 +85,6 @@ class Browser
         return $this->sendRequest($request);
     }
 
-
     /**
      * @param string|UriInterface $url
      * @param array $fields
