@@ -26,11 +26,15 @@ class RequestConverter
             throw new LogicException('Only instances of PSR7 Request and Buzz requests are allowed');
         }
 
+        if (null === $headers = $request->getHeaders()) {
+            $headers = array();
+        }
+
         // Convert the response to psr7
         return new \GuzzleHttp\Psr7\Request(
             $request->getMethod(),
             sprintf('%s%s', $request->getHost(), $request->getResource()),
-            HeaderConverter::toPsrHeaders($request->getHeaders()),
+            HeaderConverter::toPsrHeaders($headers),
             $request->getContent(),
             $request->getProtocolVersion()
         );

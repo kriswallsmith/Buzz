@@ -3,17 +3,26 @@
 namespace Buzz\Test;
 
 use Buzz\Browser;
+use Buzz\Client\Curl;
+use Buzz\Message\Factory\FactoryInterface;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class BrowserTest extends TestCase
 {
+    /** @var Curl */
     private $client;
+
+    /** @var FactoryInterface */
     private $factory;
+
+    /** @var Browser */
     private $browser;
 
     protected function setUp()
     {
-        $this->client = $this->getMockBuilder('Buzz\Client\ClientInterface')->getMock();
+        $this->client = $this->getMockBuilder('Buzz\Client\Curl')->getMock();
         $this->factory = $this->getMockBuilder('Buzz\Message\Factory\FactoryInterface')->getMock();
 
         $this->browser = new Browser($this->client, $this->factory);
@@ -25,7 +34,7 @@ class BrowserTest extends TestCase
     public function testBasicMethods($method, $content)
     {
         $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
-        $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
+        $response = new Response(200, [], 'foobar');
         $headers = array('X-Foo: bar');
 
         $this->factory->expects($this->once())
@@ -44,16 +53,14 @@ class BrowserTest extends TestCase
         $request->expects($this->once())
             ->method('setContent')
             ->with($content);
-        $this->factory->expects($this->once())
-            ->method('createResponse')
-            ->will($this->returnValue($response));
         $this->client->expects($this->once())
-            ->method('send')
-            ->with($request, $response);
+            ->method('sendRequest')
+            ->will($this->returnValue($response));
 
         $actual = $this->browser->$method('http://google.com/', $headers, $content);
 
-        $this->assertSame($response, $actual);
+        $this->assertInstanceOf('Buzz\Message\Response', $actual);
+        $this->assertEquals($response->getBody()->__toString(), $actual->getContent());
     }
 
     public function provideMethods()
@@ -67,6 +74,9 @@ class BrowserTest extends TestCase
         );
     }
 
+    /**
+     * @group legacy
+     */
     public function testSubmit()
     {
         $request = $this->getMockBuilder('Buzz\Message\Form\FormRequestInterface')->getMock();
@@ -103,6 +113,9 @@ class BrowserTest extends TestCase
         $this->assertSame($response, $actual);
     }
 
+    /**
+     * @group legacy
+     */
     public function testListener()
     {
         $listener = $this->getMockBuilder('Buzz\Listener\ListenerInterface')->getMock();
@@ -122,12 +135,30 @@ class BrowserTest extends TestCase
         $this->browser->send($request, $response);
     }
 
-    public function testLastMessages()
+    /**
+     * @group legacy
+     */
+    public function testLastMessagesLegacy()
     {
         $request = $this->getMockBuilder('Buzz\Message\RequestInterface')->getMock();
         $response = $this->getMockBuilder('Buzz\Message\MessageInterface')->getMock();
 
         $this->browser->send($request, $response);
+
+        $this->assertSame($request, $this->browser->getLastRequest());
+        $this->assertSame($response, $this->browser->getLastResponse());
+    }
+
+    public function testLastMessages()
+    {
+        $request = new Request('GET', 'http://www.google.se');
+        $response = new Response(200, [], 'foobar');
+
+        $this->client->expects($this->once())
+            ->method('sendRequest')
+            ->will($this->returnValue($response));
+
+        $this->browser->sendRequest($request);
 
         $this->assertSame($request, $this->browser->getLastRequest());
         $this->assertSame($response, $this->browser->getLastResponse());

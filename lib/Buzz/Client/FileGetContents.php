@@ -21,7 +21,7 @@ class FileGetContents extends AbstractStream
      */
     public function send(RequestInterface $request, MessageInterface $response)
     {
-        @trigger_error('FileGetContents::send() is deprecated. FileGetContents Curl::sendRequest instead.', E_USER_DEPRECATED);
+        @trigger_error('FileGetContents::send() is deprecated. Use FileGetContents::sendRequest instead.', E_USER_DEPRECATED);
         $request = RequestConverter::psr7($request);
         ResponseConverter::copy(ResponseConverter::buzz($this->sendRequest($request)), $response);
     }

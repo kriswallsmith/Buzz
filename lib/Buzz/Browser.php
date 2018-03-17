@@ -5,6 +5,8 @@ namespace Buzz;
 use Buzz\Client\BatchClientInterface;
 use Buzz\Client\ClientInterface;
 use Buzz\Client\FileGetContents;
+use Buzz\Converter\RequestConverter;
+use Buzz\Converter\ResponseConverter;
 use Buzz\Listener\ListenerChain;
 use Buzz\Listener\ListenerInterface;
 use Buzz\Message\Factory\Factory;
@@ -100,7 +102,10 @@ class Browser
         $request->addHeaders($headers);
         $request->setContent($content);
 
-        return $this->send($request);
+        $psr7Request = RequestConverter::psr7($request);
+        $psr7Response = $this->sendRequest($psr7Request);
+
+        return ResponseConverter::buzz($psr7Response);
     }
 
     /**
@@ -112,10 +117,11 @@ class Browser
      * @param array  $headers An array of request headers
      *
      * @return MessageInterface The response object
-     * @deprecated Will be used in version 1.0. Use submitForm instead.
+     * @deprecated Will be removed in version 1.0. Use submitForm instead.
      */
     public function submit($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
     {
+        @trigger_error('Broswer::send() is deprecated. Use Broswer::submitForm instead.', E_USER_DEPRECATED);
         $request = $this->factory->createFormRequest();
 
         if (!$url instanceof Url) {
@@ -138,9 +144,11 @@ class Browser
      * @param MessageInterface $response A response object
      *
      * @return MessageInterface The response
+     * @deprecated Will be removed in version 1.0. Use sendRequest instead.
      */
     public function send(RequestInterface $request, MessageInterface $response = null)
     {
+        @trigger_error('Broswer::send() is deprecated. Use Broswer::sendRequest instead.', E_USER_DEPRECATED);
         if (null === $response) {
             $response = $this->factory->createResponse();
         }
