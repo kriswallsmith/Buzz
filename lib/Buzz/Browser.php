@@ -16,7 +16,6 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
 class Browser
@@ -167,7 +166,7 @@ class Browser
      * @param string $method
      * @param array $headers
      *
-     * @return ResponseInterface
+     * @return Psr7ResponseInterface
      */
     public function submitForm($url, array $fields, $method = RequestInterface::METHOD_POST, $headers = array())
     {
