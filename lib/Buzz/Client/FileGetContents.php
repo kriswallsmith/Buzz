@@ -29,13 +29,17 @@ class FileGetContents extends AbstractStream implements ClientInterface
         $statusLine = array_shift($filteredHeaders);
         list($protocolVersion, $statusCode, $reasonPhrase) = $this->parseStatusLine($statusLine);
 
-        return (new MessageFactory())->createResponse(
+        $response = (new MessageFactory())->createResponse(
             $statusCode,
             $reasonPhrase,
             HeaderConverter::toPsrHeaders($filteredHeaders),
             $content,
             $protocolVersion
         );
+
+        $response->getBody()->rewind();
+
+        return $response;
     }
 
     private function filterHeaders(array $headers)

@@ -85,7 +85,6 @@ class Browser
         return $this->sendRequest($request);
     }
 
-
     /**
      * @param string|UriInterface $url
      * @param array $fields
@@ -203,7 +202,7 @@ class Browser
         return $this->lastResponse;
     }
 
-    public function setClient(ClientInterface $client)
+    public function setClient($client)
     {
         $this->client = $client;
     }

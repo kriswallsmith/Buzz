@@ -47,6 +47,7 @@ class FunctionalTest extends TestCase
         $response = $this->send($client, $request);
 
         $data = json_decode($response->getBody()->__toString(), true);
+        $this->assertArrayHasKey('SERVER', $data, $response->getBody()->__toString());
 
         $this->assertArrayNotHasKey('CONTENT_TYPE', $data['SERVER']);
     }
@@ -140,14 +141,19 @@ class FunctionalTest extends TestCase
         return $data;
     }
 
-    private function send(ClientInterface $client, RequestInterface $request):  ResponseInterface
+    private function send($client, RequestInterface $request):  ResponseInterface
     {
-        $response = $client->sendRequest($request);
-
-        if ($client instanceof BatchClientInterface) {
-            $client->flush();
+        if (!$client instanceof BatchClientInterface) {
+            return $client->sendRequest($request);
         }
 
-        return $response;
+        $newResponse = null;
+        $client->sendRequest($request, ['callback'=>function($client, $request, $response, $options, $result) use (&$newResponse) {
+            $newResponse = $response;
+        }]);
+
+        $client->flush();
+
+        return $newResponse;
     }
 }

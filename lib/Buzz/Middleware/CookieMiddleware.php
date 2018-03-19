@@ -1,14 +1,13 @@
 <?php
 
-namespace Buzz\Listener;
-
-use Buzz\Message\RequestInterface;
-use Buzz\Message\MessageInterface;
+namespace Buzz\Middleware;
 
 use Buzz\Util\Cookie;
 use Buzz\Util\CookieJar;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class CookieListener implements ListenerInterface
+class CookieMiddleware implements MiddlewareInterface
 {
     private $cookieJar;
 
@@ -37,14 +36,18 @@ class CookieListener implements ListenerInterface
         $this->cookieJar->addCookie($cookie);
     }
 
-    public function preSend(RequestInterface $request)
+    public function handleRequest(RequestInterface $request, callable $next)
     {
         $this->cookieJar->clearExpiredCookies();
-        $this->cookieJar->addCookieHeaders($request);
+        $request = $this->cookieJar->addCookieHeaders($request);
+
+        return $next($request);
     }
 
-    public function postSend(RequestInterface $request, MessageInterface $response)
+    public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
         $this->cookieJar->processSetCookieHeaders($request, $response);
+
+        return $next($request, $response);
     }
 }

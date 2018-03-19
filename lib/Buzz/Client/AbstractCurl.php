@@ -67,13 +67,16 @@ abstract class AbstractCurl extends AbstractClient
         list($protocolVersion, $statusCode, $reasonPhrase) = $this->parseStatusLine($statusLine);
         $body = strlen($raw) > $pos ? substr($raw, $pos) : '';
 
-        return (new MessageFactory())->createResponse(
+        $response = (new MessageFactory())->createResponse(
             $statusCode,
             $reasonPhrase,
             HeaderConverter::toPsrHeaders($filteredHeaders),
             $body,
             $protocolVersion
         );
+        $response->getBody()->rewind();
+
+        return $response;
     }
 
     /**

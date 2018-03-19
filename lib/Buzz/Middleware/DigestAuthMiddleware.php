@@ -1,11 +1,12 @@
 <?php
 
-namespace Buzz\Listener;
+namespace Buzz\Middleware;
 
-use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface;
+use Buzz\Middleware\MiddlewareInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class DigestAuthListener implements ListenerInterface
+class DigestAuthMiddleware implements MiddlewareInterface
 {
     private $username;
     private $password;
@@ -49,40 +50,40 @@ class DigestAuthListener implements ListenerInterface
         $this->setUsername($username);
         $this->setPassword($password);
         $this->setRealm($realm);
-        $this->setOptions(DigestAuthListener::OPTION_QOP_AUTH_INT & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE);
+        $this->setOptions(self::OPTION_QOP_AUTH_INT & self::OPTION_DISCARD_CLIENT_NONCE);
+    }
+
+
+    /**
+     * Populates uri, method and entityBody used to generate the Authentication header using the specified request object.
+     * Appends the Authentication header if it is present and has been able to be calculated.
+     */
+    public function handleRequest(RequestInterface $request, callable $next)
+    {
+        $this->setUri($request->getUri()->getPath());
+        $this->setMethod(strtoupper($request->getMethod()));
+        $this->setEntityBody($request->getBody()->__toString());
+
+        $header = $this->getHeader();
+        if($header) {
+            $request = $request->withHeader('Authorization', $header);
+        }
+
+        return $next($request);
     }
 
     /**
      * Passes the returned server headers to parseServerHeaders() to check if any authentication variables need to be set.
      * Inteprets the returned status code and attempts authentication if status is 401 (Authentication Required) by resending
      * the last request with an Authentication header.
-     *
-     * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
      */
-    public function postSend(RequestInterface $request, MessageInterface $response)
+    public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
-        $statusCode = $response->getStatusCode();
-        $this->parseServerHeaders($response->getHeaders(), $statusCode);
+        $this->parseServerHeaders($response);
+
+        return $next($request, $response);
     }
 
-    /**
-     * Populates uri, method and entityBody used to generate the Authentication header using the specified request object.
-     * Appends the Authentication header if it is present and has been able to be calculated.
-     *
-     * @param RequestInterface $request  A request object
-     */
-    public function preSend(RequestInterface $request)
-    {
-        $this->setUri($request->getResource());
-        $this->setMethod($request->getMethod());
-        $this->setEntityBody($request->getContent());
-
-        $header = $this->getHeader();
-        if($header) {
-            $request->addHeader($header);
-        }
-    }
 
     /**
      * Sets the password to be used to authenticate the client.
@@ -129,23 +130,23 @@ class DigestAuthListener implements ListenerInterface
      */
     public function setOptions($options)
     {
-        if(($options & DigestAuthListener::OPTION_QOP_AUTH_INT) === true) {
-            if(($options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
-                throw new \InvalidArgumentException('DigestAuthListener: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
+        if(($options & self::OPTION_QOP_AUTH_INT) === true) {
+            if(($options & self::OPTION_QOP_AUTH) === true) {
+                throw new \InvalidArgumentException('DigestAuthMiddleware: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
             }
-            $this->options = $this->options | DigestAuthListener::OPTION_QOP_AUTH_INT;
+            $this->options = $this->options | self::OPTION_QOP_AUTH_INT;
         } else {
-            if(($options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
-                $this->options = $this->options | DigestAuthListener::OPTION_QOP_AUTH;
+            if(($options & self::OPTION_QOP_AUTH) === true) {
+                $this->options = $this->options | self::OPTION_QOP_AUTH;
             }
         }
 
-        if(($options & DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
-            $this->options = $this->options | DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST;
+        if(($options & self::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+            $this->options = $this->options | self::OPTION_IGNORE_DOWNGRADE_REQUEST;
         }
 
-        if(($options & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE) === true) {
-            $this->options = $this->options | DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE;
+        if(($options & self::OPTION_DISCARD_CLIENT_NONCE) === true) {
+            $this->options = $this->options | self::OPTION_DISCARD_CLIENT_NONCE;
         }
     }
 
@@ -180,7 +181,7 @@ class DigestAuthListener implements ListenerInterface
      */
     private function getAuthenticationMethod()
     {
-        if(($this->options & DigestAuthListener::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
+        if(($this->options & self::OPTION_IGNORE_DOWNGRADE_REQUEST) === true) {
             return "Digest";
         }
         return $this->authenticationMethod;
@@ -198,12 +199,12 @@ class DigestAuthListener implements ListenerInterface
             $this->clientNonce = uniqid();
 
             if($this->nonceCount == null) {
-// If nonceCount is not set then set it to 00000001.
+                // If nonceCount is not set then set it to 00000001.
                 $this->nonceCount = '00000001';
             } else {
-// If it is set then increment it.
+                // If it is set then increment it.
                 $this->nonceCount++;
-// Ensure nonceCount is zero-padded at the start of the string to a length of 8
+                // Ensure nonceCount is zero-padded at the start of the string to a length of 8
                 while(strlen($this->nonceCount) < 8) {
                     $this->nonceCount = '0' . $this->nonceCount;
                 }
@@ -256,7 +257,7 @@ class DigestAuthListener implements ListenerInterface
                 $nonce = $this->getNonce();
                 $cnonce = $this->getClientNonce();
                 if(($nonce) AND ($cnonce)) {
-                    $A1 = $this->hash("{$username}:{$realm}:{$password}") . ":{$nonce}:{$cnonce}";              
+                    $A1 = $this->hash("{$username}:{$realm}:{$password}") . ":{$nonce}:{$cnonce}";
                 }
             }
             if(isset($A1)) {
@@ -291,7 +292,7 @@ class DigestAuthListener implements ListenerInterface
             if(isset($A2)) {
                 $HA2 = $this->hash($A2);
                 return $HA2;
-            }           
+            }
         }
         return null;
     }
@@ -314,7 +315,7 @@ class DigestAuthListener implements ListenerInterface
                 $domain = $this->getDomain();
                 $qop = $this->getQOP();
 
-                $header = "Authorization: Digest";
+                $header = "Digest";
                 $header .= " username=\"" . $username . "\",";
                 $header .= " realm=\"" . $realm . "\",";
                 $header .= " nonce=\"" . $nonce . "\",";
@@ -329,7 +330,7 @@ class DigestAuthListener implements ListenerInterface
 
                 if($qop) {
                     $header .= " qop=" . $qop . ",";
-                
+
                     $cnonce = $this->getClientNonce();
                     $nc = $this->getNonceCount();
 
@@ -341,10 +342,10 @@ class DigestAuthListener implements ListenerInterface
                     }
                 }
 
-// Remove the last comma from the header
+                // Remove the last comma from the header
                 $header = substr($header, 0, strlen($header) - 1);
-// Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
-                if(($this->options & DigestAuthListener::OPTION_DISCARD_CLIENT_NONCE) === true) {
+                // Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
+                if(($this->options & self::OPTION_DISCARD_CLIENT_NONCE) === true) {
                     $this->discardClientNonce();
                 }
                 return $header;
@@ -354,7 +355,7 @@ class DigestAuthListener implements ListenerInterface
             $username = $this->getUsername();
             $password = $this->getPassword();
             if(($username) AND ($password)) {
-                $header = 'Authorization: Basic ' . base64_encode("{$username}:{$password}");
+                $header = 'Basic ' . base64_encode("{$username}:{$password}");
                 return $header;
             }
         }
@@ -458,9 +459,9 @@ class DigestAuthListener implements ListenerInterface
      */
     private function getQOP()
     {
-// Has the server specified any options for Quality of Protection
+        // Has the server specified any options for Quality of Protection
         if(isset($this->qop) AND count($this->qop)) {
-            if(($this->options & DigestAuthListener::OPTION_QOP_AUTH_INT) === true) {
+            if(($this->options & self::OPTION_QOP_AUTH_INT) === true) {
                 if(in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
@@ -468,16 +469,16 @@ class DigestAuthListener implements ListenerInterface
                     return 'auth';
                 }
             }
-            if(($this->options & DigestAuthListener::OPTION_QOP_AUTH) === true) {
+            if(($this->options & self::OPTION_QOP_AUTH) === true) {
                 if(in_array('auth', $this->qop)) {
                     return 'auth';
                 }
                 if(in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
-            }            
+            }
         }
-// Server has not specified any value for Quality of Protection so return null
+        // Server has not specified any value for Quality of Protection so return null
         return null;
     }
 
@@ -526,22 +527,19 @@ class DigestAuthListener implements ListenerInterface
      */
     private function parseAuthenticationInfoHeader($authenticationInfo)
     {
-// Remove "Authentication-Info: " from start of header
-        $wwwAuthenticate = substr($wwwAuthenticate, 21, strlen($wwwAuthenticate) - 21);
-
-        $nameValuePairs = $this->parseNameValuePairs($wwwAuthenticate);
+        $nameValuePairs = $this->parseNameValuePairs($authenticationInfo);
         foreach($nameValuePairs as $name => $value) {
             switch($name) {
                 case 'message-qop':
 
-                break;
+                    break;
                 case 'nextnonce':
-// This function needs to only set the Nonce once the rspauth has been verified.
+                    // This function needs to only set the Nonce once the rspauth has been verified.
                     $this->setNonce($value);
-                break;
+                    break;
                 case 'rspauth':
-// Check server rspauth value
-                break;
+                    // Check server rspauth value
+                    break;
             }
         }
     }
@@ -558,13 +556,13 @@ class DigestAuthListener implements ListenerInterface
         $parsedNameValuePairs = array();
         $nameValuePairs = explode(',', $nameValuePairs);
         foreach($nameValuePairs as $nameValuePair) {
-// Trim the Whitespace from the start and end of the name value pair string
+            // Trim the Whitespace from the start and end of the name value pair string
             $nameValuePair = trim($nameValuePair);
-// Split $nameValuePair (name=value) into $name and $value
+            // Split $nameValuePair (name=value) into $name and $value
             list($name, $value) = explode('=', $nameValuePair, 2);
-// Remove quotes if the string is quoted
+            // Remove quotes if the string is quoted
             $value = $this->unquoteString($value);
-// Add pair to array[name] => value
+            // Add pair to array[name] => value
             $parsedNameValuePairs[$name] = $value;
         }
         return $parsedNameValuePairs;
@@ -578,20 +576,19 @@ class DigestAuthListener implements ListenerInterface
      *
      * @return void
      */
-    private function parseServerHeaders(array $headers)
+    private function parseServerHeaders(ResponseInterface $response)
     {
-        foreach($headers as $header) {
-// Check to see if the WWW-Authenticate header is present and if so set $authHeader
-            if(strtolower(substr($header, 0, 18)) == 'www-authenticate: ') {
-                $wwwAuthenticate = $header;
-                $this->parseWwwAuthenticateHeader($wwwAuthenticate);
-            }
-// Check to see if the Authentication-Info header is present and if so set $authInfo
-            if(strtolower(substr($header, 0, 21)) == 'authentication-info: ') {
-                $authenticationInfo = $header;
-                $this->parseAuthenticationInfoHeader($wwwAuthenticate);
-            }
+
+        // Check to see if the WWW-Authenticate header is present and if so set $authHeader
+        if(!empty($header = $response->getHeaderLine('www-authenticate'))) {
+            $this->parseWwwAuthenticateHeader($header);
         }
+
+        // Check to see if the Authentication-Info header is present and if so set $authInfo
+        if(!empty($header = $response->getHeaderLine('authentication-info'))) {
+            $this->parseAuthenticationInfoHeader($header);
+        }
+
     }
 
     /**
@@ -603,11 +600,9 @@ class DigestAuthListener implements ListenerInterface
      */
     private function parseWwwAuthenticateHeader($wwwAuthenticate)
     {
-// Remove "WWW-Authenticate: " from start of header
-        $wwwAuthenticate = substr($wwwAuthenticate, 18, strlen($wwwAuthenticate) - 18);
         if(substr($wwwAuthenticate, 0, 7) == 'Digest ') {
             $this->setAuthenticationMethod('Digest');
-// Remove "Digest " from start of header
+            // Remove "Digest " from start of header
             $wwwAuthenticate = substr($wwwAuthenticate, 7, strlen($wwwAuthenticate) - 7);
 
             $nameValuePairs = $this->parseNameValuePairs($wwwAuthenticate);
@@ -616,28 +611,28 @@ class DigestAuthListener implements ListenerInterface
                 switch($name) {
                     case 'algorithm':
                         $this->setAlgorithm($value);
-                    break;
+                        break;
                     case 'domain':
                         $this->setDomain($value);
-                    break;
+                        break;
                     case 'nonce':
                         $this->setNonce($value);
-                    break;
+                        break;
                     case 'realm':
                         $this->setRealm($value);
-                    break;
+                        break;
                     case 'opaque':
                         $this->setOpaque($value);
-                    break;
+                        break;
                     case 'qop':
                         $this->setQOP(explode(',', $value));
-                    break;
+                        break;
                 }
             }
         }
         if (substr($wwwAuthenticate, 0, 6) == 'Basic ') {
             $this->setAuthenticationMethod('Basic');
-// Remove "Basic " from start of header
+            // Remove "Basic " from start of header
             $wwwAuthenticate = substr($wwwAuthenticate, 6, strlen($wwwAuthenticate) - 6);
 
             $nameValuePairs = $this->parseNameValuePairs($wwwAuthenticate);
@@ -646,7 +641,7 @@ class DigestAuthListener implements ListenerInterface
                 switch($name) {
                     case 'realm':
                         $this->setRealm($value);
-                    break;
+                        break;
                 }
             }
         }
@@ -668,7 +663,7 @@ class DigestAuthListener implements ListenerInterface
         if(($algorithm == 'MD5') OR ($algorithm == 'MD5-sess')) {
             $this->algorithm = $algorithm;
         } else {
-            throw new \InvalidArgumentException('DigestAuthListener: Only MD5 and MD5-sess algorithms are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthMiddleware: Only MD5 and MD5-sess algorithms are currently supported.');
         }
     }
 
@@ -690,7 +685,7 @@ class DigestAuthListener implements ListenerInterface
         if(($authenticationMethod == 'Digest') OR ($authenticationMethod == 'Basic')) {
             $this->authenticationMethod = $authenticationMethod;
         } else {
-            throw new \InvalidArgumentException('DigestAuthListener: Only Digest and Basic authentication methods are currently supported.');
+            throw new \InvalidArgumentException('DigestAuthMiddleware: Only Digest and Basic authentication methods are currently supported.');
         }
     }
 
@@ -751,7 +746,7 @@ class DigestAuthListener implements ListenerInterface
             $this->method = 'HEAD';
             return;
         }
-        throw new \InvalidArgumentException('DigestAuthListener: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
+        throw new \InvalidArgumentException('DigestAuthMiddleware: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
     }
 
     /**
@@ -798,7 +793,7 @@ class DigestAuthListener implements ListenerInterface
             } elseif($protection == 'auth') {
                 $this->qop[] = 'auth';
             } else {
-                throw new \InvalidArgumentException('DigestAuthListener: Only auth-int and auth are supported Quality of Protection mechanisms.');
+                throw new \InvalidArgumentException('DigestAuthMiddleware: Only auth-int and auth are supported Quality of Protection mechanisms.');
             }
         }
     }
