@@ -237,7 +237,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         $password = $this->getPassword();
         $realm = $this->getRealm();
 
-        if (($username) && ($password) & ($realm)) {
+        if (($username) && ($password) && ($realm)) {
             $algorithm = $this->getAlgorithm();
 
             if ('MD5' === $algorithm) {
@@ -268,7 +268,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         $method = $this->getMethod();
         $uri = $this->getUri();
 
-        if (($method) and ($uri)) {
+        if (($method) && ($uri)) {
             $qop = $this->getQOP();
 
             if ('auth' === $qop) {
@@ -300,7 +300,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
             $realm = $this->getRealm();
             $nonce = $this->getNonce();
             $response = $this->getResponse();
-            if (($username) and ($realm) and ($nonce) and ($response)) {
+            if (($username) && ($realm) && ($nonce) && ($response)) {
                 $uri = $this->getUri();
                 $opaque = $this->getOpaque();
                 $domain = $this->getDomain();
@@ -346,7 +346,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         if ('Basic' == $this->getAuthenticationMethod()) {
             $username = $this->getUsername();
             $password = $this->getPassword();
-            if (($username) and ($password)) {
+            if (($username) && ($password)) {
                 $header = 'Basic '.base64_encode("{$username}:{$password}");
 
                 return $header;
@@ -439,7 +439,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
 
             $cnonce = $this->getClientNonce();
             $nc = $this->getNonceCount();
-            if (($cnonce) and ($nc)) {
+            if (($cnonce) && ($nc)) {
                 $response = $this->hash("{$HA1}:{$nonce}:{$nc}:{$cnonce}:{$qop}:{$HA2}");
 
                 return $response;
@@ -669,7 +669,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      */
     private function setAuthenticationMethod(string $authenticationMethod): void
     {
-        if (('Digest' == $authenticationMethod) or ('Basic' == $authenticationMethod)) {
+        if ('Digest' === $authenticationMethod || 'Basic' === $authenticationMethod) {
             $this->authenticationMethod = $authenticationMethod;
         } else {
             throw new \InvalidArgumentException('DigestAuthMiddleware: Only Digest and Basic authentication methods are currently supported.');
