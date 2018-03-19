@@ -457,7 +457,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
     private function getQOP(): ?string
     {
         // Has the server specified any options for Quality of Protection
-        if (isset($this->qop) and count($this->qop)) {
+        if (count($this->qop) > 0) {
             if (true === ($this->options & self::OPTION_QOP_AUTH_INT)) {
                 if (in_array('auth-int', $this->qop)) {
                     return 'auth-int';
