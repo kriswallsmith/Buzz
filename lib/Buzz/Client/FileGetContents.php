@@ -25,7 +25,7 @@ class FileGetContents extends AbstractStream implements ClientInterface
             throw new RequestException($request, $error['message']);
         }
 
-        $filteredHeaders = $this->filterHeaders((array)$http_response_header);
+        $filteredHeaders = $this->filterHeaders((array) $http_response_header);
         $statusLine = array_shift($filteredHeaders);
         list($protocolVersion, $statusCode, $reasonPhrase) = $this->parseStatusLine($statusLine);
 

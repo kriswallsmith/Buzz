@@ -38,34 +38,34 @@ class Browser
         $this->factory = new MessageFactory();
     }
 
-    public function get($url, $headers = array())
+    public function get(string $url, array $headers = array()): ResponseInterface
     {
         return $this->call($url, 'GET', $headers);
     }
 
-    public function post($url, $headers = array(), $content = '')
+    public function post(string $url, array $headers = array(), string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'POST', $headers, $content);
+        return $this->call($url, 'POST', $headers, $body);
     }
 
-    public function head($url, $headers = array())
+    public function head(string $url, array  $headers = array()): ResponseInterface
     {
         return $this->call($url, 'HEAD', $headers);
     }
 
-    public function patch($url, $headers = array(), $content = '')
+    public function patch(string $url, array  $headers = array(), string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'PATCH', $headers, $content);
+        return $this->call($url, 'PATCH', $headers, $body);
     }
 
-    public function put($url, $headers = array(), $content = '')
+    public function put(string $url, array  $headers = array(), string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'PUT', $headers, $content);
+        return $this->call($url, 'PUT', $headers, $body);
     }
 
-    public function delete($url, $headers = array(), $content = '')
+    public function delete(string $url, array  $headers = array(), string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'DELETE', $headers, $content);
+        return $this->call($url, 'DELETE', $headers, $body);
     }
 
     /**

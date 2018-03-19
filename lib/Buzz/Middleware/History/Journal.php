@@ -42,14 +42,22 @@ class Journal implements \Countable, \IteratorAggregate
         return $entry === false ? null: $entry;
     }
 
-    public function getLastRequest(): RequestInterface
+    public function getLastRequest(): ?RequestInterface
     {
-        return $this->getLast()->getRequest();
+        if (null === $entry = $this->getLast()) {
+            return null;
+        }
+
+        return $entry->getRequest();
     }
 
-    public function getLastResponse(): ResponseInterface
+    public function getLastResponse(): ?ResponseInterface
     {
-        return $this->getLast()->getResponse();
+        if (null === $entry = $this->getLast()) {
+            return null;
+        }
+
+        return $entry->getResponse();
     }
 
     public function clear(): void
