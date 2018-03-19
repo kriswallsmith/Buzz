@@ -1,9 +1,10 @@
 <?php
 
-namespace Buzz\Test\History;
+namespace Buzz\Test\Middleware\History;
 
-use Buzz\Listener\History\Journal;
-use Buzz\Message;
+use Buzz\Middleware\History\Journal;
+use Nyholm\Psr7\Request;
+use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class JournalTest extends TestCase
@@ -18,19 +19,12 @@ class JournalTest extends TestCase
 
     protected function setUp()
     {
-        $this->request1 = new Message\Request();
-        $this->request1->setContent('request1');
-        $this->request2 = new Message\Request();
-        $this->request2->setContent('request2');
-        $this->request3 = new Message\Request();
-        $this->request3->setContent('request3');
-
-        $this->response1 = new Message\Response();
-        $this->response1->setContent('response1');
-        $this->response2 = new Message\Response();
-        $this->response2->setContent('response2');
-        $this->response3 = new Message\Response();
-        $this->response3->setContent('response3');
+        $this->request1 = new Request('GET', '/r1', [], 'request1');
+        $this->request2 = new Request('GET', '/r2', [], 'request2');
+        $this->request3 = new Request('GET', '/r3', [], 'request3');
+        $this->response1 = new Response(200, [], 'response1');
+        $this->response2 = new Response(200, [], 'response2');
+        $this->response3 = new Response(200, [], 'response3');
     }
 
     protected function tearDown()
@@ -73,7 +67,7 @@ class JournalTest extends TestCase
      */
     public function testGetLastRequestReturnsTheLastRequest(Journal $journal)
     {
-        $this->assertEquals($this->request2, $journal->getLastRequest());
+        $this->assertEquals($this->request2->getBody()->__toString(), $journal->getLastRequest()->getBody()->__toString());
     }
 
     /**
@@ -81,7 +75,7 @@ class JournalTest extends TestCase
      */
     public function testGetLastResponseReturnsTheLastResponse(Journal $journal)
     {
-        $this->assertEquals($this->response2, $journal->getLastResponse());
+        $this->assertEquals($this->response2->getBody()->__toString(), $journal->getLastResponse()->getBody()->__toString());
     }
 
     /**

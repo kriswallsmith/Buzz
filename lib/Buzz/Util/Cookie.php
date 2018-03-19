@@ -2,7 +2,8 @@
 
 namespace Buzz\Util;
 
-use Buzz\Message\RequestInterface;
+
+use Psr\Http\Message\RequestInterface;
 
 class Cookie
 {
@@ -34,18 +35,19 @@ class Cookie
      */
     public function matchesRequest(RequestInterface $request)
     {
+        $uri = $request->getUri();
         // domain
-        if (!$this->matchesDomain(parse_url($request->getHost(), PHP_URL_HOST))) {
+        if (!$this->matchesDomain($uri->getHost())) {
             return false;
         }
 
         // path
-        if (!$this->matchesPath($request->getResource())) {
+        if (!$this->matchesPath($uri->getPath())) {
             return false;
         }
 
         // secure
-        if ($this->hasAttribute(static::ATTR_SECURE) && !$request->isSecure()) {
+        if ($this->hasAttribute(static::ATTR_SECURE) && $uri->getScheme() !== 'https') {
             return false;
         }
 
@@ -148,7 +150,7 @@ class Cookie
      */
     public function toCookieHeader()
     {
-        return 'Cookie: '.$this->getName().'='.$this->getValue();
+        return $this->getName().'='.$this->getValue();
     }
 
     public function setName($name)

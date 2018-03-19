@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Buzz\Client;
 
-abstract class AbstractClient implements ClientInterface
+use Psr\Http\Client\ClientInterface;
+
+abstract class AbstractClient
 {
     protected $ignoreErrors = true;
     protected $maxRedirects = 5;
@@ -69,5 +72,20 @@ abstract class AbstractClient implements ClientInterface
     public function getProxy()
     {
         return $this->proxy;
+    }
+
+    protected function parseStatusLine(string $statusLine): array
+    {
+        $protocolVersion = null;
+        $statusCode = 0;
+        $reasonPhrase = null;
+
+        if (2 <= count($parts = explode(' ', $statusLine, 3))) {
+            $protocolVersion = (string) substr($parts[0], 5);
+            $statusCode = (integer) $parts[1];
+            $reasonPhrase = isset($parts[2]) ? $parts[2] : '';
+        }
+
+        return [$protocolVersion, $statusCode, $reasonPhrase];
     }
 }

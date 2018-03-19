@@ -1,16 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Buzz\Client;
 
 use Buzz\Converter\HeaderConverter;
-use Buzz\Converter\RequestConverter;
-use Buzz\Converter\ResponseConverter;
-use Buzz\Message\Form\FormRequestInterface;
-use Buzz\Message\Form\FormUploadInterface;
-use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface as BuzzRequestInterface;
 use Buzz\Exception\ClientException;
-use Buzz\Message\Response;
+use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -40,7 +35,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @throws ClientException If unable to create a cURL resource
      */
-    protected static function createCurlHandle()
+    protected function createCurlHandle()
     {
         if (false === $curl = curl_init()) {
             throw new ClientException('Unable to create a new cURL handle');
@@ -50,31 +45,6 @@ abstract class AbstractCurl extends AbstractClient
         curl_setopt($curl, CURLOPT_HEADER, true);
 
         return $curl;
-    }
-
-    /**
-     * Populates a response object.
-     *
-     * @param resource         $curl     A cURL resource
-     * @param string           $raw      The raw response string
-     * @param MessageInterface $response The response object
-     *
-     * @deprecated Will be removed in 1.0. Use createResponse instead.
-     */
-    protected static function populateResponse($curl, $raw, MessageInterface $response)
-    {
-        @trigger_error('AbstractCurl::populateResponse() is deprecated. Use AbstractCurl::createResponse instead.', E_USER_DEPRECATED);
-
-        // fixes bug https://sourceforge.net/p/curl/bugs/1204/
-        $version = curl_version();
-        if (version_compare($version['version'], '7.30.0', '<')) {
-            $pos = strlen($raw) - curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
-        } else {
-            $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        }
-
-        $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
-        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
     }
 
     /**
@@ -92,12 +62,19 @@ abstract class AbstractCurl extends AbstractClient
             $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         }
 
-        // TODO rewrite me to avoid using BuzzResponse
-        $response = new Response();
-        $response->setHeaders(static::getLastHeaders(rtrim(substr($raw, 0, $pos))));
-        $response->setContent(strlen($raw) > $pos ? substr($raw, $pos) : '');
+        $filteredHeaders = $this->getLastHeaders(rtrim(substr($raw, 0, $pos)));
+        $statusLine = array_shift($filteredHeaders);
+        list($protocolVersion, $statusCode, $reasonPhrase) = $this->parseStatusLine($statusLine);
+        $body = strlen($raw) > $pos ? substr($raw, $pos) : '';
 
-        $response = ResponseConverter::psr7($response);
+        $response = (new MessageFactory())->createResponse(
+            $statusCode,
+            $reasonPhrase,
+            HeaderConverter::toPsrHeaders($filteredHeaders),
+            $body,
+            $protocolVersion
+        );
+        $response->getBody()->rewind();
 
         return $response;
     }
@@ -117,20 +94,20 @@ abstract class AbstractCurl extends AbstractClient
             CURLOPT_HTTPHEADER    => HeaderConverter::toBuzzHeaders($request->getHeaders()),
         );
 
-        switch ($request->getMethod()) {
-            case BuzzRequestInterface::METHOD_HEAD:
+        switch (strtoupper($request->getMethod())) {
+            case 'HEAD':
                 $options[CURLOPT_NOBODY] = true;
                 break;
 
-            case BuzzRequestInterface::METHOD_GET:
+            case 'GET':
                 $options[CURLOPT_HTTPGET] = true;
                 break;
 
-            case BuzzRequestInterface::METHOD_POST:
-            case BuzzRequestInterface::METHOD_PUT:
-            case BuzzRequestInterface::METHOD_DELETE:
-            case BuzzRequestInterface::METHOD_PATCH:
-            case BuzzRequestInterface::METHOD_OPTIONS:
+            case 'POST':
+            case 'PUT':
+            case 'DELETE':
+            case 'PATCH':
+            case 'OPTIONS':
                 $body = $request->getBody();
                 $bodySize = $body->getSize();
                 if ($bodySize !== 0) {
@@ -165,7 +142,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return array An array of header lines
      */
-    private static function getLastHeaders($raw)
+    private function getLastHeaders($raw)
     {
         $headers = array();
         foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
@@ -205,9 +182,8 @@ abstract class AbstractCurl extends AbstractClient
      * @param RequestInterface $request
      * @param array $options
      */
-    protected function prepare($curl, $request, array $options = array())
+    protected function prepare($curl, RequestInterface $request, array $options = array())
     {
-        $request = RequestConverter::psr7($request);
         static::setOptionsFromRequest($curl, $request);
 
         // apply settings from client

@@ -1,22 +1,23 @@
 <?php
 
-namespace Buzz\Listener;
+namespace Buzz\Middleware;
 
-use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface;
 use Buzz\Exception\InvalidArgumentException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class CallbackListener implements ListenerInterface
+/**
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
+class CallbackMiddleware implements MiddlewareInterface
 {
     private $callable;
 
     /**
-     * Constructor.
-     *
      * The callback should expect either one or two arguments, depending on
      * whether it is receiving a pre or post send notification.
      *
-     *     $listener = new CallbackListener(function($request, $response = null) {
+     *     $middleware = new CallbackMiddleware(function($request, $response = null) {
      *         if ($response) {
      *             // postSend
      *         } else {
@@ -37,13 +38,17 @@ class CallbackListener implements ListenerInterface
         $this->callable = $callable;
     }
 
-    public function preSend(RequestInterface $request)
+    public function handleRequest(RequestInterface $request, callable $next)
     {
         call_user_func($this->callable, $request);
+
+        return $next($request);
     }
 
-    public function postSend(RequestInterface $request, MessageInterface $response)
+    public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
         call_user_func($this->callable, $request, $response);
+
+        return $next($request, $response);
     }
 }

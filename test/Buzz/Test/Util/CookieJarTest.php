@@ -4,19 +4,19 @@ namespace Buzz\Test\Cookie;
 
 use Buzz\Util\Cookie;
 use Buzz\Util\CookieJar;
-use Buzz\Message;
+use Nyholm\Psr7\Request;
+use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class CookieJarTest extends TestCase
 {
     public function testProcessSetCookieHeadersSetsCookies()
     {
-        $request = new Message\Request();
-        $request->setHost('http://www.example.com');
+        $request = new Request('GET', 'http://www.example.com');
 
-        $response = new Message\Response();
-        $response->addHeader('Set-Cookie: SESSION2=qwerty');
-        $response->addHeader('Set-Cookie: SESSION1=asdf');
+        $response = new Response(200, [
+            'Set-Cookie'=> ['SESSION2=qwerty', 'SESSION1=asdf'],
+        ]);
 
         $jar = new CookieJar();
         $jar->processSetCookieHeaders($request, $response);
@@ -32,8 +32,7 @@ class CookieJarTest extends TestCase
 
     public function testAddCookieHeadersAddsCookieHeaders()
     {
-        $request = new Message\Request();
-        $request->setHost('http://www.example.com');
+        $request = new Request('GET', 'http://www.example.com');
 
         $cookie = new Cookie();
         $cookie->setName('SESSION');
@@ -42,9 +41,9 @@ class CookieJarTest extends TestCase
 
         $jar = new CookieJar();
         $jar->setCookies(array($cookie));
-        $jar->addCookieHeaders($request);
+        $request = $jar->addCookieHeaders($request);
 
-        $this->assertEquals('SESSION=asdf', $request->getHeader('Cookie'));
+        $this->assertEquals('SESSION=asdf', $request->getHeaderLine('Cookie'));
     }
 
     public function testClearExpiredCookiesRemovesExpiredCookies()

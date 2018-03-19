@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Middleware;
 
 use Psr\Http\Message\RequestInterface;
@@ -12,7 +14,7 @@ class ContentLengthMiddleware implements MiddlewareInterface
         $body = $request->getBody();
 
         if (!$request->hasHeader('Content-Length')) {
-            $request = $request->withAddedHeader('Content-Length', $body->getSize());
+            $request = $request->withAddedHeader('Content-Length', (string) $body->getSize());
         }
 
         return $next($request);

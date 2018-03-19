@@ -2,8 +2,9 @@
 
 namespace Buzz\Util;
 
-use Buzz\Message\MessageInterface;
-use Buzz\Message\RequestInterface;
+
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class CookieJar
 {
@@ -42,22 +43,25 @@ class CookieJar
     {
         foreach ($this->cookies as $cookie) {
             if ($cookie->matchesRequest($request)) {
-                $request->addHeader($cookie->toCookieHeader());
+                $request = $request->withHeader('Cookie', $cookie->toCookieHeader());
             }
         }
+
+        return $request;
     }
 
     /**
      * Processes Set-Cookie headers from a request/response pair.
      *
      * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
+     * @param ResponseInterface $response A response object
      */
-    public function processSetCookieHeaders(RequestInterface $request, MessageInterface $response)
+    public function processSetCookieHeaders(RequestInterface $request, ResponseInterface $response)
     {
-        foreach ($response->getHeader('Set-Cookie', false) as $header) {
+        $host = $request->getUri()->getHost();
+        foreach ($response->getHeader('Set-Cookie') as $header) {
             $cookie = new Cookie();
-            $cookie->fromSetCookieHeader($header, parse_url($request->getHost(), PHP_URL_HOST));
+            $cookie->fromSetCookieHeader($header, $host);
 
             $this->addCookie($cookie);
         }
