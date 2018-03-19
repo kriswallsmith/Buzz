@@ -2,6 +2,29 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions. 
 
+## 0.16.1
+
+### Added
+
+- `BasicAuthMiddleware`, `BearerAuthMiddleware`, `ContentLengthMiddleware` and `LoggerMiddleware`. 
+- `Browser::submitForm`
+- Support for middleware chain when using `BatchClientInterface`
+- `FormRequestBuilder` to help build a "form request".
+- Added HTTP status code constants to `Response`.
+
+### Changed
+
+- Used Curl read function for large bodies.
+
+### Deprecated
+
+- Deprecated `Browser::send` in favor for `Browser::sendRequest`
+- Deprecated `Browser::submit` in favor for `Browser::submitForm`
+
+### Fixed
+
+- Make sure `Browser` does not call deprecated functions. 
+
 ## 0.16.0
 
 ### Changed
