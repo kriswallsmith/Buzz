@@ -271,7 +271,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         if (($method) && ($uri)) {
             $qop = $this->getQOP();
 
-            if ('auth' === $qop) {
+            if (null === $qop || 'auth' === $qop) {
                 $A2 = "{$method}:{$uri}";
             } elseif ('auth-int' === $qop) {
                 $entityBody = (string) $this->getEntityBody();
