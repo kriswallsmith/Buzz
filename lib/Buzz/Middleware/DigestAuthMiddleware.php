@@ -117,9 +117,9 @@ class DigestAuthMiddleware implements MiddlewareInterface
     /**
      * Sets the options to be used by this class.
      *
-     * @param int $options a bitmask of the constants defined in this class
+     * @param mixed $options a bitmask of the constants defined in this class
      */
-    public function setOptions(int $options): void
+    public function setOptions($options): void
     {
         if (true === ($options & self::OPTION_QOP_AUTH_INT)) {
             if (true === ($options & self::OPTION_QOP_AUTH)) {
