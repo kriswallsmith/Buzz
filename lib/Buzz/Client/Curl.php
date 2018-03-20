@@ -11,12 +11,13 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class Curl extends AbstractCurl implements ClientInterface
+class Curl extends AbstractCurl implements BuzzClientInterface
 {
     private $lastCurl;
 
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
+        $options = $this->validateOptions($options);
         if (is_resource($this->lastCurl)) {
             curl_close($this->lastCurl);
         }

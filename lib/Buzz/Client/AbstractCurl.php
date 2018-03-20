@@ -8,21 +8,20 @@ use Buzz\Exception\ClientException;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Base client class with helpers for working with cURL.
  */
 abstract class AbstractCurl extends AbstractClient
 {
-    protected $options = array();
-
-    public function __construct()
+    protected function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         if (defined('CURLOPT_PROTOCOLS')) {
-            $this->options = array(
-                CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-                CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-            );
+            $resolver->setDefault(CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+            $resolver->setDefault(CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
         }
     }
 
@@ -43,6 +42,7 @@ abstract class AbstractCurl extends AbstractClient
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
 
         return $curl;
     }
@@ -152,55 +152,37 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * Stashes a cURL option to be set on send, when the resource is created.
-     *
-     * If the supplied value it set to null the option will be removed.
-     *
-     * @param integer $option The option
-     * @param mixed   $value  The value
-     *
-     * @see curl_setopt()
-     */
-    public function setOption($option, $value)
-    {
-        if (null === $value) {
-            unset($this->options[$option]);
-        } else {
-            $this->options[$option] = $value;
-        }
-    }
-
-    /**
      * Prepares a cURL resource to send a request.
      *
      * @param resource $curl
      * @param RequestInterface $request
      * @param array $options
      */
-    protected function prepare($curl, RequestInterface $request, array $options = array())
+    protected function prepare($curl, RequestInterface $request, ParameterBag $options)
     {
         static::setOptionsFromRequest($curl, $request);
+        $timeout = $options->get('timeout');
+        $proxy = $options->get('proxy');
 
         // apply settings from client
-        if ($this->getTimeout() < 1) {
-            curl_setopt($curl, CURLOPT_TIMEOUT_MS, $this->getTimeout() * 1000);
+        if ($timeout < 1) {
+            curl_setopt($curl, CURLOPT_TIMEOUT_MS, $timeout * 1000);
         } else {
-            curl_setopt($curl, CURLOPT_TIMEOUT, $this->getTimeout());
+            curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
         }
 
-        if ($this->proxy) {
-            curl_setopt($curl, CURLOPT_PROXY, $this->proxy);
+        if ($proxy) {
+            curl_setopt($curl, CURLOPT_PROXY, $proxy);
         }
 
-        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir');
+        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('follow_redirects');
 
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow && $this->getMaxRedirects() > 0);
-        curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $this->getMaxRedirects() : 0);
-        curl_setopt($curl, CURLOPT_FAILONERROR, !$this->getIgnoreErrors());
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->getVerifyPeer());
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $this->getVerifyHost());
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer'));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host'));
 
         // apply additional options
-        curl_setopt_array($curl, $options + $this->options);
+        curl_setopt_array($curl, $options->getAllCurl());
     }
 }

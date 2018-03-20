@@ -1,77 +1,98 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Buzz\Client;
 
-use Psr\Http\Client\ClientInterface;
+use Buzz\Exception\InvalidArgumentException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractClient
 {
-    protected $ignoreErrors = true;
-    protected $maxRedirects = 5;
-    protected $timeout = 5;
-    protected $verifyPeer = true;
-    protected $verifyHost = 2;
-    protected $proxy;
+    /**
+     * @var OptionsResolver
+     */
+    private $optionsResolver;
 
-    public function setIgnoreErrors($ignoreErrors)
+    /**
+     * @var ParameterBag
+     */
+    private $options;
+
+    public function __construct(array $options = [])
     {
-        $this->ignoreErrors = $ignoreErrors;
+        $this->options = new ParameterBag($options);
+        $this->validateOptions();
     }
 
-    public function getIgnoreErrors()
+    protected function getOptionsResolver()
     {
-        return $this->ignoreErrors;
+        if (null !== $this->optionsResolver) {
+            return $this->optionsResolver;
+        }
+
+        $this->optionsResolver = new OptionsResolver();
+        $this->configureOptions($this->optionsResolver);
     }
 
-    public function setMaxRedirects($maxRedirects)
+    /**
+     * Validate a set of options and return a new and shiny ParameterBag.
+     */
+    protected function validateOptions(array $options = []): ParameterBag
     {
-        $this->maxRedirects = $maxRedirects;
+        $parameterBag = $this->options->add($options);
+        try {
+            $parameters = $this->getOptionsResolver()->resolve($parameterBag->all());
+        } catch (\Throwable $e) {
+            // Wrap any errors.
+            throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        return new ParameterBag($parameters);
     }
 
-    public function getMaxRedirects()
+    protected function configureOptions(OptionsResolver $resolver)
     {
-        return $this->maxRedirects;
+        $resolver->setDefaults([
+            'follow_redirects' => false,
+            'max_redirects' => 5,
+            'timeout' => 30,
+            'verify_peer' => true,
+            'verify_host' => true,
+            'proxy' => null,
+        ]);
+
+        $resolver->setAllowedTypes('follow_redirects', 'boolean');
+        $resolver->setAllowedTypes('verify_peer', 'boolean');
+        $resolver->setAllowedTypes('verify_host', 'boolean');
+        $resolver->setAllowedTypes('max_redirects', 'integer');
+        $resolver->setAllowedTypes('timeout', 'integer');
+        $resolver->setAllowedTypes('timeout', 'float');
+        $resolver->setAllowedTypes('proxy', ['null', 'string']);
     }
 
-    public function setTimeout($timeout)
+    /**
+     * Replace all existing options with new.
+     */
+    public function withOptions(array $options): self
     {
-        $this->timeout = $timeout;
+        $clone = clone $this;
+        $clone->options = new ParameterBag($options);
+        $clone->validateOptions();
+
+        return $clone;
     }
 
-    public function getTimeout()
+    /**
+     * Merge a set of new $options with the existing ones.
+     */
+    public function withAddedOptions(array $options): self
     {
-        return $this->timeout;
-    }
+        $clone = clone $this;
+        $clone->options = $this->options->add($options);
+        $clone->validateOptions();
 
-    public function setVerifyPeer($verifyPeer)
-    {
-        $this->verifyPeer = $verifyPeer;
-    }
-
-    public function getVerifyPeer()
-    {
-        return $this->verifyPeer;
-    }
-
-    public function getVerifyHost()
-    {
-        return $this->verifyHost;
-    }
-
-    public function setVerifyHost($verifyHost)
-    {
-        $this->verifyHost = $verifyHost;
-    }
-
-    public function setProxy($proxy)
-    {
-        $this->proxy = $proxy;
-    }
-
-    public function getProxy()
-    {
-        return $this->proxy;
+        return $clone;
     }
 
     protected function parseStatusLine(string $statusLine): array
@@ -82,7 +103,7 @@ abstract class AbstractClient
 
         if (2 <= count($parts = explode(' ', $statusLine, 3))) {
             $protocolVersion = (string) substr($parts[0], 5);
-            $statusCode = (integer) $parts[1];
+            $statusCode = (int) $parts[1];
             $reasonPhrase = isset($parts[2]) ? $parts[2] : '';
         }
 

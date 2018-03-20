@@ -131,14 +131,8 @@ class Browser
     public function sendRequest(RequestInterface $request): ?ResponseInterface
     {
         $chain = $this->createMiddlewareChain($this->middlewares, function(RequestInterface $request, callable $responseChain) {
-            if ($this->client instanceof BatchClientInterface) {
-                $this->client->sendRequest($request, ['callback' => function(BatchClientInterface $client, $request, $response, $options, $result) use ($responseChain) {
-                    return $responseChain($request, $response);
-                }]);
-            } else {
-                $response = $this->client->sendRequest($request);
-                $responseChain($request, $response);
-            }
+            $response = $this->client->sendRequest($request);
+            $responseChain($request, $response);
         }, function (RequestInterface $request, ResponseInterface $response) {
             $this->lastRequest = $request;
             $this->lastResponse = $response;

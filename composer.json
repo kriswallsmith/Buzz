@@ -16,7 +16,8 @@
         "php": "^7.1",
         "psr/http-message": "^1.0",
         "psr/http-client": "^0.1",
-        "nyholm/psr7": "^0.3"
+        "nyholm/psr7": "^0.3",
+        "symfony/options-resolver": "^4.0"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^4.0",
