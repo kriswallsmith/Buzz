@@ -38,8 +38,5 @@
     "scripts": {
         "test": "vendor/bin/simple-phpunit",
         "test-ci": "vendor/bin/simple-phpunit --coverage-text --coverage-clover=build/coverage.xml"
-    },
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/php-fig/http-client"}
-    ]
+    }
 }
