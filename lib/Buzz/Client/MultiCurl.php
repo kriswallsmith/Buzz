@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClientInterface
 {
-    private $queue = array();
+    private $queue = [];
     private $curlm;
 
     /**

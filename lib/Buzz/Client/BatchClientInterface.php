@@ -5,6 +5,7 @@ namespace Buzz\Client;
 
 use Buzz\Exception\ClientException;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * A client capable of running batches of requests.
@@ -13,6 +14,12 @@ use Psr\Http\Client\ClientInterface;
  */
 interface BatchClientInterface extends \Countable
 {
+    /**
+     * @param RequestInterface $request
+     * @param array $options
+     */
+    public function sendAsyncRequest(RequestInterface $request, array $options = []): void;
+
     /**
      * Processes all queued requests.
      *
