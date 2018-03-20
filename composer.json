@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "psr/http-client": "dev-master",
+        "psr/http-client": "^0.1",
         "nyholm/psr7": "^0.3"
     },
     "require-dev": {
