@@ -9,9 +9,14 @@ use Psr\Http\Message\ResponseInterface;
 class CookieJar
 {
     /** @var Cookie[] */
-    protected $cookies = array();
+    private $cookies = array();
 
-    public function setCookies($cookies)
+    public function clear(): void
+    {
+        $this->cookies = [];
+    }
+
+    public function setCookies(array $cookies): void
     {
         $this->cookies = array();
         foreach ($cookies as $cookie) {
@@ -19,7 +24,7 @@ class CookieJar
         }
     }
 
-    public function getCookies()
+    public function getCookies(): array
     {
         return $this->cookies;
     }
@@ -29,7 +34,7 @@ class CookieJar
      *
      * @param Cookie $cookie A cookie object
      */
-    public function addCookie(Cookie $cookie)
+    public function addCookie(Cookie $cookie): void
     {
         $this->cookies[] = $cookie;
     }
@@ -39,9 +44,9 @@ class CookieJar
      *
      * @param RequestInterface $request A request object
      */
-    public function addCookieHeaders(RequestInterface $request)
+    public function addCookieHeaders(RequestInterface $request): RequestInterface
     {
-        foreach ($this->cookies as $cookie) {
+        foreach ($this->getCookies() as $cookie) {
             if ($cookie->matchesRequest($request)) {
                 $request = $request->withHeader('Cookie', $cookie->toCookieHeader());
             }
@@ -56,7 +61,7 @@ class CookieJar
      * @param RequestInterface $request  A request object
      * @param ResponseInterface $response A response object
      */
-    public function processSetCookieHeaders(RequestInterface $request, ResponseInterface $response)
+    public function processSetCookieHeaders(RequestInterface $request, ResponseInterface $response): void
     {
         $host = $request->getUri()->getHost();
         foreach ($response->getHeader('Set-Cookie') as $header) {
@@ -70,15 +75,16 @@ class CookieJar
     /**
      * Removes expired cookies.
      */
-    public function clearExpiredCookies()
+    public function clearExpiredCookies(): void
     {
-      foreach ($this->cookies as $i => $cookie) {
-          if ($cookie->isExpired()) {
-              unset($this->cookies[$i]);
-          }
-      }
+        $cookies = $this->getCookies();
+        foreach ($cookies as $i => $cookie) {
+            if ($cookie->isExpired()) {
+                unset($cookies[$i]);
+            }
+        }
 
-      // reset array keys
-      $this->cookies = array_values($this->cookies);
+        $this->clear();
+        $this->setCookies(array_values($cookies));
     }
 }
