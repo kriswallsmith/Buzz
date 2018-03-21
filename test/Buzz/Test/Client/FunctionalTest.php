@@ -7,6 +7,7 @@ use Buzz\Client\BatchClientInterface;
 use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
+use Buzz\Exception\ClientException;
 use Buzz\Message\FormRequestBuilder;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
@@ -92,16 +93,12 @@ class FunctionalTest extends TestCase
         $this->assertEquals('Google', $data['POST']['company']['name']);
     }
 
-    /**
-     * @group legacy
-     */
     public function testMultiCurlExecutesRequestsConcurently()
     {
-        $client = new MultiCurl();
-        $client->setTimeout(10);
+        $client = new MultiCurl(['timeout'=>10]);
 
         $calls = array();
-        $callback = function($client, $request, $response, $options, $error) use(&$calls) {
+        $callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use(&$calls) {
             $calls[] = func_get_args();
         };
 
@@ -148,7 +145,7 @@ class FunctionalTest extends TestCase
         }
 
         $newResponse = null;
-        $client->sendRequest($request, ['callback'=>function($client, $request, $response, $options, $result) use (&$newResponse) {
+        $client->sendRequest($request, ['callback'=>function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$newResponse) {
             $newResponse = $response;
         }]);
 

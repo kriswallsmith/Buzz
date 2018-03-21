@@ -20,8 +20,8 @@ abstract class AbstractCurl extends AbstractClient
     {
         parent::configureOptions($resolver);
 
-        $resolver->setAllowedTypes('curl', ['array']);
         $resolver->setDefault('curl', []);
+        $resolver->setAllowedTypes('curl', ['array']);
     }
 
     /**
@@ -178,8 +178,8 @@ abstract class AbstractCurl extends AbstractClient
 
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
         curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer'));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host'));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer') ? 1 : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host') ? 2 : 0);
 
         if (defined('CURLOPT_PROTOCOLS')) {
             curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Buzz\Client;
 
+use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\RequestException;
 use Buzz\Exception\ClientException;
 use Psr\Http\Message\RequestInterface;
@@ -41,12 +42,12 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
         $options = $this->validateOptions($options);
-        $originalCallback = $options['callback'];
+        $originalCallback = $options->get('callback');
         $responseToReturn = null;
-        $options['callback'] = function(RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) use (&$responseToReturn, $originalCallback) {
+        $options = $options->add(['callback' => function(RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) use (&$responseToReturn, $originalCallback) {
             $responseToReturn = $response;
             $originalCallback($request, $response, $e);
-        };
+        }]);
 
         $this->queue[] = array($request, $options);
         $this->flush();
@@ -86,6 +87,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
         foreach (array_keys($this->queue) as $i) {
             // prepare curl handle
+            /** @var $request RequestInterface */
+            /** @var $options ParameterBag */
             list($request, $options) = $this->queue[$i];
             $curl = $this->createCurlHandle();
 
@@ -104,6 +107,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         // handle any completed requests
         while ($done = curl_multi_info_read($this->curlm)) {
             foreach (array_keys($this->queue) as $i) {
+                /** @var $request RequestInterface */
+                /** @var $options ParameterBag */
                 list($request, $options, $curl) = $this->queue[$i];
 
                 if ($curl !== $done['handle']) {
@@ -127,7 +132,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 unset($this->queue[$i]);
 
                 // callback
-                call_user_func($options['callback'], $request, $response, $options, $exception);
+                call_user_func($options->get('callback'), $request, $response, $exception);
             }
         }
 
