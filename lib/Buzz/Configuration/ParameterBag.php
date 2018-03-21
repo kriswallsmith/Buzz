@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Client;
+namespace Buzz\Configuration;
 
 /**
  * A ParameterBag is a container for key/value pairs. This implementation is immutable.
@@ -36,18 +36,6 @@ final class ParameterBag implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Only return the curl parameters
-     */
-    public function getAllCurl(): array
-    {
-        $curl = array_filter($this->parameters, function ($key, $value) {
-            return is_int($key);
-        });
-
-        return $curl;
-    }
-
-    /**
      * Returns the parameter keys.
      *
      * @return array An array of parameter keys
@@ -64,6 +52,14 @@ final class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function add(array $parameters = []): self
     {
+        // Make sure to merge Curl parameters
+        if (isset($this->parameters['curl'])
+            && isset($parameters['curl'])
+            && is_array($this->parameters['curl'])
+            && is_array($parameters['curl'])) {
+            $parameters['curl'] = array_replace($this->parameters['curl'], $parameters['curl']);
+        }
+
         $newParameters = array_replace($this->parameters, $parameters);
 
         return new self($newParameters);
@@ -73,7 +69,7 @@ final class ParameterBag implements \IteratorAggregate, \Countable
      * Returns a parameter by name.
      *
      * @param string|int $key     The key
-     * @param mixed  $default The default value if the parameter key does not exist
+     * @param mixed      $default The default value if the parameter key does not exist
      *
      * @return mixed
      */
