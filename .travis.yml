@@ -5,10 +5,6 @@ cache:
         - $HOME/.composer/cache/files
         - $HOME/symfony-bridge/.phpunit
 
-php:
-    - 7.1
-    - 7.2
-
 env:
     global:
         - TEST_COMMAND="composer test"
@@ -21,6 +17,22 @@ env:
 
 matrix:
     fast_finish: true
+    include:
+        # Test with lowest dependencies
+      - php: 7.1
+        env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
+
+        # Test the latest stable release
+      - php: 7.1
+        env: COVERAGE=true TEST_COMMAND="composer test-ci"
+      - php: 7.2
+
+        # Force some major versions of Symfony
+      - php: 7.1
+        env: DEPENDENCIES="dunglas/symfony-lock:^3"
+      - php: 7.1
+        env: DEPENDENCIES="dunglas/symfony-lock:^4"
+
     allow_failures:
       - php: 7.2
 
@@ -30,14 +42,17 @@ before_install:
     - sudo apt-get -qq install nginx squid
     - sudo stop squid3
     - curl --version
+    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
+    - if ! [ -z "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
 install:
-    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
     - sudo sh ./test/.travis/configure-php.sh $USER $(phpenv version-name)
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo nginx -p test -c .travis/etc/nginx.conf
     - sudo squid3 -f test/.travis/etc/squid.conf
-    - composer update $COMPOSER_FLAGS
+    # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
+    - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
+    - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
     - ./vendor/bin/simple-phpunit install
 
 before_script:
