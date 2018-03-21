@@ -14,8 +14,8 @@
     ],
     "require": {
         "php": "^7.1",
-        "psr/http-client": "dev-master",
         "psr/http-message": "^1.0",
+        "psr/http-client": "^0.1",
         "nyholm/psr7": "^0.3"
     },
     "require-dev": {
@@ -39,8 +39,5 @@
     "scripts": {
         "test": "vendor/bin/simple-phpunit",
         "test-ci": "vendor/bin/simple-phpunit --coverage-text --coverage-clover=build/coverage.xml"
-    },
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/php-fig/http-client"}
-    ]
+    }
 }
