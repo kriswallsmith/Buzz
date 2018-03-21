@@ -68,11 +68,4 @@ class BrowserTest extends TestCase
         $this->assertSame($request, $this->browser->getLastRequest());
         $this->assertSame($response, $this->browser->getLastResponse());
     }
-
-    public function testClientMethods()
-    {
-        $client = $this->getMockBuilder('Buzz\Client\ClientInterface')->getMock();
-        $this->browser->setClient($client);
-        $this->assertSame($client, $this->browser->getClient());
-    }
 }
