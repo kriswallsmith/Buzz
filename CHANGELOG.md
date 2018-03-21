@@ -2,6 +2,29 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions. 
 
+## 0.17.0 (Not released)
+
+### Added
+
+- The first argument to all client constructors is an array of options. 
+- A way to configure default options for a client: `AbstractClient::configureOptions(OptionsResolver $resolver)`
+- Added `ParameterBag` to store options. 
+- Added `BatchClientInterface::sendAsyncRequest(RequestInterface $request, array $options = [])`.
+- Added `BuzzClientInterface::sendRequest(RequestInterface $request, array $options = []): ResponseInterface`.
+
+### Removed
+
+- Client functions like `AbstractClient::setIgnoreErrors()`, `AbstractClient::getIgnoreErrors()`, `AbstractClient::setMaxRedirects()`, 
+`AbstractClient::getMaxRedirects()`, `AbstractClient::setTimeout()`, `AbstractClient::getTimeout()`, 
+`AbstractClient::setVerifyPeer()`, `AbstractClient::getVerifyPeer()`, `AbstractClient::getVerifyHost()`, 
+`AbstractClient::setVerifyHost()`, `AbstractClient::setProxy()` and `AbstractClient::getProxy()`.
+- Removed `AbstractStream`.
+
+### Changed
+
+- Redirects are not followed by default
+- No exceptions are thrown and no warnings are triggered on a invalid response. 
+
 ## 0.16.1
 
 ### Added
