@@ -44,7 +44,7 @@ before_script:
     - vendor/bin/http_test_server > /dev/null 2>&1 &
 
 script:
-    #- composer validate --strict --no-check-lock
+    - composer validate --strict --no-check-lock
     - $TEST_COMMAND
 
 after_success:
