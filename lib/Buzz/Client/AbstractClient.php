@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Buzz\Client;
 
+use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,6 +34,8 @@ abstract class AbstractClient
 
         $this->optionsResolver = new OptionsResolver();
         $this->configureOptions($this->optionsResolver);
+
+        return $this->optionsResolver;
     }
 
     /**
@@ -66,8 +69,7 @@ abstract class AbstractClient
         $resolver->setAllowedTypes('verify_peer', 'boolean');
         $resolver->setAllowedTypes('verify_host', 'boolean');
         $resolver->setAllowedTypes('max_redirects', 'integer');
-        $resolver->setAllowedTypes('timeout', 'integer');
-        $resolver->setAllowedTypes('timeout', 'float');
+        $resolver->setAllowedTypes('timeout', ['integer', 'float']);
         $resolver->setAllowedTypes('proxy', ['null', 'string']);
     }
 

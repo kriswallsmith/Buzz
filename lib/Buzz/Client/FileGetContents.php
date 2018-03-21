@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Buzz\Client;
 
+use Buzz\Configuration\ParameterBag;
 use Buzz\Converter\HeaderConverter;
 use Buzz\Exception\RequestException;
 use Nyholm\Psr7\Factory\MessageFactory;
@@ -51,11 +52,11 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
      *
      * @return array An array for stream_context_create()
      */
-    private function getStreamContextArray(RequestInterface $request, ParameterBag $options): array
+    protected function getStreamContextArray(RequestInterface $request, ParameterBag $options): array
     {
         $headers = $request->getHeaders();
         unset($headers['Host']);
-        $options = array(
+        $context = array(
             'http' => array(
                 // values from the request
                 'method'           => $request->getMethod(),
@@ -65,7 +66,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
 
                 // values from the current client
                 'ignore_errors'    => true,
-                'follow_location'  => $options->get('follow_redirects'),
+                'follow_location'  => $options->get('follow_redirects') && $options->get('max_redirects') > 0,
                 'max_redirects'    => $options->get('max_redirects') + 1,
                 'timeout'          => $options->get('timeout'),
             ),
@@ -76,11 +77,11 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
         );
 
         if (null !== $options->get('proxy')) {
-            $options['http']['proxy'] = $options->get('proxy');
-            $options['http']['request_fulluri'] = true;
+            $context['http']['proxy'] = $options->get('proxy');
+            $context['http']['request_fulluri'] = true;
         }
 
-        return $options;
+        return $context;
     }
 
     private function filterHeaders(array $headers)

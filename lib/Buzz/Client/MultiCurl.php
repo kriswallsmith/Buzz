@@ -100,6 +100,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             $mrc = curl_multi_exec($this->curlm, $active);
         } while ($active && CURLM_CALL_MULTI_PERFORM == $mrc);
 
+        $exception = null;
         // handle any completed requests
         while ($done = curl_multi_info_read($this->curlm)) {
             foreach (array_keys($this->queue) as $i) {
@@ -109,14 +110,15 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                     continue;
                 }
 
+                $response = null;
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
                     $response = $this->createResponse($curl, curl_multi_getcontent($curl));
-                } else if (!isset($e)) {
+                } elseif (null === $exception) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);
 
-                    $e = new RequestException($request, $errorMsg, $errorNo);
+                    $exception = new RequestException($request, $errorMsg, $errorNo);
                 }
 
                 // remove from queue
@@ -125,7 +127,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 unset($this->queue[$i]);
 
                 // callback
-                call_user_func($options['callback'], $request, $response, $options, $e);
+                call_user_func($options['callback'], $request, $response, $options, $exception);
             }
         }
 
@@ -135,8 +137,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             $this->curlm = null;
         }
 
-        if (isset($e)) {
-            throw $e;
+        if (null !== $exception) {
+            throw $exception;
         }
     }
 }
