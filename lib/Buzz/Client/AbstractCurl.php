@@ -47,12 +47,7 @@ abstract class AbstractCurl extends AbstractClient
         return $curl;
     }
 
-    /**
-     * @param $curl
-     * @param $raw
-     * @return ResponseInterface
-     */
-    protected function createResponse($curl, $raw)
+    protected function createResponse($curl, string $raw): ResponseInterface
     {
         // fixes bug https://sourceforge.net/p/curl/bugs/1204/
         $version = curl_version();
@@ -178,7 +173,7 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Prepares a cURL resource to send a request.
      *
-     * @param $curl
+     * @param resource $curl
      * @param RequestInterface $request
      * @param array $options
      */
