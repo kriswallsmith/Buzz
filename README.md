@@ -11,7 +11,7 @@
 
 </div>
 
-Buzz is a lightweight PHP 7.1 library for issuing HTTP requests.
+Buzz is a lightweight (<1700 lines of code) PHP 7.1 library for issuing HTTP requests.
 
 ## Installation
 
@@ -52,9 +52,9 @@ echo $response->getStatusCode();
 Buzz was created by Kris Wallsmith back in 2010. The project grown very popular over the years with more than 7 million 
 downloads.  
 
-Since August 2017 Tobias Nyholm is maintaining this library. The idea of Buzz will still be the same, we should have a
-simple API and mimic browser behavior for easy testing. We should not reinvent the wheel and we should not be as powerful
-and flexible as other clients (ie Guzzle). We do, however, take performance very seriously. 
+Since August 2017 [Tobias Nyholm](http://tnyholm.se) is maintaining this library. The idea of Buzz will still be the same, 
+we should have a simple API and mimic browser behavior for easy testing. We should not reinvent the wheel and we should 
+not be as powerful and flexible as other clients (ie Guzzle). We do, however, take performance very seriously. 
 
 We do love PSRs and this is a wish list of what PSR we would like to support: 
 
