@@ -10,6 +10,11 @@
             "name": "Kris Wallsmith",
             "email": "kris.wallsmith@gmail.com",
             "homepage": "http://kriswallsmith.net/"
+        },
+        {
+            "name": "Tobias Nyholm",
+            "email": "tobias.nyholm@gmail.com",
+            "homepage": "http://tnyholm.se/"
         }
     ],
     "require": {
@@ -22,6 +27,7 @@
     "require-dev": {
         "symfony/phpunit-bridge": "^4.0",
         "php-http/client-integration-tests": "^0.6.2",
+        "phpunit/phpunit": "^6.5.7",
         "psr/log": "^1.0"
     },
     "suggest": {
