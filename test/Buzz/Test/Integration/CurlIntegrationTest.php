@@ -9,7 +9,6 @@ class CurlIntegrationTest extends BaseIntegrationTest
     protected function createHttpAdapter()
     {
         $client = new Curl();
-        $client->setMaxRedirects(0);
 
         return $client;
     }

@@ -61,11 +61,6 @@ class MiddlewareChainTest extends TestCase
         $request = new Request('GET', PHPUnitUtility::getUri());
         $browser->sendRequest($request);
 
-        if ($client instanceof BatchClientInterface) {
-            $this->assertEquals(3, MyMiddleware::$handleCount);
-            $client->flush();
-        }
-
         $this->assertEquals(0, MyMiddleware::$handleCount);
         $this->assertTrue(MyMiddleware::$hasBeenHandled);
     }
