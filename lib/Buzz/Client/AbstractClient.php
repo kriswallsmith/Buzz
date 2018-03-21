@@ -71,30 +71,6 @@ abstract class AbstractClient
         $resolver->setAllowedTypes('proxy', ['null', 'string']);
     }
 
-    /**
-     * Replace all existing options with new.
-     */
-    public function withOptions(array $options): self
-    {
-        $clone = clone $this;
-        $clone->options = new ParameterBag($options);
-        $clone->validateOptions();
-
-        return $clone;
-    }
-
-    /**
-     * Merge a set of new $options with the existing ones.
-     */
-    public function withAddedOptions(array $options): self
-    {
-        $clone = clone $this;
-        $clone->options = $this->options->add($options);
-        $clone->validateOptions();
-
-        return $clone;
-    }
-
     protected function parseStatusLine(string $statusLine): array
     {
         $protocolVersion = null;
