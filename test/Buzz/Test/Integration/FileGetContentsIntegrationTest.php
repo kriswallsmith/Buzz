@@ -9,7 +9,6 @@ class FileGetContentsIntegrationTest extends BaseIntegrationTest
     protected function createHttpAdapter()
     {
         $client = new FileGetContents();
-        $client->setMaxRedirects(0);
 
         return $client;
     }

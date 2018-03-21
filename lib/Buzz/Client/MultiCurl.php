@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace Buzz\Client;
 
+use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\RequestException;
 use Buzz\Exception\ClientException;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MultiCurl extends AbstractCurl implements BatchClientInterface
+class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClientInterface
 {
-    private $queue = array();
+    private $queue = [];
     private $curlm;
 
     /**
@@ -20,8 +23,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      * If a "callback" option is supplied, its value will be called when the
      * request completes. The callable should have the following signature:
      *
-     *     $callback = function($client, $request, $response, $options, $error) {
-     *         if (!$error) {
+     *     $callback = function($request, $response, $exception) {
+     *         if (!$exception) {
      *             // success
      *         } else {
      *             // error ($error is one of the CURLE_* constants)
@@ -29,9 +32,35 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
      *     };
      *
      */
-    public function sendRequest(RequestInterface $request, array $options = []): void
+    public function sendAsyncRequest(RequestInterface $request, array $options = []): void
     {
-        $this->queue[] = array($request, null, $options);
+        $options = $this->validateOptions($options);
+
+        $this->queue[] = array($request, $options);
+    }
+
+    public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
+    {
+        $options = $this->validateOptions($options);
+        $originalCallback = $options->get('callback');
+        $responseToReturn = null;
+        $options = $options->add(['callback' => function(RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) use (&$responseToReturn, $originalCallback) {
+            $responseToReturn = $response;
+            $originalCallback($request, $response, $e);
+        }]);
+
+        $this->queue[] = array($request, $options);
+        $this->flush();
+
+        return $responseToReturn;
+    }
+
+    protected function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefault('callback', function(RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {});
+        $resolver->setAllowedTypes('callback', 'callable');
     }
 
     public function count()
@@ -48,7 +77,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
 
     public function proceed()
     {
-        if (!$this->queue) {
+        if (empty($this->queue)) {
             return;
         }
 
@@ -57,19 +86,15 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
         }
 
         foreach (array_keys($this->queue) as $i) {
-            if (3 == count($this->queue[$i])) {
-                // prepare curl handle
-                list($request, , $options) = $this->queue[$i];
-                $curl = $this->createCurlHandle();
+            // prepare curl handle
+            /** @var $request RequestInterface */
+            /** @var $options ParameterBag */
+            list($request, $options) = $this->queue[$i];
+            $curl = $this->createCurlHandle();
 
-                // remove custom option
-                unset($options['callback']);
-                unset($options['psr7_response']);
-
-                $this->prepare($curl, $request, $options);
-                $this->queue[$i][] = $curl;
-                curl_multi_add_handle($this->curlm, $curl);
-            }
+            $this->prepare($curl, $request, $options);
+            $this->queue[$i][] = $curl;
+            curl_multi_add_handle($this->curlm, $curl);
         }
 
         // process outstanding perform
@@ -78,23 +103,27 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
             $mrc = curl_multi_exec($this->curlm, $active);
         } while ($active && CURLM_CALL_MULTI_PERFORM == $mrc);
 
+        $exception = null;
         // handle any completed requests
         while ($done = curl_multi_info_read($this->curlm)) {
             foreach (array_keys($this->queue) as $i) {
-                list($request, $response, $options, $curl) = $this->queue[$i];
+                /** @var $request RequestInterface */
+                /** @var $options ParameterBag */
+                list($request, $options, $curl) = $this->queue[$i];
 
                 if ($curl !== $done['handle']) {
                     continue;
                 }
 
+                $response = null;
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
                     $response = $this->createResponse($curl, curl_multi_getcontent($curl));
-                } else if (!isset($e)) {
+                } elseif (null === $exception) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);
 
-                    $e = new RequestException($request, $errorMsg, $errorNo);
+                    $exception = new RequestException($request, $errorMsg, $errorNo);
                 }
 
                 // remove from queue
@@ -103,20 +132,18 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface
                 unset($this->queue[$i]);
 
                 // callback
-                if (isset($options['callback'])) {
-                    call_user_func($options['callback'], $this, $request, $response, $options, $done['result']);
-                }
+                call_user_func($options->get('callback'), $request, $response, $exception);
             }
         }
 
         // cleanup
-        if (!$this->queue) {
+        if (empty($this->queue)) {
             curl_multi_close($this->curlm);
             $this->curlm = null;
         }
 
-        if (isset($e)) {
-            throw $e;
+        if (null !== $exception) {
+            throw $exception;
         }
     }
 }
