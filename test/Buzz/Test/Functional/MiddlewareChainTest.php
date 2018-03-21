@@ -4,7 +4,6 @@ namespace Buzz\Test\Functional;
 
 use Buzz\Browser;
 use Buzz\Client\AbstractClient;
-use Buzz\Client\BatchClientInterface;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Client\Tests\PHPUnitUtility;
 use Nyholm\Psr7\Request;

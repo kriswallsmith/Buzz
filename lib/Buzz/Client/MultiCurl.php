@@ -77,7 +77,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
     public function proceed()
     {
-        if (!$this->queue) {
+        if (empty($this->queue)) {
             return;
         }
 
@@ -137,7 +137,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
 
         // cleanup
-        if (!$this->queue) {
+        if (empty($this->queue)) {
             curl_multi_close($this->curlm);
             $this->curlm = null;
         }

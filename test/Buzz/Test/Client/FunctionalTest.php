@@ -3,7 +3,7 @@
 namespace Buzz\Test\Client;
 
 use Buzz\Browser;
-use Buzz\Client\BatchClientInterface;
+use Buzz\Client\BuzzClientInterface;
 use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
@@ -28,10 +28,10 @@ class FunctionalTest extends TestCase
      * @dataProvider provideClientAndMethod
      * @group legacy
      */
-    public function testRequestMethods($client, $method)
+    public function testRequestMethods($client, $method, $async)
     {
         $request = new Request($method, $_SERVER['BUZZ_TEST_SERVER'], [], 'test');
-        $response = $this->send($client, $request);
+        $response = $this->send($client, $request, $async);
 
         $data = json_decode($response->getBody()->__toString(), true);
 
@@ -42,10 +42,10 @@ class FunctionalTest extends TestCase
      * @dataProvider provideClient
      * @group legacy
      */
-    public function testGetContentType($client)
+    public function testGetContentType($client, $async)
     {
         $request = new Request('GET', $_SERVER['BUZZ_TEST_SERVER']);
-        $response = $this->send($client, $request);
+        $response = $this->send($client, $request, $async);
 
         $data = json_decode($response->getBody()->__toString(), true);
         $this->assertArrayHasKey('SERVER', $data, $response->getBody()->__toString());
@@ -57,7 +57,7 @@ class FunctionalTest extends TestCase
      * @dataProvider provideClient
      * @group legacy
      */
-    public function testFormPost($client)
+    public function testFormPost($client, $async)
     {
         $request = new Request(
             'POST',
@@ -65,7 +65,7 @@ class FunctionalTest extends TestCase
             ['Content-Type'=>'application/x-www-form-urlencoded'],
             http_build_query(['company[name]'=>'Google'])
         );
-        $response = $this->send($client, $request);
+        $response = $this->send($client, $request, $async);
 
         $data = json_decode($response->getBody()->__toString(), true);
 
@@ -76,10 +76,10 @@ class FunctionalTest extends TestCase
     /**
      * @dataProvider provideClient
      */
-    public function testFormPostWithRequestBuilder($client)
+    public function testFormPostWithRequestBuilder($client, $async)
     {
-        if ($client instanceof MultiCurl) {
-            $this->markTestSkipped('Invalid input');
+        if ($async) {
+            $this->markTestSkipped('Skipping for async requests');
         }
 
         $builder = new FormRequestBuilder();
@@ -95,7 +95,7 @@ class FunctionalTest extends TestCase
 
     public function testMultiCurlExecutesRequestsConcurently()
     {
-        $client = new MultiCurl(['timeout'=>10]);
+        $client = new MultiCurl(['timeout'=>5]);
 
         $calls = array();
         $callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use(&$calls) {
@@ -104,19 +104,29 @@ class FunctionalTest extends TestCase
 
         for ($i = 3; $i > 0; $i--) {
             $request = new Request('GET', $_SERVER['BUZZ_TEST_SERVER'].'?delay='.$i);
-            $client->sendRequest($request, array('callback' => $callback));
+            $client->sendAsyncRequest($request, array('callback' => $callback));
         }
 
         $client->flush();
         $this->assertCount(3, $calls);
+
+        foreach ($calls as $i => $call) {
+            /** @var ResponseInterface $response */
+            $response = $call[1];
+            $body = $response->getBody()->__toString();
+            $array = json_decode($body, true);
+            // Make sure the order is correct
+            $this->assertEquals($i+1, $array['GET']['delay']);
+        }
     }
 
     public function provideClient()
     {
         return array(
-            array(new Curl()),
-            array(new FileGetContents()),
-            array(new MultiCurl()),
+            array(new Curl(), false),
+            array(new FileGetContents(), false),
+            array(new MultiCurl(), false),
+            array(new MultiCurl(), true),
         );
     }
 
@@ -128,24 +138,21 @@ class FunctionalTest extends TestCase
         $methods = array('GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS');
         $clients = $this->provideClient();
 
-        $data = array();
         foreach ($clients as $client) {
             foreach ($methods as $method) {
-                $data[] = array($client[0], $method);
+                yield array($client[0], $method, $client[1]);
             }
         }
-
-        return $data;
     }
 
-    private function send($client, RequestInterface $request):  ResponseInterface
+    private function send(BuzzClientInterface $client, RequestInterface $request, bool $async):  ResponseInterface
     {
-        if (!$client instanceof BatchClientInterface) {
+        if (!$async) {
             return $client->sendRequest($request);
         }
 
         $newResponse = null;
-        $client->sendRequest($request, ['callback'=>function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$newResponse) {
+        $client->sendAsyncRequest($request, ['callback'=>function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$newResponse) {
             $newResponse = $response;
         }]);
 
