@@ -26,7 +26,6 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClientAndMethod
-     * @group legacy
      */
     public function testRequestMethods($client, $method, $async)
     {
@@ -40,7 +39,6 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
-     * @group legacy
      */
     public function testGetContentType($client, $async)
     {
@@ -55,7 +53,6 @@ class FunctionalTest extends TestCase
 
     /**
      * @dataProvider provideClient
-     * @group legacy
      */
     public function testFormPost($client, $async)
     {

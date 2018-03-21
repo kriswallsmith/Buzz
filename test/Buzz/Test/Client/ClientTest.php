@@ -4,6 +4,9 @@ namespace Buzz\Test\Client;
 
 use Buzz\Client\AbstractClient;
 use Buzz\Client\BuzzClientInterface;
+use Buzz\Client\Curl;
+use Buzz\Client\FileGetContents;
+use Buzz\Client\MultiCurl;
 use Buzz\Exception\ClientException;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +15,6 @@ class ClientTest extends TestCase
 {
     /**
      * @dataProvider provideInvalidHosts
-     * @group legacy
      */
     public function testSendToInvalidUrl($host, $client)
     {
@@ -28,11 +30,14 @@ class ClientTest extends TestCase
     public function provideInvalidHosts()
     {
         return array(
-            array('invalid_domain', 'Buzz\\Client\\Curl'),
-            array('invalid_domain.buzz', 'Buzz\\Client\\Curl'),
+            array('invalid_domain', Curl::class),
+            array('invalid_domain.buzz', Curl::class),
 
-            array('invalid_domain', 'Buzz\\Client\\FileGetContents'),
-            array('invalid_domain.buzz', 'Buzz\\Client\\FileGetContents'),
+            array('invalid_domain', MultiCurl::class),
+            array('invalid_domain.buzz', MultiCurl::class),
+
+            array('invalid_domain', FileGetContents::class),
+            array('invalid_domain.buzz', FileGetContents::class),
         );
     }
 }
