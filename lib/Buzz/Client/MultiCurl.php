@@ -118,7 +118,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 $response = null;
                 // populate the response object
                 if (CURLE_OK === $done['result']) {
-                    $response = $this->createResponse($curl, curl_multi_getcontent($curl));
+                    $response = $this->createResponse(curl_multi_getcontent($curl));
                 } elseif (null === $exception) {
                     $errorMsg = curl_error($curl);
                     $errorNo  = curl_errno($curl);

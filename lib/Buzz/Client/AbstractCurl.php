@@ -46,20 +46,13 @@ abstract class AbstractCurl extends AbstractClient
         return $curl;
     }
 
-    protected function createResponse($curl, string $raw): ResponseInterface
+    protected function createResponse(string $raw): ResponseInterface
     {
-        // fixes bug https://sourceforge.net/p/curl/bugs/1204/
-        $version = curl_version();
-        if (version_compare($version['version'], '7.30.0', '<')) {
-            $pos = strlen($raw) - curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
-        } else {
-            $pos = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        }
-
-        $filteredHeaders = $this->getLastHeaders(rtrim(substr($raw, 0, $pos)));
+        $messageParts = preg_split("/\r?\n\r?\n/", $raw, 2);
+        $filteredHeaders = $this->parseHeaders($messageParts[0]);
         $statusLine = array_shift($filteredHeaders);
         list($protocolVersion, $statusCode, $reasonPhrase) = $this->parseStatusLine($statusLine);
-        $body = strlen($raw) > $pos ? substr($raw, $pos) : '';
+        $body = $messageParts[1];
 
         $response = (new MessageFactory())->createResponse(
             $statusCode,
@@ -136,7 +129,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @return array An array of header lines
      */
-    private function getLastHeaders($raw)
+    private function parseHeaders($raw)
     {
         $headers = array();
         foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {

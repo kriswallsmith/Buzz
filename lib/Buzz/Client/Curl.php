@@ -34,7 +34,7 @@ class Curl extends AbstractCurl implements BuzzClientInterface
             throw new RequestException($request, $errorMsg, $errorNo);
         }
 
-        return $this->createResponse($this->lastCurl, $data);
+        return $this->createResponse($data);
     }
 
     /**
