@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Buzz;
 
-use Buzz\Client\BatchClientInterface;
+use Buzz\Client\BuzzClientInterface;
 use Buzz\Client\FileGetContents;
+use Buzz\Exception\ClientException;
+use Buzz\Exception\InvalidArgumentException;
+use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 
 class Browser
 {
@@ -32,7 +34,7 @@ class Browser
     /** @var ResponseInterface */
     private $lastResponse;
 
-    public function __construct($client = null)
+    public function __construct(BuzzClientInterface $client = null)
     {
         $this->client = $client ?: new FileGetContents();
         $this->factory = new MessageFactory();
@@ -86,12 +88,11 @@ class Browser
     }
 
     /**
-     * @param string|UriInterface $url
-     * @param array $fields
-     * @param string $method
-     * @param array $headers
+     * Submit a form
      *
-     * @return ResponseInterface
+     * @throws ClientException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     public function submitForm(string $url, array $fields, string $method = 'POST', array $headers = array()): ResponseInterface
     {
@@ -127,8 +128,12 @@ class Browser
 
     /**
      * Send a PSR7 request.
+     *
+     * @throws ClientException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
-    public function sendRequest(RequestInterface $request): ?ResponseInterface
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $chain = $this->createMiddlewareChain($this->middlewares, function(RequestInterface $request, callable $responseChain) {
             $response = $this->client->sendRequest($request);
@@ -151,7 +156,7 @@ class Browser
      *
      * @return callable
      */
-    private function createMiddlewareChain(array $middlewares, callable $requestChainLast, callable $responseChainLast)
+    private function createMiddlewareChain(array $middlewares, callable $requestChainLast, callable $responseChainLast): callable
     {
         $responseChainNext = $responseChainLast;
 
@@ -186,22 +191,17 @@ class Browser
         return $requestChainNext;
     }
 
-    public function getLastRequest()
+    public function getLastRequest(): ?RequestInterface
     {
         return $this->lastRequest;
     }
 
-    public function getLastResponse()
+    public function getLastResponse(): ?ResponseInterface
     {
         return $this->lastResponse;
     }
 
-    public function setClient($client)
-    {
-        $this->client = $client;
-    }
-
-    public function getClient()
+    public function getClient(): BuzzClientInterface
     {
         return $this->client;
     }
@@ -211,7 +211,7 @@ class Browser
      *
      * @param MiddlewareInterface $middleware
      */
-    public function addMiddleware(MiddlewareInterface $middleware)
+    public function addMiddleware(MiddlewareInterface $middleware): void
     {
         $this->middlewares[] = $middleware;
     }
