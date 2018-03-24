@@ -12,30 +12,34 @@ class CallbackMiddlewareTest extends TestCase
 {
     public function testCallback()
     {
-        $calls = array();
-        $middleware = new CallbackMiddleware(function() use (&$calls) {
-            $calls[] = func_get_args();
-        });
+        $requestIn = new Request('GET', '/');
+        $responseIn = new Response(200);
 
-        $request = new Request('GET', '/');
-        $response = new Response();
+        $responseOut = new Response(201);
+        $requestOut = new Request('POST', '/');
+
+        $middleware = new CallbackMiddleware(function() use ($requestIn, $responseIn, $requestOut, $responseOut) {
+            $calls[] = $args = func_get_args();
+            $this->assertEquals($requestIn ,$args[0]);
+
+            if (count($args) === 2) {
+                $this->assertEquals($responseIn ,$args[1]);
+                return $responseOut;
+            }
+
+            return $requestOut;
+        });
 
         $firstRequest = null;
-        $middleware->handleRequest($request, function($request) use (&$firstRequest) {
-            $firstRequest = $request;
-        });
+        $this->assertEquals($requestOut, $middleware->handleRequest($requestIn, function($request) {
+            return $request;
+        }));
 
         $secondRequest = null;
         $secondResponse = null;
-        $middleware->handleResponse($request, $response, function($request, $response) use (&$secondRequest, &$secondResponse) {
-            $secondRequest = $request;
-            $secondResponse = $response;
-        });
-
-        $this->assertEquals(array(
-            array($firstRequest),
-            array($secondRequest, $secondResponse),
-        ), $calls);
+        $this->assertEquals($responseOut, $middleware->handleResponse($requestIn, $responseIn, function($request, $response) {
+            return $response;
+        }));
     }
 
     public function testInvalidCallback()
