@@ -18,7 +18,6 @@ $response = $client->send($request, ['timeout' => 4]);
 Not all configuration works will all clients. If there is any client specific configuration it 
 will be noted below. 
 
-
 #### Callback
 
 Type: callable<br>

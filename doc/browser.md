@@ -11,10 +11,10 @@ $browser = new Buzz\Browser();
 $response = $browser->get('https://example.com');
 $response = $browser->get('https://example.com', ['User-Agent'=>'Buzz']);
 $response = $browser->post('https://example.com', ['User-Agent'=>'Buzz'], 'http-post-body');
+
 $response = $browser->head('https://example.com')
 $response = $browser->patch('https://example.com')
 $response = $browser->put('https://example.com')
-$response = $browser->delete('https://example.com')
 $response = $browser->delete('https://example.com')
 ```
 
