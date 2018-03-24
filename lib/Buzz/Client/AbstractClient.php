@@ -22,8 +22,8 @@ abstract class AbstractClient
 
     public function __construct(array $options = [])
     {
-        $this->options = new ParameterBag($options);
-        $this->validateOptions();
+        $this->options = new ParameterBag();
+        $this->options = $this->doValidateOptions($options);
     }
 
     protected function getOptionsResolver()
@@ -42,6 +42,18 @@ abstract class AbstractClient
      * Validate a set of options and return a new and shiny ParameterBag.
      */
     protected function validateOptions(array $options = []): ParameterBag
+    {
+        if (empty($options)) {
+            return $this->options;
+        }
+
+        return $this->doValidateOptions($options);
+    }
+
+    /**
+     * Validate a set of options and return a new and shiny ParameterBag.
+     */
+    private function doValidateOptions(array $options = []): ParameterBag
     {
         $parameterBag = $this->options->add($options);
         try {
