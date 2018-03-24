@@ -156,11 +156,11 @@ foo@bar.com
         yield [
             ['email' => 'foo@bar.com', 'image' => [
                 'path'=>__DIR__.'/Resources/pixel.gif',
-                'Content-Type'=> 'image/gif',
+                'contentType'=> 'image/gif',
                 'filename'=> 'my-pixel.gif',
             ], 'other-image' => [
                 'path'=>__DIR__.'/Resources/pixel.gif',
-                'Content-Type'=> 'image/gif',
+                'contentType'=> 'image/gif',
                 'filename'=> 'other-pixel.gif',
             ]],
             [],
@@ -168,11 +168,13 @@ foo@bar.com
             'regex|--[0-9a-f\.]+
 Content-Disposition: form-data; name="image"; filename="my-pixel.gif"
 Content-Length: 43
+Content-Type: image/gif
 
 GIF[^;]+;
 --[0-9a-f\.]+
 Content-Disposition: form-data; name="other-image"; filename="other-pixel.gif"
 Content-Length: 43
+Content-Type: image/gif
 
 GIF[^;]+;
 --[0-9a-f\.]+
