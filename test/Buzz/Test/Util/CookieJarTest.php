@@ -70,4 +70,20 @@ class CookieJarTest extends TestCase
 
         $this->assertEquals(0, count($jar->getCookies()));
     }
+
+    public function testClear()
+    {
+        $cookie = new Cookie();
+        $cookie->setName('SESSION');
+        $cookie->setValue('asdf');
+        $cookie->setAttribute(Cookie::ATTR_EXPIRES, 'Fri, 01-Dec-1999 00:00:00 GMT');
+
+        $jar = new CookieJar();
+        $jar->addCookie($cookie);
+        $this->assertEquals(1, count($jar->getCookies()));
+
+        $jar->clear();
+        $this->assertEquals(0, count($jar->getCookies()));
+
+    }
 }
