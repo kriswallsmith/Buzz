@@ -82,7 +82,7 @@ abstract class AbstractCurl extends AbstractClient
     private static function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
-            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() == 1.0 ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
+            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() === '1.0' ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
             CURLOPT_URL           => $request->getUri()->__toString(),
             CURLOPT_HTTPHEADER    => HeaderConverter::toBuzzHeaders($request->getHeaders()),
@@ -162,24 +162,16 @@ abstract class AbstractCurl extends AbstractClient
         static::setOptionsFromRequest($curl, $request);
         $timeout = $options->get('timeout');
         $proxy = $options->get('proxy');
-
-        // apply settings from client
-        if ($timeout < 1) {
-            curl_setopt($curl, CURLOPT_TIMEOUT_MS, $timeout * 1000);
-        } else {
-            curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
-        }
-
         if ($proxy) {
             curl_setopt($curl, CURLOPT_PROXY, $proxy);
         }
 
         $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('follow_redirects');
-
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
         curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer') ? 1 : 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host') ? 2 : 0);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
 
         if (defined('CURLOPT_PROTOCOLS')) {
             curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
