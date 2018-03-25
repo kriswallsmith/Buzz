@@ -6,7 +6,7 @@ if (isset($_GET['redirect_to'])) {
 }
 
 if (isset($_GET['delay'])) {
-    sleep($_GET['delay']);
+    sleep((int) $_GET['delay']);
 }
 
 echo json_encode(array(

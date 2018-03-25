@@ -18,6 +18,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class AbstractCurl extends AbstractClient
 {
+    private $handles = [];
+
+    private $maxHandles = 5;
+
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
@@ -29,23 +33,44 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Creates a new cURL resource.
      *
-     * @see curl_init()
-     *
+     * @param RequestInterface $request
+     * @param ParameterBag $options
      * @return resource A new cURL resource
      *
      * @throws ClientException If unable to create a cURL resource
      */
-    protected function createCurlHandle()
+    protected function createHandle(RequestInterface $request, ParameterBag $options)
     {
-        if (false === $curl = curl_init()) {
+        $curl = $this->handles ? array_pop($this->handles) : curl_init();
+        if (false === $curl) {
             throw new ClientException('Unable to create a new cURL handle');
         }
 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HEADER, true);
-        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        $this->prepare($curl, $request, $options);
 
         return $curl;
+    }
+
+    /**
+     * Release a cUrl resource. This function is from Guzzle
+     * @param resource $curl
+     */
+    protected function releaseHandle($curl): void
+    {
+        if (count($this->handles) >= $this->maxHandles) {
+            curl_close($curl);
+        } else {
+            // Remove all callback functions as they can hold onto references
+            // and are not cleaned up by curl_reset. Using curl_setopt_array
+            // does not work for some reason, so removing each one
+            // individually.
+            curl_setopt($curl, CURLOPT_HEADERFUNCTION, null);
+            curl_setopt($curl, CURLOPT_READFUNCTION, null);
+            curl_setopt($curl, CURLOPT_WRITEFUNCTION, null);
+            curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, null);
+            curl_reset($curl);
+            $this->handles[] = $curl;
+        }
     }
 
     protected function createResponse(string $raw): ResponseInterface
@@ -69,12 +94,70 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
+     * A helper for getting the last set of headers.
+     *
+     * @param string $raw A string of many header chunks
+     *
+     * @return array An array of header lines
+     */
+    private function parseHeaders($raw)
+    {
+        $headers = array();
+        foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
+            if ($header) {
+                $headers[] = $header;
+            } else {
+                $headers = array();
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Prepares a cURL resource to send a request.
+     *
+     * @param resource $curl
+     * @param RequestInterface $request
+     * @param array $options
+     */
+    private function prepare($curl, RequestInterface $request, ParameterBag $options)
+    {
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+
+        $this->setOptionsFromRequest($curl, $request);
+
+        $timeout = $options->get('timeout');
+        $proxy = $options->get('proxy');
+        if ($proxy) {
+            curl_setopt($curl, CURLOPT_PROXY, $proxy);
+        }
+
+        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('follow_redirects');
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer') ? 1 : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host') ? 2 : 0);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
+
+        if (defined('CURLOPT_PROTOCOLS')) {
+            curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+            curl_setopt($curl, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+        }
+
+        // apply additional options
+        curl_setopt_array($curl, $options->get('curl'));
+    }
+
+    /**
      * Sets options on a cURL resource based on a request.
      *
      * @param resource         $curl    A cURL resource
      * @param RequestInterface $request A request object
      */
-    private static function setOptionsFromRequest($curl, RequestInterface $request)
+    private function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
             CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() === '1.0' ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
@@ -122,59 +205,6 @@ abstract class AbstractCurl extends AbstractClient
         }
 
         curl_setopt_array($curl, $options);
-    }
-
-    /**
-     * A helper for getting the last set of headers.
-     *
-     * @param string $raw A string of many header chunks
-     *
-     * @return array An array of header lines
-     */
-    private function parseHeaders($raw)
-    {
-        $headers = array();
-        foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
-            if ($header) {
-                $headers[] = $header;
-            } else {
-                $headers = array();
-            }
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Prepares a cURL resource to send a request.
-     *
-     * @param resource $curl
-     * @param RequestInterface $request
-     * @param array $options
-     */
-    protected function prepare($curl, RequestInterface $request, ParameterBag $options)
-    {
-        static::setOptionsFromRequest($curl, $request);
-        $timeout = $options->get('timeout');
-        $proxy = $options->get('proxy');
-        if ($proxy) {
-            curl_setopt($curl, CURLOPT_PROXY, $proxy);
-        }
-
-        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('follow_redirects');
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
-        curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer') ? 1 : 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host') ? 2 : 0);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
-
-        if (defined('CURLOPT_PROTOCOLS')) {
-            curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
-            curl_setopt($curl, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
-        }
-
-        // apply additional options
-        curl_setopt_array($curl, $options->get('curl'));
     }
 
     /**
