@@ -46,10 +46,10 @@ before_install:
     - if ! [ -z "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
 install:
-    - sudo sh ./test/.travis/configure-php.sh $USER $(phpenv version-name)
+    - sudo sh ./tests/.travis/configure-php.sh $USER $(phpenv version-name)
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-    - sudo nginx -p test -c .travis/etc/nginx.conf
-    - sudo squid3 -f test/.travis/etc/squid.conf
+    - sudo nginx -p tests -c .travis/etc/nginx.conf
+    - sudo squid3 -f tests/.travis/etc/squid.conf
     # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
     - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
     - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction

@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Test\Listener;
+namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Middleware\ContentLengthMiddleware;
 use Nyholm\Psr7\Request;

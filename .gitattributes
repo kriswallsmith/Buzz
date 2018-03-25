@@ -1,7 +1,7 @@
 * text=auto
 
 /examples export-ignore
-/test export-ignore
+/tests export-ignore
 /.gitignore export-ignore
 /.travis.yml export-ignore
 /CHANGELOG.md export-ignore

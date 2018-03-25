@@ -3,7 +3,7 @@
 <phpunit backupGlobals="false" bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="Buzz Test Suite">
-            <directory suffix="Test.php">./test/Buzz/</directory>
+            <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -15,7 +15,7 @@
 
     <filter>
         <whitelist>
-            <directory suffix=".php">./lib/Buzz/</directory>
+            <directory suffix=".php">./lib/</directory>
         </whitelist>
     </filter>
 

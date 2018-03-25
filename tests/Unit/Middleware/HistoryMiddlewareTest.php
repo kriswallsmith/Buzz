@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Test\Middleware;
+namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Middleware\HistoryMiddleware;
 use Nyholm\Psr7\Request;

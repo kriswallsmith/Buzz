@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Test\Cookie;
+namespace Buzz\Test\Unit\Cookie;
 
 use Buzz\Util\Cookie;
 use Nyholm\Psr7\Request;

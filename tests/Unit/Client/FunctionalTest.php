@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Test\Client;
+namespace Buzz\Test\Unit\Client;
 
 use Buzz\Browser;
 use Buzz\Client\BuzzClientInterface;
