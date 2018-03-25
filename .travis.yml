@@ -26,7 +26,7 @@ matrix:
       - php: 7.1
         env: COVERAGE=true TEST_COMMAND="composer test-ci"
       - php: 7.2
-        env: BUZZ_TEST_SERVER=false
+        env: BUZZ_TEST_SERVER=
 
         # Force some major versions of Symfony
       - php: 7.1
