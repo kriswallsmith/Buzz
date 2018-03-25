@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
+use Buzz\Exception\ExceptionInterface;
 use Buzz\Exception\RequestException;
 use Buzz\Exception\ClientException;
 use Psr\Http\Message\RequestInterface;
@@ -116,14 +117,14 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 }
 
                 $response = null;
-                // populate the response object
-                if (CURLE_OK === $done['result']) {
+                try {
+                    $this->parseError($request, $curl);
+                    // populate the response object
                     $response = $this->createResponse(curl_multi_getcontent($curl));
-                } elseif (null === $exception) {
-                    $errorMsg = curl_error($curl);
-                    $errorNo  = curl_errno($curl);
-
-                    $exception = new RequestException($request, $errorMsg, $errorNo);
+                } catch (ExceptionInterface $e) {
+                    if (null === $exception) {
+                        $exception = $e;
+                    }
                 }
 
                 // remove from queue

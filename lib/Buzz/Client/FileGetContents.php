@@ -6,6 +6,7 @@ namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
 use Buzz\Converter\HeaderConverter;
+use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Client\ClientInterface;
@@ -24,7 +25,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
-            throw new RequestException($request, $error['message']);
+            throw new NetworkException($request, $error['message']);
         }
 
         $filteredHeaders = $this->filterHeaders((array) $http_response_header);
