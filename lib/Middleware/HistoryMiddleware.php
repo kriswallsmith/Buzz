@@ -18,7 +18,7 @@ class HistoryMiddleware implements MiddlewareInterface
         $this->journal = $journal;
     }
 
-    public function getJournal()
+    public function getJournal(): Journal
     {
         return $this->journal;
     }

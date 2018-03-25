@@ -18,12 +18,15 @@ class CookieMiddleware implements MiddlewareInterface
         $this->cookieJar = new CookieJar();
     }
 
-    public function setCookies($cookies)
+    public function setCookies(array $cookies): void
     {
         $this->cookieJar->setCookies($cookies);
     }
 
-    public function getCookies()
+    /**
+     * @return Cookie[]
+     */
+    public function getCookies(): array
     {
         return $this->cookieJar->getCookies();
     }
@@ -33,7 +36,7 @@ class CookieMiddleware implements MiddlewareInterface
      *
      * @param Cookie $cookie A cookie object
      */
-    public function addCookie(Cookie $cookie)
+    public function addCookie(Cookie $cookie): void
     {
         $this->cookieJar->addCookie($cookie);
     }

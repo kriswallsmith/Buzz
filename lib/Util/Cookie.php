@@ -34,7 +34,7 @@ class Cookie
      *
      * @return bool
      */
-    public function matchesRequest(RequestInterface $request)
+    public function matchesRequest(RequestInterface $request): bool
     {
         $uri = $request->getUri();
         // domain
@@ -62,7 +62,7 @@ class Cookie
      *
      * @return bool Whether the current cookie has expired
      */
-    public function isExpired()
+    public function isExpired(): bool
     {
         $maxAge = $this->getAttribute(static::ATTR_MAX_AGE);
         if ($maxAge && time() - $this->getCreatedAt() > $maxAge) {
@@ -84,7 +84,7 @@ class Cookie
      *
      * @return bool
      */
-    public function matchesDomain($domain)
+    public function matchesDomain(string $domain): bool
     {
         $cookieDomain = $this->getAttribute(static::ATTR_DOMAIN);
 
@@ -104,7 +104,7 @@ class Cookie
      *
      * @return bool
      */
-    public function matchesPath($path)
+    public function matchesPath(string $path): bool
     {
         $needle = $this->getAttribute(static::ATTR_PATH);
 
@@ -150,27 +150,27 @@ class Cookie
      *
      * @return string An HTTP request Cookie header
      */
-    public function toCookieHeader()
+    public function toCookieHeader(): string
     {
         return $this->getName().'='.$this->getValue();
     }
 
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setValue($value)
+    public function setValue(string $value): void
     {
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
@@ -181,26 +181,28 @@ class Cookie
         $this->attributes = array_change_key_case($attributes);
     }
 
-    public function setAttribute($name, $value)
+    public function setAttribute(string $name, ?string $value): void
     {
         $this->attributes[strtolower($name)] = $value;
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    public function getAttribute($name)
+    public function getAttribute(string $name): ?string
     {
         $name = strtolower($name);
 
         if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
+
+        return null;
     }
 
-    public function hasAttribute($name)
+    public function hasAttribute(string $name): bool
     {
         return array_key_exists($name, $this->attributes);
     }
@@ -210,12 +212,12 @@ class Cookie
         $this->setAttributes([]);
     }
 
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(int $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    public function getCreatedAt()
+    public function getCreatedAt(): int
     {
         return $this->createdAt;
     }

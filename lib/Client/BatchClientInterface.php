@@ -25,12 +25,12 @@ interface BatchClientInterface extends \Countable
      *
      * @throws ClientException If something goes wrong
      */
-    public function flush();
+    public function flush(): void;
 
     /**
      * Processes zero or more queued requests.
      *
      * @throws ClientException If something goes wrong
      */
-    public function proceed();
+    public function proceed(): void;
 }

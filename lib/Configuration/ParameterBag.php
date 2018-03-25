@@ -85,7 +85,7 @@ final class ParameterBag implements \IteratorAggregate, \Countable
      *
      * @return bool true if the parameter exists, false otherwise
      */
-    public function has($key)
+    public function has($key): bool
     {
         return array_key_exists($key, $this->parameters);
     }
@@ -95,7 +95,7 @@ final class ParameterBag implements \IteratorAggregate, \Countable
      *
      * @return \ArrayIterator An \ArrayIterator instance
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->parameters);
     }
@@ -105,7 +105,7 @@ final class ParameterBag implements \IteratorAggregate, \Countable
      *
      * @return int The number of parameters
      */
-    public function count()
+    public function count(): int
     {
         return count($this->parameters);
     }
