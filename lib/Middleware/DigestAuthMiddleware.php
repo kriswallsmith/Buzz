@@ -137,22 +137,20 @@ class DigestAuthMiddleware implements MiddlewareInterface
      */
     public function setOptions($options): void
     {
-        if (true === ($options & self::OPTION_QOP_AUTH_INT)) {
-            if (true === ($options & self::OPTION_QOP_AUTH)) {
+        if ($options & self::OPTION_QOP_AUTH_INT) {
+            if ($options & self::OPTION_QOP_AUTH) {
                 throw new \InvalidArgumentException('DigestAuthMiddleware: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
             }
             $this->options = $this->options | self::OPTION_QOP_AUTH_INT;
-        } else {
-            if (true === ($options & self::OPTION_QOP_AUTH)) {
-                $this->options = $this->options | self::OPTION_QOP_AUTH;
-            }
+        } elseif ($options & self::OPTION_QOP_AUTH) {
+            $this->options = $this->options | self::OPTION_QOP_AUTH;
         }
 
-        if (true === ($options & self::OPTION_IGNORE_DOWNGRADE_REQUEST)) {
+        if ($options & self::OPTION_IGNORE_DOWNGRADE_REQUEST) {
             $this->options = $this->options | self::OPTION_IGNORE_DOWNGRADE_REQUEST;
         }
 
-        if (true === ($options & self::OPTION_DISCARD_CLIENT_NONCE)) {
+        if ($options & self::OPTION_DISCARD_CLIENT_NONCE) {
             $this->options = $this->options | self::OPTION_DISCARD_CLIENT_NONCE;
         }
     }
@@ -187,7 +185,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      */
     private function getAuthenticationMethod(): ?string
     {
-        if (true === ($this->options & self::OPTION_IGNORE_DOWNGRADE_REQUEST)) {
+        if ($this->options & self::OPTION_IGNORE_DOWNGRADE_REQUEST) {
             return 'Digest';
         }
 
@@ -352,7 +350,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 // Remove the last comma from the header
                 $header = substr($header, 0, strlen($header) - 1);
                 // Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
-                if (true === ($this->options & self::OPTION_DISCARD_CLIENT_NONCE)) {
+                if ($this->options & self::OPTION_DISCARD_CLIENT_NONCE) {
                     $this->discardClientNonce();
                 }
 
@@ -474,7 +472,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
     {
         // Has the server specified any options for Quality of Protection
         if (count($this->qop) > 0) {
-            if (true === ($this->options & self::OPTION_QOP_AUTH_INT)) {
+            if ($this->options & self::OPTION_QOP_AUTH_INT) {
                 if (in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
@@ -482,7 +480,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                     return 'auth';
                 }
             }
-            if (true === ($this->options & self::OPTION_QOP_AUTH)) {
+            if ($this->options & self::OPTION_QOP_AUTH) {
                 if (in_array('auth', $this->qop)) {
                     return 'auth';
                 }
