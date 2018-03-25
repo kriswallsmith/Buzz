@@ -51,6 +51,7 @@ class BrowserTest extends TestCase
             array('head',   ''),
             array('post',   'content'),
             array('put',    'content'),
+            array('patch',    'content'),
             array('delete', 'content'),
         );
     }
@@ -68,6 +69,13 @@ class BrowserTest extends TestCase
 
         $this->assertSame($request, $this->browser->getLastRequest());
         $this->assertSame($response, $this->browser->getLastResponse());
+    }
+
+    public function testGetClient()
+    {
+        $client = new Curl();
+        $browser = new Browser($client);
+        $this->assertSame($client, $browser->getClient());
     }
 
     /**
@@ -138,7 +146,7 @@ class BrowserTest extends TestCase
             'user%5Bname%5D=Kris+Wallsmith&user%5Bemail%5D=foo%40bar.com'
         ];
         yield [
-            ['email' => 'foo@bar.com', 'image' => ['path'=>__DIR__.'/Resources/pixel.gif']],
+            ['email' => 'foo@bar.com', 'image' => ['path'=>dirname(__DIR__).'/Resources/pixel.gif']],
             [],
             ['Content-Type'=>'regex|^multipart/form-data; boundary=".+"$|'],
             'regex|--[0-9a-f\.]+
@@ -155,11 +163,11 @@ foo@bar.com
 |'];
         yield [
             ['email' => 'foo@bar.com', 'image' => [
-                'path'=>__DIR__.'/Resources/pixel.gif',
+                'path'=>dirname(__DIR__).'/Resources/pixel.gif',
                 'contentType'=> 'image/gif',
                 'filename'=> 'my-pixel.gif',
             ], 'other-image' => [
-                'path'=>__DIR__.'/Resources/pixel.gif',
+                'path'=>dirname(__DIR__).'/Resources/pixel.gif',
                 'contentType'=> 'image/gif',
                 'filename'=> 'other-pixel.gif',
             ]],

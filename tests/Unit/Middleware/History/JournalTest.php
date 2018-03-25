@@ -81,24 +81,25 @@ class JournalTest extends TestCase
     /**
      * @depends testGetLastReturnsTheLastEntry
      */
-    public function testClearRemovesEntries(Journal $journal)
+    public function testForeachIteratesReversedEntries(Journal $journal)
     {
-        $journal->clear();
-        $this->assertEquals(0, count($journal));
+        $requests = array($this->request2, $this->request1);
+        $responses = array($this->response2, $this->response1);
+        $this->assertNotEmpty($journal);
+
+        foreach ($journal as $index => $entry) {
+            $this->assertEquals($requests[$index]->getBody()->__toString(), $entry->getRequest()->getBody()->__toString());
+            $this->assertEquals($responses[$index]->getBody()->__toString(), $entry->getResponse()->getBody()->__toString());
+        }
     }
 
     /**
      * @depends testGetLastReturnsTheLastEntry
      */
-    public function testForeachIteratesReversedEntries(Journal $journal)
+    public function testClearRemovesEntries(Journal $journal)
     {
-        $requests = array($this->request2, $this->request1);
-        $responses = array($this->response2, $this->response1);
-
-        foreach ($journal as $index => $entry) {
-            $this->assertEquals($requests[$index], $entry->getRequest());
-            $this->assertEquals($responses[$index], $entry->getResponse());
-        }
+        $journal->clear();
+        $this->assertEquals(0, count($journal));
     }
 
     /**

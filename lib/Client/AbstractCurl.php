@@ -8,6 +8,7 @@ use Buzz\Converter\HeaderConverter;
 use Buzz\Exception\ClientException;
 use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
+use Buzz\Message\ResponseBuilder;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -33,20 +34,16 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Creates a new cURL resource.
      *
-     * @param RequestInterface $request
-     * @param ParameterBag $options
      * @return resource A new cURL resource
      *
      * @throws ClientException If unable to create a cURL resource
      */
-    protected function createHandle(RequestInterface $request, ParameterBag $options)
+    protected function createHandle()
     {
         $curl = $this->handles ? array_pop($this->handles) : curl_init();
         if (false === $curl) {
             throw new ClientException('Unable to create a new cURL handle');
         }
-
-        $this->prepare($curl, $request, $options);
 
         return $curl;
     }
@@ -73,82 +70,51 @@ abstract class AbstractCurl extends AbstractClient
         }
     }
 
-    protected function createResponse(string $raw): ResponseInterface
-    {
-        $messageParts = preg_split("/\r?\n\r?\n/", $raw, 2);
-        $filteredHeaders = $this->parseHeaders($messageParts[0]);
-        $statusLine = array_shift($filteredHeaders);
-        list($protocolVersion, $statusCode, $reasonPhrase) = $this->parseStatusLine($statusLine);
-        $body = $messageParts[1];
-
-        $response = (new MessageFactory())->createResponse(
-            $statusCode,
-            $reasonPhrase,
-            HeaderConverter::toPsrHeaders($filteredHeaders),
-            $body,
-            $protocolVersion
-        );
-        $response->getBody()->rewind();
-
-        return $response;
-    }
-
-    /**
-     * A helper for getting the last set of headers.
-     *
-     * @param string $raw A string of many header chunks
-     *
-     * @return array An array of header lines
-     */
-    private function parseHeaders($raw)
-    {
-        $headers = array();
-        foreach (preg_split('/(\\r?\\n)/', $raw) as $header) {
-            if ($header) {
-                $headers[] = $header;
-            } else {
-                $headers = array();
-            }
-        }
-
-        return $headers;
-    }
-
     /**
      * Prepares a cURL resource to send a request.
      *
      * @param resource $curl
      * @param RequestInterface $request
-     * @param array $options
+     * @param ParameterBag $options
+     *
+     * @return ResponseBuilder
      */
-    private function prepare($curl, RequestInterface $request, ParameterBag $options)
+    protected function prepare($curl, RequestInterface $request, ParameterBag $options): ResponseBuilder
     {
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HEADER, true);
-        curl_setopt($curl, CURLOPT_FAILONERROR, false);
-
-        $this->setOptionsFromRequest($curl, $request);
-
-        $timeout = $options->get('timeout');
-        $proxy = $options->get('proxy');
-        if ($proxy) {
-            curl_setopt($curl, CURLOPT_PROXY, $proxy);
-        }
-
-        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('follow_redirects');
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
-        curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer') ? 1 : 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host') ? 2 : 0);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
-
         if (defined('CURLOPT_PROTOCOLS')) {
             curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
             curl_setopt($curl, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
         }
 
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+
+        $this->setOptionsFromParameterBag($curl, $options);
+        $this->setOptionsFromRequest($curl, $request);
+
+        $responseBuilder = new ResponseBuilder(new MessageFactory());
+        curl_setopt($curl, CURLOPT_HEADERFUNCTION, function ($ch, $data) use ($responseBuilder) {
+            $str = trim($data);
+            if ('' !== $str) {
+                if (strpos(strtolower($str), 'http/') === 0) {
+                    $responseBuilder->setStatus($str);
+                } else {
+                    $responseBuilder->addHeader($str);
+                }
+            }
+
+            return strlen($data);
+        });
+
+        curl_setopt($curl, CURLOPT_WRITEFUNCTION, function ($ch, $data) use ($responseBuilder) {
+            return $responseBuilder->writeBody($data);
+        });
+
         // apply additional options
         curl_setopt_array($curl, $options->get('curl'));
+
+        return $responseBuilder;
     }
 
     /**
@@ -160,11 +126,18 @@ abstract class AbstractCurl extends AbstractClient
     private function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
-            CURLOPT_HTTP_VERSION  => $request->getProtocolVersion() === '1.0' ? CURL_HTTP_VERSION_1_0 : CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
             CURLOPT_URL           => $request->getUri()->__toString(),
             CURLOPT_HTTPHEADER    => HeaderConverter::toBuzzHeaders($request->getHeaders()),
         );
+
+        if (0 !== $version = $this->getProtocolVersion($request)) {
+            $options[CURLOPT_HTTP_VERSION] = $version;
+        }
+
+        if ($request->getUri()->getUserInfo()) {
+            $options[CURLOPT_USERPWD] = $request->getUri()->getUserInfo();
+        }
 
         switch (strtoupper($request->getMethod())) {
             case 'HEAD':
@@ -208,6 +181,26 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
+     * @param resource $curl
+     * @param ParameterBag $options
+     */
+    private function setOptionsFromParameterBag($curl, ParameterBag $options): void
+    {
+        $timeout = $options->get('timeout');
+        $proxy = $options->get('proxy');
+        if ($proxy) {
+            curl_setopt($curl, CURLOPT_PROXY, $proxy);
+        }
+
+        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('follow_redirects');
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer') ? 1 : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host') ? 2 : 0);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
+    }
+
+    /**
      * @param RequestInterface $request
      * @param int              $errno
      * @param resource         $curl
@@ -229,6 +222,23 @@ abstract class AbstractCurl extends AbstractClient
                 throw new NetworkException($request, curl_error($curl), $errno);
             default:
                 throw new RequestException($request, curl_error($curl), $errno);
+        }
+    }
+
+    private function getProtocolVersion(RequestInterface $request): int
+    {
+        switch ($request->getProtocolVersion()) {
+            case '1.0':
+                return CURL_HTTP_VERSION_1_0;
+            case '1.1':
+                return CURL_HTTP_VERSION_1_1;
+            case '2.0':
+                if (defined('CURL_HTTP_VERSION_2_0')) {
+                    return CURL_HTTP_VERSION_2_0;
+                }
+                throw new \UnexpectedValueException('libcurl 7.33 needed for HTTP 2.0 support');
+            default:
+                return 0;
         }
     }
 }
