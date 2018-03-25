@@ -4,10 +4,10 @@ require('../vendor/autoload.php');
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-use Buzz\Listener\DigestAuthListener;
+use Buzz\Middleware\DigestAuthMiddleware;
 
 $username = 'user1';
-$password = 'user1';
+$password = 'pass1';
 
 //
 // This URL will Authenticate usernames user1 through user9, password is the same as the username.
@@ -17,11 +17,10 @@ $url = 'http://test.webdav.org/auth-digest/';
 // Create Curl Client
 $curl = new Curl();
 
-$browser = new Browser();
-$browser->setClient($curl);
+$browser = new Browser($curl);
 
 // Create DigestAuthListener
-$browser->addListener(new DigestAuthListener($username, $password));
+$browser->addMiddleware(new DigestAuthMiddleware($username, $password));
 
 //
 // This URL will Authenticate any username and password that matches those in the URL.
@@ -30,11 +29,11 @@ $browser->addListener(new DigestAuthListener($username, $password));
 //	$url = 'http://httpbin.org/digest-auth/auth-int/' . $username . '/' . $password;
 
 $response = $browser->get($url);
-echo $response;
+echo $response->getBody()->__toString();
 
 $statusCode = $response->getStatusCode();
 if($statusCode == 401) {
     $response = $browser->get($url);
 }
 
-echo $response;
+echo $response->getBody()->__toString();
