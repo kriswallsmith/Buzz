@@ -117,26 +117,27 @@ class Cookie
      * @param string $header        A Set-Cookie header
      * @param string $issuingDomain The domain that issued the header
      */
-    public function fromSetCookieHeader($header, $issuingDomain)
+    public function fromSetCookieHeader(string $header, string $issuingDomain): void
     {
         list($this->name, $header) = explode('=', $header, 2);
         if (false === strpos($header, ';')) {
             $this->value = $header;
-            $header = null;
         } else {
             list($this->value, $header) = explode(';', $header, 2);
         }
 
         $this->clearAttributes();
-        foreach (array_map('trim', explode(';', trim($header))) as $pair) {
-            if (false === strpos($pair, '=')) {
-                $name = $pair;
-                $value = null;
-            } else {
-                list($name, $value) = explode('=', $pair);
-            }
+        if (null !== $header) {
+            foreach (array_map('trim', explode(';', trim($header))) as $pair) {
+                if (false === strpos($pair, '=')) {
+                    $name = $pair;
+                    $value = null;
+                } else {
+                    list($name, $value) = explode('=', $pair);
+                }
 
-            $this->setAttribute($name, $value);
+                $this->setAttribute($name, $value);
+            }
         }
 
         if (!$this->getAttribute(static::ATTR_DOMAIN)) {
@@ -204,7 +205,7 @@ class Cookie
         return array_key_exists($name, $this->attributes);
     }
 
-    public function clearAttributes()
+    public function clearAttributes(): void
     {
         $this->setAttributes([]);
     }
