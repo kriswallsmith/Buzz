@@ -797,7 +797,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      *
      * @return string returns the original string without the quotation marks at either end
      */
-    private function unquoteString(string $str = null): string
+    private function unquoteString(string $str = null): ?string
     {
         if ($str) {
             if ('"' == substr($str, 0, 1)) {
