@@ -11,4 +11,10 @@ return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setCacheFile((getenv('TRAVIS') ? getenv('HOME') . '/.php-cs-fixer' : __DIR__).'/.php_cs.cache')
     ->setUsingCache(true)
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->in(__DIR__)
+            ->exclude('vendor')
+            ->name('*.php')
+    )
 ;
