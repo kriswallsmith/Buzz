@@ -4,24 +4,22 @@ require('../vendor/autoload.php');
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-use Buzz\Listener\CookieListener;
+use Buzz\Middleware\CookieMiddleware;
 
-$browser = new Browser();
 
 $client = new Curl();
-$client->setMaxRedirects(0);
-$browser->setClient($client);
+$browser = new Browser($client);
 
 // Create CookieListener
-$listener = new CookieListener();
-$browser->addListener($listener);
+$middleware = new CookieMiddleware();
+$browser->addMiddleware($middleware);
 
 // This URL set two Cookies, k1=v1 and k2=v2
 $response = $browser->get('http://httpbin.org/cookies/set?k1=v1&k2=v2');
 
 // This URL will return the two set Cookies
 $response = $browser->get('http://httpbin.org/cookies');
-echo $response;
+echo $response->getBody()->__toString();
 
 // Should output
 /*
@@ -34,4 +32,4 @@ echo $response;
 */
 
 // The Cookies are able to be retrieved and set using getCookies and setCookies on the Listener.
-print_r($listener->getCookies());
+print_r($middleware->getCookies());
