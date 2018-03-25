@@ -54,12 +54,8 @@ class ResponseBuilder
             throw new InvalidArgumentException(sprintf('"%s" is not a valid HTTP status line', $input));
         }
 
-        $this->response = $this->response->withStatus((int) $parts[1]);
+        $this->response = $this->response->withStatus((int) $parts[1], isset($parts[2]) ? $parts[2] : '');
         $this->response = $this->response->withProtocolVersion((string) substr($parts[0], 5));
-
-        if (isset($parts[2])) {
-            $this->response = $this->response->getReasonPhrase($parts[2]);
-        }
     }
 
     /**

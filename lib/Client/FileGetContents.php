@@ -29,7 +29,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
 
         $requestBuilder = new ResponseBuilder(new MessageFactory());
         $requestBuilder->parseHttpHeaders($this->filterHeaders((array) $http_response_header));
-        $requestBuilder->setBody($content);
+        $requestBuilder->writeBody($content);
 
         return $requestBuilder->getResponse();
     }
