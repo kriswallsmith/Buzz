@@ -20,24 +20,6 @@ class ResponseBuilder
     private $response;
 
     /**
-     * @var null|resource
-     */
-    private $stream = null;
-
-    /**
-     * @var null|string
-     */
-    private $body = null;
-
-    private $protocolVersion;
-
-    private $statusCode;
-
-    private $reasonPhrase;
-
-    private $headers = [];
-
-    /**
      * @param HTTPlugResponseFactory|InteropResponseFactory $responseFactory
      */
     public function __construct($responseFactory)
