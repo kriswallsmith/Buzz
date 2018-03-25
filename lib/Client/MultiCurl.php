@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\ExceptionInterface;
-use Buzz\Exception\RequestException;
 use Buzz\Exception\ClientException;
 use Buzz\Message\ResponseBuilder;
 use Psr\Http\Message\RequestInterface;
@@ -32,13 +32,12 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
      *             // error ($error is one of the CURLE_* constants)
      *         }
      *     };
-     *
      */
     public function sendAsyncRequest(RequestInterface $request, array $options = []): void
     {
         $options = $this->validateOptions($options);
 
-        $this->queue[] = array($request, $options);
+        $this->queue[] = [$request, $options];
     }
 
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
@@ -46,12 +45,12 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $options = $this->validateOptions($options);
         $originalCallback = $options->get('callback');
         $responseToReturn = null;
-        $options = $options->add(['callback' => function(RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) use (&$responseToReturn, $originalCallback) {
+        $options = $options->add(['callback' => function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) use (&$responseToReturn, $originalCallback) {
             $responseToReturn = $response;
             $originalCallback($request, $response, $e);
         }]);
 
-        $this->queue[] = array($request, $options);
+        $this->queue[] = [$request, $options];
         $this->flush();
 
         return $responseToReturn;
@@ -61,7 +60,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefault('callback', function(RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {});
+        $resolver->setDefault('callback', function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {});
         $resolver->setAllowedTypes('callback', 'callable');
     }
 

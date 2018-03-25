@@ -38,7 +38,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
      * Converts a request into an array for stream_context_create().
      *
      * @param RequestInterface $request A request object
-     * @param ParameterBag $options
+     * @param ParameterBag     $options
      *
      * @return array An array for stream_context_create()
      */
@@ -46,25 +46,25 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
     {
         $headers = $request->getHeaders();
         unset($headers['Host']);
-        $context = array(
-            'http' => array(
+        $context = [
+            'http' => [
                 // values from the request
-                'method'           => $request->getMethod(),
-                'header'           => implode("\r\n", HeaderConverter::toBuzzHeaders($headers)),
-                'content'          => $request->getBody()->__toString(),
+                'method' => $request->getMethod(),
+                'header' => implode("\r\n", HeaderConverter::toBuzzHeaders($headers)),
+                'content' => $request->getBody()->__toString(),
                 'protocol_version' => $request->getProtocolVersion(),
 
                 // values from the current client
-                'ignore_errors'    => true,
-                'follow_location'  => $options->get('follow_redirects') && $options->get('max_redirects') > 0,
-                'max_redirects'    => $options->get('max_redirects') + 1,
-                'timeout'          => $options->get('timeout'),
-            ),
-            'ssl' => array(
-                'verify_peer'      => $options->get('verify_peer'),
-                'verify_host'      => $options->get('verify_host'),
-            ),
-        );
+                'ignore_errors' => true,
+                'follow_location' => $options->get('follow_redirects') && $options->get('max_redirects') > 0,
+                'max_redirects' => $options->get('max_redirects') + 1,
+                'timeout' => $options->get('timeout'),
+            ],
+            'ssl' => [
+                'verify_peer' => $options->get('verify_peer'),
+                'verify_host' => $options->get('verify_host'),
+            ],
+        ];
 
         if (null !== $options->get('proxy')) {
             $context['http']['proxy'] = $options->get('proxy');
@@ -76,10 +76,10 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
 
     private function filterHeaders(array $headers)
     {
-        $filtered = array();
+        $filtered = [];
         foreach ($headers as $header) {
             if (0 === stripos($header, 'http/')) {
-                $filtered = array();
+                $filtered = [];
             }
 
             $filtered[] = $header;

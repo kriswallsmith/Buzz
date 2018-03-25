@@ -1,11 +1,11 @@
 <?php
 
-require('../vendor/autoload.php');
+declare(strict_types=1);
+require '../vendor/autoload.php';
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
 use Buzz\Middleware\CookieMiddleware;
-
 
 $client = new Curl();
 $browser = new Browser($client);
@@ -25,7 +25,7 @@ echo $response->getBody()->__toString();
 /*
 {
   "cookies": {
-    "k1": "v1", 
+    "k1": "v1",
     "k2": "v2"
   }
 }

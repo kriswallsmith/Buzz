@@ -1,6 +1,7 @@
 <?php
 
-require('../vendor/autoload.php');
+declare(strict_types=1);
+require '../vendor/autoload.php';
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
@@ -32,7 +33,7 @@ $response = $browser->get($url);
 echo $response->getBody()->__toString();
 
 $statusCode = $response->getStatusCode();
-if($statusCode == 401) {
+if (401 == $statusCode) {
     $response = $browser->get($url);
 }
 

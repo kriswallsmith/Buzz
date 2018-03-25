@@ -11,5 +11,4 @@ use Http\Client\Exception as HTTPlugException;
  */
 class ClientException extends \RuntimeException implements ExceptionInterface, HTTPlugException
 {
-
 }

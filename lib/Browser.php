@@ -40,32 +40,32 @@ class Browser implements BuzzClientInterface
         $this->factory = new MessageFactory();
     }
 
-    public function get(string $url, array $headers = array()): ResponseInterface
+    public function get(string $url, array $headers = []): ResponseInterface
     {
         return $this->call($url, 'GET', $headers);
     }
 
-    public function post(string $url, array $headers = array(), string $body = ''): ResponseInterface
+    public function post(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->call($url, 'POST', $headers, $body);
     }
 
-    public function head(string $url, array  $headers = array()): ResponseInterface
+    public function head(string $url, array  $headers = []): ResponseInterface
     {
         return $this->call($url, 'HEAD', $headers);
     }
 
-    public function patch(string $url, array  $headers = array(), string $body = ''): ResponseInterface
+    public function patch(string $url, array  $headers = [], string $body = ''): ResponseInterface
     {
         return $this->call($url, 'PATCH', $headers, $body);
     }
 
-    public function put(string $url, array  $headers = array(), string $body = ''): ResponseInterface
+    public function put(string $url, array  $headers = [], string $body = ''): ResponseInterface
     {
         return $this->call($url, 'PUT', $headers, $body);
     }
 
-    public function delete(string $url, array  $headers = array(), string $body = ''): ResponseInterface
+    public function delete(string $url, array  $headers = [], string $body = ''): ResponseInterface
     {
         return $this->call($url, 'DELETE', $headers, $body);
     }
@@ -76,11 +76,11 @@ class Browser implements BuzzClientInterface
      * @param string $url     The URL to call
      * @param string $method  The request method to use
      * @param array  $headers An array of request headers
-     * @param string $body The request content
+     * @param string $body    The request content
      *
      * @return ResponseInterface The response object
      */
-    public function call(string $url, string $method, array $headers = array(), string $body = ''): ResponseInterface
+    public function call(string $url, string $method, array $headers = [], string $body = ''): ResponseInterface
     {
         $request = $this->getMessageFactory()->createRequest($method, $url, $headers, $body);
 
@@ -88,20 +88,20 @@ class Browser implements BuzzClientInterface
     }
 
     /**
-     * Submit a form
+     * Submit a form.
      *
      * @throws ClientException
      * @throws LogicException
      * @throws InvalidArgumentException
      */
-    public function submitForm(string $url, array $fields, string $method = 'POST', array $headers = array()): ResponseInterface
+    public function submitForm(string $url, array $fields, string $method = 'POST', array $headers = []): ResponseInterface
     {
         $body = [];
         $files = '';
         $boundary = uniqid('', true);
         foreach ($fields as $name => $field) {
             if (!isset($field['path'])) {
-                 $body[$name] = $field;
+                $body[$name] = $field;
             } else {
                 // This is a file
                 $fileContent = file_get_contents($field['path']);
@@ -135,7 +135,7 @@ class Browser implements BuzzClientInterface
      */
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
-        $chain = $this->createMiddlewareChain($this->middlewares, function(RequestInterface $request, callable $responseChain) use($options) {
+        $chain = $this->createMiddlewareChain($this->middlewares, function (RequestInterface $request, callable $responseChain) use ($options) {
             $response = $this->client->sendRequest($request, $options);
             $responseChain($request, $response);
         }, function (RequestInterface $request, ResponseInterface $response) {
@@ -151,8 +151,8 @@ class Browser implements BuzzClientInterface
 
     /**
      * @param MiddlewareInterface[] $middlewares
-     * @param callable $requestChainLast
-     * @param callable $responseChainLast
+     * @param callable              $requestChainLast
+     * @param callable              $responseChainLast
      *
      * @return callable
      */
@@ -229,7 +229,7 @@ class Browser implements BuzzClientInterface
 
         // Set a default content-length header
         if ($length = strlen($content)) {
-            $fileHeaders['Content-Length'] = (string)$length;
+            $fileHeaders['Content-Length'] = (string) $length;
         }
 
         if (isset($data['contentType'])) {

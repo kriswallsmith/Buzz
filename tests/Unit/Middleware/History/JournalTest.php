@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware\History;
 
 use Buzz\Middleware\History\Journal;
@@ -83,8 +85,8 @@ class JournalTest extends TestCase
      */
     public function testForeachIteratesReversedEntries(Journal $journal)
     {
-        $requests = array($this->request2, $this->request1);
-        $responses = array($this->response2, $this->response1);
+        $requests = [$this->request2, $this->request1];
+        $responses = [$this->response2, $this->response1];
         $this->assertNotEmpty($journal);
 
         foreach ($journal as $index => $entry) {

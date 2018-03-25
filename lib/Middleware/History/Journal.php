@@ -1,22 +1,23 @@
 <?php
 
-namespace Buzz\Middleware\History;
+declare(strict_types=1);
 
+namespace Buzz\Middleware\History;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Journal implements \Countable, \IteratorAggregate
 {
-    private $entries = array();
+    private $entries = [];
     private $limit = 10;
 
     /**
      * Records an entry in the journal.
      *
-     * @param RequestInterface $request  The request
+     * @param RequestInterface  $request  The request
      * @param ResponseInterface $response The response
-     * @param integer          $duration The duration in seconds
+     * @param int               $duration The duration in seconds
      */
     public function record(RequestInterface $request, ResponseInterface $response, $duration = null): void
     {
@@ -39,7 +40,7 @@ class Journal implements \Countable, \IteratorAggregate
     {
         $entry = end($this->entries);
 
-        return $entry === false ? null: $entry;
+        return false === $entry ? null : $entry;
     }
 
     public function getLastRequest(): ?RequestInterface
@@ -62,7 +63,7 @@ class Journal implements \Countable, \IteratorAggregate
 
     public function clear(): void
     {
-        $this->entries = array();
+        $this->entries = [];
     }
 
     public function count(): int

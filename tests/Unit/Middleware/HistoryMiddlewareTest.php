@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Middleware\HistoryMiddleware;
@@ -31,8 +33,8 @@ class HistoryMiddlewareTest extends TestCase
             ->method('record')
             ->with($request, $response, $this->isType('float'));
 
-        $this->middleware->handleRequest($request, function() {});
-        $this->middleware->handleResponse($request, $response, function() {});
+        $this->middleware->handleRequest($request, function () {});
+        $this->middleware->handleResponse($request, $response, function () {});
     }
 
     public function testGetter()

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Cookie;
 
 use Buzz\Util\Cookie;
@@ -15,7 +17,7 @@ class CookieJarTest extends TestCase
         $request = new Request('GET', 'http://www.example.com');
 
         $response = new Response(200, [
-            'Set-Cookie'=> ['SESSION2=qwerty', 'SESSION1=asdf'],
+            'Set-Cookie' => ['SESSION2=qwerty', 'SESSION1=asdf'],
         ]);
 
         $jar = new CookieJar();
@@ -26,7 +28,7 @@ class CookieJarTest extends TestCase
         $this->assertEquals(2, count($cookies));
         foreach ($cookies as $cookie) {
             $this->assertEquals('www.example.com', $cookie->getAttribute(Cookie::ATTR_DOMAIN));
-            $this->assertTrue(in_array($cookie->getName(), array('SESSION1', 'SESSION2')));
+            $this->assertTrue(in_array($cookie->getName(), ['SESSION1', 'SESSION2']));
         }
     }
 
@@ -40,7 +42,7 @@ class CookieJarTest extends TestCase
         $cookie->setAttribute(Cookie::ATTR_DOMAIN, '.example.com');
 
         $jar = new CookieJar();
-        $jar->setCookies(array($cookie));
+        $jar->setCookies([$cookie]);
         $request = $jar->addCookieHeaders($request);
 
         $this->assertEquals('SESSION=asdf', $request->getHeaderLine('Cookie'));
@@ -84,6 +86,5 @@ class CookieJarTest extends TestCase
 
         $jar->clear();
         $this->assertEquals(0, count($jar->getCookies()));
-
     }
 }

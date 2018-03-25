@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware;
 
-use Buzz\Exception\InvalidArgumentException;
 use Buzz\Middleware\LoggerMiddleware;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
@@ -17,7 +18,7 @@ class LoggerMiddlewareTest extends TestCase
         $that = $this;
 
         // TODO Use PSR3 logger
-        $logger = new CallbackLogger(function($level, $message, array $context) use ($that) {
+        $logger = new CallbackLogger(function ($level, $message, array $context) use ($that) {
             $that->assertRegExp('~^Sent "GET http://google.com/" in \d+ms$~', $message);
         });
 
@@ -25,8 +26,8 @@ class LoggerMiddlewareTest extends TestCase
         $response = new Response();
 
         $middleware = new LoggerMiddleware($logger);
-        $middleware->handleRequest($request, function() {});
-        $middleware->handleResponse($request, $response, function() {});
+        $middleware->handleRequest($request, function () {});
+        $middleware->handleResponse($request, $response, function () {});
     }
 }
 
@@ -37,7 +38,6 @@ class CallbackLogger implements LoggerInterface
     private $callback;
 
     /**
-     *
      * @param $callback
      */
     public function __construct(callable  $callback)
@@ -45,7 +45,7 @@ class CallbackLogger implements LoggerInterface
         $this->callback = $callback;
     }
 
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         $f = $this->callback;
         $f($level, $message, $context);

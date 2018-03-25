@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Client;
 
 use Buzz\Browser;
@@ -11,7 +13,6 @@ use Buzz\Exception\ClientException;
 use Buzz\Message\FormRequestBuilder;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -59,8 +60,8 @@ class FunctionalTest extends TestCase
         $request = new Request(
             'POST',
             $_SERVER['BUZZ_TEST_SERVER'],
-            ['Content-Type'=>'application/x-www-form-urlencoded'],
-            http_build_query(['company[name]'=>'Google'])
+            ['Content-Type' => 'application/x-www-form-urlencoded'],
+            http_build_query(['company[name]' => 'Google'])
         );
         $response = $this->send($client, $request, $async);
 
@@ -110,7 +111,7 @@ class FunctionalTest extends TestCase
         $browser = new Browser($client);
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], [
             'image' => [
-                'path'=> __DIR__.'/../../Resources/large.png',
+                'path' => __DIR__.'/../../Resources/large.png',
                 'filename' => 'filename.png',
                 'contentType' => 'image/png',
             ],
@@ -128,16 +129,16 @@ class FunctionalTest extends TestCase
 
     public function testMultiCurlExecutesRequestsConcurently()
     {
-        $client = new MultiCurl(['timeout'=>30]);
+        $client = new MultiCurl(['timeout' => 30]);
 
-        $calls = array();
-        $callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use(&$calls) {
+        $calls = [];
+        $callback = function (RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$calls) {
             $calls[] = func_get_args();
         };
 
-        for ($i = 3; $i > 0; $i--) {
+        for ($i = 3; $i > 0; --$i) {
             $request = new Request('GET', $_SERVER['BUZZ_TEST_SERVER'].'?delay='.$i);
-            $client->sendAsyncRequest($request, array('callback' => $callback));
+            $client->sendAsyncRequest($request, ['callback' => $callback]);
         }
 
         $client->flush();
@@ -149,18 +150,18 @@ class FunctionalTest extends TestCase
             $body = $response->getBody()->__toString();
             $array = json_decode($body, true);
             // Make sure the order is correct
-            $this->assertEquals($i+1, $array['GET']['delay']);
+            $this->assertEquals($i + 1, $array['GET']['delay']);
         }
     }
 
     public function provideClient()
     {
-        return array(
-            array(new Curl(), false),
-            array(new FileGetContents(), false),
-            array(new MultiCurl(), false),
-            array(new MultiCurl(), true),
-        );
+        return [
+            [new Curl(), false],
+            [new FileGetContents(), false],
+            [new MultiCurl(), false],
+            [new MultiCurl(), true],
+        ];
     }
 
     public function provideClientAndMethod()
@@ -168,24 +169,24 @@ class FunctionalTest extends TestCase
         // HEAD is intentionally omitted
         // http://stackoverflow.com/questions/2603104/does-mod-php-honor-head-requests-properly
 
-        $methods = array('GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS');
+        $methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'];
         $clients = $this->provideClient();
 
         foreach ($clients as $client) {
             foreach ($methods as $method) {
-                yield array($client[0], $method, $client[1]);
+                yield [$client[0], $method, $client[1]];
             }
         }
     }
 
-    private function send(BuzzClientInterface $client, RequestInterface $request, bool $async):  ResponseInterface
+    private function send(BuzzClientInterface $client, RequestInterface $request, bool $async): ResponseInterface
     {
         if (!$async) {
             return $client->sendRequest($request);
         }
 
         $newResponse = null;
-        $client->sendAsyncRequest($request, ['callback'=>function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$newResponse) {
+        $client->sendAsyncRequest($request, ['callback' => function (RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$newResponse) {
             $newResponse = $response;
         }]);
 

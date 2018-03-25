@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Client;
 
-use Buzz\Client\AbstractClient;
 use Buzz\Client\BuzzClientInterface;
 use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
@@ -24,20 +25,20 @@ class ClientTest extends TestCase
 
         /** @var BuzzClientInterface $client */
         $client = new $client();
-        $client->sendRequest($request, ['timeout'=>0.1]);
+        $client->sendRequest($request, ['timeout' => 0.1]);
     }
 
     public function provideInvalidHosts()
     {
-        return array(
-            array('invalid_domain', Curl::class),
-            array('invalid_domain.buzz', Curl::class),
+        return [
+            ['invalid_domain', Curl::class],
+            ['invalid_domain.buzz', Curl::class],
 
-            array('invalid_domain', MultiCurl::class),
-            array('invalid_domain.buzz', MultiCurl::class),
+            ['invalid_domain', MultiCurl::class],
+            ['invalid_domain.buzz', MultiCurl::class],
 
-            array('invalid_domain', FileGetContents::class),
-            array('invalid_domain.buzz', FileGetContents::class),
-        );
+            ['invalid_domain', FileGetContents::class],
+            ['invalid_domain.buzz', FileGetContents::class],
+        ];
     }
 }

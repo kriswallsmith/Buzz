@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Middleware\DigestAuthMiddleware;
@@ -7,19 +9,19 @@ use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
-class DigestAuthMiddlewareTest extends TestCase
+class DigestAuthListenerTest extends TestCase
 {
     public function testDigestAuthHeader()
     {
         $request = new Request('GET', 'http://test.webdav.org/auth-digest');
 
         $response = new Response(200, [
-        	"Date"=> "Wed, 24 Jun 2015 21:49:39 GMT",
-			"Server"=>"Apache/2.0.54 (Debian GNU/Linux) DAV/2 SVN/1.3.2",
-			"WWW-Authenticate"=>"Digest realm=\"test\", nonce=\"5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6\", algorithm=MD5, domain=\"/auth-digest/\", qop=\"auth\"",
-			"Content-Length"=> "401",
-			"Content-Type"=>"text/html; charset=iso-8859-1"
-       	],"<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">
+            'Date' => 'Wed, 24 Jun 2015 21:49:39 GMT',
+            'Server' => 'Apache/2.0.54 (Debian GNU/Linux) DAV/2 SVN/1.3.2',
+            'WWW-Authenticate' => 'Digest realm="test", nonce="5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6", algorithm=MD5, domain="/auth-digest/", qop="auth"',
+            'Content-Length' => '401',
+            'Content-Type' => 'text/html; charset=iso-8859-1',
+           ], "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">
 <html><head>
 <title>401 Authorization Required</title>
 </head><body>
@@ -35,12 +37,12 @@ the credentials required.</p>
         // Simulate the First Request/Response, where the server returns 401
         $middleware = new DigestAuthMiddleware('user1', 'user1');
         $newRequest = null;
-        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+        $middleware->handleRequest($request, function ($request) use (&$newRequest) {
             $newRequest = $request;
         });
 
         $newResponse = null;
-        $middleware->handleResponse($request, $response, function($request, $response) use (&$newResponse) {
+        $middleware->handleResponse($request, $response, function ($request, $response) use (&$newResponse) {
             $newResponse = $response;
         });
 
@@ -49,12 +51,12 @@ the credentials required.</p>
         $this->assertEmpty($request->getHeader('Authorization'));
 
         $newRequest = null;
-        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+        $middleware->handleRequest($request, function ($request) use (&$newRequest) {
             $newRequest = $request;
         });
 
         $this->assertEquals(
-        	'Digest username="user1", realm="test", nonce="5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6", response="b2cf05a5d3f51d84a8866309aed6cb5d", uri="/auth-digest"',
+            'Digest username="user1", realm="test", nonce="5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6", response="b2cf05a5d3f51d84a8866309aed6cb5d", uri="/auth-digest"',
             $newRequest->getHeaderLine('Authorization')
         );
     }

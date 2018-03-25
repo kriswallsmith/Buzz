@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Buzz\Client;
 
 use Buzz\Exception\ClientException;
-use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -16,7 +16,7 @@ interface BatchClientInterface extends \Countable
 {
     /**
      * @param RequestInterface $request
-     * @param array $options
+     * @param array            $options
      */
     public function sendAsyncRequest(RequestInterface $request, array $options = []): void;
 
