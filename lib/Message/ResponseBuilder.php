@@ -16,9 +16,9 @@ use Psr\Http\Message\ResponseInterface;
 class ResponseBuilder
 {
     /**
-     * @var HTTPlugResponseFactory|InteropResponseFactory
+     * @var ResponseInterface
      */
-    private $responseFactory;
+    private $response;
 
     /**
      * @var null|resource
@@ -40,11 +40,11 @@ class ResponseBuilder
      */
     public function __construct($responseFactory)
     {
-        if (!$responseFactory instanceof HTTPlugResponseFactory) {
+        if (!$responseFactory instanceof HTTPlugResponseFactory && !$responseFactory instanceof InteropResponseFactory) {
             throw new InvalidArgumentException('First parameter to ResponseBuilder must be a response factory');
         }
 
-        $this->responseFactory = $responseFactory;
+        $this->response = $responseFactory->createResponse();
     }
 
     public function setStatus(string $input): void
@@ -54,9 +54,12 @@ class ResponseBuilder
             throw new InvalidArgumentException(sprintf('"%s" is not a valid HTTP status line', $input));
         }
 
-        $this->protocolVersion = (string) substr($parts[0], 5);
-        $this->statusCode = (int) $parts[1];
-        $this->reasonPhrase = isset($parts[2]) ? $parts[2] : '';
+        $this->response = $this->response->withStatus((int) $parts[1]);
+        $this->response = $this->response->withProtocolVersion((string) substr($parts[0], 5));
+
+        if (isset($parts[2])) {
+            $this->response = $this->response->getReasonPhrase($parts[2]);
+        }
     }
 
     /**
@@ -66,7 +69,8 @@ class ResponseBuilder
      */
     public function addHeader(string $input): void
     {
-        $this->headers[] = $input;
+        list($key, $value) = explode(':', $input, 2);
+        $this->response = $this->response->withAddedHeader(trim($key), trim($value));
     }
 
     /**
@@ -98,45 +102,13 @@ class ResponseBuilder
      */
     public function writeBody(string $input): int
     {
-        if (null === $this->stream) {
-            if (false === $this->stream = fopen('php://temp', 'w+b')) {
-                throw new ClientException('Could not open stream');
-            }
-        }
-
-        if (null !== $this->body) {
-            throw new InvalidArgumentException('You cannot use both writeBody and setBody');
-        }
-
-        return fwrite($this->stream, $input);
+        return $this->response->getBody()->write($input);
     }
-
-    /**
-     * Replace the body with $input. This function should be used for smaller bodies only.
-     *
-     * @param string $input
-     */
-    public function setBody(string $input): void
-    {
-        if (null !== $this->stream) {
-            throw new InvalidArgumentException('You cannot use both writeBody and setBody');
-        }
-
-        $this->body = $input;
-    }
-
+    
     public function getResponse(): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse(
-            $this->statusCode,
-            $this->reasonPhrase,
-            HeaderConverter::toPsrHeaders($this->headers),
-            null === $this->stream ? $this->body : $this->stream,
-            $this->protocolVersion
-        );
+        $this->response->getBody()->rewind();
 
-        $response->getBody()->rewind();
-
-        return $response;
+        return $this->response;
     }
 }
