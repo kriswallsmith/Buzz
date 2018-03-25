@@ -30,6 +30,7 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 - Redirects are not followed by default
 - No exceptions are thrown and no warnings are triggered on a invalid response. 
 - We only handle PSR requests and responses. 
+- Renamed `Browser::call($url, $method, $headers, $body)` to `Browser::request($method, $url, $headers, $body)`. 
 
 ## 0.16.1
 
