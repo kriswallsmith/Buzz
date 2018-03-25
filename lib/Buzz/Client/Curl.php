@@ -19,14 +19,11 @@ class Curl extends AbstractCurl implements BuzzClientInterface
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
         $options = $this->validateOptions($options);
-        if (is_resource($this->lastCurl)) {
-            curl_close($this->lastCurl);
-        }
-
-        $this->lastCurl = $this->createCurlHandle();
-        $this->prepare($this->lastCurl, $request, $options);
+        $this->lastCurl = $this->createHandle($request, $options);
         $data = curl_exec($this->lastCurl);
         $this->parseError($request, curl_errno($this->lastCurl), $this->lastCurl);
+
+        $this->releaseHandle($this->lastCurl);
 
         return $this->createResponse($data);
     }

@@ -91,9 +91,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             /** @var $request RequestInterface */
             /** @var $options ParameterBag */
             list($request, $options) = $this->queue[$i];
-            $curl = $this->createCurlHandle();
-
-            $this->prepare($curl, $request, $options);
+            $curl = $this->createHandle($request, $options);
             $this->queue[$i][] = $curl;
             curl_multi_add_handle($this->curlm, $curl);
         }
@@ -129,7 +127,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
                 // remove from queue
                 curl_multi_remove_handle($this->curlm, $curl);
-                curl_close($curl);
+                $this->releaseHandle($curl);
                 unset($this->queue[$i]);
 
                 // callback
