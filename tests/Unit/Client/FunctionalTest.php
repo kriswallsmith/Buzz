@@ -81,13 +81,17 @@ class FunctionalTest extends TestCase
 
         $builder = new FormRequestBuilder();
         $builder->addField('company[name]', 'Google');
+        $builder->addFile('image', __DIR__.'/../../Resources/image.png', 'image/png', 'filename.png');
         $browser = new Browser($client);
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], $builder->build());
 
         $data = json_decode($response->getBody()->__toString(), true);
 
-        $this->assertStringStartsWith('application/x-www-form-urlencoded', $data['SERVER']['CONTENT_TYPE']);
+        $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);
         $this->assertEquals('Google', $data['POST']['company']['name']);
+        $this->assertEquals('filename.png', $data['FILES']['image']['name']);
+        $this->assertEquals('image/png', $data['FILES']['image']['type']);
+        $this->assertEquals(39618, $data['FILES']['image']['size']);
     }
 
     public function testMultiCurlExecutesRequestsConcurently()
