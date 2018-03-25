@@ -18,9 +18,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class AbstractCurl extends AbstractClient
 {
-    private $handles;
+    private $handles = [];
 
-    private $maxHandles = 1;
+    private $maxHandles = 5;
 
     protected function configureOptions(OptionsResolver $resolver)
     {

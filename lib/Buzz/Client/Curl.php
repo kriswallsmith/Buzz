@@ -20,10 +20,12 @@ class Curl extends AbstractCurl implements BuzzClientInterface
     {
         $options = $this->validateOptions($options);
         $this->lastCurl = $this->createHandle($request, $options);
-        $data = curl_exec($this->lastCurl);
-        $this->parseError($request, curl_errno($this->lastCurl), $this->lastCurl);
-
-        $this->releaseHandle($this->lastCurl);
+        try {
+            $data = curl_exec($this->lastCurl);
+            $this->parseError($request, curl_errno($this->lastCurl), $this->lastCurl);
+        } finally {
+            $this->releaseHandle($this->lastCurl);
+        }
 
         return $this->createResponse($data);
     }

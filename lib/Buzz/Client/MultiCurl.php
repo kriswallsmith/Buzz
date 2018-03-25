@@ -86,11 +86,15 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             throw new ClientException('Unable to create a new cURL multi handle');
         }
 
-        foreach (array_keys($this->queue) as $i) {
+        foreach ($this->queue as $i => $queueItem) {
+            if (2 !== count($queueItem)) {
+                // We have already prepared this curl
+                continue;
+            }
             // prepare curl handle
             /** @var $request RequestInterface */
             /** @var $options ParameterBag */
-            list($request, $options) = $this->queue[$i];
+            list($request, $options) = $queueItem;
             $curl = $this->createHandle($request, $options);
             $this->queue[$i][] = $curl;
             curl_multi_add_handle($this->curlm, $curl);
@@ -139,10 +143,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         if (empty($this->queue)) {
             curl_multi_close($this->curlm);
             $this->curlm = null;
-        }
 
-        if (null !== $exception) {
-            throw $exception;
+            if (null !== $exception) {
+                throw $exception;
+            }
         }
     }
 }
