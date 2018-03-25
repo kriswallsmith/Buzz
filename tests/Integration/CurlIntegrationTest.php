@@ -8,7 +8,7 @@ class CurlIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new Curl(['timeout'=>3]);
+        $client = new Curl();
 
         return $client;
     }
