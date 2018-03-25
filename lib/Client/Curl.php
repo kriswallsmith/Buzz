@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Buzz\Client;
 
-
 use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
 
