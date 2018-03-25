@@ -55,7 +55,7 @@ class FileGetContentsTest extends TestCase
 
         $options = $options->add(['verify' => false]);
         $expected['ssl']['verify_peer'] = false;
-        $expected['ssl']['verify_host'] = 0;
+        $expected['ssl']['verify_host'] = false;
         $this->assertEquals($expected, $client->getStreamContextArray($request, $options));
 
         $options = $options->add(['max_redirects' => 0]);
