@@ -88,7 +88,7 @@ class FunctionalTest extends TestCase
         $this->assertNotEmpty($response->getBody()->__toString(), 'Response from server should not be empty');
 
         $data = json_decode($response->getBody()->__toString(), true);
-        $this->assertInternalType('array', $data);
+        $this->assertInternalType('array', $data, $response->getBody()->__toString());
         $this->assertArrayHasKey('SERVER', $data);
 
         $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);
