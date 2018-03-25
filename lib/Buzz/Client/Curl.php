@@ -26,7 +26,7 @@ class Curl extends AbstractCurl implements BuzzClientInterface
         $this->lastCurl = $this->createCurlHandle();
         $this->prepare($this->lastCurl, $request, $options);
         $data = curl_exec($this->lastCurl);
-        $this->parseError($request, $this->lastCurl);
+        $this->parseError($request, curl_errno($this->lastCurl), $this->lastCurl);
 
         return $this->createResponse($data);
     }
