@@ -82,7 +82,7 @@ class Browser
      */
     public function call(string $url, string $method, array $headers = array(), string $body = ''): ResponseInterface
     {
-        $request = $this->factory->createRequest($method, $url, $headers, $body);
+        $request = $this->getMessageFactory()->createRequest($method, $url, $headers, $body);
 
         return $this->sendRequest($request);
     }
@@ -113,7 +113,7 @@ class Browser
             $headers['Content-Type'] = 'application/x-www-form-urlencoded';
             $body = http_build_query($body);
         } else {
-            $headers['Content-Type'] = 'multipart/form-data; boundary='.$boundary;
+            $headers['Content-Type'] = 'multipart/form-data; boundary="'.$boundary.'"';
 
             foreach ($body as $name => $value) {
                 $files .= $this->prepareMultipart($name, $value, $boundary);
@@ -121,7 +121,7 @@ class Browser
             $body = "$files--{$boundary}--\r\n";
         }
 
-        $request = $this->factory->createRequest($method, $url, $headers, $body);
+        $request = $this->getMessageFactory()->createRequest($method, $url, $headers, $body);
 
         return $this->sendRequest($request);
     }
@@ -246,5 +246,10 @@ class Browser
         $output .= "\r\n";
 
         return $output;
+    }
+
+    protected function getMessageFactory(): MessageFactory
+    {
+        return $this->factory;
     }
 }
