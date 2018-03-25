@@ -26,15 +26,13 @@ matrix:
       - php: 7.1
         env: COVERAGE=true TEST_COMMAND="composer test-ci"
       - php: 7.2
+        env: BUZZ_TEST_SERVER=""
 
         # Force some major versions of Symfony
       - php: 7.1
         env: DEPENDENCIES="dunglas/symfony-lock:^3"
       - php: 7.1
         env: DEPENDENCIES="dunglas/symfony-lock:^4"
-
-    allow_failures:
-      - php: 7.2
 
 before_install:
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
