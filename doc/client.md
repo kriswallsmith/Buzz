@@ -18,6 +18,13 @@ $response = $client->send($request, ['timeout' => 4]);
 Not all configuration works will all clients. If there is any client specific configuration it 
 will be noted below. 
 
+#### allow_redirects
+
+Type: boolean<br>
+Default: `false`
+
+Should the client follow HTTP redirects or not. 
+
 #### Callback
 
 Type: callable<br>
@@ -48,13 +55,6 @@ $client->sendAsyncRequest($request, array('curl' => [
     CURLOPT_FAILONERROR => false,
 ]));
 ```
-
-#### allow_redirects
-
-Type: boolean<br>
-Default: `false`
-
-Should the client follow HTTP redirects or not. 
 
 #### max_redirects
 
