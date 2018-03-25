@@ -11,7 +11,7 @@
 
 </div>
 
-Buzz is a lightweight (<1700 lines of code) PHP 7.1 library for issuing HTTP requests.
+Buzz is a lightweight (<1000 lines of code) PHP 7.1 library for issuing HTTP requests.
 
 ## Installation
 
