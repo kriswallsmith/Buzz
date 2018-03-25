@@ -85,7 +85,11 @@ class FunctionalTest extends TestCase
         $browser = new Browser($client);
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], $builder->build());
 
+        $this->assertNotEmpty($response->getBody()->__toString(), 'Response from server should not be empty');
+
         $data = json_decode($response->getBody()->__toString(), true);
+        $this->assertInternalType('array', $data);
+        $this->assertArrayHasKey('SERVER', $data);
 
         $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);
         $this->assertEquals('Google', $data['POST']['company']['name']);
