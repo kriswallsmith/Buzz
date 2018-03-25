@@ -6,7 +6,6 @@ namespace Buzz\Test\Unit;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-use Nyholm\Psr7\Factory\MessageFactory;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -113,21 +112,13 @@ class BrowserTest extends TestCase
             return preg_match($regex, $input);
         };
 
-        $messageFactory = $this->getMockBuilder(MessageFactory::class)
-            ->setMethods(['createRequest'])
+        $browser = $this->getMockBuilder(Browser::class)
+            ->setMethods(['sendRequest', 'createRequest'])
             ->disableOriginalConstructor()
             ->getMock();
-
-        $messageFactory->expects($this->once())->method('createRequest')
+        $browser->expects($this->once())->method('createRequest')
             ->with('POST', '/', $this->callback($headerValidator), $this->callback($bodyValidator))
             ->willReturn($request);
-
-        $browser = $this->getMockBuilder(Browser::class)
-            ->setMethods(['sendRequest', 'getMessageFactory'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $browser->expects($this->once())->method('getMessageFactory')
-            ->willReturn($messageFactory);
         $browser->expects($this->once())->method('sendRequest')
             ->willReturn($response);
 
