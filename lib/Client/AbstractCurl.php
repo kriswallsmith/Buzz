@@ -23,7 +23,7 @@ abstract class AbstractCurl extends AbstractClient
 
     private $maxHandles = 5;
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -124,7 +124,7 @@ abstract class AbstractCurl extends AbstractClient
      * @param resource         $curl    A cURL resource
      * @param RequestInterface $request A request object
      */
-    private function setOptionsFromRequest($curl, RequestInterface $request)
+    private function setOptionsFromRequest($curl, RequestInterface $request): void
     {
         $options = [
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),

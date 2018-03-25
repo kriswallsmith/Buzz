@@ -26,7 +26,7 @@ abstract class AbstractClient
         $this->options = $this->doValidateOptions($options);
     }
 
-    protected function getOptionsResolver()
+    protected function getOptionsResolver(): OptionsResolver
     {
         if (null !== $this->optionsResolver) {
             return $this->optionsResolver;
@@ -66,7 +66,7 @@ abstract class AbstractClient
         return new ParameterBag($parameters);
     }
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'follow_redirects' => false,

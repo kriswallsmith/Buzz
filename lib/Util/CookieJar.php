@@ -25,6 +25,9 @@ class CookieJar
         }
     }
 
+    /**
+     * @return Cookie[]
+     */
     public function getCookies(): array
     {
         return $this->cookies;

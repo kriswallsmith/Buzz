@@ -12,14 +12,19 @@ class Journal implements \Countable, \IteratorAggregate
     private $entries = [];
     private $limit = 10;
 
+    public function __construct(int $limit = 10)
+    {
+        $this->limit = $limit;
+    }
+
     /**
      * Records an entry in the journal.
      *
      * @param RequestInterface  $request  The request
      * @param ResponseInterface $response The response
-     * @param int               $duration The duration in seconds
+     * @param null|int          $duration The duration in seconds
      */
-    public function record(RequestInterface $request, ResponseInterface $response, $duration = null): void
+    public function record(RequestInterface $request, ResponseInterface $response, int $duration = null): void
     {
         $this->addEntry(new Entry($request, $response, $duration));
     }
@@ -31,6 +36,9 @@ class Journal implements \Countable, \IteratorAggregate
         end($this->entries);
     }
 
+    /**
+     * @return Entry[]
+     */
     public function getEntries(): array
     {
         return $this->entries;
@@ -81,7 +89,7 @@ class Journal implements \Countable, \IteratorAggregate
         return $this->limit;
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator(array_reverse($this->entries));
     }

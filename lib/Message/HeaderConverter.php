@@ -28,7 +28,7 @@ class HeaderConverter
      *
      * @return array
      */
-    public static function toBuzzHeaders(array $headers)
+    public static function toBuzzHeaders(array $headers): array
     {
         $buzz = [];
 
@@ -52,7 +52,7 @@ class HeaderConverter
      *
      * @return array
      */
-    public static function toPsrHeaders(array $headers)
+    public static function toPsrHeaders(array $headers): array
     {
         $psr = [];
         foreach ($headers as $header) {

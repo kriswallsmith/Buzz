@@ -30,7 +30,7 @@ class FormRequestBuilder
      * @param string $name
      * @param string $value
      */
-    public function addField($name, $value)
+    public function addField(string $name, string $value): void
     {
         $this->data[$name] = $value;
     }
@@ -41,7 +41,7 @@ class FormRequestBuilder
      * @param string|null $contentType
      * @param string|null $filename
      */
-    public function addFile($name, $path, $contentType = null, $filename = null)
+    public function addFile(string $name, string $path, string $contentType = null, string $filename = null): void
     {
         $this->files[$name] = [
             'path' => $path,
@@ -53,7 +53,7 @@ class FormRequestBuilder
     /**
      * @return array
      */
-    public function build()
+    public function build(): array
     {
         $data = $this->data;
 
@@ -67,7 +67,7 @@ class FormRequestBuilder
     /**
      * Reset the builder.
      */
-    public function reset()
+    public function reset(): void
     {
         $this->data = [];
         $this->files = [];

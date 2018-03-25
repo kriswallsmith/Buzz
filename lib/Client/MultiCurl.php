@@ -56,7 +56,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         return $responseToReturn;
     }
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -64,19 +64,19 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $resolver->setAllowedTypes('callback', 'callable');
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->queue);
     }
 
-    public function flush()
+    public function flush(): void
     {
         while ($this->queue) {
             $this->proceed();
         }
     }
 
-    public function proceed()
+    public function proceed(): void
     {
         if (empty($this->queue)) {
             return;

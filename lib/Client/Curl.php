@@ -7,6 +7,9 @@ namespace Buzz\Client;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
 class Curl extends AbstractCurl implements BuzzClientInterface
 {
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface

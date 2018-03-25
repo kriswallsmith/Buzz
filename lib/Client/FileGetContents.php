@@ -74,7 +74,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
         return $context;
     }
 
-    private function filterHeaders(array $headers)
+    private function filterHeaders(array $headers): array
     {
         $filtered = [];
         foreach ($headers as $header) {
