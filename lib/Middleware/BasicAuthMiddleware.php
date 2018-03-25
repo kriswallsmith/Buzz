@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 class BasicAuthMiddleware implements MiddlewareInterface
 {
     private $username;
+
     private $password;
 
     public function __construct($username, $password)

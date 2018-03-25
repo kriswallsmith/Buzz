@@ -10,18 +10,29 @@ use Psr\Http\Message\ResponseInterface;
 class DigestAuthMiddleware implements MiddlewareInterface
 {
     private $username;
+
     private $password;
+
     private $realm;
 
     private $algorithm;
+
     private $authenticationMethod;
+
     private $clientNonce;
+
     private $domain;
+
     private $entityBody;
+
     private $method;
+
     private $nonce;
+
     private $nonceCount;
+
     private $opaque;
+
     private $uri;
 
     /** @var string[] Quality of Protection */
@@ -33,12 +44,15 @@ class DigestAuthMiddleware implements MiddlewareInterface
      * OPTION_QOP_AUTH           - Always use auth       (even if auth-int available).
      */
     const OPTION_QOP_AUTH_INT = 1;
+
     const OPTION_QOP_AUTH = 2;
+
     /**
      * Ignore server request to downgrade authentication from Digest to Basic.
      * Breaks RFC compatibility, but ensures passwords are never sent using base64 which is trivial for an attacker to decode.
      */
     const OPTION_IGNORE_DOWNGRADE_REQUEST = 4;
+
     /**
      * Discard Client Nonce on each request.
      */
@@ -534,6 +548,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 case 'nextnonce':
                     // This function needs to only set the Nonce once the rspauth has been verified.
                     $this->setNonce($value);
+
                     break;
                 case 'rspauth':
                     // Check server rspauth value
@@ -604,21 +619,27 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 switch ($name) {
                     case 'algorithm':
                         $this->setAlgorithm($value);
+
                         break;
                     case 'domain':
                         $this->setDomain($value);
+
                         break;
                     case 'nonce':
                         $this->setNonce($value);
+
                         break;
                     case 'realm':
                         $this->setRealm($value);
+
                         break;
                     case 'opaque':
                         $this->setOpaque($value);
+
                         break;
                     case 'qop':
                         $this->setQOP(explode(',', $value));
+
                         break;
                 }
             }
@@ -634,6 +655,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 switch ($name) {
                     case 'realm':
                         $this->setRealm($value);
+
                         break;
                 }
             }
@@ -734,6 +756,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
 
             return;
         }
+
         throw new \InvalidArgumentException('DigestAuthMiddleware: Only GET,POST,PUT,DELETE,HEAD HTTP methods are currently supported.');
     }
 

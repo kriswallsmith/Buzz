@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 class HistoryMiddleware implements MiddlewareInterface
 {
     private $journal;
+
     private $startTime;
 
     public function __construct(Journal $journal)

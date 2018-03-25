@@ -26,8 +26,10 @@ class LoggerMiddlewareTest extends TestCase
         $response = new Response();
 
         $middleware = new LoggerMiddleware($logger);
-        $middleware->handleRequest($request, function () {});
-        $middleware->handleResponse($request, $response, function () {});
+        $middleware->handleRequest($request, function () {
+        });
+        $middleware->handleResponse($request, $response, function () {
+        });
     }
 }
 

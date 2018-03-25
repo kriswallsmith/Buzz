@@ -143,10 +143,12 @@ abstract class AbstractCurl extends AbstractClient
         switch (strtoupper($request->getMethod())) {
             case 'HEAD':
                 $options[CURLOPT_NOBODY] = true;
+
                 break;
 
             case 'GET':
                 $options[CURLOPT_HTTPGET] = true;
+
                 break;
 
             case 'POST':
@@ -237,6 +239,7 @@ abstract class AbstractCurl extends AbstractClient
                 if (defined('CURL_HTTP_VERSION_2_0')) {
                     return CURL_HTTP_VERSION_2_0;
                 }
+
                 throw new \UnexpectedValueException('libcurl 7.33 needed for HTTP 2.0 support');
             default:
                 return 0;

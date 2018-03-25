@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClientInterface
 {
     private $queue = [];
+
     private $curlm;
 
     /**
@@ -60,7 +61,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefault('callback', function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {});
+        $resolver->setDefault('callback', function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {
+        });
         $resolver->setAllowedTypes('callback', 'callable');
     }
 
@@ -122,6 +124,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 }
 
                 $response = null;
+
                 try {
                     $this->parseError($request, $done['result'], $curl);
                     // populate the response object

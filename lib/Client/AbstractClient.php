@@ -56,6 +56,7 @@ abstract class AbstractClient
     private function doValidateOptions(array $options = []): ParameterBag
     {
         $parameterBag = $this->options->add($options);
+
         try {
             $parameters = $this->getOptionsResolver()->resolve($parameterBag->all());
         } catch (\Throwable $e) {

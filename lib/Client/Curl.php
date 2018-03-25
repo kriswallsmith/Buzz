@@ -17,6 +17,7 @@ class Curl extends AbstractCurl implements BuzzClientInterface
         $options = $this->validateOptions($options);
         $curl = $this->createHandle();
         $responseBuilder = $this->prepare($curl, $request, $options);
+
         try {
             curl_exec($curl);
             $this->parseError($request, curl_errno($curl), $curl);

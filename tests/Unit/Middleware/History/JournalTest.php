@@ -12,11 +12,15 @@ use PHPUnit\Framework\TestCase;
 class JournalTest extends TestCase
 {
     protected $request1;
+
     protected $request2;
+
     protected $request3;
 
     protected $response1;
+
     protected $response2;
+
     protected $response3;
 
     protected function setUp()

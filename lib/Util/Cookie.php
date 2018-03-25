@@ -9,14 +9,21 @@ use Psr\Http\Message\RequestInterface;
 class Cookie
 {
     const ATTR_DOMAIN = 'domain';
+
     const ATTR_PATH = 'path';
+
     const ATTR_SECURE = 'secure';
+
     const ATTR_MAX_AGE = 'max-age';
+
     const ATTR_EXPIRES = 'expires';
 
     protected $name;
+
     protected $value;
+
     protected $attributes = [];
+
     protected $createdAt;
 
     /**
