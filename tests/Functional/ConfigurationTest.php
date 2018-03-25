@@ -50,7 +50,7 @@ class ConfigurationTest extends TestCase
      */
     public function testOptionInSendRequest($class)
     {
-        if (!isset($_SERVER['BUZZ_TEST_SERVER'])) {
+        if (!isset($_SERVER['BUZZ_TEST_SERVER']) || empty($_SERVER['BUZZ_TEST_SERVER'])) {
             $this->markTestSkipped('The test server is not configured.');
         }
 
