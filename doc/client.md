@@ -35,7 +35,7 @@ A callback function that is called after a request has been sent.
 
 ```php
 $callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) {
-    $calls[] = func_get_args();
+    // Process the response
 };
 $request = new PSR7Request('GET', 'https://example.com');
 $client->sendAsyncRequest($request, array('callback' => $callback));
@@ -61,7 +61,8 @@ $client->sendAsyncRequest($request, array('curl' => [
 Type: integer<br>
 Default: `5`
 
-The maximum number of redirects to follow. 
+The maximum number of redirects to follow. Note that this will have no effect unless you set
+`'allow_redirects' => true`.
 
 #### proxy
 
