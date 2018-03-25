@@ -22,9 +22,9 @@ class Journal implements \Countable, \IteratorAggregate
      *
      * @param RequestInterface  $request  The request
      * @param ResponseInterface $response The response
-     * @param null|int          $duration The duration in seconds
+     * @param null|float        $duration The duration in seconds
      */
-    public function record(RequestInterface $request, ResponseInterface $response, int $duration = null): void
+    public function record(RequestInterface $request, ResponseInterface $response, float $duration = null): void
     {
         $this->addEntry(new Entry($request, $response, $duration));
     }

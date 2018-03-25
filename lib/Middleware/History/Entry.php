@@ -16,9 +16,9 @@ class Entry
     /**
      * @param RequestInterface  $request  The request
      * @param ResponseInterface $response The response
-     * @param null|int          $duration The duration in seconds
+     * @param null|float        $duration The duration in seconds
      */
-    public function __construct(RequestInterface $request, ResponseInterface $response, int $duration = null)
+    public function __construct(RequestInterface $request, ResponseInterface $response, float $duration = null)
     {
         $this->request = $request;
         $this->response = $response;
@@ -35,7 +35,7 @@ class Entry
         return $this->response;
     }
 
-    public function getDuration(): ?int
+    public function getDuration(): ?float
     {
         return $this->duration;
     }
