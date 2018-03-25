@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Buzz\Message;
 
-use Buzz\Converter\HeaderConverter;
+use Buzz\Message\HeaderConverter;
 use Buzz\Exception\ClientException;
 use Buzz\Exception\InvalidArgumentException;
 use Http\Message\ResponseFactory as HTTPlugResponseFactory;

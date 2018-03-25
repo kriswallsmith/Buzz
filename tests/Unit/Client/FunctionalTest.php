@@ -98,6 +98,34 @@ class FunctionalTest extends TestCase
         $this->assertEquals(39618, $data['FILES']['image']['size']);
     }
 
+    /**
+     * @dataProvider provideClient
+     */
+    public function testFormPostWithLargeRequestBody($client, $async)
+    {
+        if ($async) {
+            $this->markTestSkipped('Skipping for async requests');
+        }
+
+        $browser = new Browser($client);
+        $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], [
+            'image' => [
+                'path'=> __DIR__.'/../../Resources/large.png',
+                'filename' => 'filename.png',
+                'contentType' => 'image/png',
+            ],
+        ]);
+
+        $this->assertNotEmpty($response->getBody()->__toString(), 'Response from server should not be empty');
+
+        $data = json_decode($response->getBody()->__toString(), true);
+        $this->assertInternalType('array', $data, $response->getBody()->__toString());
+        $this->assertArrayHasKey('SERVER', $data);
+
+        $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);
+        $this->assertGreaterThan(39618, $data['FILES']['image']['size']);
+    }
+
     public function testMultiCurlExecutesRequestsConcurently()
     {
         $client = new MultiCurl(['timeout'=>30]);
