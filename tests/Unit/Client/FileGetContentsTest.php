@@ -48,9 +48,8 @@ class FileGetContentsTest extends TestCase
         $options = new ParameterBag([
             'max_redirects' => 5,
             'timeout' => 10,
-            'follow_redirects' => true,
-            'verify_peer' => true,
-            'verify_host' => true,
+            'allow_redirects' => true,
+            'verify' => true,
         ]);
         $this->assertEquals($expected, $client->getStreamContextArray($request, $options));
 

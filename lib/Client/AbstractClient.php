@@ -69,17 +69,15 @@ abstract class AbstractClient
     protected function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'follow_redirects' => false,
+            'allow_redirects' => false,
             'max_redirects' => 5,
             'timeout' => 30,
-            'verify_peer' => true,
-            'verify_host' => true,
+            'verify' => true,
             'proxy' => null,
         ]);
 
-        $resolver->setAllowedTypes('follow_redirects', 'boolean');
-        $resolver->setAllowedTypes('verify_peer', 'boolean');
-        $resolver->setAllowedTypes('verify_host', 'boolean');
+        $resolver->setAllowedTypes('allow_redirects', 'boolean');
+        $resolver->setAllowedTypes('verify', 'boolean');
         $resolver->setAllowedTypes('max_redirects', 'integer');
         $resolver->setAllowedTypes('timeout', ['integer', 'float']);
         $resolver->setAllowedTypes('proxy', ['null', 'string']);

@@ -56,13 +56,13 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
 
                 // values from the current client
                 'ignore_errors' => true,
-                'follow_location' => $options->get('follow_redirects') && $options->get('max_redirects') > 0,
+                'follow_location' => $options->get('allow_redirects') && $options->get('max_redirects') > 0,
                 'max_redirects' => $options->get('max_redirects') + 1,
                 'timeout' => $options->get('timeout'),
             ],
             'ssl' => [
-                'verify_peer' => $options->get('verify_peer'),
-                'verify_host' => $options->get('verify_host'),
+                'verify_peer' => $options->get('verify'),
+                'verify_host' => $options->get('verify'),
             ],
         ];
 
