@@ -180,12 +180,12 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * @param RequestInterface $request
      * @param int              $errno
-     * @param resource|null    $curl
+     * @param resource         $curl
      *
      * @throws NetworkException
      * @throws RequestException
      */
-    protected function parseError(RequestInterface $request, int $errno, $curl = null): void
+    protected function parseError(RequestInterface $request, int $errno, $curl): void
     {
         switch ($errno) {
             case CURLE_OK:
@@ -196,9 +196,9 @@ abstract class AbstractCurl extends AbstractClient
             case CURLE_COULDNT_CONNECT:
             case CURLE_OPERATION_TIMEOUTED:
             case CURLE_SSL_CONNECT_ERROR:
-                throw new NetworkException($request, $curl ? curl_error($curl) : '', $errno);
+                throw new NetworkException($request, curl_error($curl), $errno);
             default:
-                throw new RequestException($request, $curl ? curl_error($curl) : '', $errno);
+                throw new RequestException($request, curl_error($curl), $errno);
         }
     }
 }
