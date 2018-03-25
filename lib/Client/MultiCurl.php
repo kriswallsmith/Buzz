@@ -71,6 +71,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         return count($this->queue);
     }
 
+    /**
+     * @throws ClientException
+     */
     public function flush(): void
     {
         while (!empty($this->queue)) {
@@ -78,6 +81,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
     }
 
+    /**
+     * @throws ClientException
+     */
     public function proceed(): void
     {
         if (empty($this->queue)) {
@@ -123,9 +129,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                     continue;
                 }
 
-                $response = null;
-
                 try {
+                    $response = null;
                     $this->parseError($request, $done['result'], $curl);
                     // populate the response object
                     curl_multi_getcontent($curl);
