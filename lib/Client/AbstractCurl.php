@@ -75,6 +75,8 @@ abstract class AbstractCurl extends AbstractClient
 
     protected function createResponse(string $raw): ResponseInterface
     {
+        echo $raw;
+        echo "\n\n-----------\n\n";
         $messageParts = preg_split("/\r?\n\r?\n/", $raw, 2);
         $filteredHeaders = $this->parseHeaders($messageParts[0]);
         $statusLine = array_shift($filteredHeaders);
