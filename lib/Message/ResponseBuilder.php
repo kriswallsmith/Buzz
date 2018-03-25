@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Buzz\Message;
 
-use Buzz\Exception\ClientException;
 use Buzz\Exception\InvalidArgumentException;
 use Http\Message\ResponseFactory as HTTPlugResponseFactory;
 use Interop\Http\Factory\ResponseFactoryInterface as InteropResponseFactory;
@@ -100,7 +99,7 @@ class ResponseBuilder
     {
         return $this->response->getBody()->write($input);
     }
-    
+
     public function getResponse(): ResponseInterface
     {
         $this->response->getBody()->rewind();

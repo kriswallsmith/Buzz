@@ -6,7 +6,6 @@ namespace Buzz\Test\Unit;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-use Nyholm\Psr7\Factory\MessageFactory;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
