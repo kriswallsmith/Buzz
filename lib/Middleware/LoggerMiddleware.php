@@ -11,8 +11,11 @@ use Psr\Log\NullLogger;
 class LoggerMiddleware implements MiddlewareInterface
 {
     private $logger;
+
     private $level;
+
     private $prefix;
+
     private $startTime;
 
     /**

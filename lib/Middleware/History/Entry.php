@@ -10,7 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 class Entry
 {
     private $request;
+
     private $response;
+
     private $duration;
 
     /**

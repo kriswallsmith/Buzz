@@ -82,6 +82,7 @@ class MiddlewareChainTest extends TestCase
 class MyMiddleware implements MiddlewareInterface
 {
     public static $handleCount = 0;
+
     public static $hasBeenHandled = false;
 
     /** @var callable */

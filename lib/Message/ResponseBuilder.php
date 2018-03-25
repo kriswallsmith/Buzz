@@ -20,21 +20,6 @@ class ResponseBuilder
     private $response;
 
     /**
-     * @var null|resource
-     */
-    private $stream = null;
-
-    /**
-     * @var null|string
-     */
-    private $body = null;
-
-    private $protocolVersion;
-    private $statusCode;
-    private $reasonPhrase;
-    private $headers = [];
-
-    /**
      * @param HTTPlugResponseFactory|InteropResponseFactory $responseFactory
      */
     public function __construct($responseFactory)
@@ -77,6 +62,7 @@ class ResponseBuilder
     public function parseHttpHeaders(array $headers): void
     {
         $statusLine = array_shift($headers);
+
         try {
             $this->setStatus($statusLine);
         } catch (InvalidArgumentException $e) {

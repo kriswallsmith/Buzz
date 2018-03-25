@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 class HistoryMiddlewareTest extends TestCase
 {
     private $journal;
+
     /** @var HistoryMiddleware */
     private $middleware;
 
@@ -33,8 +34,10 @@ class HistoryMiddlewareTest extends TestCase
             ->method('record')
             ->with($request, $response, $this->isType('float'));
 
-        $this->middleware->handleRequest($request, function () {});
-        $this->middleware->handleResponse($request, $response, function () {});
+        $this->middleware->handleRequest($request, function () {
+        });
+        $this->middleware->handleResponse($request, $response, function () {
+        });
     }
 
     public function testGetter()

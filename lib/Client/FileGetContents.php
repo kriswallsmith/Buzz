@@ -24,6 +24,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
+
             throw new NetworkException($request, $error['message']);
         }
 
