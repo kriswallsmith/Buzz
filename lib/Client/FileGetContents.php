@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
-use Buzz\Converter\HeaderConverter;
+use Buzz\Message\HeaderConverter;
 use Buzz\Exception\NetworkException;
-use Buzz\Exception\RequestException;
 use Buzz\Message\ResponseBuilder;
 use Nyholm\Psr7\Factory\MessageFactory;
-use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Converter;
+namespace Buzz\Message;
 
 /**
  * Convert between Buzz style:
