@@ -6,6 +6,7 @@ namespace Buzz\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class LoggerMiddleware implements MiddlewareInterface
 {
@@ -15,14 +16,13 @@ class LoggerMiddleware implements MiddlewareInterface
     private $startTime;
 
     /**
-     *
      * @param LoggerInterface $logger
      * @param string $level
      * @param string|null $prefix
      */
-    public function __construct(LoggerInterface $logger, $level = 'info', $prefix = null)
+    public function __construct(LoggerInterface $logger = null, $level = 'info', $prefix = null)
     {
-        $this->logger = $logger;
+        $this->logger = $logger ?: new NullLogger();
         $this->level = $level;
         $this->prefix = $prefix;
     }
