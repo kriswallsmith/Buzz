@@ -6,6 +6,8 @@ namespace Buzz\Client;
 use Buzz\Configuration\ParameterBag;
 use Buzz\Converter\HeaderConverter;
 use Buzz\Exception\ClientException;
+use Buzz\Exception\NetworkException;
+use Buzz\Exception\RequestException;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -173,5 +175,30 @@ abstract class AbstractCurl extends AbstractClient
 
         // apply additional options
         curl_setopt_array($curl, $options->get('curl'));
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param int              $errno
+     * @param resource         $curl
+     *
+     * @throws NetworkException
+     * @throws RequestException
+     */
+    protected function parseError(RequestInterface $request, int $errno, $curl): void
+    {
+        switch ($errno) {
+            case CURLE_OK:
+                // All OK, create a response object
+                break;
+            case CURLE_COULDNT_RESOLVE_PROXY:
+            case CURLE_COULDNT_RESOLVE_HOST:
+            case CURLE_COULDNT_CONNECT:
+            case CURLE_OPERATION_TIMEOUTED:
+            case CURLE_SSL_CONNECT_ERROR:
+                throw new NetworkException($request, curl_error($curl), $errno);
+            default:
+                throw new RequestException($request, curl_error($curl), $errno);
+        }
     }
 }

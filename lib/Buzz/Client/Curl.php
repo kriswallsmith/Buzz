@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Buzz\Client;
 
 
+use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
 
 use Buzz\Exception\LogicException;
@@ -24,15 +25,8 @@ class Curl extends AbstractCurl implements BuzzClientInterface
 
         $this->lastCurl = $this->createCurlHandle();
         $this->prepare($this->lastCurl, $request, $options);
-
         $data = curl_exec($this->lastCurl);
-
-        if (false === $data) {
-            $errorMsg = curl_error($this->lastCurl);
-            $errorNo  = curl_errno($this->lastCurl);
-
-            throw new RequestException($request, $errorMsg, $errorNo);
-        }
+        $this->parseError($request, curl_errno($this->lastCurl), $this->lastCurl);
 
         return $this->createResponse($data);
     }
