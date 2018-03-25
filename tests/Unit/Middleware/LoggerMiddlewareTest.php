@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Test\Middleware;
+namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Exception\InvalidArgumentException;
 use Buzz\Middleware\LoggerMiddleware;

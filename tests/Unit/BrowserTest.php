@@ -1,6 +1,6 @@
 <?php
 
-namespace Buzz\Test;
+namespace Buzz\Test\Unit;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;

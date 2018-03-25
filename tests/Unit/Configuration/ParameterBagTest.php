@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Buzz\Test\Client\Configuration;
+namespace Buzz\Test\Unit\Configuration;
 
 use Buzz\Configuration\ParameterBag;
 use PHPUnit\Framework\TestCase;

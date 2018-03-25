@@ -35,12 +35,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Buzz\\": "lib/Buzz"
+            "Buzz\\": "lib"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Buzz\\Test\\": "test/Buzz/Test"
+            "Buzz\\Test\\": "tests"
         }
     },
     "scripts": {
