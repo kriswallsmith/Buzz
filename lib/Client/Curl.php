@@ -14,47 +14,17 @@ use Psr\Http\Message\ResponseInterface;
 
 class Curl extends AbstractCurl implements BuzzClientInterface
 {
-    private $lastCurl;
-
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
         $options = $this->validateOptions($options);
-        $this->lastCurl = $this->createHandle($request, $options);
+        $curl = $this->createHandle($request, $options);
         try {
-            $data = curl_exec($this->lastCurl);
-            $this->parseError($request, curl_errno($this->lastCurl), $this->lastCurl);
+            $data = curl_exec($curl);
+            $this->parseError($request, curl_errno($curl), $curl);
         } finally {
-            $this->releaseHandle($this->lastCurl);
+            $this->releaseHandle($curl);
         }
 
         return $this->createResponse($data);
-    }
-
-    /**
-     * Introspects the last cURL request.
-     *
-     * @param int $opt
-     *
-     * @return string|array
-     * @throws LogicException
-     *
-     * @see curl_getinfo()
-     *
-     * @throws LogicException If there is no cURL resource
-     */
-    public function getInfo($opt = 0)
-    {
-        if (!is_resource($this->lastCurl)) {
-            throw new LogicException('There is no cURL resource');
-        }
-
-        return 0 === $opt ? curl_getinfo($this->lastCurl) : curl_getinfo($this->lastCurl, $opt);
-    }
-
-    public function __destruct()
-    {
-        if (is_resource($this->lastCurl)) {
-            curl_close($this->lastCurl);
-        }
     }
 }

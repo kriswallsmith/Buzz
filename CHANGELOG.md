@@ -19,6 +19,7 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 - Removed `Request` and `Response`
 - Removed `AbstractStream`.
 - Removed all listeners and `ListenerInterface`
+- Removed `Curl::getInfo()`
 - Client functions like `AbstractClient::setIgnoreErrors()`, `AbstractClient::getIgnoreErrors()`, `AbstractClient::setMaxRedirects()`, 
 `AbstractClient::getMaxRedirects()`, `AbstractClient::setTimeout()`, `AbstractClient::getTimeout()`, 
 `AbstractClient::setVerifyPeer()`, `AbstractClient::getVerifyPeer()`, `AbstractClient::getVerifyHost()`, 
