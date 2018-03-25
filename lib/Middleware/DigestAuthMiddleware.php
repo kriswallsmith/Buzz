@@ -317,7 +317,6 @@ class DigestAuthMiddleware implements MiddlewareInterface
             if (($username) && ($realm) && ($nonce) && ($response)) {
                 $uri = $this->getUri();
                 $opaque = $this->getOpaque();
-                $domain = $this->getDomain();
                 $qop = $this->getQOP();
 
                 $header = 'Digest';
