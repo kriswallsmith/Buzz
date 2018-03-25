@@ -8,6 +8,7 @@ use Buzz\Configuration\ParameterBag;
 use Buzz\Converter\HeaderConverter;
 use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
+use Buzz\Message\ResponseBuilder;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -28,21 +29,11 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
             throw new NetworkException($request, $error['message']);
         }
 
-        $filteredHeaders = $this->filterHeaders((array) $http_response_header);
-        $statusLine = array_shift($filteredHeaders);
-        list($protocolVersion, $statusCode, $reasonPhrase) = $this->parseStatusLine($statusLine);
+        $requestBuilder = new ResponseBuilder(new MessageFactory());
+        $requestBuilder->parseHttpHeaders($this->filterHeaders((array) $http_response_header));
+        $requestBuilder->setBody($content);
 
-        $response = (new MessageFactory())->createResponse(
-            $statusCode,
-            $reasonPhrase,
-            HeaderConverter::toPsrHeaders($filteredHeaders),
-            $content,
-            $protocolVersion
-        );
-
-        $response->getBody()->rewind();
-
-        return $response;
+        return $requestBuilder->getResponse();
     }
 
     /**

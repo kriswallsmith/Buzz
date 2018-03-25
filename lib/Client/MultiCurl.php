@@ -7,6 +7,7 @@ use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\ExceptionInterface;
 use Buzz\Exception\RequestException;
 use Buzz\Exception\ClientException;
+use Buzz\Message\ResponseBuilder;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -95,8 +96,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             /** @var $request RequestInterface */
             /** @var $options ParameterBag */
             list($request, $options) = $queueItem;
-            $curl = $this->createHandle($request, $options);
+            $curl = $this->createHandle();
+            $responseBuilder = $this->prepare($curl, $request, $options);
             $this->queue[$i][] = $curl;
+            $this->queue[$i][] = $responseBuilder;
             curl_multi_add_handle($this->curlm, $curl);
         }
 
@@ -112,7 +115,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             foreach (array_keys($this->queue) as $i) {
                 /** @var $request RequestInterface */
                 /** @var $options ParameterBag */
-                list($request, $options, $curl) = $this->queue[$i];
+                /** @var $responseBuilder ResponseBuilder */
+                list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
 
                 if ($curl !== $done['handle']) {
                     continue;
@@ -122,7 +126,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 try {
                     $this->parseError($request, $done['result'], $curl);
                     // populate the response object
-                    $response = $this->createResponse(curl_multi_getcontent($curl));
+                    curl_multi_getcontent($curl);
+                    $response = $responseBuilder->getResponse();
                 } catch (ExceptionInterface $e) {
                     if (null === $exception) {
                         $exception = $e;

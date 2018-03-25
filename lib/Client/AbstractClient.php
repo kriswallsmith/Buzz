@@ -84,19 +84,4 @@ abstract class AbstractClient
         $resolver->setAllowedTypes('timeout', ['integer', 'float']);
         $resolver->setAllowedTypes('proxy', ['null', 'string']);
     }
-
-    protected function parseStatusLine(string $statusLine): array
-    {
-        $protocolVersion = null;
-        $statusCode = 0;
-        $reasonPhrase = null;
-
-        if (2 <= count($parts = explode(' ', $statusLine, 3))) {
-            $protocolVersion = (string) substr($parts[0], 5);
-            $statusCode = (int) $parts[1];
-            $reasonPhrase = isset($parts[2]) ? $parts[2] : '';
-        }
-
-        return [$protocolVersion, $statusCode, $reasonPhrase];
-    }
 }
