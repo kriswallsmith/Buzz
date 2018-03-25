@@ -4,6 +4,7 @@ cache:
     directories:
         - $HOME/.composer/cache/files
         - $HOME/symfony-bridge/.phpunit
+        - $HOME/.php-cs-fixer
 
 env:
     global:
@@ -26,7 +27,7 @@ matrix:
       - php: 7.1
         env: COVERAGE=true TEST_COMMAND="composer test-ci"
       - php: 7.2
-        env: BUZZ_TEST_SERVER=""
+        env: BUZZ_TEST_SERVER=""  CS=true
 
         # Force some major versions of Symfony
       - php: 7.1
@@ -35,6 +36,7 @@ matrix:
         env: DEPENDENCIES="dunglas/symfony-lock:^4"
 
 before_install:
+    - mkdir -p "$HOME/.php-cs-fixer"
     - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
     - sudo apt-get -qq update
     - sudo apt-get -qq install nginx squid
@@ -59,6 +61,7 @@ before_script:
 script:
     - composer validate --strict --no-check-lock
     - $TEST_COMMAND
+    - if [[ "$CS" == "true" ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run; fi
 
 after_success:
     - if [[ $COVERAGE = true ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi

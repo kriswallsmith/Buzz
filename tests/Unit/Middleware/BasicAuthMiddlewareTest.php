@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Middleware\BasicAuthMiddleware;
@@ -14,7 +16,7 @@ class BasicAuthMiddlewareTest extends TestCase
 
         $middleware = new BasicAuthMiddleware('foo', 'bar');
         $newRequest = null;
-        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+        $middleware->handleRequest($request, function ($request) use (&$newRequest) {
             $newRequest = $request;
         });
 

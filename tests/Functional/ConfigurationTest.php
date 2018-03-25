@@ -20,7 +20,7 @@ class ConfigurationTest extends TestCase
     public function testBrowserPassingOption()
     {
         $request = new Request('GET', '/');
-        $options = ['foobar'=>true, 'timeout'=>4];
+        $options = ['foobar' => true, 'timeout' => 4];
 
         $client = $this->getMockBuilder(BuzzClientInterface::class)
             ->setMethods(['sendRequest'])
@@ -33,7 +33,6 @@ class ConfigurationTest extends TestCase
 
         $browser = new Browser($client);
         $browser->sendRequest($request, $options);
-
     }
 
     /**
@@ -41,7 +40,7 @@ class ConfigurationTest extends TestCase
      */
     public function testOptionInConstructor($class)
     {
-        $client = new $class(['timeout'=>4]);
+        $client = new $class(['timeout' => 4]);
         $this->assertInstanceOf($class, $client);
     }
 
@@ -56,7 +55,7 @@ class ConfigurationTest extends TestCase
 
         $client = new $class();
 
-        $response = $client->sendRequest(new Request('GET', $_SERVER['BUZZ_TEST_SERVER']), ['timeout'=>4]);
+        $response = $client->sendRequest(new Request('GET', $_SERVER['BUZZ_TEST_SERVER']), ['timeout' => 4]);
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
@@ -66,7 +65,7 @@ class ConfigurationTest extends TestCase
     public function testWrongOptionInConstructor($class)
     {
         $this->expectException(InvalidArgumentException::class);
-        new $class(['foobar'=>true]);
+        new $class(['foobar' => true]);
     }
 
     /**
@@ -77,7 +76,7 @@ class ConfigurationTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $client = new $class();
 
-        $client->sendRequest(new Request('GET', '/'), ['foobar'=>true]);
+        $client->sendRequest(new Request('GET', '/'), ['foobar' => true]);
     }
 
     public function clientClassProvider()

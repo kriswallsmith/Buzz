@@ -18,7 +18,6 @@ class BasicAuthMiddleware implements MiddlewareInterface
         $this->password = $password;
     }
 
-
     public function handleRequest(RequestInterface $request, callable $next)
     {
         $request = $request->withAddedHeader('Authorization', sprintf('Basic %s', base64_encode($this->username.':'.$this->password)));
@@ -30,5 +29,4 @@ class BasicAuthMiddleware implements MiddlewareInterface
     {
         return $next($request, $response);
     }
-
 }

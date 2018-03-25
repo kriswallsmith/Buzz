@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Middleware\ContentLengthMiddleware;
@@ -17,7 +19,7 @@ class ContentLengthMiddlewareTest extends TestCase
         /** @var RequestInterface $updatedRequest */
         $updatedRequest = null;
         $middleware = new ContentLengthMiddleware();
-        $middleware->handleRequest($request, function(RequestInterface $request) use (&$updatedRequest) {
+        $middleware->handleRequest($request, function (RequestInterface $request) use (&$updatedRequest) {
             $updatedRequest = $request;
         });
 

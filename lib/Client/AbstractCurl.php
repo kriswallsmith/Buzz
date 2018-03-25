@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Buzz\Client;
@@ -11,7 +12,6 @@ use Buzz\Exception\RequestException;
 use Buzz\Message\ResponseBuilder;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -49,7 +49,8 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * Release a cUrl resource. This function is from Guzzle
+     * Release a cUrl resource. This function is from Guzzle.
+     *
      * @param resource $curl
      */
     protected function releaseHandle($curl): void
@@ -73,9 +74,9 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Prepares a cURL resource to send a request.
      *
-     * @param resource $curl
+     * @param resource         $curl
      * @param RequestInterface $request
-     * @param ParameterBag $options
+     * @param ParameterBag     $options
      *
      * @return ResponseBuilder
      */
@@ -97,7 +98,7 @@ abstract class AbstractCurl extends AbstractClient
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, function ($ch, $data) use ($responseBuilder) {
             $str = trim($data);
             if ('' !== $str) {
-                if (strpos(strtolower($str), 'http/') === 0) {
+                if (0 === strpos(strtolower($str), 'http/')) {
                     $responseBuilder->setStatus($str);
                 } else {
                     $responseBuilder->addHeader($str);
@@ -125,11 +126,11 @@ abstract class AbstractCurl extends AbstractClient
      */
     private function setOptionsFromRequest($curl, RequestInterface $request)
     {
-        $options = array(
+        $options = [
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
-            CURLOPT_URL           => $request->getUri()->__toString(),
-            CURLOPT_HTTPHEADER    => HeaderConverter::toBuzzHeaders($request->getHeaders()),
-        );
+            CURLOPT_URL => $request->getUri()->__toString(),
+            CURLOPT_HTTPHEADER => HeaderConverter::toBuzzHeaders($request->getHeaders()),
+        ];
 
         if (0 !== $version = $this->getProtocolVersion($request)) {
             $options[CURLOPT_HTTP_VERSION] = $version;
@@ -155,7 +156,7 @@ abstract class AbstractCurl extends AbstractClient
             case 'OPTIONS':
                 $body = $request->getBody();
                 $bodySize = $body->getSize();
-                if ($bodySize !== 0) {
+                if (0 !== $bodySize) {
                     if ($body->isSeekable()) {
                         $body->rewind();
                     }
@@ -181,7 +182,7 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * @param resource $curl
+     * @param resource     $curl
      * @param ParameterBag $options
      */
     private function setOptionsFromParameterBag($curl, ParameterBag $options): void

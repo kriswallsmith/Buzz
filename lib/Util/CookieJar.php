@@ -1,7 +1,8 @@
 <?php
 
-namespace Buzz\Util;
+declare(strict_types=1);
 
+namespace Buzz\Util;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -9,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 class CookieJar
 {
     /** @var Cookie[] */
-    private $cookies = array();
+    private $cookies = [];
 
     public function clear(): void
     {
@@ -18,7 +19,7 @@ class CookieJar
 
     public function setCookies(array $cookies): void
     {
-        $this->cookies = array();
+        $this->cookies = [];
         foreach ($cookies as $cookie) {
             $this->addCookie($cookie);
         }
@@ -58,7 +59,7 @@ class CookieJar
     /**
      * Processes Set-Cookie headers from a request/response pair.
      *
-     * @param RequestInterface $request  A request object
+     * @param RequestInterface  $request  A request object
      * @param ResponseInterface $response A response object
      */
     public function processSetCookieHeaders(RequestInterface $request, ResponseInterface $response): void

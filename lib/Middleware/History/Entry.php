@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Middleware\History;
 
 use Psr\Http\Message\RequestInterface;
@@ -14,9 +16,9 @@ class Entry
     /**
      * Constructor.
      *
-     * @param RequestInterface $request  The request
+     * @param RequestInterface  $request  The request
      * @param ResponseInterface $response The response
-     * @param integer          $duration The duration in seconds
+     * @param int               $duration The duration in seconds
      */
     public function __construct(RequestInterface $request, ResponseInterface $response, $duration = null)
     {

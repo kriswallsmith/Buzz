@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Integration;
 
 use Buzz\Client\MultiCurl;
@@ -34,7 +36,7 @@ class MultiCurlIntegrationTest extends BaseIntegrationTest
      */
     public function testSendRequestWithOutcome($uriAndOutcome, $protocolVersion, array $headers, $body)
     {
-        if (null !== $body && $protocolVersion !== '1.0') {
+        if (null !== $body && '1.0' !== $protocolVersion) {
             $this->markTestSkipped('cURL can not send body using GET');
         }
         parent::testSendRequestWithOutcome($uriAndOutcome, $protocolVersion, $headers, $body);

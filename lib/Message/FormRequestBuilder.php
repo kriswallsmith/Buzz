@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Message;
 
 class FormRequestBuilder
@@ -15,7 +17,6 @@ class FormRequestBuilder
     private $files;
 
     /**
-     *
      * @param array $data
      * @param array $files
      */
@@ -35,8 +36,8 @@ class FormRequestBuilder
     }
 
     /**
-     * @param string $name
-     * @param string $path
+     * @param string      $name
+     * @param string      $path
      * @param string|null $contentType
      * @param string|null $filename
      */
@@ -64,7 +65,7 @@ class FormRequestBuilder
     }
 
     /**
-     * Reset the builder
+     * Reset the builder.
      */
     public function reset()
     {

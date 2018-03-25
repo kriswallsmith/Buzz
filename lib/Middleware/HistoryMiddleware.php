@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Middleware;
 
 use Buzz\Middleware\History\Journal;
@@ -24,6 +26,7 @@ class HistoryMiddleware implements MiddlewareInterface
     public function handleRequest(RequestInterface $request, callable $next)
     {
         $this->startTime = microtime(true);
+
         return $next($request);
     }
 

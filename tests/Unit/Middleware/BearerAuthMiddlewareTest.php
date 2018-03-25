@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Middleware\BearerAuthMiddleware;
@@ -13,10 +15,10 @@ class BearerAuthMiddlewareTest extends TestCase
         $request = new Request('GET', '/');
         $middleware = new BearerAuthMiddleware('superSecretAccessTokenGeneratedByTheNsaItself');
         $newRequest = null;
-        $middleware->handleRequest($request, function($request) use (&$newRequest) {
+        $middleware->handleRequest($request, function ($request) use (&$newRequest) {
             $newRequest = $request;
         });
-        
+
         $this->assertEquals('Bearer superSecretAccessTokenGeneratedByTheNsaItself', $newRequest->getHeaderLine('Authorization'));
     }
 }

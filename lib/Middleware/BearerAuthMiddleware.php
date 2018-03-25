@@ -32,6 +32,4 @@ class BearerAuthMiddleware implements MiddlewareInterface
     {
         return $next($request, $response);
     }
-
-
 }

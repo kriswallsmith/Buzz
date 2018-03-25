@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Buzz\Message;
 
-use Buzz\Message\HeaderConverter;
 use Buzz\Exception\ClientException;
 use Buzz\Exception\InvalidArgumentException;
 use Http\Message\ResponseFactory as HTTPlugResponseFactory;
@@ -51,7 +50,7 @@ class ResponseBuilder
     public function setStatus(string $input): void
     {
         $parts = explode(' ', $input, 3);
-        if (count($parts) < 2 || strpos(strtolower($parts[0]), 'http/') !== 0) {
+        if (count($parts) < 2 || 0 !== strpos(strtolower($parts[0]), 'http/')) {
             throw new InvalidArgumentException(sprintf('"%s" is not a valid HTTP status line', $input));
         }
 
@@ -62,6 +61,7 @@ class ResponseBuilder
 
     /**
      * Add a single HTTP header line.
+     *
      * @param string $input
      */
     public function addHeader(string $input): void
@@ -98,13 +98,13 @@ class ResponseBuilder
      */
     public function writeBody(string $input): int
     {
-        if ($this->stream === null) {
+        if (null === $this->stream) {
             if (false === $this->stream = fopen('php://temp', 'w+b')) {
                 throw new ClientException('Could not open stream');
             }
         }
 
-        if ($this->body !== null) {
+        if (null !== $this->body) {
             throw new InvalidArgumentException('You cannot use both writeBody and setBody');
         }
 
@@ -118,7 +118,7 @@ class ResponseBuilder
      */
     public function setBody(string $input): void
     {
-        if ($this->stream !== null) {
+        if (null !== $this->stream) {
             throw new InvalidArgumentException('You cannot use both writeBody and setBody');
         }
 

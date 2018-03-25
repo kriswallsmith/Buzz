@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware;
 
 use Buzz\Exception\InvalidArgumentException;
@@ -18,12 +20,13 @@ class CallbackMiddlewareTest extends TestCase
         $responseOut = new Response(201);
         $requestOut = new Request('POST', '/');
 
-        $middleware = new CallbackMiddleware(function() use ($requestIn, $responseIn, $requestOut, $responseOut) {
+        $middleware = new CallbackMiddleware(function () use ($requestIn, $responseIn, $requestOut, $responseOut) {
             $calls[] = $args = func_get_args();
-            $this->assertEquals($requestIn ,$args[0]);
+            $this->assertEquals($requestIn, $args[0]);
 
-            if (count($args) === 2) {
-                $this->assertEquals($responseIn ,$args[1]);
+            if (2 === count($args)) {
+                $this->assertEquals($responseIn, $args[1]);
+
                 return $responseOut;
             }
 
@@ -31,13 +34,13 @@ class CallbackMiddlewareTest extends TestCase
         });
 
         $firstRequest = null;
-        $this->assertEquals($requestOut, $middleware->handleRequest($requestIn, function($request) {
+        $this->assertEquals($requestOut, $middleware->handleRequest($requestIn, function ($request) {
             return $request;
         }));
 
         $secondRequest = null;
         $secondResponse = null;
-        $this->assertEquals($responseOut, $middleware->handleResponse($requestIn, $responseIn, function($request, $response) {
+        $this->assertEquals($responseOut, $middleware->handleResponse($requestIn, $responseIn, function ($request, $response) {
             return $response;
         }));
     }
@@ -46,6 +49,6 @@ class CallbackMiddlewareTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new CallbackMiddleware(array(1, 2, 3));
+        new CallbackMiddleware([1, 2, 3]);
     }
 }

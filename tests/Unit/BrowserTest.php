@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-
 use Nyholm\Psr7\Factory\MessageFactory;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
@@ -32,7 +33,7 @@ class BrowserTest extends TestCase
     public function testBasicMethods($method, $content)
     {
         $response = new Response(200, [], 'foobar');
-        $headers = ['X-Foo'=>'bar'];
+        $headers = ['X-Foo' => 'bar'];
 
         $this->client->expects($this->once())
             ->method('sendRequest')
@@ -46,14 +47,14 @@ class BrowserTest extends TestCase
 
     public function provideMethods()
     {
-        return array(
-            array('get',    ''),
-            array('head',   ''),
-            array('post',   'content'),
-            array('put',    'content'),
-            array('patch',    'content'),
-            array('delete', 'content'),
-        );
+        return [
+            ['get',    ''],
+            ['head',   ''],
+            ['post',   'content'],
+            ['put',    'content'],
+            ['patch',    'content'],
+            ['delete', 'content'],
+        ];
     }
 
     public function testLastMessages()
@@ -83,7 +84,6 @@ class BrowserTest extends TestCase
      */
     public function testSubmitForm(array $fields, array $headers, array $requestHeaders, string $requestBody)
     {
-
         $request = new Request('GET', '/');
         $response = new Response(201);
         $headerValidator = function (array $input) use ($requestHeaders) {
@@ -141,14 +141,14 @@ class BrowserTest extends TestCase
     {
         yield [
             ['user[name]' => 'Kris Wallsmith', 'user[email]' => 'foo@bar.com'],
-            ['foo'=>'bar'],
-            ['foo'=>'bar', 'Content-Type'=>'application/x-www-form-urlencoded'],
-            'user%5Bname%5D=Kris+Wallsmith&user%5Bemail%5D=foo%40bar.com'
+            ['foo' => 'bar'],
+            ['foo' => 'bar', 'Content-Type' => 'application/x-www-form-urlencoded'],
+            'user%5Bname%5D=Kris+Wallsmith&user%5Bemail%5D=foo%40bar.com',
         ];
         yield [
-            ['email' => 'foo@bar.com', 'image' => ['path'=>dirname(__DIR__).'/Resources/pixel.gif']],
+            ['email' => 'foo@bar.com', 'image' => ['path' => dirname(__DIR__).'/Resources/pixel.gif']],
             [],
-            ['Content-Type'=>'regex|^multipart/form-data; boundary=".+"$|'],
+            ['Content-Type' => 'regex|^multipart/form-data; boundary=".+"$|'],
             'regex|--[0-9a-f\.]+
 Content-Disposition: form-data; name="image"
 Content-Length: 43
@@ -160,19 +160,19 @@ Content-Length: 11
 
 foo@bar.com
 --[0-9a-f\.]+--
-|'];
+|', ];
         yield [
             ['email' => 'foo@bar.com', 'image' => [
-                'path'=>dirname(__DIR__).'/Resources/pixel.gif',
-                'contentType'=> 'image/gif',
-                'filename'=> 'my-pixel.gif',
+                'path' => dirname(__DIR__).'/Resources/pixel.gif',
+                'contentType' => 'image/gif',
+                'filename' => 'my-pixel.gif',
             ], 'other-image' => [
-                'path'=>dirname(__DIR__).'/Resources/pixel.gif',
-                'contentType'=> 'image/gif',
-                'filename'=> 'other-pixel.gif',
+                'path' => dirname(__DIR__).'/Resources/pixel.gif',
+                'contentType' => 'image/gif',
+                'filename' => 'other-pixel.gif',
             ]],
             [],
-            ['Content-Type'=>'regex|^multipart/form-data; boundary=".+"$|'],
+            ['Content-Type' => 'regex|^multipart/form-data; boundary=".+"$|'],
             'regex|--[0-9a-f\.]+
 Content-Disposition: form-data; name="image"; filename="my-pixel.gif"
 Content-Length: 43
@@ -191,6 +191,6 @@ Content-Length: 11
 
 foo@bar.com
 --[0-9a-f\.]+--
-|'];
+|', ];
     }
 }

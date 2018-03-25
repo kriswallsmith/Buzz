@@ -9,7 +9,7 @@ namespace Buzz\Message;
  * array(
  *   'foo: bar',
  *   'baz: biz',
- * )
+ * ).
  *
  * and PSR style:
  * array(
@@ -22,7 +22,8 @@ namespace Buzz\Message;
 class HeaderConverter
 {
     /**
-     * Convert from Buzz style headers to PSR style
+     * Convert from Buzz style headers to PSR style.
+     *
      * @param array $headers
      *
      * @return array
@@ -45,8 +46,10 @@ class HeaderConverter
     }
 
     /**
-     * Convert from PSR style headers to Buzz style
+     * Convert from PSR style headers to Buzz style.
+     *
      * @param array $headers
+     *
      * @return array
      */
     public static function toPsrHeaders(array $headers)

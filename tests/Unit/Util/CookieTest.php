@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Cookie;
 
 use Buzz\Util\Cookie;
@@ -15,12 +17,12 @@ class CookieTest extends TestCase
 
         $this->assertEquals('SESSION', $cookie->getName());
         $this->assertEquals('asdf', $cookie->getValue());
-        $this->assertEquals(array(
+        $this->assertEquals([
             'expires' => date('r', strtotime('2000-01-01 00:00:00')),
-            'path'    => '/',
-            'domain'  => '.example.com',
-            'secure'  => null,
-        ), $cookie->getAttributes());
+            'path' => '/',
+            'domain' => '.example.com',
+            'secure' => null,
+        ], $cookie->getAttributes());
     }
 
     public function testFromSetCookieHeaderFallsBackToIssuingDomain()

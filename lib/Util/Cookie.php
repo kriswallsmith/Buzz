@@ -1,21 +1,22 @@
 <?php
 
-namespace Buzz\Util;
+declare(strict_types=1);
 
+namespace Buzz\Util;
 
 use Psr\Http\Message\RequestInterface;
 
 class Cookie
 {
-    const ATTR_DOMAIN  = 'domain';
-    const ATTR_PATH    = 'path';
-    const ATTR_SECURE  = 'secure';
+    const ATTR_DOMAIN = 'domain';
+    const ATTR_PATH = 'path';
+    const ATTR_SECURE = 'secure';
     const ATTR_MAX_AGE = 'max-age';
     const ATTR_EXPIRES = 'expires';
 
     protected $name;
     protected $value;
-    protected $attributes = array();
+    protected $attributes = [];
     protected $createdAt;
 
     /**
@@ -31,7 +32,7 @@ class Cookie
      *
      * @param RequestInterface $request A request object
      *
-     * @return boolean
+     * @return bool
      */
     public function matchesRequest(RequestInterface $request)
     {
@@ -47,7 +48,7 @@ class Cookie
         }
 
         // secure
-        if ($this->hasAttribute(static::ATTR_SECURE) && $uri->getScheme() !== 'https') {
+        if ($this->hasAttribute(static::ATTR_SECURE) && 'https' !== $uri->getScheme()) {
             return false;
         }
 
@@ -59,7 +60,7 @@ class Cookie
      *
      * Checks the max-age and expires attributes.
      *
-     * @return boolean Whether the current cookie has expired
+     * @return bool Whether the current cookie has expired
      */
     public function isExpired()
     {
@@ -81,7 +82,7 @@ class Cookie
      *
      * @param string $domain A domain hostname
      *
-     * @return boolean
+     * @return bool
      */
     public function matchesDomain($domain)
     {
@@ -90,7 +91,7 @@ class Cookie
         if (0 === strpos($cookieDomain, '.')) {
             $pattern = '/\b'.preg_quote(substr($cookieDomain, 1), '/').'$/i';
 
-            return (boolean) preg_match($pattern, $domain);
+            return (bool) preg_match($pattern, $domain);
         } else {
             return 0 == strcasecmp($cookieDomain, $domain);
         }
@@ -101,7 +102,7 @@ class Cookie
      *
      * @param string $path A path
      *
-     * @return boolean
+     * @return bool
      */
     public function matchesPath($path)
     {
@@ -118,7 +119,7 @@ class Cookie
      */
     public function fromSetCookieHeader($header, $issuingDomain)
     {
-        list($this->name, $header)  = explode('=', $header, 2);
+        list($this->name, $header) = explode('=', $header, 2);
         if (false === strpos($header, ';')) {
             $this->value = $header;
             $header = null;
@@ -205,7 +206,7 @@ class Cookie
 
     public function clearAttributes()
     {
-        $this->setAttributes(array());
+        $this->setAttributes([]);
     }
 
     public function setCreatedAt($createdAt)

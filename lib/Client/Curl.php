@@ -1,13 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Buzz\Client;
 
-use Buzz\Exception\NetworkException;
-use Buzz\Exception\RequestException;
-
-use Buzz\Exception\LogicException;
-use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 

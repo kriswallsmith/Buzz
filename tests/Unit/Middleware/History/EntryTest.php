@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Buzz\Test\Unit\Middleware\History;
 
 use Buzz\Middleware\History\Entry;
