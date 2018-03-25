@@ -70,6 +70,26 @@ class ResponseBuilder
     }
 
     /**
+     * Add HTTP headers. The input array is all the header lines from the HTTP message. Optionally including the
+     * status line.
+     *
+     * @param array $headers
+     */
+    public function parseHttpHeaders(array $headers): void
+    {
+        $statusLine = array_shift($headers);
+        try {
+            $this->setStatus($statusLine);
+        } catch (InvalidArgumentException $e) {
+            array_unshift($headers, $statusLine);
+        }
+
+        foreach ($headers as $header) {
+            $this->addHeader($header);
+        }
+    }
+
+    /**
      * Add some content to the body. This function writes the $input to a stream.
      *
      * @param string $input
@@ -118,25 +138,5 @@ class ResponseBuilder
         $response->getBody()->rewind();
 
         return $response;
-    }
-
-    /**
-     * Add HTTP headers. The input array is all the header lines from the HTTP message. Optionally including the
-     * status line.
-     *
-     * @param array $headers
-     */
-    public function parseHttpHeaders(array $headers): void
-    {
-        $statusLine = array_shift($headers);
-        try {
-            $this->setStatus($statusLine);
-        } catch (InvalidArgumentException $e) {
-            array_unshift($headers, $statusLine);
-        }
-
-        foreach ($headers as $header) {
-            $this->addHeader($header);
-        }
     }
 }

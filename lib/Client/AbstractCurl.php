@@ -126,11 +126,14 @@ abstract class AbstractCurl extends AbstractClient
     private function setOptionsFromRequest($curl, RequestInterface $request)
     {
         $options = array(
-            CURLOPT_HTTP_VERSION  => $this->getProtocolVersion($request),
             CURLOPT_CUSTOMREQUEST => $request->getMethod(),
             CURLOPT_URL           => $request->getUri()->__toString(),
             CURLOPT_HTTPHEADER    => HeaderConverter::toBuzzHeaders($request->getHeaders()),
         );
+
+        if (0 !== $version = $this->getProtocolVersion($request)) {
+            $options[CURLOPT_HTTP_VERSION] = $version;
+        }
 
         if ($request->getUri()->getUserInfo()) {
             $options[CURLOPT_USERPWD] = $request->getUri()->getUserInfo();
@@ -224,9 +227,7 @@ abstract class AbstractCurl extends AbstractClient
 
     private function getProtocolVersion(RequestInterface $request): int
     {
-        $version = $request->getProtocolVersion();
-
-        switch ($version) {
+        switch ($request->getProtocolVersion()) {
             case '1.0':
                 return CURL_HTTP_VERSION_1_0;
             case '1.1':
@@ -236,6 +237,8 @@ abstract class AbstractCurl extends AbstractClient
                     return CURL_HTTP_VERSION_2_0;
                 }
                 throw new \UnexpectedValueException('libcurl 7.33 needed for HTTP 2.0 support');
+            default:
+                return 0;
         }
     }
 }
