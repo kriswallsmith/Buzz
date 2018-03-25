@@ -8,17 +8,32 @@ Below is an example how to use `Browser::submit()` to upload a file.
 ```php
 $browser->submit('http://example.com/foo', [
     'user[name]' => 'Kris Wallsmith',
-    'user[image]' => new FormUpload('/path/to/image.jpg',
+    'user[image]' => [
+        'path'=>'/path/to/image.jpg'
+      ],
 ]);
 ``` 
 
-Here is an example doing exatly the same with the (deprecated) `FormRequest`. 
+```php
+$browser->submit('http://example.com/foo', [
+    'user[name]' => 'Kris Wallsmith',
+    'user[image]' => [
+        'path'=>'/path/to/image.jpg',
+        'filename' => 'my-image.jpg',
+        'contentType' => 'image/jpg',
+      ],
+]);
+``` 
+
+### Using the FormRequestBuilder
+
+If you have a large from or you want to build your request in a structured way you may use the `FormRequestBuilder`.
 
 ```php
-$request = new FormRequest();
-$request->setField('user[name]', 'Kris Wallsmith');
-$request->setField('user[image]', new FormUpload('/path/to/image.jpg'));
-$request->setResource('http://example.com/foo');
+$builder = new FormRquestBuilder();
+$builder->addField('user[name]', 'Kris Wallsmith');
+$builder->addFile('user[image]', '/path/to/image.jpg', 'image/jpg', 'my-image.jpg');
+$builder->addFile('cover-image', '/path/to/cover.jpg');
 
-$browser->send($request);
+$browser->submit('http://example.com/foo', $builder->build());
 ``` 
