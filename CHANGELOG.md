@@ -11,19 +11,24 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 - Added `ParameterBag` to store options. 
 - Added `BatchClientInterface::sendAsyncRequest(RequestInterface $request, array $options = [])`.
 - Added `BuzzClientInterface::sendRequest(RequestInterface $request, array $options = []): ResponseInterface`.
+- Ported all Listeners to Middlewares. 
+- Added options to configure the client as constructor argument and when you send a request. 
 
-### Removed
+### Removed (BC breaks)
 
+- Removed `Request` and `Response`
+- Removed `AbstractStream`.
+- Removed all listeners and `ListenerInterface`
 - Client functions like `AbstractClient::setIgnoreErrors()`, `AbstractClient::getIgnoreErrors()`, `AbstractClient::setMaxRedirects()`, 
 `AbstractClient::getMaxRedirects()`, `AbstractClient::setTimeout()`, `AbstractClient::getTimeout()`, 
 `AbstractClient::setVerifyPeer()`, `AbstractClient::getVerifyPeer()`, `AbstractClient::getVerifyHost()`, 
 `AbstractClient::setVerifyHost()`, `AbstractClient::setProxy()` and `AbstractClient::getProxy()`.
-- Removed `AbstractStream`.
 
-### Changed
+### Changed (BC breaks)
 
 - Redirects are not followed by default
 - No exceptions are thrown and no warnings are triggered on a invalid response. 
+- We only handle PSR requests and responses. 
 
 ## 0.16.1
 
