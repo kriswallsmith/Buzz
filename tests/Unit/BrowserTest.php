@@ -51,6 +51,7 @@ class BrowserTest extends TestCase
             array('head',   ''),
             array('post',   'content'),
             array('put',    'content'),
+            array('patch',    'content'),
             array('delete', 'content'),
         );
     }
@@ -68,6 +69,13 @@ class BrowserTest extends TestCase
 
         $this->assertSame($request, $this->browser->getLastRequest());
         $this->assertSame($response, $this->browser->getLastResponse());
+    }
+
+    public function testGetClient()
+    {
+        $client = new Curl();
+        $browser = new Browser($client);
+        $this->assertSame($client, $browser->getClient());
     }
 
     /**
