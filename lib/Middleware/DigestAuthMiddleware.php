@@ -49,7 +49,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
     /**
      * Set OPTION_QOP_BEST_AVAILABLE and OPTION_DISCARD_CLIENT_NONCE by default.
      */
-    public function __construct($username = null, $password = null, $realm = null)
+    public function __construct(string $username = null, string $password = null, string $realm = null)
     {
         $this->setUsername($username);
         $this->setPassword($password);
