@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class Browser implements BuzzClientInterface
 {
-    /** @var ClientInterface */
+    /** @var BuzzClientInterface */
     private $client;
 
     /** @var RequestFactoryInterface|RequestFactory */

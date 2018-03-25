@@ -122,6 +122,7 @@ class Cookie
         list($this->name, $header) = explode('=', $header, 2);
         if (false === strpos($header, ';')) {
             $this->value = $header;
+            $header = null;
         } else {
             list($this->value, $header) = explode(';', $header, 2);
         }

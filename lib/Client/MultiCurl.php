@@ -71,7 +71,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
     public function flush(): void
     {
-        while ($this->queue) {
+        while (!empty($this->queue)) {
             $this->proceed();
         }
     }
