@@ -15,7 +15,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class Browser
+class Browser implements BuzzClientInterface
 {
     /** @var ClientInterface */
     private $client;
@@ -133,10 +133,10 @@ class Browser
      * @throws LogicException
      * @throws InvalidArgumentException
      */
-    public function sendRequest(RequestInterface $request): ResponseInterface
+    public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
-        $chain = $this->createMiddlewareChain($this->middlewares, function(RequestInterface $request, callable $responseChain) {
-            $response = $this->client->sendRequest($request);
+        $chain = $this->createMiddlewareChain($this->middlewares, function(RequestInterface $request, callable $responseChain) use($options) {
+            $response = $this->client->sendRequest($request, $options);
             $responseChain($request, $response);
         }, function (RequestInterface $request, ResponseInterface $response) {
             $this->lastRequest = $request;
