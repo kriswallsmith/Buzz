@@ -92,7 +92,7 @@ class FunctionalTest extends TestCase
 
     public function testMultiCurlExecutesRequestsConcurently()
     {
-        $client = new MultiCurl(['timeout'=>5]);
+        $client = new MultiCurl(['timeout'=>30]);
 
         $calls = array();
         $callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use(&$calls) {
