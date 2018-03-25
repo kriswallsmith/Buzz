@@ -10,6 +10,8 @@ use Buzz\Exception\ClientException;
 use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
+use Http\Message\RequestFactory;
+use Interop\Http\Factory\RequestFactoryInterface;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -20,7 +22,7 @@ class Browser implements BuzzClientInterface
     /** @var ClientInterface */
     private $client;
 
-    /** @var MessageFactory */
+    /** @var RequestFactoryInterface|RequestFactory */
     private $factory;
 
     /**
@@ -82,7 +84,7 @@ class Browser implements BuzzClientInterface
      */
     public function request(string $method, string $url, array $headers = [], string $body = ''): ResponseInterface
     {
-        $request = $this->getMessageFactory()->createRequest($method, $url, $headers, $body);
+        $request = $this->createRequest($method, $url, $headers, $body);
 
         return $this->sendRequest($request);
     }
@@ -121,7 +123,7 @@ class Browser implements BuzzClientInterface
             $body = "$files--{$boundary}--\r\n";
         }
 
-        $request = $this->getMessageFactory()->createRequest($method, $url, $headers, $body);
+        $request = $this->createRequest($method, $url, $headers, $body);
 
         return $this->sendRequest($request);
     }
@@ -248,8 +250,14 @@ class Browser implements BuzzClientInterface
         return $output;
     }
 
-    protected function getMessageFactory(): MessageFactory
+    protected function createRequest(string $method, string $url, array $headers, $body): RequestInterface
     {
-        return $this->factory;
+        $request = $this->factory->createRequest($method, $url);
+        $request->getBody()->write($body);
+        foreach ($headers as $name => $value) {
+            $request = $request->withAddedHeader($name, $value);
+        }
+
+        return $request;
     }
 }

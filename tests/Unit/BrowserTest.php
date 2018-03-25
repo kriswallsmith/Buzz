@@ -113,21 +113,13 @@ class BrowserTest extends TestCase
             return preg_match($regex, $input);
         };
 
-        $messageFactory = $this->getMockBuilder(MessageFactory::class)
-            ->setMethods(['createRequest'])
+        $browser = $this->getMockBuilder(Browser::class)
+            ->setMethods(['sendRequest', 'createRequest'])
             ->disableOriginalConstructor()
             ->getMock();
-
-        $messageFactory->expects($this->once())->method('createRequest')
+        $browser->expects($this->once())->method('createRequest')
             ->with('POST', '/', $this->callback($headerValidator), $this->callback($bodyValidator))
             ->willReturn($request);
-
-        $browser = $this->getMockBuilder(Browser::class)
-            ->setMethods(['sendRequest', 'getMessageFactory'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $browser->expects($this->once())->method('getMessageFactory')
-            ->willReturn($messageFactory);
         $browser->expects($this->once())->method('sendRequest')
             ->willReturn($response);
 
