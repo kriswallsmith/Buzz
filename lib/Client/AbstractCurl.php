@@ -193,11 +193,11 @@ abstract class AbstractCurl extends AbstractClient
             curl_setopt($curl, CURLOPT_PROXY, $proxy);
         }
 
-        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('follow_redirects');
+        $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('allow_redirects');
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $canFollow);
         curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify_peer') ? 1 : 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify_host') ? 2 : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify') ? 1 : 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify') ? 2 : 0);
         curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
     }
 

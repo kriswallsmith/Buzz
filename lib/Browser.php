@@ -42,45 +42,45 @@ class Browser implements BuzzClientInterface
 
     public function get(string $url, array $headers = []): ResponseInterface
     {
-        return $this->call($url, 'GET', $headers);
+        return $this->request('GET', $url, $headers);
     }
 
     public function post(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'POST', $headers, $body);
+        return $this->request('POST', $url, $headers, $body);
     }
 
     public function head(string $url, array  $headers = []): ResponseInterface
     {
-        return $this->call($url, 'HEAD', $headers);
+        return $this->request('HEAD', $url, $headers);
     }
 
     public function patch(string $url, array  $headers = [], string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'PATCH', $headers, $body);
+        return $this->request('PATCH', $url, $headers, $body);
     }
 
     public function put(string $url, array  $headers = [], string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'PUT', $headers, $body);
+        return $this->request('PUT', $url, $headers, $body);
     }
 
     public function delete(string $url, array  $headers = [], string $body = ''): ResponseInterface
     {
-        return $this->call($url, 'DELETE', $headers, $body);
+        return $this->request('DELETE', $url, $headers, $body);
     }
 
     /**
      * Sends a request.
      *
-     * @param string $url     The URL to call
      * @param string $method  The request method to use
+     * @param string $url     The URL to call
      * @param array  $headers An array of request headers
      * @param string $body    The request content
      *
      * @return ResponseInterface The response object
      */
-    public function call(string $url, string $method, array $headers = [], string $body = ''): ResponseInterface
+    public function request(string $method, string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         $request = $this->getMessageFactory()->createRequest($method, $url, $headers, $body);
 

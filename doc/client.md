@@ -9,7 +9,7 @@ There are 3 clients: `FileGetContents`, `Curl` and `MultiCurl`.
 ```php
 $request = new PSR7Request('GET', 'https://example.com');
 
-$client = new Buzz\Client\FileGetContents(['follow_redirects'=>true]);
+$client = new Buzz\Client\FileGetContents(['allow_redirects'=>true]);
 $response = $client->send($request, ['timeout' => 4]);
 ```
 
@@ -17,6 +17,13 @@ $response = $client->send($request, ['timeout' => 4]);
 
 Not all configuration works will all clients. If there is any client specific configuration it 
 will be noted below. 
+
+#### allow_redirects
+
+Type: boolean<br>
+Default: `false`
+
+Should the client follow HTTP redirects or not. 
 
 #### Callback
 
@@ -49,13 +56,6 @@ $client->sendAsyncRequest($request, array('curl' => [
 ]));
 ```
 
-#### follow_redirects
-
-Type: boolean<br>
-Default: `false`
-
-Should the client follow HTTP redirects or not. 
-
 #### max_redirects
 
 Type: integer<br>
@@ -77,12 +77,9 @@ Default: `30`
 
 The time to wait before interrupt the request. 
 
-#### verify_host
+#### verify
 
 Type: boolean<br>
 Default: `true`
 
-#### verify_peer
-
-Type: boolean<br>
-Default: `true`
+If SSL protocols should verified. 
