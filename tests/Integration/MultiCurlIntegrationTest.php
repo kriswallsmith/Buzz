@@ -2,13 +2,13 @@
 
 namespace Buzz\Test\Integration;
 
-use Buzz\Client\Curl;
+use Buzz\Client\MultiCurl;
 
-class CurlIntegrationTest extends BaseIntegrationTest
+class MultiCurlIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new Curl(['timeout'=>3]);
+        $client = new MultiCurl();
 
         return $client;
     }
@@ -37,7 +37,6 @@ class CurlIntegrationTest extends BaseIntegrationTest
         if (null !== $body && $protocolVersion !== '1.0') {
             $this->markTestSkipped('cURL can not send body using GET');
         }
-
         parent::testSendRequestWithOutcome($uriAndOutcome, $protocolVersion, $headers, $body);
     }
 }
