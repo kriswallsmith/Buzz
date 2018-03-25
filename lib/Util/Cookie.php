@@ -181,7 +181,7 @@ class Cookie
         $this->attributes = array_change_key_case($attributes);
     }
 
-    public function setAttribute(string $name, string $value): void
+    public function setAttribute(string $name, ?string $value): void
     {
         $this->attributes[strtolower($name)] = $value;
     }

@@ -64,13 +64,13 @@ class CookieTest extends TestCase
     public function testIsExpiredChecksMaxAge()
     {
         $cookie = new Cookie();
-        $cookie->setAttribute('max-age', 60);
+        $cookie->setAttribute('max-age', '60');
 
         $this->assertFalse($cookie->isExpired());
 
         $cookie = new Cookie();
         $cookie->setCreatedAt(strtotime('-1 hour'));
-        $cookie->setAttribute('max-age', 60);
+        $cookie->setAttribute('max-age', '60');
 
         $this->assertTrue($cookie->isExpired());
     }
