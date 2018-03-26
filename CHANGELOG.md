@@ -2,7 +2,7 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions. 
 
-## 0.17.0 (Not released)
+## 0.17.0
 
 ### Added
 
