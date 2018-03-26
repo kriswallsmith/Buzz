@@ -65,15 +65,6 @@ We do love PSRs and this is a wish list of what PSR we would like to support:
 * PSR-17 (HTTP factories)
 * PSR-18 (HTTP client)
 
-## Backwards Compatibility Promise
-
-We take backwards compatibility very seriously as you should do with any open source project. We strictly follow [Semver](http://semver.org/).
-Please note that Semver works a bit different prior version 1.0.0. Minor versions prior 1.0.0 are allow to break backwards
-compatibility. 
-
-Being greatly inspired by [Symfony's bc promise](https://symfony.com/doc/current/contributing/code/bc.html), we have adopted
-their method of deprecating classes, interfaces and functions. 
-
 ## Running the tests
 
 To run the test we need to set up a webserver. Using PHP's build in one works perfectly. 
