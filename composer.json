@@ -32,6 +32,9 @@
         "psr/log": "^1.0",
         "symfony/phpunit-bridge": "^4.0"
     },
+    "provide": {
+        "php-http/client-implementation": "1.0"
+    },
     "suggest": {
         "ext-curl": "*"
     },
