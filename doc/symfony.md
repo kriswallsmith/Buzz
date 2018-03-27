@@ -1,3 +1,5 @@
+[<-- Index](/doc/index.md)
+
 # Symfony integration
 
 Symfony is a great PHP framework and of course should we have some nice integration 

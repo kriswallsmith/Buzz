@@ -1,3 +1,5 @@
+[<-- Index](/doc/index.md)
+
 # Clients
 
 Clients are the low-level objects to send HTTP requests. All clients are minimalistic both in 

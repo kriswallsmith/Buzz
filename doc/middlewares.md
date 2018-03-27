@@ -1,3 +1,5 @@
+[<-- Index](/doc/index.md)
+
 # Buzz middlewares
 
 If you want to modify the request or response somehow, a middleware is the way to
