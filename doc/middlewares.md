@@ -83,3 +83,8 @@ class UserAgentMiddleware extends MiddlewareInterface
    }
 }
 ``` 
+
+
+---
+
+Continue reading about [Symfony integration](/doc/symfony.md).

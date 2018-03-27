@@ -39,3 +39,8 @@ httplug:
 You will now have a service named `httplug.client.my_buzz`. You can of course add 
 plugins method clients and whatever you want according to the 
 [HTTPlug documentation](http://docs.php-http.org/en/latest/integrations/symfony-bundle.html).
+
+
+---
+
+Go back to [index](/doc/index.md).

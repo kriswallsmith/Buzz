@@ -84,3 +84,7 @@ Type: boolean<br>
 Default: `true`
 
 If SSL protocols should verified. 
+
+---
+
+Continue reading about [Middlewares](/doc/middlewares.md).

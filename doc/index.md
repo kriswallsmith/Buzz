@@ -80,4 +80,7 @@ $builder->addFile('cover-image', '/path/to/cover.jpg');
 
 $browser->submitForm('http://example.com/foo', $builder->build());
 ``` 
-  
+
+---
+
+Continue reading about [Clients](/doc/client.md).
