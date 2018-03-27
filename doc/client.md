@@ -1,3 +1,5 @@
+[<-- Index](/doc/index.md)
+
 # Clients
 
 Clients are the low-level objects to send HTTP requests. All clients are minimalistic both in 
@@ -84,3 +86,7 @@ Type: boolean<br>
 Default: `true`
 
 If SSL protocols should verified. 
+
+---
+
+Continue reading about [Middlewares](/doc/middlewares.md).
