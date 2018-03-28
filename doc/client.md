@@ -27,7 +27,7 @@ Default: `false`
 
 Should the client follow HTTP redirects or not. 
 
-#### Callback
+#### callback
 
 Type: callable<br>
 Default: `function() {}`<br>
@@ -43,7 +43,7 @@ $request = new PSR7Request('GET', 'https://example.com');
 $client->sendAsyncRequest($request, array('callback' => $callback));
 ```
 
-#### Curl
+#### curl
 
 Type: array<br>
 Default: `[]`<br>
