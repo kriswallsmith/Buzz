@@ -2,6 +2,12 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions. 
 
+## 0.17.1
+
+### Added
+
+- Updated composer.json to show that we provide `php-http/client-implementation: 1.0`.
+
 ## 0.17.0
 
 ### Added
