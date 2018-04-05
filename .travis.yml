@@ -31,9 +31,9 @@ matrix:
 
         # Force some major versions of Symfony
       - php: 7.1
-        env: DEPENDENCIES="dunglas/symfony-lock:^3"
+        env: DEPENDENCIES="symfony/force-lowest:^3"
       - php: 7.1
-        env: DEPENDENCIES="dunglas/symfony-lock:^4"
+        env: DEPENDENCIES="symfony/force-lowest:^4"
 
 before_install:
     - mkdir -p "$HOME/.php-cs-fixer"
