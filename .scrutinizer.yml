@@ -1,5 +1,6 @@
 filter:
-    excluded_paths: [vendor/*, tests/*]
+    excluded_paths: [vendor/*, tests/*, lib/Middleware/DigestAuthMiddleware.php]
+    
 checks:
     php:
         code_rating: true
