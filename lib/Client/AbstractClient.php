@@ -25,13 +25,13 @@ abstract class AbstractClient
     /**
      * @var ResponseFactoryInterface
      */
-    protected $messageFactory;
+    protected $responseFactory;
 
     public function __construct(array $options = [], ?ResponseFactoryInterface $messageFactory = null)
     {
         $this->options = new ParameterBag();
         $this->options = $this->doValidateOptions($options);
-        $this->messageFactory = $messageFactory ?: new MessageFactory();
+        $this->responseFactory = $messageFactory ?: new MessageFactory();
     }
 
     protected function getOptionsResolver(): OptionsResolver

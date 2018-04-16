@@ -93,7 +93,7 @@ abstract class AbstractCurl extends AbstractClient
         $this->setOptionsFromParameterBag($curl, $options);
         $this->setOptionsFromRequest($curl, $request);
 
-        $responseBuilder = new ResponseBuilder($this->messageFactory);
+        $responseBuilder = new ResponseBuilder($this->responseFactory);
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, function ($ch, $data) use ($responseBuilder) {
             $str = trim($data);
             if ('' !== $str) {

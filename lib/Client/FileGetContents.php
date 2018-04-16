@@ -27,7 +27,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
             throw new NetworkException($request, $error['message']);
         }
 
-        $requestBuilder = new ResponseBuilder($this->messageFactory);
+        $requestBuilder = new ResponseBuilder($this->responseFactory);
         $requestBuilder->parseHttpHeaders($this->filterHeaders((array) $http_response_header));
         $requestBuilder->writeBody($content);
 
