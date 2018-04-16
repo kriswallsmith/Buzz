@@ -32,8 +32,11 @@ abstract class AbstractClient
     {
         $this->options = new ParameterBag();
         $this->options = $this->doValidateOptions($options);
-        if (!$responseFactory instanceof ResponseFactoryInterface && !$responseFactory instanceof ResponseFactory) {
+        if (null === $responseFactory) {
             $responseFactory = new MessageFactory();
+        }
+        if (!$responseFactory instanceof ResponseFactoryInterface && !$responseFactory instanceof ResponseFactory) {
+            throw new InvalidArgumentException('$responseFactory not a valid ResponseFactory');
         }
         $this->responseFactory = $responseFactory;
     }

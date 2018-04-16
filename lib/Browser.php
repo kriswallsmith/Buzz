@@ -50,8 +50,11 @@ class Browser implements BuzzClientInterface
         $responseFactory = null
     ) {
         $this->client = $client ?: new FileGetContents([], $responseFactory ?: new MessageFactory());
-        if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
+        if (null === $requestFactory) {
             $requestFactory = new MessageFactory();
+        }
+        if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
+            throw new InvalidArgumentException('$requestFactory not a valid RequestFactory');
         }
         $this->requestFactory = $requestFactory;
     }
