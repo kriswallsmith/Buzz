@@ -11,6 +11,7 @@ use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Message\RequestFactory;
+use Http\Message\ResponseFactory;
 use Interop\Http\Factory\RequestFactoryInterface;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Nyholm\Psr7\Factory\MessageFactory;
@@ -39,17 +40,20 @@ class Browser implements BuzzClientInterface
     /**
      * Browser constructor.
      *
-     * @param BuzzClientInterface|null      $client
-     * @param RequestFactoryInterface|null  $requestFactory
-     * @param ResponseFactoryInterface|null $responseFactory To change the default response factory for FileGetContents
+     * @param BuzzClientInterface|null                      $client
+     * @param RequestFactoryInterface|RequestFactory|null   $requestFactory
+     * @param ResponseFactoryInterface|ResponseFactory|null $responseFactory To change the default response factory for FileGetContents
      */
     public function __construct(
         BuzzClientInterface $client = null,
-        ?RequestFactoryInterface $requestFactory = null,
-        ?ResponseFactoryInterface $responseFactory = null
+        $requestFactory = null,
+        $responseFactory = null
     ) {
         $this->client = $client ?: new FileGetContents([], $responseFactory ?: new MessageFactory());
-        $this->requestFactory = $requestFactory ?: new MessageFactory();
+        if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
+            $requestFactory = new MessageFactory();
+        }
+        $this->requestFactory = $requestFactory;
     }
 
     public function get(string $url, array $headers = []): ResponseInterface
