@@ -11,7 +11,7 @@ use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Message\RequestFactory;
-use \Http\Message\MessageFactory as MessageFactoryInterface;
+use Http\Message\MessageFactory as MessageFactoryInterface;
 use Interop\Http\Factory\RequestFactoryInterface;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;

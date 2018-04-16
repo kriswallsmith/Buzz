@@ -10,7 +10,6 @@ use Buzz\Exception\ClientException;
 use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
 use Buzz\Message\ResponseBuilder;
-use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
