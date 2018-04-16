@@ -23,7 +23,7 @@ class Browser implements BuzzClientInterface
     private $client;
 
     /** @var RequestFactoryInterface|RequestFactory */
-    private $factory;
+    private $requestFactory;
 
     /**
      * @var MiddlewareInterface[]
@@ -36,10 +36,19 @@ class Browser implements BuzzClientInterface
     /** @var ResponseInterface */
     private $lastResponse;
 
-    public function __construct(BuzzClientInterface $client = null, ?ResponseFactoryInterface $factory = null)
-    {
-        $this->client = $client ?: new FileGetContents();
-        $this->factory = $factory ?: new MessageFactory();
+    /**
+     * Browser constructor.
+     * @param BuzzClientInterface|null $client
+     * @param RequestFactoryInterface|null $requestFactory
+     * @param ResponseFactoryInterface|null $responseFactory  To change the default response factory for FileGetContents
+     */
+    public function __construct(
+        BuzzClientInterface $client = null,
+        ?RequestFactoryInterface $requestFactory = null,
+        ?ResponseFactoryInterface $responseFactory = null
+    ) {
+        $this->client = $client ?: new FileGetContents([], $responseFactory ?: new MessageFactory());
+        $this->requestFactory = $requestFactory ?: new MessageFactory();
     }
 
     public function get(string $url, array $headers = []): ResponseInterface
@@ -252,7 +261,7 @@ class Browser implements BuzzClientInterface
 
     protected function createRequest(string $method, string $url, array $headers, $body): RequestInterface
     {
-        $request = $this->factory->createRequest($method, $url);
+        $request = $this->requestFactory->createRequest($method, $url);
         $request->getBody()->write($body);
         foreach ($headers as $name => $value) {
             $request = $request->withAddedHeader($name, $value);
