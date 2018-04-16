@@ -2,6 +2,13 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions. 
 
+## 0.17.2
+
+### Changed
+
+- Added `ResponseFactory` to `AbstractClient` options
+- Added `RequestFactory` to `Browser` options
+
 ## 0.17.1
 
 ### Added
