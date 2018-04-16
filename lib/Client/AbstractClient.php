@@ -6,6 +6,8 @@ namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\InvalidArgumentException;
+use Http\Message\MessageFactory as MessageFactoryInterface;
+use Nyholm\Psr7\Factory\MessageFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractClient
@@ -20,10 +22,16 @@ abstract class AbstractClient
      */
     private $options;
 
-    public function __construct(array $options = [])
+    /**
+     * @var MessageFactoryInterface
+     */
+    protected $messageFactory;
+
+    public function __construct(array $options = [], ?MessageFactoryInterface $messageFactory = null)
     {
         $this->options = new ParameterBag();
         $this->options = $this->doValidateOptions($options);
+        $this->messageFactory = $messageFactory ?: new MessageFactory();
     }
 
     protected function getOptionsResolver(): OptionsResolver

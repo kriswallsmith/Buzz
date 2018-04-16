@@ -11,6 +11,7 @@ use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Message\RequestFactory;
+use \Http\Message\MessageFactory as MessageFactoryInterface;
 use Interop\Http\Factory\RequestFactoryInterface;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
@@ -35,10 +36,10 @@ class Browser implements BuzzClientInterface
     /** @var ResponseInterface */
     private $lastResponse;
 
-    public function __construct(BuzzClientInterface $client = null)
+    public function __construct(BuzzClientInterface $client = null, ?MessageFactoryInterface $factory = null)
     {
         $this->client = $client ?: new FileGetContents();
-        $this->factory = new MessageFactory();
+        $this->factory = $factory ?: new MessageFactory();
     }
 
     public function get(string $url, array $headers = []): ResponseInterface
