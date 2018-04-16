@@ -38,9 +38,10 @@ class Browser implements BuzzClientInterface
 
     /**
      * Browser constructor.
-     * @param BuzzClientInterface|null $client
-     * @param RequestFactoryInterface|null $requestFactory
-     * @param ResponseFactoryInterface|null $responseFactory  To change the default response factory for FileGetContents
+     *
+     * @param BuzzClientInterface|null      $client
+     * @param RequestFactoryInterface|null  $requestFactory
+     * @param ResponseFactoryInterface|null $responseFactory To change the default response factory for FileGetContents
      */
     public function __construct(
         BuzzClientInterface $client = null,
