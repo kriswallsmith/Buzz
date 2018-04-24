@@ -11,7 +11,9 @@ use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Message\RequestFactory;
+use Http\Message\ResponseFactory;
 use Interop\Http\Factory\RequestFactoryInterface;
+use Interop\Http\Factory\ResponseFactoryInterface;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,7 +24,7 @@ class Browser implements BuzzClientInterface
     private $client;
 
     /** @var RequestFactoryInterface|RequestFactory */
-    private $factory;
+    private $requestFactory;
 
     /**
      * @var MiddlewareInterface[]
@@ -35,10 +37,26 @@ class Browser implements BuzzClientInterface
     /** @var ResponseInterface */
     private $lastResponse;
 
-    public function __construct(BuzzClientInterface $client = null)
-    {
-        $this->client = $client ?: new FileGetContents();
-        $this->factory = new MessageFactory();
+    /**
+     * Browser constructor.
+     *
+     * @param BuzzClientInterface|null                      $client
+     * @param RequestFactoryInterface|RequestFactory|null   $requestFactory
+     * @param ResponseFactoryInterface|ResponseFactory|null $responseFactory To change the default response factory for FileGetContents
+     */
+    public function __construct(
+        BuzzClientInterface $client = null,
+        $requestFactory = null,
+        $responseFactory = null
+    ) {
+        $this->client = $client ?: new FileGetContents([], $responseFactory ?: new MessageFactory());
+        if (null === $requestFactory) {
+            $requestFactory = new MessageFactory();
+        }
+        if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
+            throw new InvalidArgumentException('$requestFactory not a valid RequestFactory');
+        }
+        $this->requestFactory = $requestFactory;
     }
 
     public function get(string $url, array $headers = []): ResponseInterface
@@ -251,7 +269,7 @@ class Browser implements BuzzClientInterface
 
     protected function createRequest(string $method, string $url, array $headers, $body): RequestInterface
     {
-        $request = $this->factory->createRequest($method, $url);
+        $request = $this->requestFactory->createRequest($method, $url);
         $request->getBody()->write($body);
         foreach ($headers as $name => $value) {
             $request = $request->withAddedHeader($name, $value);

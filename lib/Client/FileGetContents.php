@@ -8,7 +8,6 @@ use Buzz\Configuration\ParameterBag;
 use Buzz\Message\HeaderConverter;
 use Buzz\Exception\NetworkException;
 use Buzz\Message\ResponseBuilder;
-use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -28,7 +27,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
             throw new NetworkException($request, $error['message']);
         }
 
-        $requestBuilder = new ResponseBuilder(new MessageFactory());
+        $requestBuilder = new ResponseBuilder($this->responseFactory);
         $requestBuilder->parseHttpHeaders($this->filterHeaders((array) $http_response_header));
         $requestBuilder->writeBody($content);
 

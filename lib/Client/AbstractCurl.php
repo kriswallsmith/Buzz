@@ -10,7 +10,6 @@ use Buzz\Exception\ClientException;
 use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
 use Buzz\Message\ResponseBuilder;
-use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -94,7 +93,7 @@ abstract class AbstractCurl extends AbstractClient
         $this->setOptionsFromParameterBag($curl, $options);
         $this->setOptionsFromRequest($curl, $request);
 
-        $responseBuilder = new ResponseBuilder(new MessageFactory());
+        $responseBuilder = new ResponseBuilder($this->responseFactory);
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, function ($ch, $data) use ($responseBuilder) {
             $str = trim($data);
             if ('' !== $str) {
