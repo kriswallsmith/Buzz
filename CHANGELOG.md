@@ -6,8 +6,8 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 
 ### Changed
 
-- Added `ResponseFactory` to `AbstractClient` options
-- Added `RequestFactory` to `Browser` options
+- Added parameter for `ResponseFactory` to `AbstractClient` constructor.
+- Added parameter for  `RequestFactory` to `Browser` constructor.
 
 ## 0.17.1
 
