@@ -38,8 +38,6 @@ class Browser implements BuzzClientInterface
     private $lastResponse;
 
     /**
-     * Browser constructor.
-     *
      * @param BuzzClientInterface|null                      $client
      * @param RequestFactoryInterface|RequestFactory|null   $requestFactory
      * @param ResponseFactoryInterface|ResponseFactory|null $responseFactory To change the default response factory for FileGetContents
@@ -50,10 +48,10 @@ class Browser implements BuzzClientInterface
         $responseFactory = null
     ) {
         $this->client = $client ?: new FileGetContents([], $responseFactory ?: new MessageFactory());
+
         if (null === $requestFactory) {
             $requestFactory = new MessageFactory();
-        }
-        if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
+        } elseif (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
             throw new InvalidArgumentException('$requestFactory not a valid RequestFactory');
         }
         $this->requestFactory = $requestFactory;
