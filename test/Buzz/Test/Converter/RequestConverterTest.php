@@ -10,23 +10,23 @@ class RequestConverterTest extends TestCase
 {
     public function testPsr7()
     {
-        $buzz = new Request(Request::METHOD_GET, '/foo', 'https://example.com');
+        $buzz = new Request(Request::METHOD_GET, '/foo', 'https://example.com:80');
         $buzz->setContent('Foobar');
 
         $psr = RequestConverter::psr7($buzz);
         $this->assertEquals('GET', $psr->getMethod());
         $this->assertEquals('/foo', $psr->getUri()->getPath());
-        $this->assertEquals('https://example.com/foo', $psr->getUri()->__toString());
+        $this->assertEquals('https://example.com:80/foo', $psr->getUri()->__toString());
         $this->assertEquals('Foobar', $psr->getBody()->__toString());
     }
     public function testBuzz()
     {
-        $psr = new \GuzzleHttp\Psr7\Request('GET', 'https://example.com/foo?bar', ['header'=>'value'], 'Foobar');
+        $psr = new \GuzzleHttp\Psr7\Request('GET', 'https://example.com:80/foo?bar', ['header'=>'value'], 'Foobar');
 
         $buzz = RequestConverter::buzz($psr);
         $this->assertEquals('GET', $buzz->getMethod());
         $this->assertEquals('/foo?bar', $buzz->getResource());
-        $this->assertEquals('https://example.com', $buzz->getHost());
+        $this->assertEquals('https://example.com:80', $buzz->getHost());
         $this->assertEquals('Foobar', $buzz->getContent());
     }
 }

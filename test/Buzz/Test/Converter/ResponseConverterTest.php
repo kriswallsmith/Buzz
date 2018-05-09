@@ -2,9 +2,7 @@
 
 namespace Buzz\Test\Converter;
 
-use Buzz\Converter\RequestConverter;
 use Buzz\Converter\ResponseConverter;
-use Buzz\Message\Request;
 use Buzz\Message\Response;
 use PHPUnit\Framework\TestCase;
 
