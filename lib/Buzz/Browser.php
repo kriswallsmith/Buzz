@@ -329,6 +329,11 @@ class Browser
         $this->middlewares[] = $middleware;
     }
 
+    /**
+     * @deprecated Use addMiddleware instead.
+     *
+     * @param ListenerInterface $listener
+     */
     public function addListener(ListenerInterface $listener)
     {
         if (!$this->listener) {
