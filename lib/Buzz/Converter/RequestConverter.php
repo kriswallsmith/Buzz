@@ -56,7 +56,7 @@ class RequestConverter
         $buzzRequest = new Request(
             $request->getMethod(),
             sprintf('%s?%s', $uri->getPath(), $uri->getQuery()),
-            $uri->getScheme().'://'.$uri->getHost().($uri->getPort() !== null ? $uri->getPort() : '')
+            $uri->getScheme().'://'.$uri->getHost().($uri->getPort() !== null ? ':'.$uri->getPort() : '')
         );
 
         $buzzRequest->addHeaders(HeaderConverter::toBuzzHeaders($request->getHeaders()));

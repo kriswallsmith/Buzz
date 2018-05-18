@@ -19,6 +19,13 @@ class RequestConverterTest extends TestCase
         $this->assertEquals('https://example.com/foo', $psr->getUri()->__toString());
         $this->assertEquals('Foobar', $psr->getBody()->__toString());
     }
+    public function testPsr7Port()
+    {
+        $buzz = new Request(Request::METHOD_GET, '/foo', 'https://example.com:8080');
+
+        $psr = RequestConverter::psr7($buzz);
+        $this->assertEquals('https://example.com:8080/foo', $psr->getUri()->__toString());
+    }
     public function testBuzz()
     {
         $psr = new \GuzzleHttp\Psr7\Request('GET', 'https://example.com/foo?bar', ['header'=>'value'], 'Foobar');
@@ -28,5 +35,12 @@ class RequestConverterTest extends TestCase
         $this->assertEquals('/foo?bar', $buzz->getResource());
         $this->assertEquals('https://example.com', $buzz->getHost());
         $this->assertEquals('Foobar', $buzz->getContent());
+    }
+    public function testBuzzPort()
+    {
+        $psr = new \GuzzleHttp\Psr7\Request('GET', 'https://example.com:8080/foo?bar');
+
+        $buzz = RequestConverter::buzz($psr);
+        $this->assertEquals('https://example.com:8080', $buzz->getHost());
     }
 }
