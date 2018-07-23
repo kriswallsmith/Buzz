@@ -22,9 +22,9 @@
         "psr/http-message": "^1.0",
         "psr/http-client": "^0.1",
         "php-http/httplug": "^1.1",
-        "nyholm/psr7": "^0.3",
+        "nyholm/psr7": "^0.4",
         "symfony/options-resolver": "^3.4 || ^4.0",
-        "http-interop/http-factory": "^0.3"
+        "http-interop/http-factory": "^0.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.11",

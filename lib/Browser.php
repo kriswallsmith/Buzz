@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace Buzz;
 
 use Buzz\Client\BuzzClientInterface;
-use Buzz\Client\FileGetContents;
 use Buzz\Exception\ClientException;
 use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Message\RequestFactory;
-use Http\Message\ResponseFactory;
 use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\ResponseFactoryInterface;
 use Nyholm\Psr7\Factory\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -38,22 +35,19 @@ class Browser implements BuzzClientInterface
     private $lastResponse;
 
     /**
-     * @param BuzzClientInterface|null                      $client
+     * @param BuzzClientInterface                           $client
      * @param RequestFactoryInterface|RequestFactory|null   $requestFactory
-     * @param ResponseFactoryInterface|ResponseFactory|null $responseFactory To change the default response factory for FileGetContents
      */
-    public function __construct(
-        BuzzClientInterface $client = null,
-        $requestFactory = null,
-        $responseFactory = null
-    ) {
-        $this->client = $client ?: new FileGetContents([], $responseFactory ?: new MessageFactory());
-
+    public function __construct(BuzzClientInterface $client, $requestFactory = null)
+    {
         if (null === $requestFactory) {
+            trigger_error('Not passing a RequestFactory to Browser constructor is deprecated.', E_USER_DEPRECATED);
             $requestFactory = new MessageFactory();
         } elseif (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
             throw new InvalidArgumentException('$requestFactory not a valid RequestFactory');
         }
+
+        $this->client = $client;
         $this->requestFactory = $requestFactory;
     }
 
