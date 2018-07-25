@@ -87,7 +87,7 @@ abstract class AbstractClient
         $resolver->setDefaults([
             'allow_redirects' => false,
             'max_redirects' => 5,
-            'timeout' => 30,
+            'timeout' => null,
             'verify' => true,
             'proxy' => null,
         ]);
@@ -95,7 +95,7 @@ abstract class AbstractClient
         $resolver->setAllowedTypes('allow_redirects', 'boolean');
         $resolver->setAllowedTypes('verify', 'boolean');
         $resolver->setAllowedTypes('max_redirects', 'integer');
-        $resolver->setAllowedTypes('timeout', ['integer', 'float']);
+        $resolver->setAllowedTypes('timeout', ['null', 'integer', 'float']);
         $resolver->setAllowedTypes('proxy', ['null', 'string']);
     }
 }

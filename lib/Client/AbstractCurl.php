@@ -66,7 +66,10 @@ abstract class AbstractCurl extends AbstractClient
             curl_setopt($curl, CURLOPT_WRITEFUNCTION, null);
             curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, null);
             curl_reset($curl);
-            $this->handles[] = $curl;
+
+            if (!in_array($curl, $this->handles)) {
+                $this->handles[] = $curl;
+            }
         }
     }
 
@@ -188,10 +191,12 @@ abstract class AbstractCurl extends AbstractClient
      */
     private function setOptionsFromParameterBag($curl, ParameterBag $options): void
     {
-        $timeout = $options->get('timeout');
-        $proxy = $options->get('proxy');
-        if ($proxy) {
+        if (null !== $proxy = $options->get('proxy')) {
             curl_setopt($curl, CURLOPT_PROXY, $proxy);
+        }
+
+        if (null !== $timeout = $options->get('timeout')) {
+            curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
         }
 
         $canFollow = !ini_get('safe_mode') && !ini_get('open_basedir') && $options->get('allow_redirects');
@@ -199,7 +204,7 @@ abstract class AbstractCurl extends AbstractClient
         curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify') ? 1 : 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify') ? 2 : 0);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
+
     }
 
     /**

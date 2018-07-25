@@ -8,6 +8,7 @@ use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\ExceptionInterface;
 use Buzz\Exception\ClientException;
 use Buzz\Message\ResponseBuilder;
+use Buzz\Util\H2PushCache;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -90,8 +91,22 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             return;
         }
 
-        if (!$this->curlm && false === $this->curlm = curl_multi_init()) {
-            throw new ClientException('Unable to create a new cURL multi handle');
+        if (!$this->curlm) {
+            if (false === $this->curlm = curl_multi_init()) {
+                throw new ClientException('Unable to create a new cURL multi handle');
+            }
+
+            $cb = function ($parent, $pushed, $headers) {
+
+                H2PushCache::addPushHandle($headers, $pushed);
+                //$this->queue[] = ['request', ['options'], $pushed];
+
+
+                return CURL_PUSH_OK;
+            };
+
+            curl_multi_setopt($this->curlm , CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
+            curl_multi_setopt($this->curlm , CURLMOPT_PUSHFUNCTION, $cb);
         }
 
         foreach ($this->queue as $i => $queueItem) {
@@ -114,38 +129,58 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $active = null;
         do {
             $mrc = curl_multi_exec($this->curlm, $active);
-        } while ($active && CURLM_CALL_MULTI_PERFORM == $mrc);
+            sleep(1);
+        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
 
         $exception = null;
+        $responseBuilder = new ResponseBuilder($this->responseFactory);
+
         // handle any completed requests
-        while ($done = curl_multi_info_read($this->curlm)) {
-            foreach (array_keys($this->queue) as $i) {
-                /** @var $request RequestInterface */
-                /** @var $options ParameterBag */
-                /** @var $responseBuilder ResponseBuilder */
-                list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
+        while ($active && $mrc == CURLM_OK) {
+            curl_multi_select($this->curlm);
+            do {
+                $mrc = curl_multi_exec($this->curlm, $active);
+            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
 
-                if ($curl !== $done['handle']) {
-                    continue;
-                }
+            while ($info = curl_multi_info_read($this->curlm))
+            {
+                if ($info['msg'] == CURLMSG_DONE) {
+                    H2PushCache::add($info['handle']);
+                    foreach (array_keys($this->queue) as $i) {
+                        /** @var $request RequestInterface */
+                        /** @var $options ParameterBag */
+                        /** @var $responseBuilder ResponseBuilder */
+                        list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
 
-                try {
-                    $response = null;
-                    $this->parseError($request, $done['result'], $curl);
-                    $response = $responseBuilder->getResponse();
-                } catch (ExceptionInterface $e) {
-                    if (null === $exception) {
-                        $exception = $e;
+                        // Try to find the correct handle from the queue.
+                        if ($curl !== $info['handle']) {
+                            continue;
+                        }
+
+                        try {
+                            $response = null;
+                            //$this->parseError($request, $info['result'], $curl);
+                            //H2PushCache::add($curl);
+
+                            // populate the response object
+                            $raw = curl_multi_getcontent($curl);
+                            //$response = $responseBuilder->getResponseFromRawInput($raw, curl_getinfo($curl, CURLINFO_HEADER_SIZE));
+                            $response = $responseBuilder->getResponse();
+                        } catch (ExceptionInterface $e) {
+                            if (null === $exception) {
+                                $exception = $e;
+                            }
+                        }
+
+                        // remove from queue
+                        curl_multi_remove_handle($this->curlm, $curl);
+                        $this->releaseHandle($curl);
+                        unset($this->queue[$i]);
+
+                        // callback
+                        call_user_func($options->get('callback'), $request, $response, $exception);
                     }
                 }
-
-                // remove from queue
-                curl_multi_remove_handle($this->curlm, $curl);
-                $this->releaseHandle($curl);
-                unset($this->queue[$i]);
-
-                // callback
-                call_user_func($options->get('callback'), $request, $response, $exception);
             }
         }
 

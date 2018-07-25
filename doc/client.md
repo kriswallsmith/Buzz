@@ -76,7 +76,7 @@ A proxy server to use when sending requests.
 #### timeout
 
 Type: integer<br>
-Default: `30`
+Default: `null`
 
 The time to wait before interrupt the request. 
 
