@@ -103,7 +103,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
             $cb = function ($parent, $pushed, $headers) {
                 curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($pushed, CURLOPT_HEADER, false);
+                curl_setopt($pushed, CURLOPT_HEADER, true);
                 curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
                 curl_setopt($pushed, CURLOPT_WRITEFUNCTION, null);
                 $this->addPushHandle($headers, $pushed);
