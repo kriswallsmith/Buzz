@@ -7,6 +7,7 @@ namespace Buzz\Client;
 use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\ClientException;
 use Buzz\Message\ResponseBuilder;
+use Buzz\Util\H2PushCache;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,6 +16,24 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 {
     private $queue = [];
     private $curlm;
+
+    /**
+     * Raw responses that the server has pushed to us.
+     * @var array
+     */
+    private $pushedResponses = [];
+
+    /**
+     * Curl handlers with unprocessed pushed responses
+     * @var array
+     */
+    private $pushResponseHandles = [];
+
+    /**
+     * Callbacks that decides if a pushed request should be accepted or not.
+     * @var array
+     */
+    private $pushFunctions = [];
 
     /**
      * Populates the supplied response with the response for the supplied request.
@@ -72,6 +91,14 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $resolver->setDefault('callback', function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {
         });
         $resolver->setAllowedTypes('callback', 'callable');
+
+        $resolver->setDefault('push_function_callback', function ($parent, $pushed, $headers) {
+            return CURL_PUSH_OK;
+        });
+        $resolver->setAllowedTypes('push_function_callback', ['callable', 'null']);
+
+        $resolver->setDefault('use_pushed_response', true);
+        $resolver->setAllowedTypes('use_pushed_response', 'boolean');
     }
 
     public function count(): int
@@ -110,6 +137,27 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             if (false === $this->curlm = curl_multi_init()) {
                 throw new ClientException('Unable to create a new cURL multi handle');
             }
+
+            $userCallbacks = $this->pushFunctions;
+            $cb = function ($parent, $pushed, $headers) use ($userCallbacks) {
+                // If any callback say no, then do not accept.
+                foreach ($userCallbacks as $callback) {
+                    if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
+                        return CURL_PUSH_DENY;
+                    }
+                }
+
+                curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($pushed, CURLOPT_HEADER, true);
+                curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
+                curl_setopt($pushed, CURLOPT_WRITEFUNCTION, null);
+                $this->addPushHandle($headers, $pushed);
+
+                return CURL_PUSH_OK;
+            };
+
+            curl_multi_setopt($this->curlm , 3 /*CURLMOPT_PIPELINING*/, 2 /*CURLPIPE_MULTIPLEX*/);
+            curl_multi_setopt($this->curlm , 20014 /*CURLMOPT_PUSHFUNCTION*/, $cb);
         }
 
         foreach ($this->queue as $i => $queueItem) {
@@ -121,6 +169,16 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             /** @var $request RequestInterface */
             /** @var $options ParameterBag */
             list($request, $options) = $queueItem;
+
+            // Check if we have the response in cache already.
+            if ($options->get('use_pushed_response') && $this->hasPushResponse($request->getUri()->__toString())) {
+                $data = $this->getPushedResponse($request->getUri()->__toString());
+                $response = (new ResponseBuilder($this->responseFactory))->getResponseFromRawInput($data['content'], $data['headerSize']);
+                call_user_func($options->get('callback'), $request, $response, null);
+                unset($this->queue[$i]);
+
+                continue;
+            }
 
             $curl = $this->createHandle();
             $responseBuilder = $this->prepare($curl, $request, $options);
@@ -184,17 +242,68 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         if (empty($this->queue)) {
             curl_multi_close($this->curlm);
             $this->curlm = null;
+            $this->pushFunctions = [];
         }
+    }
+
+
+    private function addPushHandle($headers, $handle)
+    {
+        foreach ($headers as $header) {
+            if (strpos($header, ':path:') === 0) {
+                $path = substr($header, 6);
+                $url = curl_getinfo($handle)['url'];
+                $url = str_replace(
+                    parse_url($url, PHP_URL_PATH),
+                    $path,
+                    $url
+                );
+                $this->pushResponseHandles[$url] = $handle;
+            }
+        }
+    }
+
+    private function handlePushedResponse($handle)
+    {
+        $found = false;
+        foreach ($this->pushResponseHandles as $url => $h) {
+            if ($handle == $h) {
+                $found = $url;
+            }
+        }
+
+        if (!$found) {
+            $found = curl_getinfo($handle)['url'];
+        }
+
+        $content = curl_multi_getcontent($handle);
+        // Check if we got some headers, if not, we do not bother to store it.
+        if (0 !== $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE)) {
+            $this->pushedResponses[$found] = ['content' => $content, 'headerSize' => $headerSize];
+        }
+    }
+
+    private function hasPushResponse($url)
+    {
+        return isset($this->pushedResponses[$url]);
+    }
+
+    private function getPushedResponse($url)
+    {
+        return $this->pushedResponses[$url];
     }
 
     /**
      * @param RequestInterface $request
-     * @param array            $options
-     *
+     * @param ParameterBag     $options
      * @return array
      */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
     {
+        if (null !== $callback = $options->get('push_function_callback')) {
+            $this->pushFunctions[] = $callback;
+        }
+
         return $this->queue[] = [$request, $options];
     }
 }
