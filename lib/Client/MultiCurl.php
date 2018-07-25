@@ -97,10 +97,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             }
 
             $cb = function ($parent, $pushed, $headers) {
-
+                curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($pushed, CURLOPT_HEADER, false);
+                curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
+                curl_setopt($pushed, CURLOPT_WRITEFUNCTION, null);
                 H2PushCache::addPushHandle($headers, $pushed);
-                //$this->queue[] = ['request', ['options'], $pushed];
-
 
                 return CURL_PUSH_OK;
             };
@@ -129,11 +130,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $active = null;
         do {
             $mrc = curl_multi_exec($this->curlm, $active);
-            sleep(1);
         } while ($mrc == CURLM_CALL_MULTI_PERFORM);
 
         $exception = null;
-        $responseBuilder = new ResponseBuilder($this->responseFactory);
 
         // handle any completed requests
         while ($active && $mrc == CURLM_OK) {
@@ -145,7 +144,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             while ($info = curl_multi_info_read($this->curlm))
             {
                 if ($info['msg'] == CURLMSG_DONE) {
-                    H2PushCache::add($info['handle']);
+                    $handled = false;
                     foreach (array_keys($this->queue) as $i) {
                         /** @var $request RequestInterface */
                         /** @var $options ParameterBag */
@@ -158,13 +157,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                         }
 
                         try {
+                            $handled = true;
                             $response = null;
-                            //$this->parseError($request, $info['result'], $curl);
-                            //H2PushCache::add($curl);
-
-                            // populate the response object
-                            $raw = curl_multi_getcontent($curl);
-                            //$response = $responseBuilder->getResponseFromRawInput($raw, curl_getinfo($curl, CURLINFO_HEADER_SIZE));
+                            $this->parseError($request, $info['result'], $curl);
                             $response = $responseBuilder->getResponse();
                         } catch (ExceptionInterface $e) {
                             if (null === $exception) {
@@ -179,6 +174,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
                         // callback
                         call_user_func($options->get('callback'), $request, $response, $exception);
+                    }
+
+                    if (!$handled) {
+                        // It must be a pushed response.
+                        H2PushCache::add($info['handle']);
                     }
                 }
             }

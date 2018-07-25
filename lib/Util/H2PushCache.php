@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Buzz\Util;
 
 use Buzz\Message\ResponseBuilder;
-use Nyholm\Psr7\Factory\MessageFactory;
 
 class H2PushCache
 {
     static private $cache = [];
     static private $pushHandles = [];
-    static $transfers = 0;
 
     static function addPushHandle($headers, $handle)
     {
@@ -42,13 +40,11 @@ class H2PushCache
             $found = curl_getinfo($handle)['url'];
         }
 
-        // TODO
-        //$this->parseError($request, curl_errno($handle), $handle);
 
-        $x = curl_multi_getcontent($handle);
+        $content = curl_multi_getcontent($handle);
         $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
 
-        static::$cache[$found] = 'x';
+        static::$cache[$found] = ['content'=>$content, 'headerSize'=>$headerSize];
     }
 
     static function exists($url)
