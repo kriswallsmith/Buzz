@@ -16,8 +16,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClientInterface
 {
     private $queue = [];
-
     private $curlm;
+
+    private $pushedResponses = [];
+    private $pushResponseHandles = [];
 
     /**
      * Populates the supplied response with the response for the supplied request.
@@ -65,6 +67,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $resolver->setDefault('callback', function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {
         });
         $resolver->setAllowedTypes('callback', 'callable');
+
+        $resolver->setDefault('use_pushed_response', true);
+        $resolver->setAllowedTypes('use_pushed_response', 'boolean');
     }
 
     public function count(): int
@@ -101,7 +106,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 curl_setopt($pushed, CURLOPT_HEADER, false);
                 curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
                 curl_setopt($pushed, CURLOPT_WRITEFUNCTION, null);
-                H2PushCache::addPushHandle($headers, $pushed);
+                $this->addPushHandle($headers, $pushed);
 
                 return CURL_PUSH_OK;
             };
@@ -119,6 +124,17 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             /** @var $request RequestInterface */
             /** @var $options ParameterBag */
             list($request, $options) = $queueItem;
+
+            // Check if we have the response in cache already.
+            if ($options->get('use_pushed_response') && $this->hasPushResponse($request->getUri()->__toString())) {
+                $data = $this->getPushedResponse($request->getUri()->__toString());
+                $response = (new ResponseBuilder($this->responseFactory))->getResponseFromRawInput($data['content'], $data['headerSize']);
+                call_user_func($options->get('callback'), $request, $response, null);
+                unset($this->queue[$i]);
+
+                continue;
+            }
+
             $curl = $this->createHandle();
             $responseBuilder = $this->prepare($curl, $request, $options);
             $this->queue[$i][] = $curl;
@@ -178,7 +194,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
                     if (!$handled) {
                         // It must be a pushed response.
-                        H2PushCache::add($info['handle']);
+                        $this->handlePushedResponse($info['handle']);
                     }
                 }
             }
@@ -193,5 +209,51 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 throw $exception;
             }
         }
+    }
+
+
+    private function addPushHandle($headers, $handle)
+    {
+        foreach ($headers as $header) {
+            if (strpos($header, ':path:') === 0) {
+                $path = substr($header, 6);
+                $url = curl_getinfo($handle)['url'];
+                $url = str_replace(
+                    parse_url($url, PHP_URL_PATH),
+                    $path,
+                    $url
+                );
+                $this->pushResponseHandles[$url] = $handle;
+            }
+        }
+    }
+
+    private function handlePushedResponse($handle)
+    {
+        $found = false;
+        foreach ($this->pushResponseHandles as $url => $h) {
+            if ($handle == $h) {
+                $found = $url;
+            }
+        }
+
+        if (!$found) {
+            $found = curl_getinfo($handle)['url'];
+        }
+
+        $content = curl_multi_getcontent($handle);
+        $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
+
+        $this->pushedResponses[$found] = ['content'=>$content, 'headerSize'=>$headerSize];
+    }
+
+    private function hasPushResponse($url)
+    {
+        return isset($this->pushedResponses[$url]);
+    }
+
+    private function getPushedResponse($url)
+    {
+        return $this->pushedResponses[$url];
     }
 }
