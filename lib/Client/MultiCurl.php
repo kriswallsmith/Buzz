@@ -18,8 +18,23 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private $queue = [];
     private $curlm;
 
+    /**
+     * Raw responses that the server has pushed to us.
+     * @var array
+     */
     private $pushedResponses = [];
+
+    /**
+     * Curl handlers with unprocessed pushed responses
+     * @var array
+     */
     private $pushResponseHandles = [];
+
+    /**
+     * Callbacks that decides if a pushed request should be accepted or not.
+     * @var array
+     */
+    private $pushFunctions = [];
 
     /**
      * Populates the supplied response with the response for the supplied request.
@@ -41,7 +56,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         $options = $this->validateOptions($options);
 
-        $this->queue[] = [$request, $options];
+        $this->addToQueue($request, $options);
     }
 
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
@@ -54,7 +69,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             $originalCallback($request, $response, $e);
         }]);
 
-        $this->queue[] = [$request, $options];
+        $this->addToQueue($request, $options);
         $this->flush();
 
         return $responseToReturn;
@@ -67,6 +82,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $resolver->setDefault('callback', function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) {
         });
         $resolver->setAllowedTypes('callback', 'callable');
+
+        $resolver->setDefault('push_function_callback', function ($parent, $pushed, $headers) {
+            return CURL_PUSH_OK;
+        });
+        $resolver->setAllowedTypes('push_function_callback', 'callable');
 
         $resolver->setDefault('use_pushed_response', true);
         $resolver->setAllowedTypes('use_pushed_response', 'boolean');
@@ -101,7 +121,15 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 throw new ClientException('Unable to create a new cURL multi handle');
             }
 
-            $cb = function ($parent, $pushed, $headers) {
+            $userCallbacks = $this->pushFunctions;
+            $cb = function ($parent, $pushed, $headers) use ($userCallbacks) {
+                // If any callback say no, then do not accept.
+                foreach ($userCallbacks as $callback) {
+                    if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
+                        return CURL_PUSH_DENY;
+                    }
+                }
+
                 curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($pushed, CURLOPT_HEADER, true);
                 curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
@@ -204,6 +232,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         if (empty($this->queue)) {
             curl_multi_close($this->curlm);
             $this->curlm = null;
+            $this->pushFunctions = [];
 
             if (null !== $exception) {
                 throw $exception;
@@ -255,5 +284,17 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private function getPushedResponse($url)
     {
         return $this->pushedResponses[$url];
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param array $options
+     * @return array
+     */
+    private function addToQueue(RequestInterface $request, ParameterBag $options): array
+    {
+        $this->pushFunctions[] = $options->get('push_function_callback');
+
+        return $this->queue[] = [$request, $options];
     }
 }
