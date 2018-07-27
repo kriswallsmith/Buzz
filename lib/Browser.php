@@ -268,7 +268,6 @@ class Browser implements BuzzClientInterface
     protected function createRequest(string $method, string $url, array $headers, $body): RequestInterface
     {
         $request = $this->requestFactory->createRequest($method, $url);
-        $request = $request->withProtocolVersion('2.0');
         $request->getBody()->write($body);
         foreach ($headers as $name => $value) {
             $request = $request->withAddedHeader($name, $value);
