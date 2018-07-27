@@ -271,9 +271,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
 
         $content = curl_multi_getcontent($handle);
-        $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
-
-        $this->pushedResponses[$found] = ['content'=>$content, 'headerSize'=>$headerSize];
+        // Check if we got some headers, if not, we do not bother to store it.
+        if (0 !== $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE)) {
+            $this->pushedResponses[$found] = ['content' => $content, 'headerSize' => $headerSize];
+        }
     }
 
     private function hasPushResponse($url)
