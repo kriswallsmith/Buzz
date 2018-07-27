@@ -139,8 +139,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 return CURL_PUSH_OK;
             };
 
-            curl_multi_setopt($this->curlm , CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
-            curl_multi_setopt($this->curlm , CURLMOPT_PUSHFUNCTION, $cb);
+            curl_multi_setopt($this->curlm , 3 /*CURLMOPT_PIPELINING*/, 2 /*CURLPIPE_MULTIPLEX*/);
+            curl_multi_setopt($this->curlm , 20014 /*CURLMOPT_PUSHFUNCTION*/, $cb);
         }
 
         foreach ($this->queue as $i => $queueItem) {
