@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Build Status](https://img.shields.io/travis/kriswallsmith/Buzz.svg?branch=master&style=flat-square)](https://travis-ci.org/kriswallsmith/Buzz)
+[![Build Status](https://img.shields.io/travis/kriswallsmith/Buzz/master.svg?style=flat-square)](https://travis-ci.org/kriswallsmith/Buzz)
 [![Latest Version](https://img.shields.io/github/release/kriswallsmith/Buzz.svg?style=flat-square)](https://github.com/kriswallsmith/Buzz/releases)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/kriswallsmith/Buzz.svg?style=flat-square)](https://scrutinizer-ci.com/g/kriswallsmith/Buzz)
 [![Quality Score](https://img.shields.io/scrutinizer/g/kriswallsmith/Buzz.svg?style=flat-square)](https://scrutinizer-ci.com/g/kriswallsmith/Buzz)
