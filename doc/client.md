@@ -103,6 +103,14 @@ Default: `30`
 
 The time to wait before interrupt the request. 
 
+#### use_pushed_response
+
+Type: boolean<br>
+Default: `true`
+*Only for MultiCurl*
+
+If true, we can used responses pushed to us by HTTP/2.0 server push. 
+
 #### verify
 
 Type: boolean<br>
