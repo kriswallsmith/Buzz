@@ -45,7 +45,7 @@ before_install:
     - if ! [ -z "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
 install:
-    - sh ./tests/.travis/update-curl.sh
+    - sudo sh ./tests/.travis/update-curl.sh
     - sudo sh ./tests/.travis/configure-php.sh $USER $(phpenv version-name)
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
