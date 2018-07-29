@@ -75,8 +75,8 @@ A proxy server to use when sending requests.
 
 #### push_function_callback
 
-Type: callable<br>
-Default: A callable that returns `CURL_PUSH_OK`.
+Type: callable, null<br>
+Default: `null`
 *Only for MultiCurl*
 
 A callable for `CURLMOPT_PUSHFUNCTION`. See [PHP docs](http://php.net/manual/en/function.curl-multi-setopt.php) 

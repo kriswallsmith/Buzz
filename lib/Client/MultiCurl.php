@@ -86,7 +86,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $resolver->setDefault('push_function_callback', function ($parent, $pushed, $headers) {
             return CURL_PUSH_OK;
         });
-        $resolver->setAllowedTypes('push_function_callback', 'callable');
+        $resolver->setAllowedTypes('push_function_callback', ['callable', 'null']);
 
         $resolver->setDefault('use_pushed_response', true);
         $resolver->setAllowedTypes('use_pushed_response', 'boolean');
@@ -294,7 +294,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
      */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
     {
-        $this->pushFunctions[] = $options->get('push_function_callback');
+        if (null !== $callback = $options->get('push_function_callback')) {
+            $this->pushFunctions[] = $callback;
+        }
 
         return $this->queue[] = [$request, $options];
     }
