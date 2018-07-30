@@ -54,34 +54,33 @@ class ContentTypeMiddleware implements MiddlewareInterface
      */
     public function handleRequest(RequestInterface $request, callable $next)
     {
-       if (!$request->hasHeader('Content-Type')) {
-            $stream = $request->getBody();
-            $streamSize = $stream->getSize();
-
-            if (!$stream->isSeekable()) {
-                return $next($request);
-            }
-
-            if (0 === $streamSize) {
-                return $next($request);
-            }
-
-            if ($this->skipDetection && (null === $streamSize || $streamSize >= $this->sizeLimit)) {
-                return $next($request);
-            }
-
-            if ($this->isJson($stream)) {
-                $request = $request->withHeader('Content-Type', 'application/json');
-                return $next($request);
-            }
-
-            if ($this->isXml($stream)) {
-                $request = $request->withHeader('Content-Type', 'application/xml');
-                return $next($request);
-            }
+        if ($this->skipDetection) {
+            return $next($request);
         }
 
-        return $next($request);
+       if ($request->hasHeader('Content-Type')) {
+            return $next($request);
+        }
+
+        $stream = $request->getBody();
+        $streamSize = $stream->getSize();
+
+        if (null === $streamSize || $streamSize >= $this->sizeLimit || 0 === $streamSize) 
+        {
+            return $next($request);
+        }
+
+        if(!$stream->isSeekable()) {
+            return $next($request);
+        }
+
+        if ($this->isJson($stream)) {
+            $request = $request->withHeader('Content-Type', 'application/json');
+            return $next($request);
+        } elseif($this->isXml($stream)) {
+            $request = $request->withHeader('Content-Type', 'application/xml');
+            return $next($request);
+        }
     }
 
     /**
