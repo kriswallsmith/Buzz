@@ -9,6 +9,7 @@ use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
 use Buzz\Exception\ClientException;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +25,7 @@ class ClientTest extends TestCase
         $request = new Request('GET', 'http://'.$host.':12345');
 
         /** @var BuzzClientInterface $client */
-        $client = new $client();
+        $client = new $client([], new Psr17Factory());
         $client->sendRequest($request, ['timeout' => 0.1]);
     }
 
