@@ -130,7 +130,7 @@ class FunctionalTest extends TestCase
 
     public function testMultiCurlExecutesRequestsConcurently()
     {
-        $client = new MultiCurl(['timeout' => 30]);
+        $client = new MultiCurl(['timeout' => 30], new Psr17Factory());
 
         $calls = [];
         $callback = function (RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$calls) {
@@ -158,10 +158,10 @@ class FunctionalTest extends TestCase
     public function provideClient()
     {
         return [
-            [new Curl(), false],
-            [new FileGetContents(), false],
-            [new MultiCurl(), false],
-            [new MultiCurl(), true],
+            [new Curl([], new Psr17Factory()), false],
+            [new FileGetContents([], new Psr17Factory()), false],
+            [new MultiCurl([], new Psr17Factory()), false],
+            [new MultiCurl([], new Psr17Factory()), true],
         ];
     }
 
