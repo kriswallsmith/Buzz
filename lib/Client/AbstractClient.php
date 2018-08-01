@@ -33,7 +33,7 @@ abstract class AbstractClient
         $this->options = new ParameterBag();
         $this->options = $this->doValidateOptions($options);
         if (null === $responseFactory) {
-            trigger_error('Not passing a ResponseFactory to Buzz client constructor is deprecated.', E_USER_DEPRECATED);
+            @trigger_error('Not passing a ResponseFactory to Buzz client constructor is deprecated.', E_USER_DEPRECATED);
             $responseFactory = new Psr17Factory();
         } elseif (!$responseFactory instanceof ResponseFactoryInterface && !$responseFactory instanceof ResponseFactory) {
             throw new InvalidArgumentException('$responseFactory not a valid ResponseFactory');

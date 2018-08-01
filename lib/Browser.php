@@ -35,13 +35,13 @@ class Browser implements BuzzClientInterface
     private $lastResponse;
 
     /**
-     * @param BuzzClientInterface                           $client
-     * @param RequestFactoryInterface|RequestFactory|null   $requestFactory
+     * @param BuzzClientInterface                         $client
+     * @param RequestFactoryInterface|RequestFactory|null $requestFactory
      */
     public function __construct(BuzzClientInterface $client, $requestFactory = null)
     {
         if (null === $requestFactory) {
-            trigger_error('Not passing a RequestFactory to Browser constructor is deprecated.', E_USER_DEPRECATED);
+            @trigger_error('Not passing a RequestFactory to Browser constructor is deprecated.', E_USER_DEPRECATED);
             $requestFactory = new Psr17Factory();
         } elseif (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
             throw new InvalidArgumentException('$requestFactory not a valid RequestFactory');
