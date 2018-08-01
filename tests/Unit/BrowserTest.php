@@ -22,7 +22,9 @@ class BrowserTest extends TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMockBuilder('Buzz\Client\Curl')->getMock();
+        $this->client = $this->getMockBuilder('Buzz\Client\Curl')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->browser = new Browser($this->client, new Psr17Factory());
     }
@@ -75,7 +77,7 @@ class BrowserTest extends TestCase
     public function testGetClient()
     {
         $client = new Curl([], new Psr17Factory());
-        $browser = new Browser($client);
+        $browser = new Browser($client, new Psr17Factory());
         $this->assertSame($client, $browser->getClient());
     }
 
