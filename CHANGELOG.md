@@ -6,7 +6,7 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 
 ### Changed
 
-- It is not mandatory to pass a client to the `Browser`'s constructor.
+- It is now mandatory to pass a client to the `Browser`'s constructor.
 
 ### Deprecated
 
