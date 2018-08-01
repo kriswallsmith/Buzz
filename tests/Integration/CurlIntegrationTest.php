@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Buzz\Test\Integration;
 
 use Buzz\Client\Curl;
+use Nyholm\Psr7\Factory\Psr17Factory;
 
 class CurlIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new Curl();
+        $client = new Curl([], new Psr17Factory());
 
         return $client;
     }

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Buzz\Test\Integration;
 
 use Buzz\Client\MultiCurl;
+use Nyholm\Psr7\Factory\Psr17Factory;
 
 class MultiCurlIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new MultiCurl();
+        $client = new MultiCurl([], new Psr17Factory());
 
         return $client;
     }

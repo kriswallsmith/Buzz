@@ -2,6 +2,17 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions. 
 
+## 0.18.0
+
+### Changed
+
+- It is now mandatory to pass a client to the `Browser`'s constructor.
+
+### Deprecated
+
+- Not passing a RequestFactory to `Browser`.
+- Not passing a ResponseFactory to the client's constructor.
+
 ## 0.17.2
 
 ### Changed

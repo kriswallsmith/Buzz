@@ -8,6 +8,7 @@ use Buzz\Browser;
 use Buzz\Client\AbstractClient;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Client\Tests\PHPUnitUtility;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -26,7 +27,7 @@ class MiddlewareChainTest extends TestCase
         MyMiddleware::$hasBeenHandled = false;
         MyMiddleware::$handleCount = 0;
 
-        $browser = new Browser($client);
+        $browser = new Browser($client, new Psr17Factory());
         $browser->addMiddleware(new MyMiddleware(
             function () {
                 ++MyMiddleware::$handleCount;
@@ -69,9 +70,9 @@ class MiddlewareChainTest extends TestCase
     public function getHttpClients()
     {
         return [
-            [new \Buzz\Client\MultiCurl()],
-            [new \Buzz\Client\FileGetContents()],
-            [new \Buzz\Client\Curl()],
+            [new \Buzz\Client\MultiCurl([], new Psr17Factory())],
+            [new \Buzz\Client\FileGetContents([], new Psr17Factory())],
+            [new \Buzz\Client\Curl([], new Psr17Factory())],
         ];
     }
 }

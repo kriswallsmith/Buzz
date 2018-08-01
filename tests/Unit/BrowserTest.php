@@ -6,6 +6,7 @@ namespace Buzz\Test\Unit;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -21,9 +22,11 @@ class BrowserTest extends TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMockBuilder('Buzz\Client\Curl')->getMock();
+        $this->client = $this->getMockBuilder('Buzz\Client\Curl')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->browser = new Browser($this->client);
+        $this->browser = new Browser($this->client, new Psr17Factory());
     }
 
     /**
@@ -73,8 +76,8 @@ class BrowserTest extends TestCase
 
     public function testGetClient()
     {
-        $client = new Curl();
-        $browser = new Browser($client);
+        $client = new Curl([], new Psr17Factory());
+        $browser = new Browser($client, new Psr17Factory());
         $this->assertSame($client, $browser->getClient());
     }
 

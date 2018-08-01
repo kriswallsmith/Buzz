@@ -6,6 +6,7 @@ namespace Buzz\Test\Unit\Client;
 
 use Buzz\Client\FileGetContents;
 use Buzz\Configuration\ParameterBag;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -27,7 +28,7 @@ class FileGetContentsTest extends TestCase
             'Content-Length' => '15',
         ], 'foo=bar&bar=baz');
 
-        $client = new StreamClient();
+        $client = new StreamClient([], new Psr17Factory());
         $expected = [
             'http' => [
                 'method' => 'POST',

@@ -10,6 +10,7 @@ use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
 use Buzz\Exception\InvalidArgumentException;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,7 @@ class ConfigurationTest extends TestCase
         $options = ['foobar' => true, 'timeout' => 4];
 
         $client = $this->getMockBuilder(BuzzClientInterface::class)
+            ->disableOriginalConstructor()
             ->setMethods(['sendRequest'])
             ->getMock();
 
@@ -31,7 +33,7 @@ class ConfigurationTest extends TestCase
             ->with($this->anything(), $this->equalTo($options))
             ->willReturn(new Response());
 
-        $browser = new Browser($client);
+        $browser = new Browser($client, new Psr17Factory());
         $browser->sendRequest($request, $options);
     }
 
@@ -40,7 +42,7 @@ class ConfigurationTest extends TestCase
      */
     public function testOptionInConstructor($class)
     {
-        $client = new $class(['timeout' => 4]);
+        $client = new $class(['timeout' => 4], new Psr17Factory());
         $this->assertInstanceOf($class, $client);
     }
 
@@ -53,7 +55,7 @@ class ConfigurationTest extends TestCase
             $this->markTestSkipped('The test server is not configured.');
         }
 
-        $client = new $class();
+        $client = new $class([], new Psr17Factory());
 
         $response = $client->sendRequest(new Request('GET', $_SERVER['BUZZ_TEST_SERVER']), ['timeout' => 4]);
         $this->assertInstanceOf(ResponseInterface::class, $response);
@@ -65,7 +67,7 @@ class ConfigurationTest extends TestCase
     public function testWrongOptionInConstructor($class)
     {
         $this->expectException(InvalidArgumentException::class);
-        new $class(['foobar' => true]);
+        new $class(['foobar' => true], new Psr17Factory());
     }
 
     /**
@@ -74,7 +76,7 @@ class ConfigurationTest extends TestCase
     public function testWrongOptionInSendRequest($class)
     {
         $this->expectException(InvalidArgumentException::class);
-        $client = new $class();
+        $client = new $class([], new Psr17Factory());
 
         $client->sendRequest(new Request('GET', '/'), ['foobar' => true]);
     }
