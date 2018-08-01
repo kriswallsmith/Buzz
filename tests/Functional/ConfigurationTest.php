@@ -10,6 +10,7 @@ use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
 use Buzz\Exception\InvalidArgumentException;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +32,7 @@ class ConfigurationTest extends TestCase
             ->with($this->anything(), $this->equalTo($options))
             ->willReturn(new Response());
 
-        $browser = new Browser($client);
+        $browser = new Browser($client, new Psr17Factory());
         $browser->sendRequest($request, $options);
     }
 

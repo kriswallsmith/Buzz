@@ -11,6 +11,7 @@ use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
 use Buzz\Exception\ClientException;
 use Buzz\Message\FormRequestBuilder;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -83,7 +84,7 @@ class FunctionalTest extends TestCase
         $builder = new FormRequestBuilder();
         $builder->addField('company[name]', 'Google');
         $builder->addFile('image', __DIR__.'/../../Resources/image.png', 'image/png', 'filename.png');
-        $browser = new Browser($client);
+        $browser = new Browser($client, new Psr17Factory());
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], $builder->build());
 
         $this->assertNotEmpty($response->getBody()->__toString(), 'Response from server should not be empty');
@@ -108,7 +109,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Skipping for async requests');
         }
 
-        $browser = new Browser($client);
+        $browser = new Browser($client, new Psr17Factory());
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], [
             'image' => [
                 'path' => __DIR__.'/../../Resources/large.png',

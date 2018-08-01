@@ -8,6 +8,7 @@ use Buzz\Browser;
 use Buzz\Client\AbstractClient;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Client\Tests\PHPUnitUtility;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -26,7 +27,7 @@ class MiddlewareChainTest extends TestCase
         MyMiddleware::$hasBeenHandled = false;
         MyMiddleware::$handleCount = 0;
 
-        $browser = new Browser($client);
+        $browser = new Browser($client, new Psr17Factory());
         $browser->addMiddleware(new MyMiddleware(
             function () {
                 ++MyMiddleware::$handleCount;
