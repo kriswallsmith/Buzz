@@ -76,7 +76,7 @@ class BrowserTest extends TestCase
 
     public function testGetClient()
     {
-        $client = new Curl([], new Psr17Factory());
+        $client = new Curl(new Psr17Factory(), []);
         $browser = new Browser($client, new Psr17Factory());
         $this->assertSame($client, $browser->getClient());
     }

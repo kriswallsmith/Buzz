@@ -70,9 +70,9 @@ class MiddlewareChainTest extends TestCase
     public function getHttpClients()
     {
         return [
-            [new \Buzz\Client\MultiCurl([], new Psr17Factory())],
-            [new \Buzz\Client\FileGetContents([], new Psr17Factory())],
-            [new \Buzz\Client\Curl([], new Psr17Factory())],
+            [new \Buzz\Client\MultiCurl(new Psr17Factory(), [])],
+            [new \Buzz\Client\FileGetContents(new Psr17Factory(), [])],
+            [new \Buzz\Client\Curl(new Psr17Factory(), [])],
         ];
     }
 }

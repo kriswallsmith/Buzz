@@ -28,7 +28,7 @@ class FileGetContentsTest extends TestCase
             'Content-Length' => '15',
         ], 'foo=bar&bar=baz');
 
-        $client = new StreamClient([], new Psr17Factory());
+        $client = new StreamClient(new Psr17Factory(), []);
         $expected = [
             'http' => [
                 'method' => 'POST',

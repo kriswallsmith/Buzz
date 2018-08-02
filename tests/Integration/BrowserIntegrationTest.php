@@ -12,7 +12,7 @@ class BrowserIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new FileGetContents([], new Psr17Factory());
+        $client = new FileGetContents(new Psr17Factory(), []);
         $browser = new Browser($client, new Psr17Factory());
 
         return $browser;

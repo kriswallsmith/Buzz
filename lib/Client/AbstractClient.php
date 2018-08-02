@@ -28,7 +28,7 @@ abstract class AbstractClient
      */
     protected $responseFactory;
 
-    public function __construct(array $options = [], $responseFactory = null)
+    public function __construct($responseFactory = null, array $options = [])
     {
         $this->options = new ParameterBag();
         $this->options = $this->doValidateOptions($options);

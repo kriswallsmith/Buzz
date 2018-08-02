@@ -11,7 +11,7 @@ class MultiCurlIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new MultiCurl([], new Psr17Factory());
+        $client = new MultiCurl(new Psr17Factory(), []);
 
         return $client;
     }

@@ -11,7 +11,7 @@ class FileGetContentsIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new FileGetContents([], new Psr17Factory());
+        $client = new FileGetContents(new Psr17Factory(), []);
 
         return $client;
     }
