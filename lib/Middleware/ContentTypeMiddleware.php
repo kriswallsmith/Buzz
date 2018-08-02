@@ -54,23 +54,15 @@ class ContentTypeMiddleware implements MiddlewareInterface
      */
     public function handleRequest(RequestInterface $request, callable $next)
     {
-        if ($this->skipDetection) {
-            return $next($request);
-        }
-
-       if ($request->hasHeader('Content-Type')) {
+        if ($this->skipDetection && $request->hasHeader('Content-Type')) {
             return $next($request);
         }
 
         $stream = $request->getBody();
         $streamSize = $stream->getSize();
 
-        if (null === $streamSize || $streamSize >= $this->sizeLimit || 0 === $streamSize) 
+        if (empty($streamSize) || $streamSize >= $this->sizeLimit || !$stream->isSeekable()) 
         {
-            return $next($request);
-        }
-
-        if(!$stream->isSeekable()) {
             return $next($request);
         }
 
