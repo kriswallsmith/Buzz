@@ -12,12 +12,14 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class ResponseBuilder
+final class ResponseBuilder
 {
     /**
      * @var ResponseInterface
      */
     private $response;
+
+    private $responseFactory;
 
     /**
      * @param HTTPlugResponseFactory|PsrResponseFactory $responseFactory
@@ -28,7 +30,39 @@ class ResponseBuilder
             throw new InvalidArgumentException('First parameter to ResponseBuilder must be a response factory');
         }
 
+        $this->responseFactory = $responseFactory;
         $this->response = $responseFactory->createResponse();
+    }
+
+    public function getResponseFromRawInput(string $raw, int $headerSize): ResponseInterface
+    {
+        $headers = substr($raw, 0, $headerSize);
+        $this->parseHttpHeaders(explode("\n", $headers));
+        $this->writeBody(substr($raw, $headerSize));
+
+        return $this->getResponse();
+    }
+
+    private function filterHeaders(array $headers): array
+    {
+        $filtered = [];
+        foreach ($headers as $header) {
+            if (0 === stripos($header, 'http/')) {
+                $filtered = [];
+                $filtered[] = trim($header);
+                continue;
+            }
+
+            // Make sure they are not empty
+            $trimmed = trim($header);
+            if (false === strpos($trimmed, ':')) {
+                continue;
+            }
+
+            $filtered[] = $trimmed;
+        }
+
+        return $filtered;
     }
 
     public function setStatus(string $input): void
@@ -61,6 +95,7 @@ class ResponseBuilder
      */
     public function parseHttpHeaders(array $headers): void
     {
+        $headers = $this->filterHeaders($headers);
         $statusLine = array_shift($headers);
 
         try {
@@ -89,7 +124,9 @@ class ResponseBuilder
     public function getResponse(): ResponseInterface
     {
         $this->response->getBody()->rewind();
+        $response = $this->response;
+        $this->response = $this->responseFactory->createResponse();
 
-        return $this->response;
+        return $response;
     }
 }

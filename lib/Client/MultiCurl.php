@@ -15,7 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClientInterface
 {
     private $queue = [];
-
     private $curlm;
 
     /**
@@ -38,7 +37,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         $options = $this->validateOptions($options);
 
-        $this->queue[] = [$request, $options];
+        $this->addToQueue($request, $options);
     }
 
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
@@ -51,7 +50,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             $originalCallback($request, $response, $e);
         }]);
 
-        $this->queue[] = [$request, $options];
+        $this->addToQueue($request, $options);
         $this->flush();
 
         return $responseToReturn;
@@ -90,8 +89,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             return;
         }
 
-        if (!$this->curlm && false === $this->curlm = curl_multi_init()) {
-            throw new ClientException('Unable to create a new cURL multi handle');
+        if (!$this->curlm) {
+            if (false === $this->curlm = curl_multi_init()) {
+                throw new ClientException('Unable to create a new cURL multi handle');
+            }
         }
 
         foreach ($this->queue as $i => $queueItem) {
@@ -103,6 +104,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             /** @var $request RequestInterface */
             /** @var $options ParameterBag */
             list($request, $options) = $queueItem;
+
             $curl = $this->createHandle();
             $responseBuilder = $this->prepare($curl, $request, $options);
             $this->queue[$i][] = $curl;
@@ -114,38 +116,56 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $active = null;
         do {
             $mrc = curl_multi_exec($this->curlm, $active);
-        } while ($active && CURLM_CALL_MULTI_PERFORM == $mrc);
+        } while (CURLM_CALL_MULTI_PERFORM == $mrc);
 
         $exception = null;
+
         // handle any completed requests
-        while ($done = curl_multi_info_read($this->curlm)) {
-            foreach (array_keys($this->queue) as $i) {
-                /** @var $request RequestInterface */
-                /** @var $options ParameterBag */
-                /** @var $responseBuilder ResponseBuilder */
-                list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
+        while ($active && CURLM_OK == $mrc) {
+            curl_multi_select($this->curlm);
+            do {
+                $mrc = curl_multi_exec($this->curlm, $active);
+            } while (CURLM_CALL_MULTI_PERFORM == $mrc);
 
-                if ($curl !== $done['handle']) {
-                    continue;
-                }
+            while ($info = curl_multi_info_read($this->curlm)) {
+                if (CURLMSG_DONE == $info['msg']) {
+                    $handled = false;
+                    foreach (array_keys($this->queue) as $i) {
+                        /** @var $request RequestInterface */
+                        /** @var $options ParameterBag */
+                        /** @var $responseBuilder ResponseBuilder */
+                        list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
 
-                try {
-                    $response = null;
-                    $this->parseError($request, $done['result'], $curl);
-                    $response = $responseBuilder->getResponse();
-                } catch (ExceptionInterface $e) {
-                    if (null === $exception) {
-                        $exception = $e;
+                        // Try to find the correct handle from the queue.
+                        if ($curl !== $info['handle']) {
+                            continue;
+                        }
+
+                        try {
+                            $handled = true;
+                            $response = null;
+                            $this->parseError($request, $info['result'], $curl);
+                            $response = $responseBuilder->getResponse();
+                        } catch (ExceptionInterface $e) {
+                            if (null === $exception) {
+                                $exception = $e;
+                            }
+                        }
+
+                        // remove from queue
+                        curl_multi_remove_handle($this->curlm, $curl);
+                        $this->releaseHandle($curl);
+                        unset($this->queue[$i]);
+
+                        // callback
+                        call_user_func($options->get('callback'), $request, $response, $exception);
+                    }
+
+                    if (!$handled) {
+                        // It must be a pushed response.
+                        $this->handlePushedResponse($info['handle']);
                     }
                 }
-
-                // remove from queue
-                curl_multi_remove_handle($this->curlm, $curl);
-                $this->releaseHandle($curl);
-                unset($this->queue[$i]);
-
-                // callback
-                call_user_func($options->get('callback'), $request, $response, $exception);
             }
         }
 
@@ -158,5 +178,16 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 throw $exception;
             }
         }
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param array            $options
+     *
+     * @return array
+     */
+    private function addToQueue(RequestInterface $request, ParameterBag $options): array
+    {
+        return $this->queue[] = [$request, $options];
     }
 }
