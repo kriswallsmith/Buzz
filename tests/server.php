@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 if (isset($_GET['redirect_to'])) {
     header('Location: '.$_GET['redirect_to']);
     die;

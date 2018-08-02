@@ -84,3 +84,9 @@ vendor/bin/http_test_server > /dev/null 2>&1 &
 php -S 127.0.0.1:8080 tests/server.php  &
 composer test
 ```
+
+You could also run docker: 
+```
+docker build -t buzz .
+docker run  buzz /bin/sh -c '/home/docker/run.sh'
+```

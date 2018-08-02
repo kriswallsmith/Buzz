@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.11",
-        "php-http/client-integration-tests": "^0.6.2",
+        "php-http/client-integration-tests": "dev-patch-version",
         "phpunit/phpunit": "^6.5.7",
         "psr/log": "^1.0",
         "symfony/phpunit-bridge": "^4.0"
