@@ -67,7 +67,7 @@ class ConfigurationTest extends TestCase
     public function testWrongOptionInConstructor($class)
     {
         $this->expectException(InvalidArgumentException::class);
-        new $class(['foobar' => true], new Psr17Factory());
+        new $class(new Psr17Factory(), ['foobar' => true]);
     }
 
     /**
@@ -76,7 +76,7 @@ class ConfigurationTest extends TestCase
     public function testWrongOptionInSendRequest($class)
     {
         $this->expectException(InvalidArgumentException::class);
-        $client = new $class([], new Psr17Factory());
+        $client = new $class(new Psr17Factory(), []);
 
         $client->sendRequest(new Request('GET', '/'), ['foobar' => true]);
     }
