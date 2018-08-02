@@ -73,43 +73,12 @@ Default: `null`
 
 A proxy server to use when sending requests. 
 
-#### push_function_callback
-
-Type: callable, null<br>
-Default: `null`
-*Only for MultiCurl*
-
-A callable for `CURLMOPT_PUSHFUNCTION`. See [PHP docs](http://php.net/manual/en/function.curl-multi-setopt.php) 
-
-Since MultiCurl supports adding multiple requests, all Push Functions callbacks are
-chained together. If one of them returns `CURL_PUSH_DENY`, then the request will be denied. 
-
-```php
-$options['push_function_callback'] = function ($parent, $pushed, $headers) {
-    if (strpos($header, ':path:') === 0) {
-        $path = substr($header, 6);
-        if ($path === '/foo/bar') {
-            return CURL_PUSH_DENY;
-        }
-
-        return CURL_PUSH_OK;
-};
-```
-
 #### timeout
 
 Type: integer<br>
 Default: `30`
 
 The time to wait before interrupt the request. 
-
-#### use_pushed_response
-
-Type: boolean<br>
-Default: `true`
-*Only for MultiCurl*
-
-If true, we can used responses pushed to us by HTTP/2.0 server push. 
 
 #### verify
 
