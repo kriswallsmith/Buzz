@@ -54,7 +54,7 @@ class ContentTypeMiddleware implements MiddlewareInterface
      */
     public function handleRequest(RequestInterface $request, callable $next)
     {
-        if ($this->skipDetection && $request->hasHeader('Content-Type')) {
+        if ($this->skipDetection || $request->hasHeader('Content-Type')) {
             return $next($request);
         }
 
