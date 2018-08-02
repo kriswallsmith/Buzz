@@ -116,20 +116,19 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $active = null;
         do {
             $mrc = curl_multi_exec($this->curlm, $active);
-        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+        } while (CURLM_CALL_MULTI_PERFORM == $mrc);
 
         $exception = null;
 
         // handle any completed requests
-        while ($active && $mrc == CURLM_OK) {
+        while ($active && CURLM_OK == $mrc) {
             curl_multi_select($this->curlm);
             do {
                 $mrc = curl_multi_exec($this->curlm, $active);
-            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+            } while (CURLM_CALL_MULTI_PERFORM == $mrc);
 
-            while ($info = curl_multi_info_read($this->curlm))
-            {
-                if ($info['msg'] == CURLMSG_DONE) {
+            while ($info = curl_multi_info_read($this->curlm)) {
+                if (CURLMSG_DONE == $info['msg']) {
                     $handled = false;
                     foreach (array_keys($this->queue) as $i) {
                         /** @var $request RequestInterface */
@@ -183,7 +182,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
     /**
      * @param RequestInterface $request
-     * @param array $options
+     * @param array            $options
+     *
      * @return array
      */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
