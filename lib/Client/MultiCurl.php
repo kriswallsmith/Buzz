@@ -7,7 +7,6 @@ namespace Buzz\Client;
 use Buzz\Configuration\ParameterBag;
 use Buzz\Exception\ClientException;
 use Buzz\Message\ResponseBuilder;
-use Buzz\Util\H2PushCache;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,18 +18,21 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
     /**
      * Raw responses that the server has pushed to us.
+     *
      * @var array
      */
     private $pushedResponses = [];
 
     /**
-     * Curl handlers with unprocessed pushed responses
+     * Curl handlers with unprocessed pushed responses.
+     *
      * @var array
      */
     private $pushResponseHandles = [];
 
     /**
      * Callbacks that decides if a pushed request should be accepted or not.
+     *
      * @var array
      */
     private $pushFunctions = [];
@@ -156,8 +158,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 return CURL_PUSH_OK;
             };
 
-            curl_multi_setopt($this->curlm , 3 /*CURLMOPT_PIPELINING*/, 2 /*CURLPIPE_MULTIPLEX*/);
-            curl_multi_setopt($this->curlm , 20014 /*CURLMOPT_PUSHFUNCTION*/, $cb);
+            curl_multi_setopt($this->curlm, 3 /*CURLMOPT_PIPELINING*/, 2 /*CURLPIPE_MULTIPLEX*/);
+            curl_multi_setopt($this->curlm, 20014 /*CURLMOPT_PUSHFUNCTION*/, $cb);
         }
 
         foreach ($this->queue as $i => $queueItem) {
@@ -246,11 +248,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
     }
 
-
     private function addPushHandle($headers, $handle)
     {
         foreach ($headers as $header) {
-            if (strpos($header, ':path:') === 0) {
+            if (0 === strpos($header, ':path:')) {
                 $path = substr($header, 6);
                 $url = curl_getinfo($handle)['url'];
                 $url = str_replace(
@@ -296,6 +297,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     /**
      * @param RequestInterface $request
      * @param ParameterBag     $options
+     *
      * @return array
      */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
