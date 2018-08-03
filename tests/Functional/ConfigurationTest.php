@@ -57,7 +57,7 @@ class ConfigurationTest extends TestCase
 
         $client = new $class([], new Psr17Factory());
 
-        $response = $client->sendRequest(new Request('GET', $_SERVER['BUZZ_TEST_SERVER']), ['timeout' => 4]);
+        $response = $client->sendRequest(new Request('GET', $_SERVER['BUZZ_TEST_SERVER']), ['max_redirects' => 3]);
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 

@@ -26,7 +26,7 @@ class ClientTest extends TestCase
 
         /** @var BuzzClientInterface $client */
         $client = new $client([], new Psr17Factory());
-        $client->sendRequest($request, ['timeout' => 0.1]);
+        $client->sendRequest($request, ['max_redirects' => 3]);
     }
 
     public function provideInvalidHosts()

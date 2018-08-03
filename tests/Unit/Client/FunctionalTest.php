@@ -130,7 +130,7 @@ class FunctionalTest extends TestCase
 
     public function testMultiCurlExecutesRequestsConcurently()
     {
-        $client = new MultiCurl(['timeout' => 30], new Psr17Factory());
+        $client = new MultiCurl(['max_redirects' => 3], new Psr17Factory());
 
         $calls = [];
         $callback = function (RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$calls) {
