@@ -6,9 +6,9 @@ cd /app
 : "${TEST_COMMAND:=composer test}"
 : "${COMPOSER_FLAGS:=--prefer-dist}"
 
+./.docker/http_test_server.sh > /dev/null 2>&1 &
 /usr/local/sbin/php-fpm > /dev/null 2>&1 &
 /usr/sbin/nginx -c /home/docker/etc/nginx.conf > /dev/null 2>&1 &
-./.docker/http_test_server.sh > /dev/null 2>&1 &
 
 function successOrExit {
     "$@"
