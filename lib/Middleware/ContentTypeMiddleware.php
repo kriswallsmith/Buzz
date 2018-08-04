@@ -61,16 +61,17 @@ class ContentTypeMiddleware implements MiddlewareInterface
         $stream = $request->getBody();
         $streamSize = $stream->getSize();
 
-        if (empty($streamSize) || $streamSize >= $this->sizeLimit || !$stream->isSeekable()) 
-        {
+        if (empty($streamSize) || $streamSize >= $this->sizeLimit || !$stream->isSeekable()) {
             return $next($request);
         }
 
         if ($this->isJson($stream)) {
             $request = $request->withHeader('Content-Type', 'application/json');
+
             return $next($request);
-        } elseif($this->isXml($stream)) {
+        } elseif ($this->isXml($stream)) {
             $request = $request->withHeader('Content-Type', 'application/xml');
+
             return $next($request);
         }
     }
@@ -92,8 +93,10 @@ class ContentTypeMiddleware implements MiddlewareInterface
     {
         $stream->rewind();
         json_decode($stream->getContents());
+
         return JSON_ERROR_NONE === json_last_error();
     }
+
     /**
      * @param $stream StreamInterface
      *
@@ -105,6 +108,7 @@ class ContentTypeMiddleware implements MiddlewareInterface
         $previousValue = libxml_use_internal_errors(true);
         $isXml = simplexml_load_string($stream->getContents());
         libxml_use_internal_errors($previousValue);
+
         return $isXml;
     }
 }

@@ -12,12 +12,11 @@ use Psr\Http\Message\RequestInterface;
 class ContentTypeMiddlewareTest extends TestCase
 {
     public function testMiddleware()
-    {   
-
+    {
         // XML
-        $request = new Request('GET', 
-                                'http://foo.com', 
-                                [], 
+        $request = new Request('GET',
+                                'http://foo.com',
+                                [],
                                 '<?xml version="1.0" encoding="UTF-8"?>
                                 <note>
                                   <to>Lorem</to>
@@ -36,8 +35,8 @@ class ContentTypeMiddlewareTest extends TestCase
         $this->assertEquals('application/xml', $updatedRequest->getHeaderLine('Content-Type'));
 
         //JSON
-        $request = new Request('GET', 
-                                'http://foo.com', 
+        $request = new Request('GET',
+                                'http://foo.com',
                                 [],
                                 '{
                                   "userId": 1,
@@ -54,7 +53,5 @@ class ContentTypeMiddlewareTest extends TestCase
         });
 
         $this->assertEquals('application/json', $updatedRequest->getHeaderLine('Content-Type'));
-
-        
     }
 }
