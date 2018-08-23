@@ -42,7 +42,7 @@ class ConfigurationTest extends TestCase
      */
     public function testOptionInConstructor($class)
     {
-        $client = new $class(['timeout' => 4], new Psr17Factory());
+        $client = new $class(new Psr17Factory(), ['timeout' => 4]);
         $this->assertInstanceOf($class, $client);
     }
 
@@ -55,7 +55,7 @@ class ConfigurationTest extends TestCase
             $this->markTestSkipped('The test server is not configured.');
         }
 
-        $client = new $class([], new Psr17Factory());
+        $client = new $class(new Psr17Factory(), []);
 
         $response = $client->sendRequest(new Request('GET', $_SERVER['BUZZ_TEST_SERVER']), ['timeout' => 4]);
         $this->assertInstanceOf(ResponseInterface::class, $response);
@@ -67,7 +67,7 @@ class ConfigurationTest extends TestCase
     public function testWrongOptionInConstructor($class)
     {
         $this->expectException(InvalidArgumentException::class);
-        new $class(['foobar' => true], new Psr17Factory());
+        new $class(new Psr17Factory(), ['foobar' => true]);
     }
 
     /**
@@ -76,7 +76,7 @@ class ConfigurationTest extends TestCase
     public function testWrongOptionInSendRequest($class)
     {
         $this->expectException(InvalidArgumentException::class);
-        $client = new $class([], new Psr17Factory());
+        $client = new $class(new Psr17Factory(), []);
 
         $client->sendRequest(new Request('GET', '/'), ['foobar' => true]);
     }

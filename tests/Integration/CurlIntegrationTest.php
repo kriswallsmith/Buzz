@@ -11,7 +11,7 @@ class CurlIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new Curl([], new Psr17Factory());
+        $client = new Curl(new Psr17Factory(), []);
 
         return $client;
     }
