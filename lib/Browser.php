@@ -10,7 +10,6 @@ use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
 use Buzz\Middleware\MiddlewareInterface;
 use Http\Message\RequestFactory;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -36,14 +35,11 @@ class Browser implements BuzzClientInterface
 
     /**
      * @param BuzzClientInterface                         $client
-     * @param RequestFactoryInterface|RequestFactory|null $requestFactory
+     * @param RequestFactoryInterface|RequestFactory $requestFactory
      */
-    public function __construct(BuzzClientInterface $client, $requestFactory = null)
+    public function __construct(BuzzClientInterface $client, $requestFactory)
     {
-        if (null === $requestFactory) {
-            @trigger_error('Not passing a RequestFactory to Browser constructor is deprecated.', E_USER_DEPRECATED);
-            $requestFactory = new Psr17Factory();
-        } elseif (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
+        if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
             throw new InvalidArgumentException('$requestFactory not a valid RequestFactory');
         }
 

@@ -16,9 +16,10 @@ $password = 'pass1';
 $url = 'http://test.webdav.org/auth-digest/';
 
 // Create Curl Client
-$curl = new Curl();
+$psr17Factory = \Nyholm\Psr7\Factory\Psr17Factory();
+$client = new Curl($psr17Factory);
 
-$browser = new Browser($curl);
+$browser = new Browser($client, $psr17Factory);
 
 // Create DigestAuthListener
 $browser->addMiddleware(new DigestAuthMiddleware($username, $password));

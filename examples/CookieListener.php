@@ -7,8 +7,9 @@ use Buzz\Browser;
 use Buzz\Client\Curl;
 use Buzz\Middleware\CookieMiddleware;
 
-$client = new Curl();
-$browser = new Browser($client);
+$psr17Factory = \Nyholm\Psr7\Factory\Psr17Factory();
+$client = new Curl($psr17Factory);
+$browser = new Browser($client, $psr17Factory);
 
 // Create CookieListener
 $middleware = new CookieMiddleware();
