@@ -34,7 +34,7 @@ class Browser implements BuzzClientInterface
     private $lastResponse;
 
     /**
-     * @param BuzzClientInterface                         $client
+     * @param BuzzClientInterface                    $client
      * @param RequestFactoryInterface|RequestFactory $requestFactory
      */
     public function __construct(BuzzClientInterface $client, $requestFactory)
