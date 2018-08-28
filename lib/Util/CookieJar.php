@@ -52,7 +52,7 @@ class CookieJar
     {
         foreach ($this->getCookies() as $cookie) {
             if ($cookie->matchesRequest($request)) {
-                $request = $request->withHeader('Cookie', $cookie->toCookieHeader());
+                $request = $request->withAddedHeader('Cookie', $cookie->toCookieHeader());
             }
         }
 
