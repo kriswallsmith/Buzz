@@ -31,7 +31,7 @@ matrix:
 
       - php: 7.2
         name: Force HTTPlug 2.0
-        env: DEPENDENCIES="php-http/httplug:^2.0.*"
+        env: DEPENDENCIES="php-http/httplug:2.0.*"
 
         # Force some major versions of Symfony
       - php: 7.1
