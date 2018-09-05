@@ -210,7 +210,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 // If it is set then increment it.
                 ++$this->nonceCount;
                 // Ensure nonceCount is zero-padded at the start of the string to a length of 8
-                while (strlen($this->nonceCount) < 8) {
+                while (\strlen($this->nonceCount) < 8) {
                     $this->nonceCount = '0'.$this->nonceCount;
                 }
             }
@@ -347,7 +347,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 }
 
                 // Remove the last comma from the header
-                $header = substr($header, 0, strlen($header) - 1);
+                $header = substr($header, 0, \strlen($header) - 1);
                 // Discard the Client Nonce if OPTION_DISCARD_CLIENT_NONCE is set.
                 if ($this->options & self::OPTION_DISCARD_CLIENT_NONCE) {
                     $this->discardClientNonce();
@@ -470,20 +470,20 @@ class DigestAuthMiddleware implements MiddlewareInterface
     private function getQOP(): ?string
     {
         // Has the server specified any options for Quality of Protection
-        if (count($this->qop) > 0) {
+        if (\count($this->qop) > 0) {
             if ($this->options & self::OPTION_QOP_AUTH_INT) {
-                if (in_array('auth-int', $this->qop)) {
+                if (\in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
-                if (in_array('auth', $this->qop)) {
+                if (\in_array('auth', $this->qop)) {
                     return 'auth';
                 }
             }
             if ($this->options & self::OPTION_QOP_AUTH) {
-                if (in_array('auth', $this->qop)) {
+                if (\in_array('auth', $this->qop)) {
                     return 'auth';
                 }
-                if (in_array('auth-int', $this->qop)) {
+                if (\in_array('auth-int', $this->qop)) {
                     return 'auth-int';
                 }
             }
@@ -608,7 +608,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         if ('Digest ' == substr($wwwAuthenticate, 0, 7)) {
             $this->setAuthenticationMethod('Digest');
             // Remove "Digest " from start of header
-            $wwwAuthenticate = substr($wwwAuthenticate, 7, strlen($wwwAuthenticate) - 7);
+            $wwwAuthenticate = substr($wwwAuthenticate, 7, \strlen($wwwAuthenticate) - 7);
 
             $nameValuePairs = $this->parseNameValuePairs($wwwAuthenticate);
 
@@ -644,7 +644,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         if ('Basic ' == substr($wwwAuthenticate, 0, 6)) {
             $this->setAuthenticationMethod('Basic');
             // Remove "Basic " from start of header
-            $wwwAuthenticate = substr($wwwAuthenticate, 6, strlen($wwwAuthenticate) - 6);
+            $wwwAuthenticate = substr($wwwAuthenticate, 6, \strlen($wwwAuthenticate) - 6);
 
             $nameValuePairs = $this->parseNameValuePairs($wwwAuthenticate);
 
@@ -821,10 +821,10 @@ class DigestAuthMiddleware implements MiddlewareInterface
     {
         if ($str) {
             if ('"' == substr($str, 0, 1)) {
-                $str = substr($str, 1, strlen($str) - 1);
+                $str = substr($str, 1, \strlen($str) - 1);
             }
-            if ('"' == substr($str, strlen($str) - 1, 1)) {
-                $str = substr($str, 0, strlen($str) - 1);
+            if ('"' == substr($str, \strlen($str) - 1, 1)) {
+                $str = substr($str, 0, \strlen($str) - 1);
             }
         }
 

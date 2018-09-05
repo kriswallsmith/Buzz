@@ -235,7 +235,7 @@ class Browser implements BuzzClientInterface
         }
 
         // Set a default content-length header
-        if ($length = strlen($content)) {
+        if ($length = \strlen($content)) {
             $fileHeaders['Content-Length'] = (string) $length;
         }
 

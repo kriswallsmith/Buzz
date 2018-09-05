@@ -134,7 +134,7 @@ class FunctionalTest extends TestCase
 
         $calls = [];
         $callback = function (RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$calls) {
-            $calls[] = func_get_args();
+            $calls[] = \func_get_args();
         };
 
         for ($i = 3; $i > 0; --$i) {

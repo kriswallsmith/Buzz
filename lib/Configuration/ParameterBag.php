@@ -55,8 +55,8 @@ final class ParameterBag implements \IteratorAggregate, \Countable
         // Make sure to merge Curl parameters
         if (isset($this->parameters['curl'])
             && isset($parameters['curl'])
-            && is_array($this->parameters['curl'])
-            && is_array($parameters['curl'])) {
+            && \is_array($this->parameters['curl'])
+            && \is_array($parameters['curl'])) {
             $parameters['curl'] = array_replace($this->parameters['curl'], $parameters['curl']);
         }
 
@@ -107,6 +107,6 @@ final class ParameterBag implements \IteratorAggregate, \Countable
      */
     public function count(): int
     {
-        return count($this->parameters);
+        return \count($this->parameters);
     }
 }

@@ -53,7 +53,7 @@ class JournalTest extends TestCase
         $journal->record($this->request2, $this->response2);
         $journal->record($this->request3, $this->response3);
 
-        $this->assertEquals(2, count($journal));
+        $this->assertEquals(2, \count($journal));
     }
 
     public function testGetLastReturnsTheLastEntry()
@@ -105,7 +105,7 @@ class JournalTest extends TestCase
     public function testClearRemovesEntries(Journal $journal)
     {
         $journal->clear();
-        $this->assertEquals(0, count($journal));
+        $this->assertEquals(0, \count($journal));
     }
 
     /**
