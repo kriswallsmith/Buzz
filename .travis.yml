@@ -23,6 +23,10 @@ matrix:
       - php: 7.1
         env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
 
+      - php: 7.2
+        name: Backward compatibillity check
+        env: DEPENDENCIES="roave/backward-compatibility-check" TEST_COMMAND="./vendor/bin/roave-backward-compatibility-check"
+
         # Test the latest stable release
       - php: 7.1
         env: COVERAGE=true TEST_COMMAND="composer test-ci"
