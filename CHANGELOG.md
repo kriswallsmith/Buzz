@@ -10,16 +10,22 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 
 ### Changed
 
-- Added parameter for `ResponseFactory` to `AbstractClient` constructor.
-- Added parameter for  `RequestFactory` to `Browser` constructor.
 - It is now mandatory to pass a client to the `Browser`'s constructor.
 - First argument of `Curl`, `MultiCurl` and `FileGetContent` clients should be the response factory.
 
-### Removed
+## 0.17.2
 
-- Dependency on nyholm/psr7
+### Changed
+
+- Added parameter for `ResponseFactory` to `AbstractClient` constructor.
+- Added parameter for  `RequestFactory` to `Browser` constructor.
+
+### Deprecated
+
 - Not passing a RequestFactory to `Browser`.
 - Not passing a ResponseFactory to the client's constructor.
+- Not passing a BuzzClientInterface to the `Browser`'s constructor.
+
 
 ## 0.17.1
 
