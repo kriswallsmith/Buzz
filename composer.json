@@ -20,7 +20,7 @@
     "require": {
         "php": "^7.1",
         "psr/http-message": "^1.0",
-        "psr/http-client": "^0.1",
+        "psr/http-client": "^0.3",
         "php-http/httplug": "^1.1 || ^2.0@dev",
         "symfony/options-resolver": "^3.4 || ^4.0",
         "psr/http-factory": "^1.0"
