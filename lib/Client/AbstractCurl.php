@@ -54,7 +54,7 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected function releaseHandle($curl): void
     {
-        if (count($this->handles) >= $this->maxHandles) {
+        if (\count($this->handles) >= $this->maxHandles) {
             curl_close($curl);
         } else {
             // Remove all callback functions as they can hold onto references
@@ -67,7 +67,7 @@ abstract class AbstractCurl extends AbstractClient
             curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, null);
             curl_reset($curl);
 
-            if (!in_array($curl, $this->handles)) {
+            if (!\in_array($curl, $this->handles)) {
                 $this->handles[] = $curl;
             }
         }
@@ -84,7 +84,7 @@ abstract class AbstractCurl extends AbstractClient
      */
     protected function prepare($curl, RequestInterface $request, ParameterBag $options): ResponseBuilder
     {
-        if (defined('CURLOPT_PROTOCOLS')) {
+        if (\defined('CURLOPT_PROTOCOLS')) {
             curl_setopt($curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
             curl_setopt($curl, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
         }
@@ -107,7 +107,7 @@ abstract class AbstractCurl extends AbstractClient
                 }
             }
 
-            return strlen($data);
+            return \strlen($data);
         });
 
         curl_setopt($curl, CURLOPT_WRITEFUNCTION, function ($ch, $data) use ($responseBuilder) {
@@ -236,7 +236,7 @@ abstract class AbstractCurl extends AbstractClient
             case '1.1':
                 return CURL_HTTP_VERSION_1_1;
             case '2.0':
-                if (defined('CURL_HTTP_VERSION_2_0')) {
+                if (\defined('CURL_HTTP_VERSION_2_0')) {
                     return CURL_HTTP_VERSION_2_0;
                 }
 
