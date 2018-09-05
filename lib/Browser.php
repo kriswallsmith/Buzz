@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Buzz;
 
 use Buzz\Client\BuzzClientInterface;
+use Buzz\Client\FileGetContents;
 use Buzz\Exception\ClientException;
 use Buzz\Exception\InvalidArgumentException;
 use Buzz\Exception\LogicException;
@@ -35,11 +36,16 @@ class Browser implements BuzzClientInterface
     private $lastResponse;
 
     /**
-     * @param BuzzClientInterface                         $client
+     * @param BuzzClientInterface|null                    $client
      * @param RequestFactoryInterface|RequestFactory|null $requestFactory
      */
-    public function __construct(BuzzClientInterface $client, $requestFactory = null)
+    public function __construct(BuzzClientInterface $client = null, $requestFactory = null)
     {
+        if (null === $client) {
+            @trigger_error('Not passing a BuzzClientInterface to Browser constructor is deprecated.', E_USER_DEPRECATED);
+            $client = new FileGetContents();
+        }
+
         if (null === $requestFactory) {
             @trigger_error('Not passing a RequestFactory to Browser constructor is deprecated.', E_USER_DEPRECATED);
             $requestFactory = new Psr17Factory();
