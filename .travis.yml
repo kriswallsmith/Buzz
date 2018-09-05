@@ -25,7 +25,7 @@ matrix:
 
       - php: 7.2
         name: Backward compatibillity check
-        env: DEPENDENCIES="roave/backward-compatibility-check" TEST_COMMAND="./vendor/bin/roave-backward-compatibility-check --from=0.17.x"
+        env: DEPENDENCIES="roave/backward-compatibility-check" TEST_COMMAND="git fetch && ./vendor/bin/roave-backward-compatibility-check --from=0.17.x"
 
         # Test the latest stable release
       - php: 7.1
