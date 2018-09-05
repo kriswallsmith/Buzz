@@ -104,14 +104,14 @@ class MyMiddleware implements MiddlewareInterface
 
     public function handleRequest(RequestInterface $request, callable $next)
     {
-        call_user_func($this->requestCallable, $request);
+        \call_user_func($this->requestCallable, $request);
 
         return $next($request);
     }
 
     public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
-        call_user_func($this->responseCallable, $request, $request);
+        \call_user_func($this->responseCallable, $request, $request);
 
         return $next($request, $response);
     }

@@ -25,10 +25,10 @@ class CookieJarTest extends TestCase
 
         $cookies = $jar->getCookies();
 
-        $this->assertEquals(2, count($cookies));
+        $this->assertEquals(2, \count($cookies));
         foreach ($cookies as $cookie) {
             $this->assertEquals('www.example.com', $cookie->getAttribute(Cookie::ATTR_DOMAIN));
-            $this->assertTrue(in_array($cookie->getName(), ['SESSION1', 'SESSION2']));
+            $this->assertTrue(\in_array($cookie->getName(), ['SESSION1', 'SESSION2']));
         }
     }
 
@@ -59,7 +59,7 @@ class CookieJarTest extends TestCase
         $jar->addCookie($cookie);
         $jar->clearExpiredCookies();
 
-        $this->assertEquals(0, count($jar->getCookies()));
+        $this->assertEquals(0, \count($jar->getCookies()));
 
         $cookie = new Cookie();
         $cookie->setName('SESSION');
@@ -70,7 +70,7 @@ class CookieJarTest extends TestCase
         $jar->addCookie($cookie);
         $jar->clearExpiredCookies();
 
-        $this->assertEquals(0, count($jar->getCookies()));
+        $this->assertEquals(0, \count($jar->getCookies()));
     }
 
     public function testClear()
@@ -82,9 +82,9 @@ class CookieJarTest extends TestCase
 
         $jar = new CookieJar();
         $jar->addCookie($cookie);
-        $this->assertEquals(1, count($jar->getCookies()));
+        $this->assertEquals(1, \count($jar->getCookies()));
 
         $jar->clear();
-        $this->assertEquals(0, count($jar->getCookies()));
+        $this->assertEquals(0, \count($jar->getCookies()));
     }
 }
