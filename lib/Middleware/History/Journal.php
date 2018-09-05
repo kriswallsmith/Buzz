@@ -33,7 +33,7 @@ class Journal implements \Countable, \IteratorAggregate
     public function addEntry(Entry $entry): void
     {
         array_push($this->entries, $entry);
-        $this->entries = array_slice($this->entries, $this->getLimit() * -1);
+        $this->entries = \array_slice($this->entries, $this->getLimit() * -1);
         end($this->entries);
     }
 
@@ -77,7 +77,7 @@ class Journal implements \Countable, \IteratorAggregate
 
     public function count(): int
     {
-        return count($this->entries);
+        return \count($this->entries);
     }
 
     public function setLimit(int $limit): void

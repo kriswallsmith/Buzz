@@ -140,7 +140,7 @@ class BrowserTest extends TestCase
             'user%5Bname%5D=Kris+Wallsmith&user%5Bemail%5D=foo%40bar.com',
         ];
         yield [
-            ['email' => 'foo@bar.com', 'image' => ['path' => dirname(__DIR__).'/Resources/pixel.gif']],
+            ['email' => 'foo@bar.com', 'image' => ['path' => \dirname(__DIR__).'/Resources/pixel.gif']],
             [],
             ['Content-Type' => 'regex|^multipart/form-data; boundary=".+"$|'],
             'regex|--[0-9a-f\.]+
@@ -157,11 +157,11 @@ foo@bar.com
 |', ];
         yield [
             ['email' => 'foo@bar.com', 'image' => [
-                'path' => dirname(__DIR__).'/Resources/pixel.gif',
+                'path' => \dirname(__DIR__).'/Resources/pixel.gif',
                 'contentType' => 'image/gif',
                 'filename' => 'my-pixel.gif',
             ], 'other-image' => [
-                'path' => dirname(__DIR__).'/Resources/pixel.gif',
+                'path' => \dirname(__DIR__).'/Resources/pixel.gif',
                 'contentType' => 'image/gif',
                 'filename' => 'other-pixel.gif',
             ]],

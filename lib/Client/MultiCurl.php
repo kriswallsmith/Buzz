@@ -68,7 +68,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
     public function count(): int
     {
-        return count($this->queue);
+        return \count($this->queue);
     }
 
     /**
@@ -95,7 +95,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
 
         foreach ($this->queue as $i => $queueItem) {
-            if (2 !== count($queueItem)) {
+            if (2 !== \count($queueItem)) {
                 // We have already prepared this curl
                 continue;
             }
@@ -145,7 +145,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 unset($this->queue[$i]);
 
                 // callback
-                call_user_func($options->get('callback'), $request, $response, $exception);
+                \call_user_func($options->get('callback'), $request, $response, $exception);
             }
         }
 

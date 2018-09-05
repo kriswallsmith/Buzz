@@ -33,7 +33,7 @@ class CallbackMiddleware implements MiddlewareInterface
      */
     public function __construct($callable)
     {
-        if (!is_callable($callable)) {
+        if (!\is_callable($callable)) {
             throw new InvalidArgumentException('The argument is not callable.');
         }
 
@@ -42,14 +42,14 @@ class CallbackMiddleware implements MiddlewareInterface
 
     public function handleRequest(RequestInterface $request, callable $next)
     {
-        $request = call_user_func($this->callable, $request);
+        $request = \call_user_func($this->callable, $request);
 
         return $next($request);
     }
 
     public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
-        $response = call_user_func($this->callable, $request, $response);
+        $response = \call_user_func($this->callable, $request, $response);
 
         return $next($request, $response);
     }

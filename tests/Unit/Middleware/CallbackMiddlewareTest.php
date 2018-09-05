@@ -21,10 +21,10 @@ class CallbackMiddlewareTest extends TestCase
         $requestOut = new Request('POST', '/');
 
         $middleware = new CallbackMiddleware(function () use ($requestIn, $responseIn, $requestOut, $responseOut) {
-            $calls[] = $args = func_get_args();
+            $calls[] = $args = \func_get_args();
             $this->assertEquals($requestIn, $args[0]);
 
-            if (2 === count($args)) {
+            if (2 === \count($args)) {
                 $this->assertEquals($responseIn, $args[1]);
 
                 return $responseOut;
