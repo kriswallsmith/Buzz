@@ -33,6 +33,9 @@
         "psr/log": "^1.0",
         "symfony/phpunit-bridge": "^4.0"
     },
+    "conflict": {
+        "http-interop/http-factory": "<0.4.1"
+    },
     "provide": {
         "php-http/client-implementation": "1.0"
     },
