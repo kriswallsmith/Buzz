@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Buzz\Exception;
 
-use Psr\Http\Client\Exception\NetworkException as PsrNetworkException;
+use Psr\Http\Client\NetworkExceptionInterface as PsrNetworkException;
 use Psr\Http\Message\RequestInterface;
 
 /**
