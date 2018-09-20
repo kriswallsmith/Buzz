@@ -42,7 +42,6 @@ class FileGetContentsTest extends TestCase
             ],
             'ssl' => [
                 'verify_peer' => true,
-                'verify_host' => 2,
                 'cafile' => '/file/path.crt',
             ],
         ];
@@ -58,7 +57,6 @@ class FileGetContentsTest extends TestCase
 
         $options = $options->add(['verify' => false]);
         $expected['ssl']['verify_peer'] = false;
-        $expected['ssl']['verify_host'] = false;
         $this->assertEquals($expected, $client->getStreamContextArray($request, $options));
 
         $options = $options->add(['max_redirects' => 0]);
