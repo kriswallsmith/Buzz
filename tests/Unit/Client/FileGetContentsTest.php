@@ -43,6 +43,7 @@ class FileGetContentsTest extends TestCase
             'ssl' => [
                 'verify_peer' => true,
                 'verify_host' => 2,
+                'cafile' => '/file/path.crt',
             ],
         ];
 
@@ -51,6 +52,7 @@ class FileGetContentsTest extends TestCase
             'timeout' => 10,
             'allow_redirects' => true,
             'verify' => true,
+            'ca_file' => '/file/path.crt',
         ]);
         $this->assertEquals($expected, $client->getStreamContextArray($request, $options));
 

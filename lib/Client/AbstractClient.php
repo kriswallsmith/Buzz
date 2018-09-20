@@ -90,6 +90,7 @@ abstract class AbstractClient
             'timeout' => 30,
             'verify' => true,
             'proxy' => null,
+            'ca_file' => null,
         ]);
 
         $resolver->setAllowedTypes('allow_redirects', 'boolean');
@@ -97,5 +98,6 @@ abstract class AbstractClient
         $resolver->setAllowedTypes('max_redirects', 'integer');
         $resolver->setAllowedTypes('timeout', ['integer', 'float']);
         $resolver->setAllowedTypes('proxy', ['null', 'string']);
+        $resolver->setAllowedTypes('ca_file', ['null', 'string']);
     }
 }

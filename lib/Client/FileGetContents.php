@@ -71,6 +71,11 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
             $context['http']['request_fulluri'] = true;
         }
 
+        $caFile = $options->get('ca_file');
+        if (null !== $caFile) {
+            $context['ssl']['cafile'] = $caFile;
+        }
+
         return $context;
     }
 
