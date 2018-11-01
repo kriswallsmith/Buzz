@@ -12,6 +12,7 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 
 - It is now mandatory to pass a client to the `Browser`'s constructor.
 - First argument of `Curl`, `MultiCurl` and `FileGetContent` clients should be the response factory.
+- Using stable version of `psr/http-client`.
 
 ## 0.17.2
 

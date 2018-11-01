@@ -33,7 +33,7 @@ abstract class AbstractClient
     public function __construct($responseFactory, array $options = [])
     {
         if (!$responseFactory instanceof ResponseFactoryInterface && !$responseFactory instanceof ResponseFactory) {
-            throw new InvalidArgumentException('$responseFactory not a valid ResponseFactory');
+            throw new InvalidArgumentException(sprintf('First argument of %s must be an instance of %s or %s.', __CLASS__, ResponseFactoryInterface::class, ResponseFactory::class));
         }
 
         $this->options = new ParameterBag();
