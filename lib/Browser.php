@@ -40,7 +40,7 @@ class Browser implements BuzzClientInterface
     public function __construct(BuzzClientInterface $client, $requestFactory)
     {
         if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
-            throw new InvalidArgumentException('$requestFactory not a valid RequestFactory');
+            throw new InvalidArgumentException(sprintf('Second argument of %s must be an instance of %s or %s.', __CLASS__, RequestFactoryInterface::class, RequestFactory::class));
         }
 
         $this->client = $client;
