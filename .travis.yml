@@ -12,24 +12,6 @@ env:
         - COMPOSER_FLAGS="--prefer-dist"
         - SYMFONY_PHPUNIT_VERSION=6.5
 
-matrix:
-    fast_finish: true
-    include:
-        # Test with lowest dependencies
-      - php: 7.1
-        env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
-
-        # Test the latest stable release
-      - php: 7.2
-        env: COVERAGE=true TEST_COMMAND="composer test-ci"
-      - php: 7.3
-
-        # Force some major versions of Symfony
-      - php: 7.2
-        env: DEPENDENCIES="dunglas/symfony-lock:^3"
-      - php: 7.2
-        env: DEPENDENCIES="dunglas/symfony-lock:^4"
-
 jobs:
   include:
     - php: 7.2
@@ -47,6 +29,21 @@ jobs:
         - docker ps -a
       script:
         - ./vendor/bin/phpunit --testsuite Integration
+
+      # Test with lowest dependencies
+    - php: 7.1
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
+
+      # Test the latest stable release
+    - php: 7.2
+      env: COVERAGE=true TEST_COMMAND="composer test-ci"
+    - php: 7.3
+
+      # Force some major versions of Symfony
+    - php: 7.2
+      env: DEPENDENCIES="dunglas/symfony-lock:^3"
+    - php: 7.2
+      env: DEPENDENCIES="dunglas/symfony-lock:^4"
 
 install:
     # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355

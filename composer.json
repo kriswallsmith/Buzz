@@ -26,6 +26,7 @@
         "psr/http-factory": "^1.0"
     },
     "require-dev": {
+        "php-http/client-integration-tests": "dev-patch-1",
         "nyholm/psr7": "^1.0",
         "phpunit/phpunit": "^6.5.7",
         "psr/log": "^1.0",

@@ -50,7 +50,7 @@ class BuzzIntegrationTest extends TestCase
         $data = json_decode($response->getBody()->__toString(), true);
         $this->assertArrayHasKey('SERVER', $data, $response->getBody()->__toString());
 
-        $this->assertArrayNotHasKey('CONTENT_TYPE', $data['SERVER']);
+        $this->assertEmpty($data['SERVER']['CONTENT_TYPE']);
     }
 
     /**
@@ -83,7 +83,7 @@ class BuzzIntegrationTest extends TestCase
 
         $builder = new FormRequestBuilder();
         $builder->addField('company[name]', 'Google');
-        $builder->addFile('image', __DIR__.'/../../Resources/image.png', 'image/png', 'filename.png');
+        $builder->addFile('image', __DIR__.'/../Resources/image.png', 'image/png', 'filename.png');
         $browser = new Browser($client, new Psr17Factory());
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], $builder->build());
 
@@ -112,7 +112,7 @@ class BuzzIntegrationTest extends TestCase
         $browser = new Browser($client, new Psr17Factory());
         $response = $browser->submitForm($_SERVER['BUZZ_TEST_SERVER'], [
             'image' => [
-                'path' => __DIR__.'/../../Resources/large.png',
+                'path' => __DIR__.'/../Resources/large.png',
                 'filename' => 'filename.png',
                 'contentType' => 'image/png',
             ],
