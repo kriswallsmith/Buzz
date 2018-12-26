@@ -14,7 +14,7 @@ env:
         - PHP_FCGI_CHILDREN=10
         - PHP_FCGI_MAX_REQUESTS=10
         - COMPOSER_FLAGS="--prefer-dist"
-        - SYMFONY_PHPUNIT_VERSION=6.3
+        - SYMFONY_PHPUNIT_VERSION=6.5
 
 matrix:
     fast_finish: true
@@ -28,11 +28,12 @@ matrix:
         env: COVERAGE=true TEST_COMMAND="composer test-ci"
       - php: 7.2
         env: BUZZ_TEST_SERVER=""  CS=true
+      - php: 7.3
 
         # Force some major versions of Symfony
-      - php: 7.1
+      - php: 7.2
         env: DEPENDENCIES="dunglas/symfony-lock:^3"
-      - php: 7.1
+      - php: 7.2
         env: DEPENDENCIES="dunglas/symfony-lock:^4"
 
 before_install:
