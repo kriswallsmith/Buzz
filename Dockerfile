@@ -1,8 +1,7 @@
 FROM php:7.3-fpm-stretch
 
-# Install packages: Nginx, git etc
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    nginx nano less
+# Install Nginx
+RUN apt-get update && apt-get install -y --no-install-recommends nginx
 
 COPY ./tests/.docker/etc/nginx.conf /etc/nginx/nginx.conf
 COPY ./tests/.docker/index.php /var/www/html/index.php
