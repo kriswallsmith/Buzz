@@ -35,7 +35,8 @@ jobs:
         - ./vendor/bin/phpunit --testsuite Integration
 
       # Test with lowest dependencies
-    - php: 7.1
+    - name: "Low dependencies"
+      php: 7.1
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
 
       # Test the latest stable release
@@ -44,9 +45,11 @@ jobs:
     - php: 7.3
 
       # Force some major versions of Symfony
-    - php: 7.2
+    - name: "Symfony 3.x"
+      php: 7.2
       env: DEPENDENCIES="dunglas/symfony-lock:^3"
-    - php: 7.2
+    - name: "Symfony 4.x"
+      php: 7.2
       env: DEPENDENCIES="dunglas/symfony-lock:^4"
 
 install:
