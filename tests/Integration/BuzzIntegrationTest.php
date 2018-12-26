@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Test\Unit\Client;
+namespace Buzz\Test\Integration;
 
 use Buzz\Browser;
 use Buzz\Client\BuzzClientInterface;
@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class FunctionalTest extends TestCase
+class BuzzIntegrationTest extends TestCase
 {
     protected function setUp()
     {

@@ -9,10 +9,6 @@ cache:
 env:
     global:
         - TEST_COMMAND="composer test"
-        - BUZZ_TEST_SERVER="http://127.0.0.1:8080/server.php"
-        - TEST_PROXY="127.0.0.1:3128"
-        - PHP_FCGI_CHILDREN=10
-        - PHP_FCGI_MAX_REQUESTS=10
         - COMPOSER_FLAGS="--prefer-dist"
         - SYMFONY_PHPUNIT_VERSION=6.5
 
@@ -24,10 +20,8 @@ matrix:
         env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
 
         # Test the latest stable release
-      - php: 7.1
-        env: COVERAGE=true TEST_COMMAND="composer test-ci"
       - php: 7.2
-        env: BUZZ_TEST_SERVER=""  CS=true
+        env: COVERAGE=true TEST_COMMAND="composer test-ci"
       - php: 7.3
 
         # Force some major versions of Symfony
@@ -36,33 +30,33 @@ matrix:
       - php: 7.2
         env: DEPENDENCIES="dunglas/symfony-lock:^4"
 
-before_install:
-    - mkdir -p "$HOME/.php-cs-fixer"
-    - echo "" | sudo add-apt-repository ppa:nginx/stable > /dev/null 2>&1
-    - sudo apt-get -qq update
-    - sudo apt-get -qq install nginx squid
-    - sudo stop squid3
-    - curl --version
-    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
-    - if ! [ -z "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
+jobs:
+  include:
+    - php: 7.2
+      before_install:
+        - mkdir -p "$HOME/.php-cs-fixer"
+        - composer require friendsofphp/php-cs-fixer
+      script:
+        - vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run
+    - php: 7.2
+      services:
+        - docker
+      before_install:
+        - docker build -t buzz/tests .
+        - docker run -d -p 127.0.0.1:8080:80 -p 127.0.0.1:10000:10000 -p 127.0.0.1:3128:3128 buzz/tests
+        - docker ps -a
+      script:
+        - ./vendor/bin/phpunit --testsuite Integration
 
 install:
-    - sudo sh ./tests/.travis/configure-php.sh $USER $(phpenv version-name)
-    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-    - sudo nginx -p tests -c .travis/etc/nginx.conf
-    - sudo squid3 -f tests/.travis/etc/squid.conf
     # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
     - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
     - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
     - ./vendor/bin/simple-phpunit install
 
-before_script:
-    - vendor/bin/http_test_server > /dev/null 2>&1 &
-
 script:
     - composer validate --strict --no-check-lock
     - $TEST_COMMAND
-    - if [[ "$CS" == "true" ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run; fi
 
 after_success:
     - if [[ $COVERAGE = true ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./build/coverage.xml; fi

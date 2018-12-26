@@ -2,15 +2,19 @@
 
 <phpunit backupGlobals="false" bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
-        <testsuite name="Buzz Test Suite">
-            <directory suffix="Test.php">./tests/</directory>
+
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory suffix="Test.php">./tests/Integration</directory>
         </testsuite>
     </testsuites>
 
     <php>
         <server name="TEST_SERVER" value="http://127.0.0.1:10000/server.php" />
-        <!-- <server name="BUZZ_TEST_SERVER" value="http://127.0.0.1:8080" /> -->
-        <!-- <server name="TEST_PROXY" value="localhost:3128" /> -->
+        <server name="BUZZ_TEST_SERVER" value="http://127.0.0.1:8080" />
+        <server name="TEST_PROXY" value="127.0.0.1:3128" />
     </php>
 
     <filter>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Test\Functional;
+namespace Buzz\Test\Integration;
 
 use Buzz\Browser;
 use Buzz\Client\AbstractClient;
