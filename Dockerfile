@@ -5,9 +5,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx nano less
 
 COPY ./tests/.docker/etc/nginx.conf /etc/nginx/nginx.conf
-COPY ./tests/.docker /var/www/html
+COPY ./tests/.docker/index.php /var/www/html/index.php
 
 EXPOSE 80
-STOPSIGNAL SIGTERM
 
-CMD ["nginx", "-g", "daemon off;"]
+# Nginx runs in background and php-fpm in the foreground
+CMD nginx && php-fpm
