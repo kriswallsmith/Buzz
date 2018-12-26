@@ -14,13 +14,15 @@ env:
 
 jobs:
   include:
-    - php: 7.2
+    - name: "Code style"
+      php: 7.2
       before_install:
         - mkdir -p "$HOME/.php-cs-fixer"
         - composer require friendsofphp/php-cs-fixer
       script:
         - vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run
-    - php: 7.3
+    - name: "Integration tests"
+      php: 7.3
       services:
         - docker
       before_install:
