@@ -14,7 +14,6 @@
     <php>
         <server name="TEST_SERVER" value="http://127.0.0.1:10000/server.php" />
         <server name="BUZZ_TEST_SERVER" value="http://127.0.0.1:8080/index.php" />
-        <server name="TEST_PROXY" value="127.0.0.1:3128" />
     </php>
 
     <filter>

@@ -20,12 +20,12 @@ jobs:
         - composer require friendsofphp/php-cs-fixer
       script:
         - vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run
-    - php: 7.2
+    - php: 7.3
       services:
         - docker
       before_install:
         - docker build -t buzz/tests .
-        - docker run -d -p 127.0.0.1:8080:80 -p 127.0.0.1:3128:3128 buzz/tests
+        - docker run -d -p 127.0.0.1:8080:80 buzz/tests
         - docker ps -a
       before_script:
         - ./vendor/bin/http_test_server > /dev/null 2>&1 &
