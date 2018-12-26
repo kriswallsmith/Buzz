@@ -13,7 +13,7 @@ env:
     global:
         - TEST_COMMAND="composer test"
         - COMPOSER_FLAGS="--prefer-dist"
-        - SYMFONY_PHPUNIT_VERSION=6.3
+        - SYMFONY_PHPUNIT_VERSION=6.5
 
 matrix:
     fast_finish: true
