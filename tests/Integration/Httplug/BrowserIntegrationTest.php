@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Test\Integration;
+namespace Buzz\Test\Integration\Httplug;
 
 use Buzz\Browser;
 use Buzz\Client\FileGetContents;
