@@ -28,7 +28,7 @@ composer require kriswallsmith/buzz
 This page will just show you the basics, please [read the full documentation](doc/index.md).
 
 ```php
-$client = new Buzz\Client\FileGetContents([], new Psr17ResponseFactory());
+$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory());
 $browser = new Buzz\Browser($client, new Psr17RequestFactory());
 $response = $browser->get('http://www.google.com');
 
@@ -42,7 +42,7 @@ You can also use the low-level HTTP classes directly.
 ```php
 $request = new PSR7Request('GET', 'https://google.com/foo');
 
-$client = new Buzz\Client\FileGetContents([], new Psr17ResponseFactory());
+$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory());
 $response = $client->send($request, ['timeout' => 4]);
 
 echo $response->getStatusCode();

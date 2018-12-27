@@ -86,7 +86,6 @@ class UserAgentMiddleware implements MiddlewareInterface
 }
 ``` 
 
-
 ---
 
 Continue reading about [Symfony integration](/doc/symfony.md).

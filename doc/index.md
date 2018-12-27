@@ -20,7 +20,7 @@ When a `Browser` in constructed you have to select a [Client](/doc/client.md) to
 to use the Bowser: 
 
 ```php
-$client = new Buzz\Client\FileGetContents([], new Psr17ResponseFactory());
+$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory());
 $browser = new Buzz\Browser($client, new Psr17RequestFactory());
 
 $response = $browser->get('https://example.com');
