@@ -24,11 +24,11 @@ class MultiCurlTest extends TestCase
      */
     public function testNoExceptionThrown()
     {
-        $client = new MultiCurl(new Psr17Factory(), ['timeout'=>1]);
+        $client = new MultiCurl(new Psr17Factory(), ['timeout' => 1]);
 
         $request = new Request('GET', $_SERVER['BUZZ_TEST_SERVER'].'?delay=3');
 
-        $client->sendAsyncRequest($request, ['callback' => function($request, $response, $exception) {
+        $client->sendAsyncRequest($request, ['callback' => function ($request, $response, $exception) {
             $this->assertInstanceOf(NetworkException::class, $exception);
         }]);
 
