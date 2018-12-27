@@ -49,12 +49,13 @@ class MultiCurlTest extends TestCase
         $i = 0;
         while (true) {
             $client->proceed();
-            if ($returnResponse !== null) {
+            if (null !== $returnResponse) {
                 // Make sure $client->proceed() is non-blocking
                 $this->assertTrue($i > 0, 'MultiCurl::proceed() must be non-blocking.');
+
                 return;
             }
-            $i++;
+            ++$i;
         }
     }
 }
