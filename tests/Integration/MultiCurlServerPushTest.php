@@ -24,10 +24,11 @@ class MultiCurlServerPushTest extends TestCase
         $client = new MultiCurl(new Psr17Factory(), ['timeout' => 1]);
 
         $start = microtime(true);
-        $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush', [], null, '2.0'));
+        $response = $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush', [], null, '2.0'));
         $timeFirstRequest = microtime(true)-$start;
 
         // TODO parse request
+        $body = $response->getBody()->__toString();
 
         $start = microtime(true);
         $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/style.css?1545951414399773323'));
