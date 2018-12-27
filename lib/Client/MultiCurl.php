@@ -23,6 +23,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
      * request completes. It is ONLY in the callback you will see the response
      * or an exception.
      *
+     * This is a non-blocking function call.
+     *
      * The callable should have the following signature:
      *
      *     $callback = function($request, $response, $exception) {
@@ -40,6 +42,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $this->addToQueue($request, $options);
     }
 
+    /**
+     * This is a blocking function call.
+     */
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
         $options = $this->validateOptions($options);
@@ -75,6 +80,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     }
 
     /**
+     * Wait for all requests to finish.
+     *
+     * This is a blocking function call.
+     *
      * This will not throw any exceptions. All exceptions are handled in the callback.
      */
     public function flush(): void
@@ -85,7 +94,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     }
 
     /**
-     * @throws ClientException
+     * See if any connection is ready to be processed.
+     *
+     * This is a non-blocking function call.
      */
     public function proceed(): void
     {
