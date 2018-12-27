@@ -77,10 +77,33 @@ their method of deprecating classes, interfaces and functions.
 
 ## Running the tests
 
-To run the test we need to set up a webserver. Using PHP's build in one works perfectly. 
+There are 2 kinds of tests for this library; unit tests and integration tests. They can be run separably by: 
 
 ```bash
-vendor/bin/http_test_server > /dev/null 2>&1 &
-php -S 127.0.0.1:8080 tests/server.php  &
-composer test
+./vendor/bin/simple-phpunit --testsuite Unit
+./vendor/bin/simple-phpunit --testsuite Integration
+``` 
+
+The integration tests makes real HTTP requests to a webserver. There are two different 
+webservers used by our integration tests. A real Nginx server and PHP's built in webserver.
+The tests that runs with PHP's webserver are provided by `php-http/client-integration-tests`.
+
+To start the server, open terminal A and run:
+
+```bash
+vendor/bin/http_test_server
 ```
+
+The other type of integration tests are using Nginx. We use Docker to start the 
+Nginx server.
+
+```bash
+docker build -t buzz/tests .
+docker run -d -p 127.0.0.1:8080:80 buzz/tests
+```
+
+You are now ready to run the integration tests
+
+```bash
+./vendor/bin/simple-phpunit --testsuite Integration
+``` 
