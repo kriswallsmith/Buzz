@@ -91,7 +91,7 @@ The tests that runs with PHP's webserver are provided by `php-http/client-integr
 To start the server, open terminal A and run:
 
 ```bash
-vendor/bin/http_test_server
+./vendor/bin/http_test_server
 ```
 
 The other type of integration tests are using Nginx. We use Docker to start the 
