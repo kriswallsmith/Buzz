@@ -136,7 +136,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $exception = null;
 
         // handle any completed requests
-        while ($active && CURLM_OK == $mrc) {
+        if ($active && CURLM_OK == $mrc) {
             curl_multi_select($this->curlm);
             do {
                 $mrc = curl_multi_exec($this->curlm, $active);
