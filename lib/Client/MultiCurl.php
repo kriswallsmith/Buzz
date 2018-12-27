@@ -38,6 +38,22 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private $pushFunctions = [];
 
     /**
+     * @var bool
+     */
+    private $serverPushSupported = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($responseFactory, array $options = [])
+    {
+        parent::__construct($responseFactory, $options);
+
+        // TODO create some logic to decide this better.
+        $this->serverPushSupported = false;
+    }
+
+    /**
      * Populates the supplied response with the response for the supplied request.
      *
      * If a "callback" option is supplied, its value will be called when the
@@ -140,26 +156,28 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 throw new ClientException('Unable to create a new cURL multi handle');
             }
 
-            $userCallbacks = $this->pushFunctions;
-            $cb = function ($parent, $pushed, $headers) use ($userCallbacks) {
-                // If any callback say no, then do not accept.
-                foreach ($userCallbacks as $callback) {
-                    if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
-                        return CURL_PUSH_DENY;
+            if ($this->serverPushSupported) {
+                $userCallbacks = $this->pushFunctions;
+                $cb = function ($parent, $pushed, $headers) use ($userCallbacks) {
+                    // If any callback say no, then do not accept.
+                    foreach ($userCallbacks as $callback) {
+                        if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
+                            return CURL_PUSH_DENY;
+                        }
                     }
-                }
 
-                curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($pushed, CURLOPT_HEADER, true);
-                curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
-                curl_setopt($pushed, CURLOPT_WRITEFUNCTION, null);
-                $this->addPushHandle($headers, $pushed);
+                    curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($pushed, CURLOPT_HEADER, true);
+                    curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
+                    curl_setopt($pushed, CURLOPT_WRITEFUNCTION, null);
+                    $this->addPushHandle($headers, $pushed);
 
-                return CURL_PUSH_OK;
-            };
+                    return CURL_PUSH_OK;
+                };
 
-            curl_multi_setopt($this->curlm, 3 /*CURLMOPT_PIPELINING*/, 2 /*CURLPIPE_MULTIPLEX*/);
-            curl_multi_setopt($this->curlm, 20014 /*CURLMOPT_PUSHFUNCTION*/, $cb);
+                curl_multi_setopt($this->curlm, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
+                curl_multi_setopt($this->curlm, CURLMOPT_PUSHFUNCTION, $cb);
+            }
         }
 
         foreach ($this->queue as $i => $queueItem) {
@@ -173,10 +191,13 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             list($request, $options) = $queueItem;
 
             // Check if we have the response in cache already.
-            if ($options->get('use_pushed_response') && $this->hasPushResponse($request->getUri()->__toString())) {
+            if ($this->serverPushSupported
+                && $options->get('use_pushed_response')
+                && $this->hasPushResponse($request->getUri()->__toString())
+            ) {
                 $data = $this->getPushedResponse($request->getUri()->__toString());
                 $response = (new ResponseBuilder($this->responseFactory))->getResponseFromRawInput($data['content'], $data['headerSize']);
-                call_user_func($options->get('callback'), $request, $response, null);
+                \call_user_func($options->get('callback'), $request, $response, null);
                 unset($this->queue[$i]);
 
                 continue;
@@ -302,7 +323,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
      */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
     {
-        if (null !== $callback = $options->get('push_function_callback')) {
+        $callback = $options->get('push_function_callback');
+        if (null !== $callback && $this->serverPushSupported) {
             $this->pushFunctions[] = $callback;
         }
 
