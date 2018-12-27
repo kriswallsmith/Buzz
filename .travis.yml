@@ -32,7 +32,9 @@ jobs:
       before_script:
         - ./vendor/bin/http_test_server > /dev/null 2>&1 &
       script:
-        - ./vendor/bin/phpunit --testsuite Integration
+        - composer test-ci
+      after_success:
+        - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./build/coverage.xml
 
       # Test with lowest dependencies
     - name: "Low dependencies"
@@ -40,8 +42,8 @@ jobs:
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
 
       # Test the latest stable release
+    - php: 7.1
     - php: 7.2
-      env: COVERAGE=true TEST_COMMAND="composer test-ci"
     - php: 7.3
 
       # Force some major versions of Symfony
@@ -61,6 +63,3 @@ install:
 script:
     - composer validate --strict --no-check-lock
     - $TEST_COMMAND
-
-after_success:
-    - if [[ $COVERAGE = true ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover ./build/coverage.xml; fi
