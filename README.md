@@ -128,3 +128,11 @@ You are now ready to run the integration tests
 ```bash
 ./vendor/bin/simple-phpunit --testsuite Integration
 ```
+
+### Test Server Push
+
+```bash
+docker run -d --rm --name devilbox-php-fpm-7-4 -v $(pwd):/var/www/default/htdocs devilbox/php-fpm-7.4 
+docker exec -it devilbox-php-fpm-7-4 /bin/bash
+cd /var/www/default/htdocs
+```
