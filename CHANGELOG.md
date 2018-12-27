@@ -8,7 +8,8 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 
 - `MultiCurl` will never throw exception when handling messages asynchronously. 
 All exceptions will be handled in the callback. 
-- `MultiCurl::sendRequest` will throw exception if one occur. 
+- `MultiCurl::sendRequest()` will throw exception if one occur. 
+- Make sure `MultiCurl::proceed()` is non-blocking.
 
 ## 1.0.0-beta1
 
