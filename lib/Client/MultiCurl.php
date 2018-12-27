@@ -146,7 +146,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                             $response = null;
                             $this->parseError($request, $info['result'], $curl);
                             $response = $responseBuilder->getResponse();
-                        } catch (ExceptionInterface $e) {
+                        } catch (\Throwable $e) {
                             if (null === $exception) {
                                 $exception = $e;
                             }
@@ -159,6 +159,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
                         // callback
                         \call_user_func($options->get('callback'), $request, $response, $exception);
+                        $exception = null;
                     }
 
                     if (!$handled) {
@@ -173,10 +174,6 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         if (empty($this->queue)) {
             curl_multi_close($this->curlm);
             $this->curlm = null;
-
-            if (null !== $exception) {
-                throw $exception;
-            }
         }
     }
 
