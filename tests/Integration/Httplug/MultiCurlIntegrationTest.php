@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Test\Integration;
+namespace Buzz\Test\Integration\Httplug;
 
-use Buzz\Client\Curl;
+use Buzz\Client\MultiCurl;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
-class CurlIntegrationTest extends BaseIntegrationTest
+class MultiCurlIntegrationTest extends BaseIntegrationTest
 {
     protected function createHttpAdapter()
     {
-        $client = new Curl(new Psr17Factory(), []);
-
-        return $client;
+        return new MultiCurl(new Psr17Factory(), []);
     }
 
     /**
@@ -40,7 +38,6 @@ class CurlIntegrationTest extends BaseIntegrationTest
         if (null !== $body && '1.0' !== $protocolVersion) {
             $this->markTestSkipped('cURL can not send body using GET');
         }
-
         parent::testSendRequestWithOutcome($uriAndOutcome, $protocolVersion, $headers, $body);
     }
 }

@@ -26,9 +26,8 @@
         "psr/http-factory": "^1.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.11",
+        "php-http/client-integration-tests": "^2.0.1",
         "nyholm/psr7": "^1.0",
-        "php-http/client-integration-tests": "^0.6.2",
         "phpunit/phpunit": "^6.5.7",
         "psr/log": "^1.0",
         "symfony/phpunit-bridge": "^4.0"
@@ -50,7 +49,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/simple-phpunit",
+        "test": "vendor/bin/simple-phpunit --testsuite Unit",
         "test-ci": "vendor/bin/simple-phpunit --coverage-text --coverage-clover=build/coverage.xml"
     }
 }
