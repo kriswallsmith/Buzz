@@ -49,8 +49,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         parent::__construct($responseFactory, $options);
 
-        // TODO create some logic to decide this better.
-        $this->serverPushSupported = false;
+        // TODO Add some better logic here
+        $this->serverPushSupported = PHP_VERSION_ID >= 70400 && curl_version()['version_number'] >= 472065;
     }
 
     /**
@@ -323,8 +323,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
      */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
     {
-        $callback = $options->get('push_function_callback');
-        if (null !== $callback && $this->serverPushSupported) {
+        if (null !== $callback = $options->get('push_function_callback')) {
             $this->pushFunctions[] = $callback;
         }
 
