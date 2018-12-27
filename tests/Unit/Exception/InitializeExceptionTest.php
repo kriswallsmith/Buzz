@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Buzz\Test\Unit\Exception;
 
 use Buzz\Exception as BuzzException;
-
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
