@@ -34,18 +34,30 @@ class CookieJarTest extends TestCase
 
     public function testAddCookieHeadersAddsCookieHeaders()
     {
-        $request = new Request('GET', 'http://www.example.com');
-
-        $cookie = new Cookie();
-        $cookie->setName('SESSION');
-        $cookie->setValue('asdf');
-        $cookie->setAttribute(Cookie::ATTR_DOMAIN, '.example.com');
-
+        // Create a CookieJar
         $jar = new CookieJar();
-        $jar->setCookies([$cookie]);
-        $request = $jar->addCookieHeaders($request);
 
-        $this->assertEquals('SESSION=asdf', $request->getHeaderLine('Cookie'));
+        // Prepare two cookies
+        $cookie1 = new Cookie();
+        $cookie1->setName('SESSION');
+        $cookie1->setValue('asdf');
+        $cookie1->setAttribute(Cookie::ATTR_DOMAIN, '.example.com');
+
+        $cookie2 = new Cookie();
+        $cookie2->setName('foo');
+        $cookie2->setValue('bar');
+        $cookie2->setAttribute(Cookie::ATTR_DOMAIN, '.example.com');
+
+        // Add one cookie to the CookieJar
+        $jar->setCookies([$cookie1]);
+        $request = new Request('GET', 'http://www.example.com');
+        $newRequest = $jar->addCookieHeaders($request);
+        $this->assertEquals('SESSION=asdf', $newRequest->getHeaderLine('Cookie'));
+
+        // Add the second cookie
+        $jar->addCookie($cookie2);
+        $newRequest = $jar->addCookieHeaders($request);
+        $this->assertEquals('SESSION=asdf, foo=bar', $newRequest->getHeaderLine('Cookie'));
     }
 
     public function testClearExpiredCookiesRemovesExpiredCookies()
