@@ -11,7 +11,7 @@ There are 3 clients: `FileGetContents`, `Curl` and `MultiCurl`.
 ```php
 $request = new PSR7Request('GET', 'https://example.com');
 
-$client = new Buzz\Client\FileGetContents(['allow_redirects' => true], new Psr17ResponseFactory());
+$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory(), ['allow_redirects' => true]);
 $response = $client->send($request, ['timeout' => 4]);
 ```
 

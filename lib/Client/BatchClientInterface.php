@@ -21,16 +21,16 @@ interface BatchClientInterface extends \Countable
     public function sendAsyncRequest(RequestInterface $request, array $options = []): void;
 
     /**
-     * Processes all queued requests.
+     * Processes all queued requests. This is blocking.
      *
-     * @throws ClientException If something goes wrong
+     * @throws ClientException If something goes wrong with initializing cUrl
      */
     public function flush(): void;
 
     /**
-     * Processes zero or more queued requests.
+     * Processes zero or more queued requests. This is non-blocking.
      *
-     * @throws ClientException If something goes wrong
+     * @throws ClientException If something goes wrong with initializing cUrl
      */
     public function proceed(): void;
 }

@@ -21,7 +21,7 @@
         "php": "^7.1",
         "psr/http-message": "^1.0",
         "psr/http-client": "^1.0",
-        "php-http/httplug": "^1.1 || ^2.0",
+        "php-http/httplug": "^2.0",
         "symfony/options-resolver": "^3.4 || ^4.0",
         "psr/http-factory": "^1.0"
     },
@@ -33,10 +33,11 @@
         "symfony/phpunit-bridge": "^4.0"
     },
     "provide": {
-        "php-http/client-implementation": "1.0"
+        "php-http/client-implementation": "1.0",
+        "psr/http-client-implementation": "1.0"
     },
     "suggest": {
-        "ext-curl": "*"
+        "ext-curl": "To use our cUrl clients"
     },
     "autoload": {
         "psr-4": {
