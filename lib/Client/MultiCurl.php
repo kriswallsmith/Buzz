@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
-use Buzz\Exception\ExceptionInterface;
 use Buzz\Exception\ClientException;
 use Buzz\Message\ResponseBuilder;
 use Psr\Http\Message\RequestInterface;
@@ -20,10 +19,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     /**
      * Populates the supplied response with the response for the supplied request.
      *
-     * The array of options will be passed to curl_setopt_array().
-     *
      * If a "callback" option is supplied, its value will be called when the
-     * request completes. The callable should have the following signature:
+     * request completes. It is ONLY in the callback you will see the response
+     * or an exception.
+     *
+     * The callable should have the following signature:
      *
      *     $callback = function($request, $response, $exception) {
      *         if (!$exception) {
@@ -48,6 +48,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $options = $options->add(['callback' => function (RequestInterface $request, ResponseInterface $response = null, ClientException $e = null) use (&$responseToReturn, $originalCallback) {
             $responseToReturn = $response;
             $originalCallback($request, $response, $e);
+
+            if ($e !== null) {
+                throw $e;
+            }
         }]);
 
         $this->addToQueue($request, $options);
@@ -71,7 +75,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     }
 
     /**
-     * @throws ClientException
+     * This will not throw any exceptions. All exceptions are handled in the callback.
      */
     public function flush(): void
     {

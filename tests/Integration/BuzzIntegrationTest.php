@@ -10,6 +10,7 @@ use Buzz\Client\Curl;
 use Buzz\Client\FileGetContents;
 use Buzz\Client\MultiCurl;
 use Buzz\Exception\ClientException;
+use Buzz\Exception\NetworkException;
 use Buzz\Message\FormRequestBuilder;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
@@ -51,6 +52,20 @@ class BuzzIntegrationTest extends TestCase
         $this->assertArrayHasKey('SERVER', $data, $response->getBody()->__toString());
 
         $this->assertEmpty($data['SERVER']['CONTENT_TYPE']);
+    }
+
+    /**
+     * @dataProvider provideClient
+     */
+    public function testException($client, $async)
+    {
+        if ($async) {
+            $this->markTestSkipped('Async clients should not throw exceptions');
+        }
+        $request = new Request('GET', $_SERVER['BUZZ_TEST_SERVER'].'?delay=3');
+
+        $this->expectException(NetworkException::class);
+        $client->sendRequest($request, ['timeout' => 1]);
     }
 
     /**
@@ -128,7 +143,7 @@ class BuzzIntegrationTest extends TestCase
         $this->assertGreaterThan(39618, $data['FILES']['image']['size']);
     }
 
-    public function testMultiCurlExecutesRequestsConcurently()
+    public function testMultiCurlExecutesRequestsConcurrently()
     {
         $client = new MultiCurl(new Psr17Factory(), ['timeout' => 30]);
 
