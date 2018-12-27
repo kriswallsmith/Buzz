@@ -98,7 +98,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
      *
      * This is a non-blocking function call.
      *
-     * @throws ClientException If we fail to initialized cUrl.
+     * @throws ClientException if we fail to initialized cUrl
      */
     public function proceed(): void
     {
