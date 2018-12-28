@@ -37,7 +37,8 @@
         "psr/http-client-implementation": "1.0"
     },
     "suggest": {
-        "ext-curl": "To use our cUrl clients"
+        "ext-curl": "To use our cUrl clients",
+        "nyholm/psr7": "For PSR-7 and PSR-17 implementation"
     },
     "autoload": {
         "psr-4": {
