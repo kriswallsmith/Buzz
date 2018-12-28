@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
-use Buzz\Message\HeaderConverter;
+use Buzz\Exception\CallbackException;
 use Buzz\Exception\ClientException;
 use Buzz\Exception\NetworkException;
 use Buzz\Exception\RequestException;
+use Buzz\Message\HeaderConverter;
 use Buzz\Message\ResponseBuilder;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -210,6 +211,7 @@ abstract class AbstractCurl extends AbstractClient
      *
      * @throws NetworkException
      * @throws RequestException
+     * @throws CallbackException
      */
     protected function parseError(RequestInterface $request, int $errno, $curl): void
     {
@@ -223,6 +225,8 @@ abstract class AbstractCurl extends AbstractClient
             case CURLE_OPERATION_TIMEOUTED:
             case CURLE_SSL_CONNECT_ERROR:
                 throw new NetworkException($request, curl_error($curl), $errno);
+            case CURLE_ABORTED_BY_CALLBACK:
+                throw new CallbackException($request, curl_error($curl), $errno);
             default:
                 throw new RequestException($request, curl_error($curl), $errno);
         }
