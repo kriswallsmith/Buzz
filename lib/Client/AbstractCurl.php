@@ -29,6 +29,8 @@ abstract class AbstractCurl extends AbstractClient
 
         $resolver->setDefault('curl', []);
         $resolver->setAllowedTypes('curl', ['array']);
+        $resolver->setDefault('expose_curl_info', false);
+        $resolver->setAllowedTypes('expose_curl_info', ['boolean']);
     }
 
     /**
