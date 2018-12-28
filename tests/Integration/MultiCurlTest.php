@@ -14,7 +14,7 @@ class MultiCurlTest extends TestCase
 {
     protected function setUp()
     {
-        if (!isset($_SERVER['BUZZ_TEST_SERVER']) || empty($_SERVER['BUZZ_TEST_SERVER'])) {
+        if (empty($_SERVER['BUZZ_TEST_SERVER'])) {
             $this->markTestSkipped('The test server is not configured.');
         }
     }
