@@ -13,7 +13,7 @@
 
     <php>
         <server name="TEST_SERVER" value="http://127.0.0.1:10000/server.php" />
-        <server name="BUZZ_TEST_SERVER" value="http://127.0.0.1:8080/index.php" />
+        <server name="BUZZ_TEST_SERVER" value="http://127.0.0.1:8022/index.php" />
     </php>
 
     <filter>
