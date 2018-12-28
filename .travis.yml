@@ -27,7 +27,7 @@ jobs:
         - docker
       before_install:
         - docker build -t buzz/tests .
-        - docker run -d -p 127.0.0.1:8080:80 buzz/tests
+        - docker run -d -p 127.0.0.1:8022:80 buzz/tests
         - docker ps -a
       before_script:
         - ./vendor/bin/http_test_server > /dev/null 2>&1 &
