@@ -2,11 +2,11 @@
 
 # Clients
 
-Clients are the low-level objects to send HTTP requests. All clients are minimalistic both in 
-features and flexibility. You may give the client some default configuration and some additional 
-configuration each time you send a request. 
+Clients are the low-level objects to send HTTP requests. All clients are minimalistic both in
+features and flexibility. You may give the client some default configuration and some additional
+configuration each time you send a request.
 
-There are 3 clients: `FileGetContents`, `Curl` and `MultiCurl`. 
+There are 3 clients: `FileGetContents`, `Curl` and `MultiCurl`.
 
 ```php
 $request = new PSR7Request('GET', 'https://example.com');
@@ -17,15 +17,15 @@ $response = $client->send($request, ['timeout' => 4]);
 
 ## Configuration
 
-Not all configuration works will all clients. If there is any client specific configuration it 
-will be noted below. 
+Not all configuration works will all clients. If there is any client specific configuration it
+will be noted below.
 
 #### allow_redirects
 
 Type: boolean<br>
 Default: `false`
 
-Should the client follow HTTP redirects or not. 
+Should the client follow HTTP redirects or not.
 
 #### callback
 
@@ -33,7 +33,7 @@ Type: callable<br>
 Default: `function() {}`<br>
 *Only for MultiCurl*
 
-A callback function that is called after a request has been sent. 
+A callback function that is called after a request has been sent.
 
 ```php
 $callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) {
@@ -49,13 +49,31 @@ Type: array<br>
 Default: `[]`<br>
 *Only for Curl and MultiCurl*
 
-An array with Curl options. 
+An array with Curl options.
 
 ```php
 $request = new PSR7Request('GET', 'https://example.com');
 $client->sendAsyncRequest($request, array('curl' => [
     CURLOPT_FAILONERROR => false,
 ]));
+```
+
+#### expose_curl_info
+
+Type: boolean<br>
+Default: `false`<br>
+*Only for Curl and MultiCurl*
+
+If set to `true` the response header `__curl_info` will contain a json_encoded
+serialization of the curl metadata information about the response.
+
+```php
+$request = new PSR7Request('GET', 'https://example.com');
+$response = $client->sendRequest($request, [
+    'expose_curl_info' => true,
+]);
+
+$curlInfo = json_decode($response->getHeader('__curl_info')[0], true);
 ```
 
 #### max_redirects
@@ -71,21 +89,21 @@ The maximum number of redirects to follow. Note that this will have no effect un
 Type: string<br>
 Default: `null`
 
-A proxy server to use when sending requests. 
+A proxy server to use when sending requests.
 
 #### timeout
 
 Type: integer<br>
 Default: `30`
 
-The time to wait before interrupt the request. 
+The time to wait before interrupt the request.
 
 #### verify
 
 Type: boolean<br>
 Default: `true`
 
-If SSL protocols should verified. 
+If SSL protocols should verified.
 
 ---
 
