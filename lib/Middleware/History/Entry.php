@@ -18,7 +18,7 @@ class Entry
     /**
      * @param RequestInterface  $request  The request
      * @param ResponseInterface $response The response
-     * @param null|float        $duration The duration in seconds
+     * @param float|null        $duration The duration in seconds
      */
     public function __construct(RequestInterface $request, ResponseInterface $response, float $duration = null)
     {

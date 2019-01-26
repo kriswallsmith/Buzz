@@ -59,6 +59,24 @@ class BuzzIntegrationTest extends TestCase
     /**
      * @dataProvider provideClient
      */
+    public function testGetCurlInfo(BuzzClientInterface $client, bool $async)
+    {
+        if (!$client instanceof AbstractCurl) {
+            $this->markTestSkipped('Only Curl supports this feature.');
+        }
+
+        $request = new Request('GET', $_SERVER['BUZZ_TEST_SERVER']);
+        $response = $this->send($client, $request, $async, ['expose_curl_info' => true]);
+
+        $this->assertTrue($response->hasHeader('__curl_info'));
+        $curlInfo = json_decode($response->getHeader('__curl_info')[0], true);
+        $this->assertArrayHasKey('total_time', $curlInfo);
+        $this->assertGreaterThan(0, $curlInfo['total_time']);
+    }
+
+    /**
+     * @dataProvider provideClient
+     */
     public function testException($client, $async)
     {
         if ($async) {
