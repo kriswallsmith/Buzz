@@ -64,7 +64,7 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
                 'verify_peer' => $options->get('verify'),
                 'verify_host' => $options->get('verify'),
                 'verify_peer_name' => $options->get('verify'),
-                'allow_self_signed' => $options->get('verify') ? false : true
+                'allow_self_signed' => $options->get('verify') ? false : true,
             ],
         ];
 

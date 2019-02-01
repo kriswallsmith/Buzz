@@ -41,6 +41,8 @@ class FileGetContentsTest extends TestCase
             'ssl' => [
                 'verify_peer' => true,
                 'verify_host' => 2,
+                'verify_peer_name' => true,
+                'allow_self_signed' => false,
             ],
         ];
 
@@ -55,6 +57,8 @@ class FileGetContentsTest extends TestCase
         $options = $options->add(['verify' => false]);
         $expected['ssl']['verify_peer'] = false;
         $expected['ssl']['verify_host'] = false;
+        $expected['ssl']['verify_peer_name'] = false;
+        $expected['ssl']['allow_self_signed'] = true;
         $this->assertEquals($expected, $client->getStreamContextArray($request, $options));
 
         $options = $options->add(['max_redirects' => 0]);
