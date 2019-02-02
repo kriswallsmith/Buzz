@@ -62,7 +62,7 @@ All exceptions will be handled in the callback.
 - Added `ParameterBag` to store options.
 - Added `BatchClientInterface::sendAsyncRequest(RequestInterface $request, array $options = [])`.
 - Added `BuzzClientInterface::sendRequest(RequestInterface $request, array $options = []): ResponseInterface`.
-- Ported all Listeners to Middlewares.
+- Ported all Listeners to Middleware.
 - Added options to configure the client as constructor argument and when you send a request.
 
 ### Removed (BC breaks)
@@ -123,7 +123,7 @@ All exceptions will be handled in the callback.
 * Added Request and Response converters
 * Added `Curl::sendRequest()`, `MultiCurl::sendRequest()` and `FileGetContents::sendRequest()` that
   supports sending PSR-7 requests.
-* Added `Browser::sendRequest()` that supports middlewares.
+* Added `Browser::sendRequest()` that supports middleware.
 * Added `MiddlewareInterface` and `Browser::addMiddleware()`.
 * Added `HeaderConverter` to convert between PSR-7 styled headers and Buzz styled headers.
 

@@ -132,6 +132,14 @@ compatibility.
 Being greatly inspired by [Symfony's bc promise](https://symfony.com/doc/current/contributing/code/bc.html), we have adopted
 their method of deprecating classes, interfaces and functions.
 
+## Contribute
+
+Buzz is great because it is small, simple and yet flexible. We are always happy to receive bug reports and bug fixes. We 
+are also looking forward to review a pull request with a new middleware, especially if the middleware covers a common
+use case. 
+
+We will probably not accept any configuration option or feature to any of the clients or the Browser. 
+
 ## Running the tests
 
 There are 2 kinds of tests for this library; unit tests and integration tests. They can be run separably by:
