@@ -81,7 +81,8 @@ class DigestAuthMiddleware implements MiddlewareInterface
         $this->setMethod(strtoupper($request->getMethod()));
         $this->setEntityBody($request->getBody()->__toString());
 
-        if (null !== $header = $this->getHeader()) {
+        $header = $this->getHeader();
+        if (null !== $header) {
             $request = $request->withHeader('Authorization', $header);
         }
 
