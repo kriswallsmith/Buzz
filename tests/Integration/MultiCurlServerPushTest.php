@@ -20,7 +20,7 @@ class MultiCurlServerPushTest extends TestCase
 
     public function testServerPush()
     {
-        $client = new MultiCurl(new Psr17Factory(), ['timeout' => 1]);
+        $client = new MultiCurl(new Psr17Factory());
 
         $start = microtime(true);
         $response = $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush', [], null, '2.0'));
@@ -39,7 +39,6 @@ class MultiCurlServerPushTest extends TestCase
         $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/playground.js?'.$id));
         $timeOtherRequests = microtime(true) - $start;
 
-        $this->assertTrue($timeFirstRequest > $timeOtherRequests);
-        $this->assertFalse(true, 'First: '.$timeFirstRequest."\nOther: ".$timeOtherRequests."\n");
+        $this->assertTrue($timeFirstRequest > $timeOtherRequests, 'First: '.$timeFirstRequest."\nOther: ".$timeOtherRequests."\n");
     }
 }
