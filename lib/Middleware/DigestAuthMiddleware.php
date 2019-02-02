@@ -582,8 +582,6 @@ class DigestAuthMiddleware implements MiddlewareInterface
     /**
      * Parses the server headers received and checks for WWW-Authenticate and Authentication-Info headers.
      * Calls parseWwwAuthenticateHeader() and parseAuthenticationInfoHeader() respectively if either of these headers are present.
-     *
-     * @param ResponseInterface $response
      */
     private function parseServerHeaders(ResponseInterface $response): void
     {

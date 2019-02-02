@@ -23,10 +23,6 @@ class HeaderConverter
 {
     /**
      * Convert from Buzz style headers to PSR style.
-     *
-     * @param array $headers
-     *
-     * @return array
      */
     public static function toBuzzHeaders(array $headers): array
     {
@@ -47,10 +43,6 @@ class HeaderConverter
 
     /**
      * Convert from PSR style headers to Buzz style.
-     *
-     * @param array $headers
-     *
-     * @return array
      */
     public static function toPsrHeaders(array $headers): array
     {

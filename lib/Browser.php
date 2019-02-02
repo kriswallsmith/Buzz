@@ -34,7 +34,6 @@ class Browser implements BuzzClientInterface
     private $lastResponse;
 
     /**
-     * @param BuzzClientInterface                    $client
      * @param RequestFactoryInterface|RequestFactory $requestFactory
      */
     public function __construct(BuzzClientInterface $client, $requestFactory)
@@ -158,10 +157,6 @@ class Browser implements BuzzClientInterface
 
     /**
      * @param MiddlewareInterface[] $middlewares
-     * @param callable              $requestChainLast
-     * @param callable              $responseChainLast
-     *
-     * @return callable
      */
     private function createMiddlewareChain(array $middlewares, callable $requestChainLast, callable $responseChainLast): callable
     {
@@ -215,8 +210,6 @@ class Browser implements BuzzClientInterface
 
     /**
      * Add a new middleware to the stack.
-     *
-     * @param MiddlewareInterface $middleware
      */
     public function addMiddleware(MiddlewareInterface $middleware): void
     {

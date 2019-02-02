@@ -38,8 +38,6 @@ class Cookie
      * Returns true if the current cookie matches the supplied request.
      *
      * @param RequestInterface $request A request object
-     *
-     * @return bool
      */
     public function matchesRequest(RequestInterface $request): bool
     {
@@ -106,8 +104,6 @@ class Cookie
      * Returns true if the current cookie matches the supplied path.
      *
      * @param string $path A path
-     *
-     * @return bool
      */
     public function matchesPath(string $path): bool
     {

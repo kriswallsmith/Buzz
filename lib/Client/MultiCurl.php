@@ -43,8 +43,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private $serverPushSupported = true;
 
     /**
-     * To work around bugs in PHP and GC
+     * To work around bugs in PHP and GC.
+     *
      * @var array
+     *
      * @internal
      */
     private $pushCb = [];
@@ -337,12 +339,6 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         return $response;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @param ParameterBag     $options
-     *
-     * @return array
-     */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
     {
         if (null !== $callback = $options->get('push_function_callback')) {

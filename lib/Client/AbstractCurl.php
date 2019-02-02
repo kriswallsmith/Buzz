@@ -79,11 +79,7 @@ abstract class AbstractCurl extends AbstractClient
     /**
      * Prepares a cURL resource to send a request.
      *
-     * @param resource         $curl
-     * @param RequestInterface $request
-     * @param ParameterBag     $options
-     *
-     * @return ResponseBuilder
+     * @param resource $curl
      */
     protected function prepare($curl, RequestInterface $request, ParameterBag $options): ResponseBuilder
     {
@@ -189,8 +185,7 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * @param resource     $curl
-     * @param ParameterBag $options
+     * @param resource $curl
      */
     private function setOptionsFromParameterBag($curl, ParameterBag $options): void
     {
@@ -207,9 +202,7 @@ abstract class AbstractCurl extends AbstractClient
     }
 
     /**
-     * @param RequestInterface $request
-     * @param int              $errno
-     * @param resource         $curl
+     * @param resource $curl
      *
      * @throws NetworkException
      * @throws RequestException

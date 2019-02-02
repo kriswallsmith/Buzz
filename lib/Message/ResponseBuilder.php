@@ -77,8 +77,6 @@ final class ResponseBuilder
 
     /**
      * Add a single HTTP header line.
-     *
-     * @param string $input
      */
     public function addHeader(string $input): void
     {
@@ -89,8 +87,6 @@ final class ResponseBuilder
     /**
      * Add HTTP headers. The input array is all the header lines from the HTTP message. Optionally including the
      * status line.
-     *
-     * @param array $headers
      */
     public function parseHttpHeaders(array $headers): void
     {
@@ -111,7 +107,6 @@ final class ResponseBuilder
     /**
      * Add some content to the body. This function writes the $input to a stream.
      *
-     * @param string $input
      *
      * @return int returns the number of bytes written
      */

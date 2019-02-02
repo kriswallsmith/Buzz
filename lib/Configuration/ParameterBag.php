@@ -70,8 +70,6 @@ final class ParameterBag implements \IteratorAggregate, \Countable
      *
      * @param string|int $key     The key
      * @param mixed      $default The default value if the parameter key does not exist
-     *
-     * @return mixed
      */
     public function get($key, $default = null)
     {

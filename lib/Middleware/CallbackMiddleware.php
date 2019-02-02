@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Buzz\Middleware;
 
-use Buzz\Exception\InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
