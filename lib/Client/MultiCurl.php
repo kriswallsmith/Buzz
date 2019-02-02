@@ -46,8 +46,6 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
      * To work around bugs in PHP and GC.
      *
      * @var array
-     *
-     * @internal
      */
     private $pushCb = [];
 
