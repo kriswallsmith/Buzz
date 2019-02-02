@@ -157,7 +157,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
             if ($this->serverPushSupported) {
                 $userCallbacks = $this->pushFunctions;
-                $cb = function ($parent, $pushed, $headers) use ($userCallbacks) {
+
+                curl_multi_setopt($this->curlm, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
+                // We need to use $this->pushCb[] because of a bug in PHP
+                curl_multi_setopt($this->curlm, CURLMOPT_PUSHFUNCTION, $this->pushCb[] = function ($parent, $pushed, $headers) use ($userCallbacks) {
                     // If any callback say no, then do not accept.
                     foreach ($userCallbacks as $callback) {
                         if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
@@ -172,10 +175,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                     $this->addPushHandle($headers, $pushed);
 
                     return CURL_PUSH_OK;
-                };
-
-                curl_multi_setopt($this->curlm, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
-                curl_multi_setopt($this->curlm, CURLMOPT_PUSHFUNCTION, $cb);
+                });
             }
         }
 
