@@ -40,5 +40,6 @@ class MultiCurlServerPushTest extends TestCase
         $timeOtherRequests = microtime(true) - $start;
 
         $this->assertTrue($timeFirstRequest > $timeOtherRequests, 'First: '.$timeFirstRequest."\nOther: ".$timeOtherRequests."\n");
+        $this->assertTrue(false, 'Make sure we run the tests');
     }
 }
