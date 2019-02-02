@@ -2,11 +2,13 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions.
 
-## 1.0.0-beta3
+## 1.0.0-rc1
 
 ### Added
 
+- Support for HTTP/2 server push. 
 - Option `expose_curl_info` has been added to expose curl metadata information
+- Added `CallbackException` for Curl clients. 
 
 ### Changed
 
