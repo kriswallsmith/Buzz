@@ -29,7 +29,10 @@ class Curl extends AbstractCurl implements BuzzClientInterface
 
         $response = $responseBuilder->getResponse();
         if ($options->get('expose_curl_info', false)) {
-            $response = $response->withHeader('__curl_info', json_encode($curlInfo));
+            $value = json_encode($curlInfo);
+            if (false !== $value) {
+                $response = $response->withHeader('__curl_info', $value);
+            }
         }
 
         return $response;

@@ -16,31 +16,17 @@ class FormRequestBuilder
      */
     private $files;
 
-    /**
-     * @param array $data
-     * @param array $files
-     */
     public function __construct(array $data = [], array $files = [])
     {
         $this->data = $data;
         $this->files = $files;
     }
 
-    /**
-     * @param string $name
-     * @param string $value
-     */
     public function addField(string $name, string $value): void
     {
         $this->data[$name] = $value;
     }
 
-    /**
-     * @param string      $name
-     * @param string      $path
-     * @param string|null $contentType
-     * @param string|null $filename
-     */
     public function addFile(string $name, string $path, string $contentType = null, string $filename = null): void
     {
         $this->files[$name] = [
@@ -50,9 +36,6 @@ class FormRequestBuilder
         ];
     }
 
-    /**
-     * @return array
-     */
     public function build(): array
     {
         $data = $this->data;

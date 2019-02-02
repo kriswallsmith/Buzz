@@ -38,7 +38,6 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
      * Converts a request into an array for stream_context_create().
      *
      * @param RequestInterface $request A request object
-     * @param ParameterBag     $options
      *
      * @return array An array for stream_context_create()
      */

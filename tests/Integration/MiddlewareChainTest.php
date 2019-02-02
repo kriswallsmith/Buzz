@@ -92,10 +92,6 @@ class MyMiddleware implements MiddlewareInterface
     /** @var callable */
     private $responseCallable;
 
-    /**
-     * @param callable $requestCallable
-     * @param callable $responseCallable
-     */
     public function __construct(callable $requestCallable, callable $responseCallable)
     {
         $this->requestCallable = $requestCallable;

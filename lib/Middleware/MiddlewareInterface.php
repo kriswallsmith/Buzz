@@ -24,8 +24,7 @@ interface MiddlewareInterface
      *      return $next($request);
      *   </code
      *
-     * @param RequestInterface $request
-     * @param callable         $next    next middleware
+     * @param callable $next next middleware
      */
     public function handleRequest(RequestInterface $request, callable $next);
 
@@ -37,8 +36,7 @@ interface MiddlewareInterface
      *      return $next($request, $response);
      *   </code
      *
-     * @param RequestInterface $request
-     * @param callable         $next    next middleware
+     * @param callable $next next middleware
      */
     public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next);
 }

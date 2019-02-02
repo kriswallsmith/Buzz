@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Buzz\Middleware;
 
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -30,14 +31,14 @@ class LoggerMiddleware implements MiddlewareInterface
         $this->prefix = $prefix;
     }
 
-    public function handleRequest(\Psr\Http\Message\RequestInterface $request, callable $next)
+    public function handleRequest(RequestInterface $request, callable $next)
     {
         $this->startTime = microtime(true);
 
         return $next($request);
     }
 
-    public function handleResponse(\Psr\Http\Message\RequestInterface $request, ResponseInterface $response, callable $next)
+    public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
         $seconds = microtime(true) - $this->startTime;
         $this->logger->log($this->level, sprintf('%sSent "%s %s" in %dms', $this->prefix, $request->getMethod(), $request->getUri(), round($seconds * 1000)));

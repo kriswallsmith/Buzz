@@ -84,12 +84,7 @@ class ContentTypeMiddleware implements MiddlewareInterface
         return $next($request, $response);
     }
 
-    /**
-     * @param $stream StreamInterface
-     *
-     * @return bool
-     */
-    private function isJson($stream)
+    private function isJson(StreamInterface $stream): bool
     {
         $stream->rewind();
         json_decode($stream->getContents());
@@ -97,18 +92,13 @@ class ContentTypeMiddleware implements MiddlewareInterface
         return JSON_ERROR_NONE === json_last_error();
     }
 
-    /**
-     * @param $stream StreamInterface
-     *
-     * @return \SimpleXMLElement|false
-     */
-    private function isXml($stream)
+    private function isXml(StreamInterface $stream): bool
     {
         $stream->rewind();
         $previousValue = libxml_use_internal_errors(true);
         $isXml = simplexml_load_string($stream->getContents());
         libxml_use_internal_errors($previousValue);
 
-        return $isXml;
+        return false !== $isXml;
     }
 }

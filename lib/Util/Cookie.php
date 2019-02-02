@@ -38,8 +38,6 @@ class Cookie
      * Returns true if the current cookie matches the supplied request.
      *
      * @param RequestInterface $request A request object
-     *
-     * @return bool
      */
     public function matchesRequest(RequestInterface $request): bool
     {
@@ -88,12 +86,10 @@ class Cookie
      * Returns true if the current cookie matches the supplied domain.
      *
      * @param string $domain A domain hostname
-     *
-     * @return bool
      */
     public function matchesDomain(string $domain): bool
     {
-        $cookieDomain = $this->getAttribute(static::ATTR_DOMAIN);
+        $cookieDomain = $this->getAttribute(static::ATTR_DOMAIN) ?? '';
 
         if (0 === strpos($cookieDomain, '.')) {
             $pattern = '/\b'.preg_quote(substr($cookieDomain, 1), '/').'$/i';
@@ -108,8 +104,6 @@ class Cookie
      * Returns true if the current cookie matches the supplied path.
      *
      * @param string $path A path
-     *
-     * @return bool
      */
     public function matchesPath(string $path): bool
     {
@@ -183,7 +177,7 @@ class Cookie
         return $this->value;
     }
 
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         // attributes are case insensitive
         $this->attributes = array_change_key_case($attributes);

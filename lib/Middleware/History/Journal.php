@@ -10,7 +10,6 @@ use Psr\Http\Message\ResponseInterface;
 class Journal implements \Countable, \IteratorAggregate
 {
     private $entries = [];
-
     private $limit = 10;
 
     public function __construct(int $limit = 10)
@@ -54,7 +53,8 @@ class Journal implements \Countable, \IteratorAggregate
 
     public function getLastRequest(): ?RequestInterface
     {
-        if (null === $entry = $this->getLast()) {
+        $entry = $this->getLast();
+        if (null === $entry) {
             return null;
         }
 
@@ -63,7 +63,8 @@ class Journal implements \Countable, \IteratorAggregate
 
     public function getLastResponse(): ?ResponseInterface
     {
-        if (null === $entry = $this->getLast()) {
+        $entry = $this->getLast();
+        if (null === $entry) {
             return null;
         }
 

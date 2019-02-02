@@ -35,8 +35,6 @@ class CookieJar
 
     /**
      * Adds a cookie to the current cookie jar.
-     *
-     * @param Cookie $cookie A cookie object
      */
     public function addCookie(Cookie $cookie): void
     {
@@ -45,8 +43,6 @@ class CookieJar
 
     /**
      * Adds Cookie headers to the supplied request.
-     *
-     * @param RequestInterface $request A request object
      */
     public function addCookieHeaders(RequestInterface $request): RequestInterface
     {
@@ -61,9 +57,6 @@ class CookieJar
 
     /**
      * Processes Set-Cookie headers from a request/response pair.
-     *
-     * @param RequestInterface  $request  A request object
-     * @param ResponseInterface $response A response object
      */
     public function processSetCookieHeaders(RequestInterface $request, ResponseInterface $response): void
     {

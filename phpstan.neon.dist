@@ -1,0 +1,15 @@
+parameters:
+  level: 6
+  paths:
+    - lib
+
+  ignoreErrors:
+    -
+      message: '#Result of && is always false.#'
+      path: %currentWorkingDirectory%/lib/Browser.php
+    -
+      message: '#Result of && is always false.#'
+      path: %currentWorkingDirectory%/lib/Message/ResponseBuilder.php
+    -
+      message: '#Result of && is always false.#'
+      path: %currentWorkingDirectory%/lib/Client/AbstractClient.php

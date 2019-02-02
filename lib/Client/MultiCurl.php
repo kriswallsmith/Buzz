@@ -43,6 +43,13 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private $serverPushSupported = true;
 
     /**
+     * To work around bugs in PHP and GC.
+     *
+     * @var array
+     */
+    private $pushCb = [];
+
+    /**
      * {@inheritdoc}
      */
     public function __construct($responseFactory, array $options = [])
@@ -159,7 +166,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
 
         if (!$this->curlm) {
-            if (false === $this->curlm = curl_multi_init()) {
+            $this->curlm = curl_multi_init();
+            if (false === $this->curlm) {
                 throw new ClientException('Unable to create a new cURL multi handle');
             }
 
@@ -191,8 +199,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 continue;
             }
             // prepare curl handle
-            /** @var $request RequestInterface */
-            /** @var $options ParameterBag */
+            /** @var RequestInterface $request */
+            /** @var ParameterBag $options */
             list($request, $options) = $queueItem;
 
             // Check if we have the response in cache already.
@@ -229,9 +237,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
             $handled = false;
             foreach (array_keys($this->queue) as $i) {
-                /** @var $request RequestInterface */
-                /** @var $options ParameterBag */
-                /** @var $responseBuilder ResponseBuilder */
+                /** @var RequestInterface $request */
+                /** @var ParameterBag $options */
+                /** @var ResponseBuilder $responseBuilder */
                 list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
 
                 // Try to find the correct handle from the queue.
@@ -239,9 +247,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                     continue;
                 }
 
+                $handled = true;
+                $response = null;
                 try {
-                    $handled = true;
-                    $response = null;
                     $this->parseError($request, $info['result'], $curl);
                     $response = $responseBuilder->getResponse();
                     if ($options->get('expose_curl_info', false)) {
@@ -283,12 +291,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         foreach ($headers as $header) {
             if (0 === strpos($header, ':path:')) {
                 $path = substr($header, 6);
-                $url = curl_getinfo($handle)['url'];
-                $url = str_replace(
-                    parse_url($url, PHP_URL_PATH),
-                    $path,
-                    $url
-                );
+                $url = (string) curl_getinfo($handle)['url'];
+                $url = str_replace(parse_url($url, PHP_URL_PATH), $path, $url);
                 $this->pushResponseHandles[$url] = $handle;
                 break;
             }
@@ -330,12 +334,6 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         return $response;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @param ParameterBag     $options
-     *
-     * @return array
-     */
     private function addToQueue(RequestInterface $request, ParameterBag $options): array
     {
         if (null !== $callback = $options->get('push_function_callback')) {

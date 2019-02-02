@@ -34,7 +34,6 @@ class Browser implements BuzzClientInterface
     private $lastResponse;
 
     /**
-     * @param BuzzClientInterface                    $client
      * @param RequestFactoryInterface|RequestFactory $requestFactory
      */
     public function __construct(BuzzClientInterface $client, $requestFactory)
@@ -112,7 +111,9 @@ class Browser implements BuzzClientInterface
             } else {
                 // This is a file
                 $fileContent = file_get_contents($field['path']);
-                $files .= $this->prepareMultipart($name, $fileContent, $boundary, $field);
+                if (false !== $fileContent) {
+                    $files .= $this->prepareMultipart($name, $fileContent, $boundary, $field);
+                }
             }
         }
 
@@ -123,7 +124,7 @@ class Browser implements BuzzClientInterface
             $headers['Content-Type'] = 'multipart/form-data; boundary="'.$boundary.'"';
 
             foreach ($body as $name => $value) {
-                $files .= $this->prepareMultipart($name, $value, $boundary);
+                $files .= $this->prepareMultipart((string) $name, $value, $boundary);
             }
             $body = "$files--{$boundary}--\r\n";
         }
@@ -158,10 +159,6 @@ class Browser implements BuzzClientInterface
 
     /**
      * @param MiddlewareInterface[] $middlewares
-     * @param callable              $requestChainLast
-     * @param callable              $responseChainLast
-     *
-     * @return callable
      */
     private function createMiddlewareChain(array $middlewares, callable $requestChainLast, callable $responseChainLast): callable
     {
@@ -215,8 +212,6 @@ class Browser implements BuzzClientInterface
 
     /**
      * Add a new middleware to the stack.
-     *
-     * @param MiddlewareInterface $middleware
      */
     public function addMiddleware(MiddlewareInterface $middleware): void
     {
@@ -255,7 +250,7 @@ class Browser implements BuzzClientInterface
         return $output;
     }
 
-    protected function createRequest(string $method, string $url, array $headers, $body): RequestInterface
+    protected function createRequest(string $method, string $url, array $headers, string $body): RequestInterface
     {
         $request = $this->requestFactory->createRequest($method, $url);
         $request->getBody()->write($body);
