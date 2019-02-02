@@ -21,7 +21,7 @@ jobs:
         - composer require friendsofphp/php-cs-fixer
       script:
         - vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run
-    - name: "PHP nightly - Integration"
+    - name: "Integration tests - PHP nightly"
       dist: xenial
       php: nightly
       services:
@@ -35,7 +35,6 @@ jobs:
       script:
         - curl --version
         - ./vendor/bin/simple-phpunit
-        - docker run -it --rm --name my-running-script -v "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly php ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
 
     - name: "Integration tests"
       php: 7.2
