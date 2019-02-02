@@ -49,7 +49,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         parent::__construct($responseFactory, $options);
 
-        $this->serverPushSupported = PHP_VERSION_ID >= 70215 && CURL_VERSION_HTTP2 & curl_version()['features'];
+        $this->serverPushSupported = \PHP_VERSION_ID >= 70215 && CURL_VERSION_HTTP2 & curl_version()['features'];
     }
 
     /**
