@@ -69,6 +69,42 @@ $browser = new Buzz\Browser($client, new Psr17Factory());
 $response = $browser->get('http://www.google.com');
 ```
 
+### HTTP2 server push
+
+Buzz MultiCurl client support HTTP2 server push. 
+
+```php
+$client = new MultiCurl(new Psr17Factory());
+
+$start = microtime(true);
+$response = $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush', [], null, '2.0'));
+$timeFirstRequest = microtime(true) - $start;
+
+// Parse response to find asset version. 
+$body = $response->getBody()->__toString();
+$id = null;
+if (preg_match('#/serverpush/static/style.css\?([0-9]+)#sim', $body, $matches)) {
+    $id = $matches[1];
+}
+
+// Make two new requests
+$start = microtime(true);
+$client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/style.css?'.$id));
+$client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/playground.js?'.$id));
+$timeOtherRequests = microtime(true) - $start;
+
+echo 'First: '.$timeFirstRequest."\n";
+echo 'Other: '.$timeOtherRequests."\n";
+```
+
+Since the two other requests was pushed, we spend no time fetching those. 
+```
+First: 1.04281
+Other: 0.00027
+```
+
+You can configure what request you want to accept as pushed with the `push_function_callback` option.
+
 ## The Idea of Buzz
 
 Buzz was created by Kris Wallsmith back in 2010. The project grown very popular over the years with more than 7 million
