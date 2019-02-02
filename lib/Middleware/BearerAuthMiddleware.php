@@ -12,7 +12,7 @@ class BearerAuthMiddleware implements MiddlewareInterface
 {
     private $accessToken;
 
-    public function __construct($accessToken)
+    public function __construct(string $accessToken)
     {
         if (empty($accessToken)) {
             throw new InvalidArgumentException('You must supply a non empty accessToken');

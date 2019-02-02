@@ -43,6 +43,13 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private $serverPushSupported = true;
 
     /**
+     * To work around bugs in PHP and GC
+     * @var array
+     * @internal
+     */
+    private $pushCb = [];
+
+    /**
      * {@inheritdoc}
      */
     public function __construct($responseFactory, array $options = [])
@@ -191,8 +198,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                 continue;
             }
             // prepare curl handle
-            /** @var $request RequestInterface */
-            /** @var $options ParameterBag */
+            /** @var RequestInterface $request */
+            /** @var ParameterBag $options */
             list($request, $options) = $queueItem;
 
             // Check if we have the response in cache already.
@@ -229,9 +236,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
             $handled = false;
             foreach (array_keys($this->queue) as $i) {
-                /** @var $request RequestInterface */
-                /** @var $options ParameterBag */
-                /** @var $responseBuilder ResponseBuilder */
+                /** @var RequestInterface $request */
+                /** @var ParameterBag $options */
+                /** @var ResponseBuilder $responseBuilder */
                 list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
 
                 // Try to find the correct handle from the queue.
@@ -239,9 +246,9 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                     continue;
                 }
 
+                $handled = true;
+                $response = null;
                 try {
-                    $handled = true;
-                    $response = null;
                     $this->parseError($request, $info['result'], $curl);
                     $response = $responseBuilder->getResponse();
                     if ($options->get('expose_curl_info', false)) {

@@ -18,7 +18,6 @@ final class ResponseBuilder
      * @var ResponseInterface
      */
     private $response;
-
     private $responseFactory;
 
     /**

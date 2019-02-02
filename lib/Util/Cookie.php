@@ -88,8 +88,6 @@ class Cookie
      * Returns true if the current cookie matches the supplied domain.
      *
      * @param string $domain A domain hostname
-     *
-     * @return bool
      */
     public function matchesDomain(string $domain): bool
     {
@@ -183,7 +181,7 @@ class Cookie
         return $this->value;
     }
 
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         // attributes are case insensitive
         $this->attributes = array_change_key_case($attributes);

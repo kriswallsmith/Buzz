@@ -10,14 +10,10 @@ use Psr\Http\Message\ResponseInterface;
 class Entry
 {
     private $request;
-
     private $response;
-
     private $duration;
 
     /**
-     * @param RequestInterface  $request  The request
-     * @param ResponseInterface $response The response
      * @param float|null        $duration The duration in seconds
      */
     public function __construct(RequestInterface $request, ResponseInterface $response, float $duration = null)
