@@ -29,10 +29,8 @@ jobs:
       php: 7.2
       services:
         - docker
-      before_install:
-        - docker build -t php-latest tests/.docker/php-src
       script:
-        - docker run -it --rm --name my-running-script -v "$PWD":/usr/src/myapp -w /usr/src/myapp php-latest php ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
+        - docker run -it --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit tests/Integration/MultiCurlServerPushTest.php
 
     - name: "Integration tests"
       php: 7.2
