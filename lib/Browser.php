@@ -165,10 +165,9 @@ class Browser implements BuzzClientInterface
         $responseChainNext = $responseChainLast;
 
         // Build response chain
-        /** @var MiddlewareInterface $middleware */
-        foreach ($middleware as $middleware) {
-            $lastCallable = function (RequestInterface $request, ResponseInterface $response) use ($middleware, $responseChainNext) {
-                return $middleware->handleResponse($request, $response, $responseChainNext);
+        foreach ($middleware as $m) {
+            $lastCallable = function (RequestInterface $request, ResponseInterface $response) use ($m, $responseChainNext) {
+                return $m->handleResponse($request, $response, $responseChainNext);
             };
 
             $responseChainNext = $lastCallable;
@@ -183,10 +182,9 @@ class Browser implements BuzzClientInterface
 
         // Build request chain
         $requestChainNext = $requestChainLast;
-        /** @var MiddlewareInterface $middleware */
-        foreach ($middleware as $middleware) {
-            $lastCallable = function (RequestInterface $request) use ($middleware, $requestChainNext) {
-                return $middleware->handleRequest($request, $requestChainNext);
+        foreach ($middleware as $m) {
+            $lastCallable = function (RequestInterface $request) use ($m, $requestChainNext) {
+                return $m->handleRequest($request, $requestChainNext);
             };
 
             $requestChainNext = $lastCallable;

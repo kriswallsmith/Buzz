@@ -22,17 +22,17 @@ class Curl extends AbstractCurl implements BuzzClientInterface
         try {
             curl_exec($curl);
             $this->parseError($request, curl_errno($curl), $curl);
-            $curlInfo = curl_getinfo($curl);
+
+            if ($options->get('expose_curl_info')) {
+                $curlInfo = curl_getinfo($curl);
+            }
         } finally {
             $this->releaseHandle($curl);
         }
 
         $response = $responseBuilder->getResponse();
-        if ($options->get('expose_curl_info', false)) {
-            $value = json_encode($curlInfo);
-            if (false !== $value) {
-                $response = $response->withHeader('__curl_info', $value);
-            }
+        if (null !== $curlInfo && $value = json_encode($curlInfo)) {
+            $response = $response->withHeader('__curl_info', $value);
         }
 
         return $response;
