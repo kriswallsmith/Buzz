@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Buzz\Test\Unit\Middleware;
 
-use Buzz\Middleware\BasicAuthMiddleware;
 use Buzz\Middleware\WsseAuthMiddleware;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
