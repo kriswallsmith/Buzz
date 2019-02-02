@@ -292,7 +292,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             if (0 === strpos($header, ':path:')) {
                 $path = substr($header, 6);
                 $url = (string) curl_getinfo($handle)['url'];
-                $url = str_replace(parse_url($url, PHP_URL_PATH), $path, $url);
+                $url = str_replace(parse_url($url, PHP_URL_PATH) ?? '', $path, $url);
                 $this->pushResponseHandles[$url] = $handle;
                 break;
             }
