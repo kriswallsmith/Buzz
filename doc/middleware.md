@@ -1,10 +1,10 @@
-[<-- Index](/doc/index.md)
+[<-- Index](/doc/Readme.md)
 
-# Buzz middlewares
+# Buzz middleware
 
 If you want to modify the request or response somehow, a middleware is the way to
 go. Every time you send a request with the `Browser` it will run through all the
-middlewares. The order of the middlewares is important. The first middleware added
+middleware. The order of the middleware is important. The first middleware added
 to the `Browser` will be the first one that is executed when handling the request and
 the last one to be executed when handling the response. 
 

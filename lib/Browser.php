@@ -25,7 +25,7 @@ class Browser implements BuzzClientInterface
     /**
      * @var MiddlewareInterface[]
      */
-    private $middlewares = [];
+    private $middleware = [];
 
     /** @var RequestInterface */
     private $lastRequest;
@@ -143,7 +143,7 @@ class Browser implements BuzzClientInterface
      */
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
-        $chain = $this->createMiddlewareChain($this->middlewares, function (RequestInterface $request, callable $responseChain) use ($options) {
+        $chain = $this->createMiddlewareChain($this->middleware, function (RequestInterface $request, callable $responseChain) use ($options) {
             $response = $this->client->sendRequest($request, $options);
             $responseChain($request, $response);
         }, function (RequestInterface $request, ResponseInterface $response) {
@@ -158,15 +158,15 @@ class Browser implements BuzzClientInterface
     }
 
     /**
-     * @param MiddlewareInterface[] $middlewares
+     * @param MiddlewareInterface[] $middleware
      */
-    private function createMiddlewareChain(array $middlewares, callable $requestChainLast, callable $responseChainLast): callable
+    private function createMiddlewareChain(array $middleware, callable $requestChainLast, callable $responseChainLast): callable
     {
         $responseChainNext = $responseChainLast;
 
         // Build response chain
         /** @var MiddlewareInterface $middleware */
-        foreach ($middlewares as $middleware) {
+        foreach ($middleware as $middleware) {
             $lastCallable = function (RequestInterface $request, ResponseInterface $response) use ($middleware, $responseChainNext) {
                 return $middleware->handleResponse($request, $response, $responseChainNext);
             };
@@ -179,12 +179,12 @@ class Browser implements BuzzClientInterface
             $requestChainLast($request, $responseChainNext);
         };
 
-        $middlewares = array_reverse($middlewares);
+        $middleware = array_reverse($middleware);
 
         // Build request chain
         $requestChainNext = $requestChainLast;
         /** @var MiddlewareInterface $middleware */
-        foreach ($middlewares as $middleware) {
+        foreach ($middleware as $middleware) {
             $lastCallable = function (RequestInterface $request) use ($middleware, $requestChainNext) {
                 return $middleware->handleRequest($request, $requestChainNext);
             };
@@ -215,7 +215,7 @@ class Browser implements BuzzClientInterface
      */
     public function addMiddleware(MiddlewareInterface $middleware): void
     {
-        $this->middlewares[] = $middleware;
+        $this->middleware[] = $middleware;
     }
 
     private function prepareMultipart(string $name, string $content, string $boundary, array $data = []): string

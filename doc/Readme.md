@@ -7,7 +7,7 @@ reading.
 * [Browser](#browser)
 * [Submit forms](#submit-a-form) 
 * [Client](/doc/client.md)
-* [Middlewares](/doc/middlewares.md) 
+* [Middleware](/doc/middleware.md) 
 * [Symfony Bundle](/doc/symfony.md) 
 
 

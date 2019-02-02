@@ -1,4 +1,4 @@
-[<-- Index](/doc/index.md)
+[<-- Index](/doc/Readme.md)
 
 # Symfony integration
 
@@ -44,4 +44,4 @@ plugins method clients and whatever you want according to the
 
 ---
 
-Go back to [index](/doc/index.md).
+Go back to [index](/doc/Readme.md).
