@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Util;
+namespace Buzz\Middleware\Cookie;
 
 use Psr\Http\Message\RequestInterface;
 

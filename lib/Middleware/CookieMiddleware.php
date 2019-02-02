@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Buzz\Middleware;
 
-use Buzz\Util\Cookie;
-use Buzz\Util\CookieJar;
+use Buzz\Middleware\Cookie\Cookie;
+use Buzz\Middleware\Cookie\CookieJar;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
