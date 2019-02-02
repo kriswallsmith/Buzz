@@ -74,7 +74,7 @@ $response = $browser->get('http://www.google.com');
 Buzz MultiCurl client support HTTP2 server push. 
 
 ```php
-$client = new MultiCurl(new Psr17Factory(), ['timeout' => 1]);
+$client = new MultiCurl(new Psr17Factory());
 
 $start = microtime(true);
 $response = $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush', [], null, '2.0'));
@@ -99,8 +99,8 @@ echo 'Other: '.$timeOtherRequests."\n";
 
 Since the two other requests was pushed, we spend no time fetching those. 
 ```
-First: 1.0428140163422
-Other: 0.00027894973754883
+First: 1.04281
+Other: 0.00027
 ```
 
 You can configure what request you want to accept as pushed with the `push_function_callback` option.
