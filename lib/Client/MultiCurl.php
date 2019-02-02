@@ -168,7 +168,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
 
         if (!$this->curlm) {
-            if (false === $this->curlm = curl_multi_init()) {
+            $this->curlm = curl_multi_init();
+            if (false === $this->curlm) {
                 throw new ClientException('Unable to create a new cURL multi handle');
             }
 
@@ -292,12 +293,8 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         foreach ($headers as $header) {
             if (0 === strpos($header, ':path:')) {
                 $path = substr($header, 6);
-                $url = curl_getinfo($handle)['url'];
-                $url = str_replace(
-                    parse_url($url, PHP_URL_PATH),
-                    $path,
-                    $url
-                );
+                $url = (string) curl_getinfo($handle)['url'];
+                $url = str_replace(parse_url($url, PHP_URL_PATH), $path, $url);
                 $this->pushResponseHandles[$url] = $handle;
                 break;
             }

@@ -111,7 +111,9 @@ class Browser implements BuzzClientInterface
             } else {
                 // This is a file
                 $fileContent = file_get_contents($field['path']);
-                $files .= $this->prepareMultipart($name, $fileContent, $boundary, $field);
+                if (false !== $fileContent) {
+                    $files .= $this->prepareMultipart($name, $fileContent, $boundary, $field);
+                }
             }
         }
 
@@ -122,7 +124,7 @@ class Browser implements BuzzClientInterface
             $headers['Content-Type'] = 'multipart/form-data; boundary="'.$boundary.'"';
 
             foreach ($body as $name => $value) {
-                $files .= $this->prepareMultipart($name, $value, $boundary);
+                $files .= $this->prepareMultipart((string) $name, $value, $boundary);
             }
             $body = "$files--{$boundary}--\r\n";
         }

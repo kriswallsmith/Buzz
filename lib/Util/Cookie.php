@@ -89,7 +89,7 @@ class Cookie
      */
     public function matchesDomain(string $domain): bool
     {
-        $cookieDomain = $this->getAttribute(static::ATTR_DOMAIN);
+        $cookieDomain = $this->getAttribute(static::ATTR_DOMAIN) ?? '';
 
         if (0 === strpos($cookieDomain, '.')) {
             $pattern = '/\b'.preg_quote(substr($cookieDomain, 1), '/').'$/i';

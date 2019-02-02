@@ -16,11 +16,15 @@ jobs:
   include:
     - name: "Code style"
       php: 7.2
+      services:
+        - docker
       before_install:
         - mkdir -p "$HOME/.php-cs-fixer"
         - composer require friendsofphp/php-cs-fixer
       script:
         - vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run
+        - docker run --rm -v "$PWD":/app phpstan/phpstan analyse
+
     - name: "PHP nightly - HTTP/2 Server Push"
       php: 7.2
       services:

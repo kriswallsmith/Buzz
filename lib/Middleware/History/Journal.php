@@ -53,7 +53,8 @@ class Journal implements \Countable, \IteratorAggregate
 
     public function getLastRequest(): ?RequestInterface
     {
-        if (null === $entry = $this->getLast()) {
+        $entry = $this->getLast();
+        if (null === $entry) {
             return null;
         }
 
@@ -62,7 +63,8 @@ class Journal implements \Countable, \IteratorAggregate
 
     public function getLastResponse(): ?ResponseInterface
     {
-        if (null === $entry = $this->getLast()) {
+        $entry = $this->getLast();
+        if (null === $entry) {
             return null;
         }
 
