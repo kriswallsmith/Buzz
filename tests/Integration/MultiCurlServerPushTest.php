@@ -27,16 +27,19 @@ class MultiCurlServerPushTest extends TestCase
         $response = $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush', [], null, '2.0'));
         $timeFirstRequest = microtime(true)-$start;
 
-        // TODO parse request
+
         $body = $response->getBody()->__toString();
+        $id = null;
+        if (preg_match('#/serverpush/static/style.css\?([0-9]+)#sim', $body, $matches)) {
+            $id = $matches[1];
+        }
+
+        $this->assertNotNull($id, 'We could not parse request');
 
         $start = microtime(true);
-        $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/style.css?1545951414399773323'));
-        $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/jquery.min.js?1545951414399773323'));
+        $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/style.css?'.$id));
+        $client->sendRequest(new Request('GET', 'https://http2.golang.org/serverpush/static/playground.js?'.$id));
         $timeOtherRequests = microtime(true)-$start;
-
-
-        var_dump("\n\n\n\nFirst: ".$timeFirstRequest. "\nOther: ".$timeOtherRequests. "\n\n");
 
         $this->assertTrue($timeFirstRequest > $timeOtherRequests);
         $this->assertFalse(true, "First: ".$timeFirstRequest. "\nOther: ".$timeOtherRequests. "\n");

@@ -116,6 +116,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
         $resolver->setDefault('use_pushed_response', true);
         $resolver->setAllowedTypes('use_pushed_response', 'boolean');
+
+        // There is a bug in PHP that disables the server push feature if you are using timeouts.
+        // See https://bugs.php.net/bug.php?id=77497
+        $resolver->setDefault('timeout', null);
+        $resolver->setAllowedTypes('timeout', ['integer', 'float', 'null']);
     }
 
     public function count(): int
@@ -170,8 +175,6 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
                     curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($pushed, CURLOPT_HEADER, true);
-                    curl_setopt($pushed, CURLOPT_HEADERFUNCTION, null);
-                    curl_setopt($pushed, CURLOPT_WRITEFUNCTION, null);
                     $this->addPushHandle($headers, $pushed);
 
                     return CURL_PUSH_OK;
@@ -280,6 +283,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                     $url
                 );
                 $this->pushResponseHandles[$url] = $handle;
+                break;
             }
         }
     }
@@ -288,6 +292,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         $found = false;
         foreach ($this->pushResponseHandles as $url => $h) {
+            // Weak comparison
             if ($handle == $h) {
                 $found = $url;
             }
