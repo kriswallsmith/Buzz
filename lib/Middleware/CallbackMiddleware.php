@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Buzz\Middleware;
 
+use Buzz\Exception\InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -25,9 +26,17 @@ class CallbackMiddleware implements MiddlewareInterface
      *             // preSend
      *         }
      *     });
+     *
+     * @param mixed $callable A PHP callable
+     *
+     * @throws InvalidArgumentException If the argument is not callable
      */
-    public function __construct(callable $callable)
+    public function __construct($callable)
     {
+        if (!\is_callable($callable)) {
+            throw new InvalidArgumentException('The argument is not callable.');
+        }
+
         $this->callable = $callable;
     }
 
