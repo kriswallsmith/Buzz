@@ -34,7 +34,7 @@ jobs:
         - ./vendor/bin/http_test_server > /dev/null 2>&1 &
       script:
         - curl --version
-        - ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
+        - ./vendor/bin/simple-phpunit
         - docker run -it --rm --name my-running-script -v "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly php ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
 
     - name: "Integration tests"
