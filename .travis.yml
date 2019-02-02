@@ -33,7 +33,8 @@ jobs:
       before_script:
         - ./vendor/bin/http_test_server > /dev/null 2>&1 &
       script:
-        - ./vendor/bin/simple-phpunit
+        - curl --version
+        - ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
 
     - name: "Integration tests"
       php: 7.2
