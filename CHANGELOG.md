@@ -8,6 +8,10 @@ The change log shows what have been Added, Changed, Deprecated and Removed betwe
 
 - Option `expose_curl_info` has been added to expose curl metadata information
 
+### Changed
+
+- Moved `Buzz\Util` to `Buzz\Middleware\Cookie`.
+
 ## 1.0.0-beta2
 
 ### Changed

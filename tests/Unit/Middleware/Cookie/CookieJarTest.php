@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Buzz\Test\Unit\Cookie;
+namespace Buzz\Test\Unit\Middleware\Cookie;
 
-use Buzz\Util\Cookie;
-use Buzz\Util\CookieJar;
+use Buzz\Middleware\Cookie\Cookie;
+use Buzz\Middleware\Cookie\CookieJar;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
