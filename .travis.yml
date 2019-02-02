@@ -21,20 +21,13 @@ jobs:
         - composer require friendsofphp/php-cs-fixer
       script:
         - vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run
-    - name: "Integration tests - PHP nightly"
-      dist: xenial
-      php: nightly
+    - name: "PHP nightly - HTTP/2 Server Push"
       services:
         - docker
       before_install:
-        - docker build -t buzz/tests .
-        - docker run -d -p 127.0.0.1:8022:80 buzz/tests
-        - docker ps -a
-      before_script:
-        - ./vendor/bin/http_test_server > /dev/null 2>&1 &
+        - docker build -t php-latest tests/.docker/php-src
       script:
-        - curl --version
-        - ./vendor/bin/simple-phpunit
+        - docker run -it --rm --name my-running-script -v "$PWD":/usr/src/myapp -w /usr/src/myapp php-latest php ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
 
     - name: "Integration tests"
       php: 7.2
