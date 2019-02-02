@@ -35,6 +35,7 @@ jobs:
       script:
         - curl --version
         - ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
+        - docker run -it --rm --name my-running-script -v "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly php ./vendor/bin/simple-phpunit tests/Integration/MultiCurlServerPushTest.php
 
     - name: "Integration tests"
       php: 7.2
