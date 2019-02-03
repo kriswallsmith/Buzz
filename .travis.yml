@@ -29,8 +29,16 @@ jobs:
       php: 7.2
       services:
         - docker
+      before_install:
+        - docker network create buzz-net
+        - docker build -t buzz/tests .
+        - docker run -d --name test-server -p 127.0.0.1:8022:80 buzz/tests
+        - docker network connect buzz-net test-server
+        - docker ps -a
+      before_script:
+        - ./vendor/bin/http_test_server > /dev/null 2>&1 &
       script:
-        - docker run -it --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit tests/Integration/MultiCurlServerPushTest.php
+        - docker run -it --rm --network buzz-net -v "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit
 
     - name: "Integration tests"
       php: 7.2
