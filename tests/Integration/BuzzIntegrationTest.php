@@ -16,14 +16,14 @@ use Buzz\Exception\NetworkException;
 use Buzz\Message\FormRequestBuilder;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class BuzzIntegrationTest extends TestCase
+class BuzzIntegrationTest extends BaseIntegrationTest
 {
     protected function setUp()
     {
+        parent::setUp();
         if (empty($_SERVER['BUZZ_TEST_SERVER'])) {
             $this->markTestSkipped('The test server is not configured.');
         }

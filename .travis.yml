@@ -30,15 +30,13 @@ jobs:
       services:
         - docker
       before_install:
-        - docker network create buzz-net
+        - docker network create -d bridge buzz-bridge
         - docker build -t buzz/tests .
-        - docker run -d --name test-server -p 127.0.0.1:8022:80 buzz/tests
-        - docker network connect buzz-net test-server
+        - docker run -d --net buzz-bridge --name test-server buzz/tests
         - docker ps -a
-      before_script:
-        - ./vendor/bin/http_test_server > /dev/null 2>&1 &
+
       script:
-        - docker run -it --rm --network buzz-net -v "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit
+        - docker run -it --rm --net buzz-bridge -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e BUZZ_TEST_SERVER=http://test-server/index.php tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit
 
     - name: "Integration tests"
       php: 7.2
@@ -49,6 +47,7 @@ jobs:
         - docker run -d -p 127.0.0.1:8022:80 buzz/tests
         - docker ps -a
       before_script:
+        - sed -i -e 's/name="TEST_SERVER"/name="FOOBAR"/g' phpunit.xml.dist
         - ./vendor/bin/http_test_server > /dev/null 2>&1 &
       script:
         - composer test-ci

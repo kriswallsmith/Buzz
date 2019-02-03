@@ -13,10 +13,9 @@ use Buzz\Exception\InvalidArgumentException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
-class ConfigurationTest extends TestCase
+class ConfigurationTest extends BaseIntegrationTest
 {
     public function testBrowserPassingOption()
     {
