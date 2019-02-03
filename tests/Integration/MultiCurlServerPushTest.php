@@ -7,12 +7,12 @@ namespace Buzz\Test\Integration;
 use Buzz\Client\MultiCurl;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
-use PHPUnit\Framework\TestCase;
 
-class MultiCurlServerPushTest extends TestCase
+class MultiCurlServerPushTest extends BaseIntegrationTest
 {
     protected function setUp()
     {
+        parent::setUp();
         if (\PHP_VERSION_ID < 70400 || curl_version()['version_number'] < 472065) {
             $this->markTestSkipped('This environment does not support server push');
         }

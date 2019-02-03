@@ -7,17 +7,15 @@ namespace Buzz\Test\Integration;
 use Buzz\Browser;
 use Buzz\Client\AbstractClient;
 use Buzz\Middleware\MiddlewareInterface;
-use Http\Client\Tests\PHPUnitUtility;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class MiddlewareChainTest extends TestCase
+class MiddlewareChainTest extends BaseIntegrationTest
 {
     /**
      * @dataProvider getHttpClients
@@ -60,7 +58,7 @@ class MiddlewareChainTest extends TestCase
             }
         ));
 
-        $request = new Request('GET', PHPUnitUtility::getUri());
+        $request = new Request('GET', $_SERVER['BUZZ_TEST_SERVER']);
         $browser->sendRequest($request);
 
         $this->assertEquals(0, MyMiddleware::$handleCount);

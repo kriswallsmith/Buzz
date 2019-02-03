@@ -8,12 +8,12 @@ use Buzz\Client\MultiCurl;
 use Buzz\Exception\NetworkException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Request;
-use PHPUnit\Framework\TestCase;
 
-class MultiCurlTest extends TestCase
+class MultiCurlTest extends BaseIntegrationTest
 {
     protected function setUp()
     {
+        parent::setUp();
         if (empty($_SERVER['BUZZ_TEST_SERVER'])) {
             $this->markTestSkipped('The test server is not configured.');
         }
