@@ -34,6 +34,7 @@ jobs:
         - docker build -t buzz/tests .
         - docker run -d --net buzz-bridge --name test-server buzz/tests
         - docker ps -a
+        - sed -i -e 's/name="TEST_SERVER"/name="FOOBAR"/g' phpunit.xml.dist
 
       script:
         - docker run -it --rm --net buzz-bridge -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e BUZZ_TEST_SERVER=http://test-server/index.php tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit
@@ -47,7 +48,6 @@ jobs:
         - docker run -d -p 127.0.0.1:8022:80 buzz/tests
         - docker ps -a
       before_script:
-        - sed -i -e 's/name="TEST_SERVER"/name="FOOBAR"/g' phpunit.xml.dist
         - ./vendor/bin/http_test_server > /dev/null 2>&1 &
       script:
         - composer test-ci
