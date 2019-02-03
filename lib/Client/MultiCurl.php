@@ -166,63 +166,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
 
         if (!$this->curlm) {
-            $this->curlm = curl_multi_init();
-            if (false === $this->curlm) {
-                throw new ClientException('Unable to create a new cURL multi handle');
-            }
-
-            if ($this->serverPushSupported) {
-                $userCallbacks = $this->pushFunctions;
-
-                curl_multi_setopt($this->curlm, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
-                // We need to use $this->pushCb[] because of a bug in PHP
-                curl_multi_setopt($this->curlm, CURLMOPT_PUSHFUNCTION, $this->pushCb[] = function ($parent, $pushed, $headers) use ($userCallbacks) {
-                    // If any callback say no, then do not accept.
-                    foreach ($userCallbacks as $callback) {
-                        if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
-                            return CURL_PUSH_DENY;
-                        }
-                    }
-
-                    curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($pushed, CURLOPT_HEADER, true);
-                    $this->addPushHandle($headers, $pushed);
-
-                    return CURL_PUSH_OK;
-                });
-            }
+            $this->initMultiCurlHandle();
         }
 
-        foreach ($this->queue as $i => $queueItem) {
-            if (2 !== \count($queueItem)) {
-                // We have already prepared this curl
-                continue;
-            }
-            // prepare curl handle
-            /** @var RequestInterface $request */
-            /** @var ParameterBag $options */
-            list($request, $options) = $queueItem;
-
-            // Check if we have the response in cache already.
-            if ($this->serverPushSupported
-                && $options->get('use_pushed_response')
-                && $this->hasPushResponse($request->getUri()->__toString())
-            ) {
-                $data = $this->getPushedResponse($request->getUri()->__toString());
-                $response = (new ResponseBuilder($this->responseFactory))->getResponseFromRawInput($data['content'], $data['headerSize']);
-                \call_user_func($options->get('callback'), $request, $response, null);
-                unset($this->queue[$i]);
-
-                continue;
-            }
-
-            $curl = $this->createHandle();
-            $responseBuilder = $this->prepare($curl, $request, $options);
-            $this->queue[$i][] = $curl;
-            $this->queue[$i][] = $responseBuilder;
-            curl_multi_add_handle($this->curlm, $curl);
-        }
-
+        $this->initQueue();
         $exception = null;
         do {
             // Start processing each handler in the stack
@@ -236,12 +183,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             }
 
             $handled = false;
-            foreach (array_keys($this->queue) as $i) {
-                /** @var RequestInterface $request */
-                /** @var ParameterBag $options */
-                /** @var ResponseBuilder $responseBuilder */
-                list($request, $options, $curl, $responseBuilder) = $this->queue[$i];
 
+            /** @var RequestInterface $request */
+            /** @var ParameterBag $options */
+            /** @var ResponseBuilder $responseBuilder */
+            foreach ($this->queue as $i => list($request, $options, $curl, $responseBuilder)) {
                 // Try to find the correct handle from the queue.
                 if ($curl !== $info['handle']) {
                     continue;
@@ -277,13 +223,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             }
         }
 
-        // cleanup
-        if (empty($this->queue)) {
-            curl_multi_close($this->curlm);
-            $this->curlm = null;
-            $this->pushFunctions = [];
-            $this->pushCb = [];
-        }
+        $this->cleanup();
     }
 
     private function addPushHandle($headers, $handle)
@@ -292,7 +232,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
             if (0 === strpos($header, ':path:')) {
                 $path = substr($header, 6);
                 $url = (string) curl_getinfo($handle)['url'];
-                $url = str_replace(parse_url($url, PHP_URL_PATH) ?? '', $path, $url);
+                $url = str_replace((string) parse_url($url, PHP_URL_PATH), $path, $url);
                 $this->pushResponseHandles[$url] = $handle;
                 break;
             }
@@ -341,5 +281,93 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         }
 
         return $this->queue[] = [$request, $options];
+    }
+
+    /**
+     * Create a multi curl handle and add some properties to it.
+     */
+    private function initMultiCurlHandle(): void
+    {
+        $this->curlm = curl_multi_init();
+        if (false === $this->curlm) {
+            throw new ClientException('Unable to create a new cURL multi handle');
+        }
+
+        if ($this->serverPushSupported) {
+            $userCallbacks = $this->pushFunctions;
+
+            curl_multi_setopt($this->curlm, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
+            // We need to use $this->pushCb[] because of a bug in PHP
+            curl_multi_setopt(
+                $this->curlm,
+                CURLMOPT_PUSHFUNCTION,
+                $this->pushCb[] = function ($parent, $pushed, $headers) use ($userCallbacks) {
+                    // If any callback say no, then do not accept.
+                    foreach ($userCallbacks as $callback) {
+                        if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
+                            return CURL_PUSH_DENY;
+                        }
+                    }
+
+                    curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($pushed, CURLOPT_HEADER, true);
+                    $this->addPushHandle($headers, $pushed);
+
+                    return CURL_PUSH_OK;
+                }
+            );
+        }
+    }
+
+    /**
+     * Loop over the queue and make sure every item (request) is initialized (ie, got a handle).
+     */
+    private function initQueue(): void
+    {
+        foreach ($this->queue as $i => $queueItem) {
+            if (2 !== \count($queueItem)) {
+                // We have already prepared this curl
+                continue;
+            }
+            // prepare curl handle
+            /** @var RequestInterface $request */
+            /** @var ParameterBag $options */
+            list($request, $options) = $queueItem;
+
+            // Check if we have the response in cache already.
+            if ($this->serverPushSupported
+                && $options->get('use_pushed_response')
+                && $this->hasPushResponse($request->getUri()->__toString())
+            ) {
+                $data = $this->getPushedResponse($request->getUri()->__toString());
+                $response = (new ResponseBuilder($this->responseFactory))->getResponseFromRawInput(
+                    $data['content'],
+                    $data['headerSize']
+                );
+                \call_user_func($options->get('callback'), $request, $response, null);
+                unset($this->queue[$i]);
+
+                continue;
+            }
+
+            $curl = $this->createHandle();
+            $responseBuilder = $this->prepare($curl, $request, $options);
+            $this->queue[$i][] = $curl;
+            $this->queue[$i][] = $responseBuilder;
+            curl_multi_add_handle($this->curlm, $curl);
+        }
+    }
+
+    /**
+     * If we got no requests in the queue, do a clean up to save some memory.
+     */
+    private function cleanup(): void
+    {
+        if (empty($this->queue)) {
+            curl_multi_close($this->curlm);
+            $this->curlm = null;
+            $this->pushFunctions = [];
+            $this->pushCb = [];
+        }
     }
 }
