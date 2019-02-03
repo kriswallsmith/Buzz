@@ -25,6 +25,11 @@ jobs:
         - vendor/bin/php-cs-fixer fix --config=.php_cs --verbose --diff --dry-run
         - docker run --rm -v "$PWD":/app phpstan/phpstan analyse
 
+    - name: "Backward compatibility test"
+      php: 7.3
+      before_install: composer require --no-update roave/backward-compatibility-check
+      script: ./vendor/bin/roave-backward-compatibility-check
+
     - name: "PHP nightly - HTTP/2 Server Push"
       php: 7.2
       services:
