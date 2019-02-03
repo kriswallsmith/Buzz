@@ -117,7 +117,7 @@ $options['push_function_callback'] = function ($parent, $pushed, $headers) {
 #### timeout
 
 Type: integer<br>
-Default: `null`
+Default: `0`
 
 The time to wait before interrupt the request.
 
