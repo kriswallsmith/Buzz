@@ -74,6 +74,10 @@ $response = $browser->get('http://www.google.com');
 Buzz MultiCurl client support HTTP2 server push. 
 
 ```php
+use \Buzz\Client\\MultiCurl;
+use \Nyholm\Psr7\Factory\Psr17Factory;
+use \Nyholm\Psr7\Request;
+
 $client = new MultiCurl(new Psr17Factory());
 
 $start = microtime(true);
@@ -175,8 +179,12 @@ You are now ready to run the integration tests
 
 ### Test Server Push
 
+To use HTTP/2 server push you need to run the very latest PHP version. PHP also need to use cUrl > 7.61.1 
+and be compiled with libnghttp2. 
+You can use docker. 
+
 ```bash
-docker run -d --rm --name devilbox-php-fpm-7-4 -v $(pwd):/var/www/default/htdocs devilbox/php-fpm-7.4 
-docker exec -it devilbox-php-fpm-7-4 /bin/bash
-cd /var/www/default/htdocs
+composer update
+docker run -it --rm --name php-latest -v  "$PWD":/usr/src/myapp -w /usr/src/myapp tommymuehle/docker-alpine-php-nightly \
+  php vendor/bin/phpunit tests/Integration/MultiCurlServerPushTest.php
 ```
