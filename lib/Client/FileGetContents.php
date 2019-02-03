@@ -57,13 +57,16 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
                 'ignore_errors' => true,
                 'follow_location' => $options->get('allow_redirects') && $options->get('max_redirects') > 0,
                 'max_redirects' => $options->get('max_redirects') + 1,
-                'timeout' => $options->get('timeout'),
             ],
             'ssl' => [
                 'verify_peer' => $options->get('verify'),
                 'verify_host' => $options->get('verify'),
             ],
         ];
+
+        if (0 < $options->get('timeout')) {
+            $context['http']['timeout'] = $options->get('timeout');
+        }
 
         if (null !== $options->get('proxy')) {
             $context['http']['proxy'] = $options->get('proxy');

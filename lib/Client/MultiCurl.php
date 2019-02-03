@@ -126,11 +126,6 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
         $resolver->setDefault('use_pushed_response', true);
         $resolver->setAllowedTypes('use_pushed_response', 'boolean');
-
-        // There is a bug in PHP that disables the server push feature if you are using timeouts.
-        // See https://bugs.php.net/bug.php?id=77497
-        $resolver->setDefault('timeout', null);
-        $resolver->setAllowedTypes('timeout', ['integer', 'float', 'null']);
     }
 
     public function count(): int

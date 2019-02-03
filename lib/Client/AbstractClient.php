@@ -87,7 +87,7 @@ abstract class AbstractClient
         $resolver->setDefaults([
             'allow_redirects' => false,
             'max_redirects' => 5,
-            'timeout' => 30,
+            'timeout' => 0,
             'verify' => true,
             'proxy' => null,
         ]);
