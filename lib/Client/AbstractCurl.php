@@ -198,7 +198,9 @@ abstract class AbstractCurl extends AbstractClient
         curl_setopt($curl, CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $options->get('verify') ? 1 : 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $options->get('verify') ? 2 : 0);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $options->get('timeout'));
+        if (0 < $options->get('timeout')) {
+            curl_setopt($curl, CURLOPT_TIMEOUT, $options->get('timeout'));
+        }
     }
 
     /**
