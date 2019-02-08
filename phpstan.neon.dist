@@ -4,7 +4,7 @@ parameters:
     - lib
 
   ignoreErrors:
-    - '#Method Buzz\Client\MultiCurl::sendRequest() should return Psr\Http\Message\ResponseInterface but returns Psr\Http\Message\ResponseInterface|null#'
+    - '#Method Buzz\\Client\\MultiCurl::sendRequest\(\) should return Psr\\Http\\Message\\ResponseInterface but returns Psr\\Http\\Message\\ResponseInterface\|null#'
     -
       message: '#Result of && is always false.#'
       path: %currentWorkingDirectory%/lib/Browser.php
