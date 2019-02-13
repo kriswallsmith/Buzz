@@ -108,7 +108,7 @@ Type: callable, null<br>
 Default: `null`<br>
 *Only for MultiCurl*
 
-A callable for `CURLMOPT_PUSHFUNCTION`. See [PHP docs](http://php.net/manual/en/function.curl-multi-setopt.php).
+A callable for `CURLMOPT_PUSHFUNCTION`. See [PHP docs](https://php.net/manual/en/function.curl-multi-setopt.php).
 
 Since MultiCurl supports adding multiple requests, all Push Functions callbacks are
 chained together. If one of them returns `CURL_PUSH_DENY`, then the request will be denied. 

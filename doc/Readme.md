@@ -57,7 +57,7 @@ as you normally would. But it might be easier to use the `Browser::submit()` fun
 Below is an example how to use `Browser::submit()` to upload a file. 
 
 ```php
-$browser->submitForm('http://example.com/foo', [
+$browser->submitForm('https://example.com/foo', [
     'user' => 'Kris Wallsmith',
     'image' => [
         'path'=>'/path/to/image.jpg'
@@ -66,7 +66,7 @@ $browser->submitForm('http://example.com/foo', [
 ``` 
 
 ```php
-$browser->submitForm('http://example.com/foo', [
+$browser->submitForm('https://example.com/foo', [
     'user[name]' => 'Kris Wallsmith',
     'user[image]' => [
         'path'=>'/path/to/image.jpg',
@@ -88,7 +88,7 @@ $builder->addField('user[name]', 'Kris Wallsmith');
 $builder->addFile('user[image]', '/path/to/image.jpg', 'image/jpg', 'my-image.jpg');
 $builder->addFile('cover-image', '/path/to/cover.jpg');
 
-$browser->submitForm('http://example.com/foo', $builder->build());
+$browser->submitForm('https://example.com/foo', $builder->build());
 ``` 
 
 ---

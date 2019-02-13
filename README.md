@@ -41,7 +41,7 @@ use Buzz\Client\FileGetContents;
 
 $client = new FileGetContents(new Psr17ResponseFactory());
 $browser = new Browser($client, new Psr17RequestFactory());
-$response = $browser->get('http://www.google.com');
+$response = $browser->get('https://www.google.com');
 
 echo $browser->getLastRequest()."\n";
 // $response is a PSR-7 object.
@@ -74,7 +74,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 
 $client = new FileGetContents(new Psr17Factory());
 $browser = new Browser($client, new Psr17Factory());
-$response = $browser->get('http://www.google.com');
+$response = $browser->get('https://www.google.com');
 ```
 
 ### HTTP2 server push
@@ -137,7 +137,7 @@ We do love PSRs and this is a wish list of what PSR we would like to support:
 
 ## Backwards Compatibility Promise
 
-We take backwards compatibility very seriously as you should do with any open source project. We strictly follow [Semver](http://semver.org/).
+We take backwards compatibility very seriously as you should do with any open source project. We strictly follow [Semver](https://semver.org/).
 Please note that Semver works a bit different prior version 1.0.0. Minor versions prior 1.0.0 are allow to break backwards
 compatibility.
 
