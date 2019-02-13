@@ -206,7 +206,7 @@ class Cookie
 
     public function hasAttribute(string $name): bool
     {
-        return array_key_exists($name, $this->attributes);
+        return \array_key_exists($name, $this->attributes);
     }
 
     public function clearAttributes(): void
