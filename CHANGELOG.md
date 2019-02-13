@@ -2,6 +2,12 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions.
 
+## 1.0.0
+
+### Changed
+
+- Default timout was changed from `30` to `0` (no limit).
+
 ## 1.0.0-rc1
 
 ### Added
