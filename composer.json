@@ -30,7 +30,7 @@
         "nyholm/psr7": "^1.0",
         "phpunit/phpunit": "^6.5.7",
         "psr/log": "^1.0",
-        "symfony/phpunit-bridge": "^4.0"
+        "symfony/phpunit-bridge": "^4.2.3"
     },
     "provide": {
         "php-http/client-implementation": "1.0",
