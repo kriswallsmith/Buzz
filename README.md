@@ -32,7 +32,7 @@ composer require nyholm/psr7
 
 ## Usage
 
-This page will just show you the basics, please [read the full documentation](doc/index.md).
+This page will just show you the basics, please [read the full documentation](doc/).
 
 ```php
 $client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory());
