@@ -20,8 +20,12 @@ When a `Browser` in constructed you have to select a [Client](/doc/client.md) to
 to use the Bowser: 
 
 ```php
-$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory());
-$browser = new Buzz\Browser($client, new Psr17RequestFactory());
+use Buzz\Browser;
+use Buzz\Client\FileGetContents;
+use Nyholm\Psr7\Factory\Psr17Factory;
+
+$client = new FileGetContents(new Psr17Factory());
+$browser = new Browser($client, new Psr17Factory());
 
 $response = $browser->get('https://example.com');
 $response = $browser->get('https://example.com', ['User-Agent'=>'Buzz']);
@@ -39,7 +43,9 @@ $response = $browser->request('GET', 'https://example.com');
 You do also have a function to send PSR-7 requests. 
 
 ```php
-$request = new PSR7Request('GET', 'https://google.com/foo');
+use Nyholm\Psr7\Request;
+
+$request = new Request('GET', 'https://google.com/foo');
 $response = $browser->sendRequest($request)
 ```
 

@@ -9,9 +9,13 @@ configuration each time you send a request.
 There are 3 clients: `FileGetContents`, `Curl` and `MultiCurl`.
 
 ```php
-$request = new PSR7Request('GET', 'https://example.com');
+use Buzz\Client\FileGetContents;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Request;
 
-$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory(), ['allow_redirects' => true]);
+$request = new Request('GET', 'https://example.com');
+
+$client = new FileGetContents(new Psr17Factory(), ['allow_redirects' => true]);
 $response = $client->send($request, ['timeout' => 4]);
 ```
 
@@ -36,10 +40,13 @@ Default: `function() {}`<br>
 A callback function that is called after a request has been sent.
 
 ```php
+use Nyholm\Psr7\Request;
+
 $callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) {
     // Process the response
 };
-$request = new PSR7Request('GET', 'https://example.com');
+
+$request = new Request('GET', 'https://example.com');
 $client->sendAsyncRequest($request, array('callback' => $callback));
 ```
 
@@ -52,7 +59,9 @@ Default: `[]`<br>
 An array with Curl options.
 
 ```php
-$request = new PSR7Request('GET', 'https://example.com');
+use Nyholm\Psr7\Request;
+
+$request = new Request('GET', 'https://example.com');
 $client->sendAsyncRequest($request, array('curl' => [
     CURLOPT_FAILONERROR => false,
 ]));
@@ -68,7 +77,9 @@ If set to `true` the response header `__curl_info` will contain a json_encoded
 serialization of the curl metadata information about the response.
 
 ```php
-$request = new PSR7Request('GET', 'https://example.com');
+use Nyholm\Psr7\Request;
+
+$request = new Request('GET', 'https://example.com');
 $response = $client->sendRequest($request, [
     'expose_curl_info' => true,
 ]);

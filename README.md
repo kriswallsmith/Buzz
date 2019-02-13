@@ -11,7 +11,8 @@
 
 </div>
 
-Buzz is a lightweight (<1000 lines of code) PHP 7.1 library for issuing HTTP requests.
+Buzz is a lightweight (<1000 lines of code) PHP 7.1 library for issuing HTTP requests. The library includes three
+clients: `FileGetContents`, `Curl` and `MultiCurl`. The `MultiCurl` supports batch requests and HTTP2 server push. 
 
 ## Installation
 
@@ -35,8 +36,11 @@ composer require nyholm/psr7
 This page will just show you the basics, please [read the full documentation](doc/).
 
 ```php
-$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory());
-$browser = new Buzz\Browser($client, new Psr17RequestFactory());
+use Buzz\Browser;
+use Buzz\Client\FileGetContents;
+
+$client = new FileGetContents(new Psr17ResponseFactory());
+$browser = new Browser($client, new Psr17RequestFactory());
 $response = $browser->get('http://www.google.com');
 
 echo $browser->getLastRequest()."\n";
@@ -47,9 +51,11 @@ echo $response->getStatusCode();
 You can also use the low-level HTTP classes directly.
 
 ```php
+use Buzz\Client\FileGetContents;
+
 $request = new PSR7Request('GET', 'https://google.com/foo');
 
-$client = new Buzz\Client\FileGetContents(new Psr17ResponseFactory());
+$client = new FileGetContents(new Psr17ResponseFactory());
 $response = $client->send($request, ['timeout' => 4]);
 
 echo $response->getStatusCode();
@@ -62,10 +68,12 @@ for whatever PSR-17 factory you choose. If you use `nyholm/psr7` then the exampl
 would start like: 
 
 ```php
-use \Nyholm\Psr7\Factory\Psr17Factory;
+use Buzz\Browser;
+use Buzz\Client\FileGetContents;
+use Nyholm\Psr7\Factory\Psr17Factory;
 
-$client = new Buzz\Client\FileGetContents(new Psr17Factory());
-$browser = new Buzz\Browser($client, new Psr17Factory());
+$client = new FileGetContents(new Psr17Factory());
+$browser = new Browser($client, new Psr17Factory());
 $response = $browser->get('http://www.google.com');
 ```
 
@@ -74,9 +82,9 @@ $response = $browser->get('http://www.google.com');
 Buzz MultiCurl client support HTTP2 server push. 
 
 ```php
-use \Buzz\Client\\MultiCurl;
-use \Nyholm\Psr7\Factory\Psr17Factory;
-use \Nyholm\Psr7\Request;
+use Buzz\Client\MultiCurl;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Request;
 
 $client = new MultiCurl(new Psr17Factory());
 
@@ -181,7 +189,7 @@ You are now ready to run the integration tests
 
 To use HTTP/2 server push you need to run the very latest PHP version. PHP also need to use cUrl > 7.61.1 
 and be compiled with libnghttp2. 
-You can use docker. 
+You can use docker: 
 
 ```bash
 composer update

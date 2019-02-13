@@ -18,7 +18,7 @@ composer require php-http/httplug-bundle
 
 ## Configure
 
-```
+```yaml
 # config/services.yaml
 # This is done by the flex recipe
 services: 
@@ -30,7 +30,7 @@ services:
         class: Buzz\Middleware\ContentLengthMiddleware
 ```
 
-```
+```yaml
 # config/httplug.yaml
 httplug:
     clients:

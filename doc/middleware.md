@@ -22,8 +22,6 @@ request header.
 First we need to create a class that implements `Buzz\Middleware\MiddlewareInterface`
 
 ```php
-<?php
-
 use Buzz\Middleware\MiddlewareInterface;
 
 class UserAgentMiddleware implements MiddlewareInterface 
@@ -64,8 +62,6 @@ Sine this middleware does not need to modify the response we just let the
 ### The full example
 
 ```php
-<?php
-
 use Buzz\Middleware\MiddlewareInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
