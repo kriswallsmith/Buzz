@@ -56,7 +56,7 @@ use Buzz\Client\FileGetContents;
 $request = new PSR7Request('GET', 'https://google.com/foo');
 
 $client = new FileGetContents(new Psr17ResponseFactory());
-$response = $client->send($request, ['timeout' => 4]);
+$response = $client->sendRequest($request, ['timeout' => 4]);
 
 echo $response->getStatusCode();
 ```
