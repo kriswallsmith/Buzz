@@ -16,7 +16,7 @@ use Nyholm\Psr7\Request;
 $request = new Request('GET', 'https://example.com');
 
 $client = new FileGetContents(new Psr17Factory(), ['allow_redirects' => true]);
-$response = $client->send($request, ['timeout' => 4]);
+$response = $client->sendRequest($request, ['timeout' => 4]);
 ```
 
 ## Configuration
