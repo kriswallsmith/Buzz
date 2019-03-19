@@ -74,7 +74,7 @@ class ContentTypeMiddleware implements MiddlewareInterface
 
             return $next($request);
         }
-        
+
         return $next($request);
     }
 
