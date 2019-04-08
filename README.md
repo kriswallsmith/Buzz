@@ -135,14 +135,12 @@ We do love PSRs and this is a wish list of what PSR we would like to support:
 * PSR-17 (HTTP factories)
 * PSR-18 (HTTP client)
 
-## Backwards Compatibility Promise
+## The goal
 
-We take backwards compatibility very seriously as you should do with any open source project. We strictly follow [Semver](https://semver.org/).
-Please note that Semver works a bit different prior version 1.0.0. Minor versions prior 1.0.0 are allow to break backwards
-compatibility.
-
-Being greatly inspired by [Symfony's bc promise](https://symfony.com/doc/current/contributing/code/bc.html), we have adopted
-their method of deprecating classes, interfaces and functions.
+Since the release of 1.0 Buzz has reached its goal of being a lightweight client that covers 90% of all use cases. There 
+are no plans to actively develop new features or change the existing API. There are alternatives for people that wants
+an more actively maintained HTTP clients. One that is particularly popular and got a big community behind it is the  
+[Symfony HTTP Client](https://github.com/symfony/http-client).
 
 ## Contribute
 
@@ -151,6 +149,15 @@ are also looking forward to review a pull request with a new middleware, especia
 use case. 
 
 We will probably not accept any configuration option or feature to any of the clients or the Browser. 
+
+## Backwards Compatibility Promise
+
+We take backwards compatibility very seriously as you should do with any open source project. We strictly follow [Semver](https://semver.org/).
+Please note that Semver works a bit different prior version 1.0.0. Minor versions prior 1.0.0 are allow to break backwards
+compatibility.
+
+Being greatly inspired by [Symfony's bc promise](https://symfony.com/doc/current/contributing/code/bc.html), we have adopted
+their method of deprecating classes, interfaces and functions.
 
 ## Running the tests
 
