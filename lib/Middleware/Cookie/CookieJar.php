@@ -88,6 +88,10 @@ class CookieJar
         $this->setCookies(array_values($cookies));
     }
 
+    /**
+     * Create an unique identifier for the cookie. Two cookies with the same identifier
+     * may have different values.
+     */
     private function getHash(Cookie $cookie): string
     {
         return sha1(sprintf(
