@@ -38,7 +38,7 @@ class CookieJar
      */
     public function addCookie(Cookie $cookie): void
     {
-        $this->cookies[] = $cookie;
+        $this->cookies[$this->getHash($cookie)] = $cookie;
     }
 
     /**
@@ -46,10 +46,14 @@ class CookieJar
      */
     public function addCookieHeaders(RequestInterface $request): RequestInterface
     {
+        $cookies = [];
         foreach ($this->getCookies() as $cookie) {
             if ($cookie->matchesRequest($request)) {
-                $request = $request->withAddedHeader('Cookie', $cookie->toCookieHeader());
+                $cookies[] = $cookie->toCookieHeader();
             }
+        }
+        if ($cookies) {
+            $request = $request->withAddedHeader('Cookie', implode('; ', $cookies));
         }
 
         return $request;
@@ -64,7 +68,6 @@ class CookieJar
         foreach ($response->getHeader('Set-Cookie') as $header) {
             $cookie = new Cookie();
             $cookie->fromSetCookieHeader($header, $host);
-
             $this->addCookie($cookie);
         }
     }
@@ -83,5 +86,20 @@ class CookieJar
 
         $this->clear();
         $this->setCookies(array_values($cookies));
+    }
+
+    /**
+     * Create an unique identifier for the cookie. Two cookies with the same identifier
+     * may have different values.
+     */
+    private function getHash(Cookie $cookie): string
+    {
+        return sha1(sprintf(
+            '%s|%s|%s|%s',
+            $cookie->getName(),
+            $cookie->getAttribute('domain'),
+            $cookie->getAttribute('path'),
+            $cookie->getAttribute('http')
+        ));
     }
 }
