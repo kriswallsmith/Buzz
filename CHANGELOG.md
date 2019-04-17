@@ -2,6 +2,13 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions.
 
+## 1.0.1
+
+### Fixed
+
+- Fixed issue with multiple cookies. 
+- Fixed `ContentTypeMiddleware` missing return.
+
 ## 1.0.0
 
 ### Changed
