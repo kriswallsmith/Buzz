@@ -57,7 +57,7 @@ class CookieJarTest extends TestCase
         // Add the second cookie
         $jar->addCookie($cookie2);
         $newRequest = $jar->addCookieHeaders($request);
-        $this->assertEquals('SESSION=asdf, foo=bar', $newRequest->getHeaderLine('Cookie'));
+        $this->assertEquals('SESSION=asdf; foo=bar', $newRequest->getHeaderLine('Cookie'));
     }
 
     public function testClearExpiredCookiesRemovesExpiredCookies()
