@@ -22,7 +22,7 @@ namespace Buzz\Message;
 class HeaderConverter
 {
     /**
-     * Convert from Buzz style headers to PSR style.
+     * Convert from PSR style headers to Buzz style.
      */
     public static function toBuzzHeaders(array $headers): array
     {
@@ -42,7 +42,7 @@ class HeaderConverter
     }
 
     /**
-     * Convert from PSR style headers to Buzz style.
+     * Convert from Buzz style headers to PSR style.
      */
     public static function toPsrHeaders(array $headers): array
     {
