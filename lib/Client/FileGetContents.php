@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Buzz\Client;
 
 use Buzz\Configuration\ParameterBag;
-use Buzz\Message\HeaderConverter;
 use Buzz\Exception\NetworkException;
+use Buzz\Message\HeaderConverter;
 use Buzz\Message\ResponseBuilder;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

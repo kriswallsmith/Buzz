@@ -107,7 +107,6 @@ final class ResponseBuilder
     /**
      * Add some content to the body. This function writes the $input to a stream.
      *
-     *
      * @return int returns the number of bytes written
      */
     public function writeBody(string $input): int

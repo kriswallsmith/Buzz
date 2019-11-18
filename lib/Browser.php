@@ -56,22 +56,22 @@ class Browser implements BuzzClientInterface
         return $this->request('POST', $url, $headers, $body);
     }
 
-    public function head(string $url, array  $headers = []): ResponseInterface
+    public function head(string $url, array $headers = []): ResponseInterface
     {
         return $this->request('HEAD', $url, $headers);
     }
 
-    public function patch(string $url, array  $headers = [], string $body = ''): ResponseInterface
+    public function patch(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->request('PATCH', $url, $headers, $body);
     }
 
-    public function put(string $url, array  $headers = [], string $body = ''): ResponseInterface
+    public function put(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->request('PUT', $url, $headers, $body);
     }
 
-    public function delete(string $url, array  $headers = [], string $body = ''): ResponseInterface
+    public function delete(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->request('DELETE', $url, $headers, $body);
     }
