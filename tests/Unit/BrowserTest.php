@@ -39,7 +39,7 @@ class BrowserTest extends TestCase
 
         $this->client->expects($this->once())
             ->method('sendRequest')
-            ->will($this->returnValue($response));
+            ->willReturn($response);
 
         $actual = $this->browser->$method('http://google.com/', $headers, $content);
 
@@ -66,7 +66,7 @@ class BrowserTest extends TestCase
 
         $this->client->expects($this->once())
             ->method('sendRequest')
-            ->will($this->returnValue($response));
+            ->willReturn($response);
 
         $this->browser->sendRequest($request);
 

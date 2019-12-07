@@ -60,6 +60,7 @@ final class ParameterBag implements \IteratorAggregate, \Countable
             $parameters['curl'] = array_replace($this->parameters['curl'], $parameters['curl']);
         }
 
+        /** @var array $newParameters */
         $newParameters = array_replace($this->parameters, $parameters);
 
         return new self($newParameters);

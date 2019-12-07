@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class Journal implements \Countable, \IteratorAggregate
 {
+    /** @var Entry[] */
     private $entries = [];
     private $limit = 10;
 

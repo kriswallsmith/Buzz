@@ -194,7 +194,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
                     $this->parseError($request, $info['result'], $curl);
                     $response = $responseBuilder->getResponse();
                     if ($options->get('expose_curl_info', false)) {
-                        $response = $response->withHeader('__curl_info', json_encode(curl_getinfo($curl)));
+                        $response = $response->withHeader('__curl_info', (string) json_encode(curl_getinfo($curl)));
                     }
                 } catch (\Throwable $e) {
                     if (null === $exception) {
