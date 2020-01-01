@@ -111,7 +111,7 @@ Default: `null`<br>
 A callable for `CURLMOPT_PUSHFUNCTION`. See [PHP docs](https://php.net/manual/en/function.curl-multi-setopt.php).
 
 Since MultiCurl supports adding multiple requests, all Push Functions callbacks are
-chained together. If one of them returns `CURL_PUSH_DENY`, then the request will be denied. 
+chained together. If one of them returns `CURL_PUSH_DENY`, then the request will be denied.
 
 ```php
 $options['push_function_callback'] = function ($parent, $pushed, $headers) {
@@ -138,7 +138,7 @@ Type: boolean<br>
 Default: `true`<br>
 *Only for MultiCurl*
 
-If true, we can used responses pushed to us by HTTP/2.0 server push. 
+If true, we can use responses pushed to us by HTTP/2.0 server push.
 
 #### verify
 
