@@ -46,59 +46,31 @@ class Browser implements BuzzClientInterface
         $this->requestFactory = $requestFactory;
     }
 
-    /**
-     * @param string $url
-     * @param array $headers
-     */
     public function get(string $url, array $headers = []): ResponseInterface
     {
         return $this->request('GET', $url, $headers);
     }
 
-    /**
-     * @param string $url
-     * @param array $headers
-     * @param string $body
-     */
     public function post(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->request('POST', $url, $headers, $body);
     }
 
-    /**
-     * @param string $url
-     * @param array $headers
-     */
     public function head(string $url, array $headers = []): ResponseInterface
     {
         return $this->request('HEAD', $url, $headers);
     }
 
-    /**
-     * @param string $url
-     * @param array $headers
-     * @param string $body
-     */
     public function patch(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->request('PATCH', $url, $headers, $body);
     }
 
-    /**
-     * @param string $url
-     * @param array $headers
-     * @param string $body
-     */
     public function put(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->request('PUT', $url, $headers, $body);
     }
 
-    /**
-     * @param string $url
-     * @param array $headers
-     * @param string $body
-     */
     public function delete(string $url, array $headers = [], string $body = ''): ResponseInterface
     {
         return $this->request('DELETE', $url, $headers, $body);
@@ -123,11 +95,6 @@ class Browser implements BuzzClientInterface
 
     /**
      * Submit a form.
-     *
-     * @param string $url    The URL to call
-     * @param array  $fields The fields to submit
-     * @param string $method The request method to use
-     * @param array $headers An array of request headers
      *
      * @throws ClientException
      * @throws LogicException
@@ -170,8 +137,6 @@ class Browser implements BuzzClientInterface
     /**
      * Send a PSR7 request.
      *
-     * @param RequestInterface $request
-     * @param array $options
      * @throws ClientException
      * @throws LogicException
      * @throws InvalidArgumentException
@@ -251,12 +216,6 @@ class Browser implements BuzzClientInterface
         $this->middleware[] = $middleware;
     }
 
-    /**
-     * @param string $name
-     * @param string $content
-     * @param string $boundary
-     * @param array $data
-     */
     private function prepareMultipart(string $name, string $content, string $boundary, array $data = []): string
     {
         $output = '';
@@ -289,12 +248,6 @@ class Browser implements BuzzClientInterface
         return $output;
     }
 
-    /**
-     * @param string $method
-     * @param string $url
-     * @param array $headers
-     * @param string $body
-     */
     protected function createRequest(string $method, string $url, array $headers, string $body): RequestInterface
     {
         $request = $this->requestFactory->createRequest($method, $url);
