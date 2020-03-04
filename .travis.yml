@@ -78,7 +78,7 @@ jobs:
       env: DEPENDENCIES="dunglas/symfony-lock:^4"
     - name: "Symfony 5.x"
       php: 7.2
-      env: DEPENDENCIES="dunglas/symfony-lock:^5"
+      env: SYMFONY_REQUIRE="5.0.*"
 
 install:
     # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
