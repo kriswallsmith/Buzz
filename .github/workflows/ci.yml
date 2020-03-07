@@ -89,8 +89,10 @@ jobs:
           ./vendor/bin/http_test_server > /dev/null 2>&1 &
 
       - name: Run tests
+        run: ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+
+      - name: Upload coverage
         run: |
-          ./vendor/bin/phpunit --coverage-text --coverage-clover=build/coverage.xml
           wget https://scrutinizer-ci.com/ocular.phar
           php ocular.phar code-coverage:upload --format=php-clover coverage.xml || true
 
