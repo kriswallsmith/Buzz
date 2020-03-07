@@ -2,7 +2,8 @@
 
 <div align="center">
 
-[![Build Status](https://img.shields.io/travis/kriswallsmith/Buzz/master.svg?style=flat-square)](https://travis-ci.org/kriswallsmith/Buzz)
+![Build Status](https://github.com/kriswallsmith/Buzz/workflows/Tests/badge.svg)
+![BC Check](https://github.com/kriswallsmith/Buzz/workflows/BC%20Check/badge.svg)
 [![Latest Version](https://img.shields.io/github/release/kriswallsmith/Buzz.svg?style=flat-square)](https://github.com/kriswallsmith/Buzz/releases)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/kriswallsmith/Buzz.svg?style=flat-square)](https://scrutinizer-ci.com/g/kriswallsmith/Buzz)
 [![Quality Score](https://img.shields.io/scrutinizer/g/kriswallsmith/Buzz.svg?style=flat-square)](https://scrutinizer-ci.com/g/kriswallsmith/Buzz)
@@ -164,8 +165,8 @@ their method of deprecating classes, interfaces and functions.
 There are 2 kinds of tests for this library; unit tests and integration tests. They can be run separably by:
 
 ```bash
-./vendor/bin/simple-phpunit --testsuite Unit
-./vendor/bin/simple-phpunit --testsuite Integration
+./vendor/bin/phpunit --testsuite Unit
+./vendor/bin/phpunit --testsuite Integration
 ```
 
 The integration tests makes real HTTP requests to a webserver. There are two different
@@ -189,7 +190,7 @@ docker run -d -p 127.0.0.1:8022:80 buzz/tests
 You are now ready to run the integration tests
 
 ```bash
-./vendor/bin/simple-phpunit --testsuite Integration
+./vendor/bin/phpunit --testsuite Integration
 ```
 
 ### Test Server Push

@@ -1,0 +1,125 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 10
+      matrix:
+        php: ['7.1', '7.2', '7.3', '7.4']
+        env:
+          - SYMFONY_REQUIRE: '3.4.*'
+          - SYMFONY_REQUIRE: '4.4.*'
+          - SYMFONY_REQUIRE: '5.0.*'
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@2.1.0
+        with:
+          php-version: ${{ matrix.php }}
+          tools: flex
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: |
+          echo "SYMFONY_REQUIRE:"
+          echo $SYMFONY_REQUIRE
+          composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit --testsuite Unit
+
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 10
+      matrix:
+        env:
+          - SYMFONY_REQUIRE: '3.4.*'
+          - SYMFONY_REQUIRE: '4.4.*'
+          - SYMFONY_REQUIRE: '5.0.*'
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@2.1.0
+        with:
+          php-version: 7.3
+          coverage: xdebug
+          tools: flex
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
+
+      - name: Start servers
+        run: |
+          docker build -t buzz/tests .
+          docker run -d -p 127.0.0.1:8022:80 buzz/tests
+          docker ps -a
+          ./vendor/bin/http_test_server > /dev/null 2>&1 &
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit --coverage-text --coverage-clover=build/coverage.xml
+
+      - name: Upload coverage
+        run: |
+          wget https://scrutinizer-ci.com/ocular.phar
+          php ocular.phar code-coverage:upload --format=php-clover coverage.xml || true
+
+  h2push:
+    name: HTTP/2 Server Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@2.1.0
+        with:
+          php-version: 7.3
+          tools: flex
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
+
+      - name: Start servers
+        run: |
+          docker network create -d bridge buzz-bridge
+          docker build -t buzz/tests .
+          docker run -d --net buzz-bridge --name test-server buzz/tests
+          docker ps -a
+          sed -i -e 's/name="TEST_SERVER"/name="FOOBAR"/g' phpunit.xml.dist
+
+      - name: Run tests
+        run: |
+          docker run --rm --net buzz-bridge -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e BUZZ_TEST_SERVER=http://test-server/index.php tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit
+
+  lowest:
+    name: Lowest deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@2.1.0
+        with:
+          php-version: 7.3
+          tools: flex
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable --prefer-lowest
+
+      - name: Run tests
+        env:
+          SYMFONY_DEPRECATIONS_HELPER: "max[self]=0"
+        run: ./vendor/bin/phpunit --testsuite Unit

@@ -1,3 +1,4 @@
+.php_cs.cache
 bin
 composer.lock
 composer.phar
