@@ -2,6 +2,16 @@
 
 The change log shows what have been Added, Changed, Deprecated and Removed between versions.
 
+## 1.1.0
+
+### Added 
+
+- Support for Symfony 5. 
+
+### Fixed
+
+- NullException when `file_get_content`'s `error_get_last` did not return an array.  
+
 ## 1.0.1
 
 ### Fixed
