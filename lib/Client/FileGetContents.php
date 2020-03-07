@@ -17,10 +17,13 @@ class FileGetContents extends AbstractClient implements BuzzClientInterface
     {
         $options = $this->validateOptions($options);
         $context = stream_context_create($this->getStreamContextArray($request, $options));
+
+        $level = error_reporting(0);
         $content = file_get_contents($request->getUri()->__toString(), false, $context);
+        error_reporting($level);
         if (false === $content) {
-            if (($error = error_get_last())) {
-              throw new NetworkException($request, $error['message']);
+            if ($error = error_get_last()) {
+                throw new NetworkException($request, $error['message']);
             }
             throw new NetworkException($request, 'Failed to get contents from '.$request->getUri()->__toString());
         }
