@@ -9,12 +9,12 @@
         {
             "name": "Kris Wallsmith",
             "email": "kris.wallsmith@gmail.com",
-            "homepage": "http://kriswallsmith.net/"
+            "homepage": "https://kriswallsmith.net/"
         },
         {
             "name": "Tobias Nyholm",
             "email": "tobias.nyholm@gmail.com",
-            "homepage": "http://tnyholm.se/"
+            "homepage": "https://tnyholm.se/"
         }
     ],
     "require": {
@@ -28,9 +28,8 @@
     "require-dev": {
         "php-http/client-integration-tests": "^2.0.1",
         "nyholm/psr7": "^1.0",
-        "phpunit/phpunit": "^6.5.7",
         "psr/log": "^1.0",
-        "symfony/phpunit-bridge": "^4.2.3"
+        "phpunit/phpunit": "7.5.20"
     },
     "provide": {
         "php-http/client-implementation": "1.0",
@@ -49,9 +48,5 @@
         "psr-4": {
             "Buzz\\Test\\": "tests"
         }
-    },
-    "scripts": {
-        "test": "vendor/bin/simple-phpunit --testsuite Unit",
-        "test-ci": "vendor/bin/simple-phpunit --coverage-text --coverage-clover=build/coverage.xml"
     }
 }

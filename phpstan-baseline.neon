@@ -1,0 +1,727 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:get\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:post\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:head\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:patch\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:put\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:delete\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:request\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:submitForm\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:submitForm\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:sendRequest\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:prepareMultipart\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Method Buzz\\\\Browser\\:\\:createRequest\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Browser.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\AbstractClient\\:\\:\\$options type has no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/AbstractClient.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\AbstractClient\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/AbstractClient.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\AbstractClient\\:\\:validateOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/AbstractClient.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\AbstractClient\\:\\:validateOptions\\(\\) return type has no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/AbstractClient.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\AbstractClient\\:\\:doValidateOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/AbstractClient.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\AbstractClient\\:\\:doValidateOptions\\(\\) return type has no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/AbstractClient.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\AbstractCurl\\:\\:\\$handles has no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/AbstractCurl.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\AbstractCurl\\:\\:\\$maxHandles has no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/AbstractCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\AbstractCurl\\:\\:prepare\\(\\) has parameter \\$options with no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/AbstractCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\AbstractCurl\\:\\:setOptionsFromParameterBag\\(\\) has parameter \\$options with no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/AbstractCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\BatchClientInterface\\:\\:sendAsyncRequest\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/BatchClientInterface.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\BuzzClientInterface\\:\\:sendRequest\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/BuzzClientInterface.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\Curl\\:\\:sendRequest\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/Curl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\FileGetContents\\:\\:sendRequest\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/FileGetContents.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\FileGetContents\\:\\:getStreamContextArray\\(\\) has parameter \\$options with no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/FileGetContents.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\FileGetContents\\:\\:getStreamContextArray\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/FileGetContents.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\FileGetContents\\:\\:filterHeaders\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/FileGetContents.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\FileGetContents\\:\\:filterHeaders\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/FileGetContents.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\MultiCurl\\:\\:\\$queue has no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\MultiCurl\\:\\:\\$curlm has no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\MultiCurl\\:\\:\\$pushedResponses type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\MultiCurl\\:\\:\\$pushResponseHandles type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\MultiCurl\\:\\:\\$pushFunctions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Property Buzz\\\\Client\\\\MultiCurl\\:\\:\\$pushCb type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:sendAsyncRequest\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:sendRequest\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:addPushHandle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:addPushHandle\\(\\) has parameter \\$handle with no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:addPushHandle\\(\\) has parameter \\$headers with no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:handlePushedResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:handlePushedResponse\\(\\) has parameter \\$handle with no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:hasPushResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:hasPushResponse\\(\\) has parameter \\$url with no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:getPushedResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:getPushedResponse\\(\\) has parameter \\$url with no typehint specified\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:addToQueue\\(\\) has parameter \\$options with no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Method Buzz\\\\Client\\\\MultiCurl\\:\\:addToQueue\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^PHPDoc tag @var for variable \\$options has no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Client/MultiCurl.php
+
+		-
+			message: "#^Class Buzz\\\\Configuration\\\\ParameterBag implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Property Buzz\\\\Configuration\\\\ParameterBag\\:\\:\\$parameters has no typehint specified\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Method Buzz\\\\Configuration\\\\ParameterBag\\:\\:__construct\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Method Buzz\\\\Configuration\\\\ParameterBag\\:\\:all\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Method Buzz\\\\Configuration\\\\ParameterBag\\:\\:keys\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Method Buzz\\\\Configuration\\\\ParameterBag\\:\\:add\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Method Buzz\\\\Configuration\\\\ParameterBag\\:\\:add\\(\\) return type has no value type specified in iterable type Buzz\\\\Configuration\\\\ParameterBag\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^PHPDoc tag @var for variable \\$newParameters has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Method Buzz\\\\Configuration\\\\ParameterBag\\:\\:get\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Method Buzz\\\\Configuration\\\\ParameterBag\\:\\:getIterator\\(\\) return type with generic class ArrayIterator does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: lib/Configuration/ParameterBag.php
+
+		-
+			message: "#^Property Buzz\\\\Exception\\\\CallbackException\\:\\:\\$request has no typehint specified\\.$#"
+			count: 1
+			path: lib/Exception/CallbackException.php
+
+		-
+			message: "#^Property Buzz\\\\Message\\\\FormRequestBuilder\\:\\:\\$data type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/FormRequestBuilder.php
+
+		-
+			message: "#^Property Buzz\\\\Message\\\\FormRequestBuilder\\:\\:\\$files type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/FormRequestBuilder.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\FormRequestBuilder\\:\\:__construct\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/FormRequestBuilder.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\FormRequestBuilder\\:\\:__construct\\(\\) has parameter \\$files with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/FormRequestBuilder.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\FormRequestBuilder\\:\\:build\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/FormRequestBuilder.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\HeaderConverter\\:\\:toBuzzHeaders\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/HeaderConverter.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\HeaderConverter\\:\\:toBuzzHeaders\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/HeaderConverter.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\HeaderConverter\\:\\:toPsrHeaders\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/HeaderConverter.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\HeaderConverter\\:\\:toPsrHeaders\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/HeaderConverter.php
+
+		-
+			message: "#^Property Buzz\\\\Message\\\\ResponseBuilder\\:\\:\\$responseFactory has no typehint specified\\.$#"
+			count: 1
+			path: lib/Message/ResponseBuilder.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\ResponseBuilder\\:\\:filterHeaders\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/ResponseBuilder.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\ResponseBuilder\\:\\:filterHeaders\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/ResponseBuilder.php
+
+		-
+			message: "#^Method Buzz\\\\Message\\\\ResponseBuilder\\:\\:parseHttpHeaders\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Message/ResponseBuilder.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\BasicAuthMiddleware\\:\\:\\$username has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/BasicAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\BasicAuthMiddleware\\:\\:\\$password has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/BasicAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\BasicAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/BasicAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\BasicAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/BasicAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\BearerAuthMiddleware\\:\\:\\$accessToken has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/BearerAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\BearerAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/BearerAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\BearerAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/BearerAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\CallbackMiddleware\\:\\:\\$callable has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/CallbackMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\CallbackMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/CallbackMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\CallbackMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/CallbackMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\ContentLengthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/ContentLengthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\ContentLengthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/ContentLengthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\ContentTypeMiddleware\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Middleware/ContentTypeMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\ContentTypeMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/ContentTypeMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\ContentTypeMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/ContentTypeMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\Cookie\\\\Cookie\\:\\:\\$name has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/Cookie/Cookie.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\Cookie\\\\Cookie\\:\\:\\$value has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/Cookie/Cookie.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\Cookie\\\\Cookie\\:\\:\\$attributes has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/Cookie/Cookie.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\Cookie\\\\Cookie\\:\\:\\$createdAt has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/Cookie/Cookie.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\Cookie\\\\Cookie\\:\\:setAttributes\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Middleware/Cookie/Cookie.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\Cookie\\\\Cookie\\:\\:getAttributes\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Middleware/Cookie/Cookie.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\Cookie\\\\CookieJar\\:\\:setCookies\\(\\) has parameter \\$cookies with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Middleware/Cookie/CookieJar.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\CookieMiddleware\\:\\:\\$cookieJar has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/CookieMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\CookieMiddleware\\:\\:setCookies\\(\\) has parameter \\$cookies with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Middleware/CookieMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\CookieMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/CookieMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\CookieMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/CookieMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$username has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$password has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$realm has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$algorithm has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$authenticationMethod has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$clientNonce has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$domain has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$entityBody has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$method has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$nonce has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$nonceCount has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$opaque has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$uri has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:\\$options has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function strlen expects string, float\\|int\\|string given\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:getEntityBody\\(\\) never returns null so it can be removed from the return typehint\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:parseNameValuePairs\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:setQOP\\(\\) has parameter \\$qop with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Middleware/DigestAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\History\\\\Entry\\:\\:\\$request has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/History/Entry.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\History\\\\Entry\\:\\:\\$response has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/History/Entry.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\History\\\\Entry\\:\\:\\$duration has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/History/Entry.php
+
+		-
+			message: "#^Class Buzz\\\\Middleware\\\\History\\\\Journal implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: lib/Middleware/History/Journal.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\History\\\\Journal\\:\\:\\$limit has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/History/Journal.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\History\\\\Journal\\:\\:getIterator\\(\\) return type with generic class ArrayIterator does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: lib/Middleware/History/Journal.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:\\$journal has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/HistoryMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:\\$startTime has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/HistoryMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:__construct\\(\\) has parameter \\$journal with no value type specified in iterable type Buzz\\\\Middleware\\\\History\\\\Journal\\.$#"
+			count: 1
+			path: lib/Middleware/HistoryMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:getJournal\\(\\) return type has no value type specified in iterable type Buzz\\\\Middleware\\\\History\\\\Journal\\.$#"
+			count: 1
+			path: lib/Middleware/HistoryMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/HistoryMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/HistoryMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:\\$logger has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/LoggerMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:\\$level has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/LoggerMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:\\$prefix has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/LoggerMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:\\$startTime has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/LoggerMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/LoggerMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/LoggerMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\MiddlewareInterface\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/MiddlewareInterface.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\MiddlewareInterface\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/MiddlewareInterface.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:\\$username has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/WsseAuthMiddleware.php
+
+		-
+			message: "#^Property Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:\\$password has no typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/WsseAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/WsseAuthMiddleware.php
+
+		-
+			message: "#^Method Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Middleware/WsseAuthMiddleware.php
+
