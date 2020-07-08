@@ -386,27 +386,7 @@ parameters:
 			path: lib/Middleware/BasicAuthMiddleware.php
 
 		-
-			message: "#^Method Buzz\\\\Middleware\\\\BasicAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/BasicAuthMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\BasicAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/BasicAuthMiddleware.php
-
-		-
 			message: "#^Property Buzz\\\\Middleware\\\\BearerAuthMiddleware\\:\\:\\$accessToken has no typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/BearerAuthMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\BearerAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/BearerAuthMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\BearerAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: lib/Middleware/BearerAuthMiddleware.php
 
@@ -416,37 +396,7 @@ parameters:
 			path: lib/Middleware/CallbackMiddleware.php
 
 		-
-			message: "#^Method Buzz\\\\Middleware\\\\CallbackMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/CallbackMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\CallbackMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/CallbackMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\ContentLengthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/ContentLengthMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\ContentLengthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/ContentLengthMiddleware.php
-
-		-
 			message: "#^Method Buzz\\\\Middleware\\\\ContentTypeMiddleware\\:\\:__construct\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: lib/Middleware/ContentTypeMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\ContentTypeMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/ContentTypeMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\ContentTypeMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: lib/Middleware/ContentTypeMiddleware.php
 
@@ -492,16 +442,6 @@ parameters:
 
 		-
 			message: "#^Method Buzz\\\\Middleware\\\\CookieMiddleware\\:\\:setCookies\\(\\) has parameter \\$cookies with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: lib/Middleware/CookieMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\CookieMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/CookieMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\CookieMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: lib/Middleware/CookieMiddleware.php
 
@@ -576,16 +516,6 @@ parameters:
 			path: lib/Middleware/DigestAuthMiddleware.php
 
 		-
-			message: "#^Method Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/DigestAuthMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\DigestAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/DigestAuthMiddleware.php
-
-		-
 			message: "#^Parameter \\#1 \\$string of function strlen expects string, float\\|int\\|string given\\.$#"
 			count: 1
 			path: lib/Middleware/DigestAuthMiddleware.php
@@ -656,16 +586,6 @@ parameters:
 			path: lib/Middleware/HistoryMiddleware.php
 
 		-
-			message: "#^Method Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/HistoryMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\HistoryMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/HistoryMiddleware.php
-
-		-
 			message: "#^Property Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:\\$logger has no typehint specified\\.$#"
 			count: 1
 			path: lib/Middleware/LoggerMiddleware.php
@@ -686,42 +606,12 @@ parameters:
 			path: lib/Middleware/LoggerMiddleware.php
 
 		-
-			message: "#^Method Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/LoggerMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\LoggerMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/LoggerMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\MiddlewareInterface\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/MiddlewareInterface.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\MiddlewareInterface\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/MiddlewareInterface.php
-
-		-
 			message: "#^Property Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:\\$username has no typehint specified\\.$#"
 			count: 1
 			path: lib/Middleware/WsseAuthMiddleware.php
 
 		-
 			message: "#^Property Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:\\$password has no typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/WsseAuthMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:handleRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: lib/Middleware/WsseAuthMiddleware.php
-
-		-
-			message: "#^Method Buzz\\\\Middleware\\\\WsseAuthMiddleware\\:\\:handleResponse\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: lib/Middleware/WsseAuthMiddleware.php
 
