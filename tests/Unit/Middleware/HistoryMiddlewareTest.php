@@ -16,7 +16,7 @@ class HistoryMiddlewareTest extends TestCase
     /** @var HistoryMiddleware */
     private $middleware;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->journal = $this->getMockBuilder('Buzz\Middleware\History\Journal')
             ->disableOriginalConstructor()

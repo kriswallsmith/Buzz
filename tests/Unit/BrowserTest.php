@@ -20,7 +20,7 @@ class BrowserTest extends TestCase
     /** @var Browser */
     private $browser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = $this->getMockBuilder('Buzz\Client\Curl')
             ->disableOriginalConstructor()
@@ -112,7 +112,7 @@ class BrowserTest extends TestCase
             $regex = substr($requestBody, 5);
             $regex = str_replace("\n", "\r\n", $regex);
 
-            return preg_match($regex, $input);
+            return false !== preg_match($regex, $input);
         };
 
         $browser = $this->getMockBuilder(Browser::class)

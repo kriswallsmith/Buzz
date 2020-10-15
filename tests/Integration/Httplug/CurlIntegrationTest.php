@@ -6,10 +6,11 @@ namespace Buzz\Test\Integration\Httplug;
 
 use Buzz\Client\Curl;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Client\ClientInterface;
 
 class CurlIntegrationTest extends BaseIntegrationTest
 {
-    protected function createHttpAdapter()
+    protected function createHttpAdapter(): ClientInterface
     {
         return new Curl(new Psr17Factory(), []);
     }

@@ -10,7 +10,7 @@ use Nyholm\Psr7\Request;
 
 class MultiCurlServerPushTest extends BaseIntegrationTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (\PHP_VERSION_ID < 70400 || curl_version()['version_number'] < 472065) {

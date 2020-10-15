@@ -21,7 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class BuzzIntegrationTest extends BaseIntegrationTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (empty($_SERVER['BUZZ_TEST_SERVER'])) {
@@ -125,7 +125,7 @@ class BuzzIntegrationTest extends BaseIntegrationTest
         $this->assertNotEmpty($response->getBody()->__toString(), 'Response from server should not be empty');
 
         $data = json_decode($response->getBody()->__toString(), true);
-        $this->assertInternalType('array', $data, $response->getBody()->__toString());
+        $this->assertIsArray($data, $response->getBody()->__toString());
         $this->assertArrayHasKey('SERVER', $data);
 
         $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);
@@ -156,7 +156,7 @@ class BuzzIntegrationTest extends BaseIntegrationTest
         $this->assertNotEmpty($response->getBody()->__toString(), 'Response from server should not be empty');
 
         $data = json_decode($response->getBody()->__toString(), true);
-        $this->assertInternalType('array', $data, $response->getBody()->__toString());
+        $this->assertIsArray($data, $response->getBody()->__toString());
         $this->assertArrayHasKey('SERVER', $data);
 
         $this->assertStringStartsWith('multipart/form-data', $data['SERVER']['CONTENT_TYPE']);

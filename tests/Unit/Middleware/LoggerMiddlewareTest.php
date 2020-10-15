@@ -19,7 +19,8 @@ class LoggerMiddlewareTest extends TestCase
 
         // TODO Use PSR3 logger
         $logger = new CallbackLogger(function ($level, $message, array $context) use ($that) {
-            $that->assertRegExp('~^Sent "GET http://google.com/" in \d+ms$~', $message);
+            $method = method_exists($that, 'assertRegExp') ? 'assertRegExp' : 'assertMatchesRegularExpression';
+            $that->$method('~^Sent "GET http://google.com/" in \d+ms$~', $message);
         });
 
         $request = new Request('GET', 'http://google.com/');

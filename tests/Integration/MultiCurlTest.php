@@ -11,7 +11,7 @@ use Nyholm\Psr7\Request;
 
 class MultiCurlTest extends BaseIntegrationTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (empty($_SERVER['BUZZ_TEST_SERVER'])) {
