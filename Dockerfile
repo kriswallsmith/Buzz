@@ -1,4 +1,4 @@
-FROM php:7.3-fpm-stretch
+FROM php:7.4-fpm-buster
 
 # Install Nginx
 RUN apt-get update -qq && apt-get install -y --no-install-recommends -qq nginx
