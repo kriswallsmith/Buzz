@@ -124,7 +124,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@2.1.0
         with:
-          php-version: 7.3
+          php-version: 7.4
           tools: flex
 
       - name: Checkout code
