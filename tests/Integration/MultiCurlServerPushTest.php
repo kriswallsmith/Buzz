@@ -13,7 +13,7 @@ class MultiCurlServerPushTest extends BaseIntegrationTest
     protected function setUp(): void
     {
         parent::setUp();
-        if (\PHP_VERSION_ID < 70400 || curl_version()['version_number'] < 472065) {
+        if (\PHP_VERSION_ID < 70400 || \PHP_VERSION_ID >= 80000 || curl_version()['version_number'] < 472065) {
             $this->markTestSkipped('This environment does not support server push');
         }
     }
