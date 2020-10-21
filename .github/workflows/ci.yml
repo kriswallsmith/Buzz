@@ -10,7 +10,7 @@ jobs:
     strategy:
       max-parallel: 10
       matrix:
-        php: ['7.2', '7.3', '7.4']
+        php: ['7.2', '7.3', '7.4', '8.0']
         sf_version: ['3.4.*', '4.4.*', '5.0.*']
 
     steps:
@@ -52,27 +52,6 @@ jobs:
       - name: Download dependencies
         env:
           SYMFONY_REQUIRE: ${{ matrix.sf_version }}
-        run: composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
-
-      - name: Run tests
-        run: ./vendor/bin/phpunit --testsuite Unit
-
-  build80:
-    name: Build PHP 8.0
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 10
-
-    steps:
-      - name: Set up PHP
-        uses: shivammathur/setup-php@2.1.0
-        with:
-          php-version: 8.0
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Download dependencies
         run: composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
 
       - name: Run tests
