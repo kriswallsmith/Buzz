@@ -48,8 +48,5 @@
         "psr-4": {
             "Buzz\\Test\\": "tests"
         }
-    },
-    "conflict": {
-        "symfony/polyfill-php80": "*"
     }
 }
