@@ -56,7 +56,13 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     {
         parent::__construct($responseFactory, $options);
 
-        if (\PHP_VERSION_ID < 70215 || \PHP_VERSION_ID === 70300 || \PHP_VERSION_ID === 70301 || !(CURL_VERSION_HTTP2 & curl_version()['features'])) {
+        if (
+            \PHP_VERSION_ID < 70215 ||
+            \PHP_VERSION_ID === 70300 ||
+            \PHP_VERSION_ID === 70301 ||
+            \PHP_VERSION_ID >= 80000 ||
+            !(CURL_VERSION_HTTP2 & curl_version()['features'])
+        ) {
             // Dont use HTTP/2 push when it's unsupported or buggy, see https://bugs.php.net/76675
             $this->serverPushSupported = false;
         }

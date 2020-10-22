@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class BaseIntegrationTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (getenv('BUZZ_TEST_SERVER')) {

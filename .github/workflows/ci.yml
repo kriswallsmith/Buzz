@@ -10,7 +10,7 @@ jobs:
     strategy:
       max-parallel: 10
       matrix:
-        php: ['7.2', '7.3', '7.4']
+        php: ['7.2', '7.3', '7.4', '8.0']
         sf_version: ['3.4.*', '4.4.*', '5.0.*']
 
     steps:
@@ -103,7 +103,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@2.1.0
         with:
-          php-version: 7.3
+          php-version: 7.4
           tools: flex
 
       - name: Checkout code
@@ -122,7 +122,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run --rm --net buzz-bridge -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e BUZZ_TEST_SERVER=http://test-server/index.php tommymuehle/docker-alpine-php-nightly php vendor/bin/phpunit
+          docker run --rm --net buzz-bridge -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e BUZZ_TEST_SERVER=http://test-server/index.php php:7.4-cli php vendor/bin/phpunit
 
   lowest:
     name: Lowest deps

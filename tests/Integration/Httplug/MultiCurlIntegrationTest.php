@@ -6,10 +6,11 @@ namespace Buzz\Test\Integration\Httplug;
 
 use Buzz\Client\MultiCurl;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Client\ClientInterface;
 
 class MultiCurlIntegrationTest extends BaseIntegrationTest
 {
-    protected function createHttpAdapter()
+    protected function createHttpAdapter(): ClientInterface
     {
         return new MultiCurl(new Psr17Factory(), []);
     }

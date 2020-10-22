@@ -9,7 +9,7 @@ use Http\Client\Tests\PHPUnitUtility;
 
 abstract class BaseIntegrationTest extends HttpClientTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (false === PHPUnitUtility::getUri()) {

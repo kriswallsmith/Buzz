@@ -23,7 +23,7 @@ class JournalTest extends TestCase
 
     protected $response3;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->request1 = new Request('GET', '/r1', [], 'request1');
         $this->request2 = new Request('GET', '/r2', [], 'request2');
@@ -33,7 +33,7 @@ class JournalTest extends TestCase
         $this->response3 = new Response(200, [], 'response3');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->request1 = null;
         $this->request2 = null;

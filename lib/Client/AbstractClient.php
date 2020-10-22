@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 abstract class AbstractClient
 {
     /**
-     * @var OptionsResolver
+     * @var OptionsResolver|null
      */
     private $optionsResolver;
 
