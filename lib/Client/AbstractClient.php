@@ -30,9 +30,9 @@ abstract class AbstractClient
     /**
      * @param ResponseFactoryInterface|ResponseFactory $responseFactory
      */
-    public function __construct($responseFactory, array $options = [])
+    public function __construct(ResponseFactoryInterface $responseFactory, array $options = [])
     {
-        if (!$responseFactory instanceof ResponseFactoryInterface && !$responseFactory instanceof ResponseFactory) {
+        if (!$responseFactory instanceof ResponseFactory) {
             throw new InvalidArgumentException(sprintf('First argument of %s must be an instance of %s or %s.', __CLASS__, ResponseFactoryInterface::class, ResponseFactory::class));
         }
 
