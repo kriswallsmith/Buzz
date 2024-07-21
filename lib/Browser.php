@@ -106,14 +106,18 @@ class Browser implements BuzzClientInterface
         $files = '';
         $boundary = uniqid('', true);
         foreach ($fields as $name => $field) {
-            if (!isset($field['path'])) {
-                $body[$name] = $field;
-            } else {
+            $fileContent = false;
+            if (isset($field['path'])) {
                 // This is a file
                 $fileContent = file_get_contents($field['path']);
-                if (false !== $fileContent) {
-                    $files .= $this->prepareMultipart($name, $fileContent, $boundary, $field);
-                }
+            } elseif (isset($field['contents'])) {
+                // This is a file content
+                $fileContent = $field['contents'];
+            } else {
+                $body[$name] = $field;
+            }
+            if (false !== $fileContent) {
+                $files .= $this->prepareMultipart($name, $fileContent, $boundary, $field);
             }
         }
 
