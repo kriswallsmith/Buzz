@@ -91,7 +91,7 @@ class Cookie
     {
         $cookieDomain = $this->getAttribute(static::ATTR_DOMAIN) ?? '';
 
-        if (str_starts_with($cookieDomain, '.')) {
+        if (0 === strpos($cookieDomain, '.')) {
             $pattern = '/\b'.preg_quote(substr($cookieDomain, 1), '/').'$/i';
 
             return (bool) preg_match($pattern, $domain);
@@ -109,7 +109,7 @@ class Cookie
     {
         $needle = $this->getAttribute(static::ATTR_PATH);
 
-        return null === $needle || str_starts_with($path, $needle);
+        return null === $needle || 0 === strpos($path, $needle);
     }
 
     /**
@@ -121,7 +121,7 @@ class Cookie
     public function fromSetCookieHeader(string $header, string $issuingDomain): void
     {
         list($this->name, $header) = explode('=', $header, 2);
-        if (!str_contains($header, ';')) {
+        if (false === strpos($header, ';')) {
             $this->value = $header;
             $header = null;
         } else {
@@ -131,7 +131,7 @@ class Cookie
         $this->clearAttributes();
         if (null !== $header) {
             foreach (array_map('trim', explode(';', trim($header))) as $pair) {
-                if (!str_contains($pair, '=')) {
+                if (false === strpos($pair, '=')) {
                     $name = $pair;
                     $value = null;
                 } else {

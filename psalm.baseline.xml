@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
+  <file src="lib/Browser.php">
+    <DeprecatedInterface>
+      <code><![CDATA[Browser]]></code>
+      <code><![CDATA[RequestFactoryInterface|RequestFactory]]></code>
+      <code><![CDATA[RequestFactoryInterface|RequestFactory]]></code>
+    </DeprecatedInterface>
+    <MissingClosureReturnType>
+      <code><![CDATA[function (RequestInterface $request) use ($m, $requestChainNext) {]]></code>
+      <code><![CDATA[function (RequestInterface $request) use ($requestChainLast, $responseChainNext) {]]></code>
+      <code><![CDATA[function (RequestInterface $request, ResponseInterface $response) use ($m, $responseChainNext) {]]></code>
+    </MissingClosureReturnType>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$lastRequest]]></code>
+      <code><![CDATA[$lastResponse]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="lib/Client/AbstractClient.php">
+    <DeprecatedInterface>
+      <code><![CDATA[ResponseFactoryInterface|ResponseFactory]]></code>
+      <code><![CDATA[ResponseFactoryInterface|ResponseFactory]]></code>
+    </DeprecatedInterface>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$e->getCode()]]></code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Client/AbstractCurl.php">
+    <MissingClosureParamType>
+      <code><![CDATA[$ch]]></code>
+      <code><![CDATA[$ch]]></code>
+      <code><![CDATA[$ch]]></code>
+      <code><![CDATA[$data]]></code>
+      <code><![CDATA[$data]]></code>
+      <code><![CDATA[$fd]]></code>
+      <code><![CDATA[$length]]></code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType>
+      <code><![CDATA[function ($ch, $fd, $length) use ($body) {]]></code>
+    </MissingClosureReturnType>
+    <MissingPropertyType>
+      <code><![CDATA[$handles]]></code>
+      <code><![CDATA[$maxHandles]]></code>
+    </MissingPropertyType>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[!\ini_get('open_basedir')]]></code>
+      <code><![CDATA[!\ini_get('safe_mode')]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="lib/Client/Curl.php">
+    <DeprecatedInterface>
+      <code><![CDATA[Curl]]></code>
+    </DeprecatedInterface>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$value = json_encode($curlInfo)]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="lib/Client/FileGetContents.php">
+    <DeprecatedInterface>
+      <code><![CDATA[FileGetContents]]></code>
+    </DeprecatedInterface>
+    <RedundantCast>
+      <code><![CDATA[(array) $http_response_header]]></code>
+    </RedundantCast>
+  </file>
+  <file src="lib/Client/MultiCurl.php">
+    <DeprecatedInterface>
+      <code><![CDATA[MultiCurl]]></code>
+    </DeprecatedInterface>
+    <InvalidNullableReturnType>
+      <code><![CDATA[ResponseInterface]]></code>
+    </InvalidNullableReturnType>
+    <MissingClosureParamType>
+      <code><![CDATA[$headers]]></code>
+      <code><![CDATA[$headers]]></code>
+      <code><![CDATA[$parent]]></code>
+      <code><![CDATA[$parent]]></code>
+      <code><![CDATA[$pushed]]></code>
+      <code><![CDATA[$pushed]]></code>
+    </MissingClosureParamType>
+    <MissingParamType>
+      <code><![CDATA[$handle]]></code>
+      <code><![CDATA[$handle]]></code>
+      <code><![CDATA[$headers]]></code>
+      <code><![CDATA[$responseFactory]]></code>
+      <code><![CDATA[$url]]></code>
+      <code><![CDATA[$url]]></code>
+    </MissingParamType>
+    <MissingPropertyType>
+      <code><![CDATA[$curlm]]></code>
+      <code><![CDATA[$queue]]></code>
+    </MissingPropertyType>
+    <MissingReturnType>
+      <code><![CDATA[addPushHandle]]></code>
+      <code><![CDATA[getPushedResponse]]></code>
+      <code><![CDATA[handlePushedResponse]]></code>
+      <code><![CDATA[hasPushResponse]]></code>
+    </MissingReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$responseToReturn]]></code>
+    </NullableReturnStatement>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[!$found]]></code>
+    </RiskyTruthyFalsyComparison>
+    <TypeDoesNotContainType>
+      <code><![CDATA[false === $this->curlm]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="lib/Configuration/ParameterBag.php">
+    <MissingReturnType>
+      <code><![CDATA[get]]></code>
+    </MissingReturnType>
+    <MissingTemplateParam>
+      <code><![CDATA[\IteratorAggregate]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Exception/CallbackException.php">
+    <MissingPropertyType>
+      <code><![CDATA[$request]]></code>
+    </MissingPropertyType>
+  </file>
+  <file src="lib/Message/HeaderConverter.php">
+    <PossiblyUndefinedArrayOffset>
+      <code><![CDATA[$value]]></code>
+    </PossiblyUndefinedArrayOffset>
+  </file>
+  <file src="lib/Message/ResponseBuilder.php">
+    <DeprecatedInterface>
+      <code><![CDATA[HTTPlugResponseFactory|PsrResponseFactory]]></code>
+    </DeprecatedInterface>
+    <MissingPropertyType>
+      <code><![CDATA[$responseFactory]]></code>
+    </MissingPropertyType>
+    <PossiblyUndefinedArrayOffset>
+      <code><![CDATA[$value]]></code>
+    </PossiblyUndefinedArrayOffset>
+  </file>
+  <file src="lib/Middleware/BasicAuthMiddleware.php">
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/BearerAuthMiddleware.php">
+    <MissingPropertyType>
+      <code><![CDATA[$accessToken]]></code>
+    </MissingPropertyType>
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/CallbackMiddleware.php">
+    <MissingPropertyType>
+      <code><![CDATA[$callable]]></code>
+    </MissingPropertyType>
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/ContentLengthMiddleware.php">
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/ContentTypeMiddleware.php">
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+    <PossiblyInvalidDocblockTag>
+      <code><![CDATA[@var bool $skip_detection True skip detection if stream size is bigger than $size_limit]]></code>
+      <code><![CDATA[@var int  $size_limit size stream limit for which the detection as to be skipped.]]></code>
+    </PossiblyInvalidDocblockTag>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[empty($streamSize)]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="lib/Middleware/Cookie/Cookie.php">
+    <MissingPropertyType>
+      <code><![CDATA[$attributes]]></code>
+      <code><![CDATA[$createdAt]]></code>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$value]]></code>
+    </MissingPropertyType>
+    <PossiblyUndefinedArrayOffset>
+      <code><![CDATA[$header]]></code>
+      <code><![CDATA[$header]]></code>
+    </PossiblyUndefinedArrayOffset>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[!$this->getAttribute(static::ATTR_DOMAIN)]]></code>
+      <code><![CDATA[$expires]]></code>
+      <code><![CDATA[$maxAge]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="lib/Middleware/Cookie/CookieJar.php">
+    <PossiblyNullArgument>
+      <code><![CDATA[$cookie->getAttribute(Cookie::ATTR_DOMAIN)]]></code>
+      <code><![CDATA[$cookie->getAttribute(Cookie::ATTR_PATH)]]></code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Middleware/CookieMiddleware.php">
+    <MissingPropertyType>
+      <code><![CDATA[$cookieJar]]></code>
+    </MissingPropertyType>
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/DigestAuthMiddleware.php">
+    <MissingPropertyType>
+      <code><![CDATA[$algorithm]]></code>
+      <code><![CDATA[$authenticationMethod]]></code>
+      <code><![CDATA[$clientNonce]]></code>
+      <code><![CDATA[$domain]]></code>
+      <code><![CDATA[$entityBody]]></code>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$nonce]]></code>
+      <code><![CDATA[$nonceCount]]></code>
+      <code><![CDATA[$opaque]]></code>
+      <code><![CDATA[$options]]></code>
+      <code><![CDATA[$password]]></code>
+      <code><![CDATA[$realm]]></code>
+      <code><![CDATA[$uri]]></code>
+      <code><![CDATA[$username]]></code>
+    </MissingPropertyType>
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+    <PossiblyUndefinedArrayOffset>
+      <code><![CDATA[$value]]></code>
+    </PossiblyUndefinedArrayOffset>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$cnonce]]></code>
+      <code><![CDATA[$cnonce]]></code>
+      <code><![CDATA[$cnonce]]></code>
+      <code><![CDATA[$cnonce]]></code>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$nc]]></code>
+      <code><![CDATA[$nonce]]></code>
+      <code><![CDATA[$nonce]]></code>
+      <code><![CDATA[$nonce]]></code>
+      <code><![CDATA[$opaque]]></code>
+      <code><![CDATA[$password]]></code>
+      <code><![CDATA[$password]]></code>
+      <code><![CDATA[$qop]]></code>
+      <code><![CDATA[$realm]]></code>
+      <code><![CDATA[$realm]]></code>
+      <code><![CDATA[$response]]></code>
+      <code><![CDATA[$str]]></code>
+      <code><![CDATA[$uri]]></code>
+      <code><![CDATA[$uri]]></code>
+      <code><![CDATA[$username]]></code>
+      <code><![CDATA[$username]]></code>
+      <code><![CDATA[$username]]></code>
+      <code><![CDATA[empty($qop)]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="lib/Middleware/History/Journal.php">
+    <MissingTemplateParam>
+      <code><![CDATA[\IteratorAggregate]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="lib/Middleware/HistoryMiddleware.php">
+    <MissingPropertyType>
+      <code><![CDATA[$startTime]]></code>
+    </MissingPropertyType>
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/LoggerMiddleware.php">
+    <MissingPropertyType>
+      <code><![CDATA[$level]]></code>
+      <code><![CDATA[$logger]]></code>
+      <code><![CDATA[$prefix]]></code>
+      <code><![CDATA[$startTime]]></code>
+    </MissingPropertyType>
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/MiddlewareInterface.php">
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+  <file src="lib/Middleware/WsseAuthMiddleware.php">
+    <MissingReturnType>
+      <code><![CDATA[handleRequest]]></code>
+      <code><![CDATA[handleResponse]]></code>
+    </MissingReturnType>
+  </file>
+</files>

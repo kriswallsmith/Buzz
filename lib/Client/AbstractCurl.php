@@ -99,7 +99,7 @@ abstract class AbstractCurl extends AbstractClient
         curl_setopt($curl, \CURLOPT_HEADERFUNCTION, function ($ch, $data) use ($responseBuilder) {
             $str = trim($data);
             if ('' !== $str) {
-                if (str_starts_with(strtolower($str), 'http/')) {
+                if (0 === strpos(strtolower($str), 'http/')) {
                     $responseBuilder->setStatus($str);
                 } else {
                     $responseBuilder->addHeader($str);

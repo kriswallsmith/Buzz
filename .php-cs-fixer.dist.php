@@ -16,5 +16,6 @@ return (new PhpCsFixer\Config())
         'declare_strict_types' => true,
         'no_superfluous_phpdoc_tags' => true,
         'nullable_type_declaration_for_default_null_value' => false,
+        'modernize_strpos' => false,
     ])
     ->setFinder($finder);

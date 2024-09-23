@@ -230,7 +230,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private function addPushHandle($headers, $handle)
     {
         foreach ($headers as $header) {
-            if (str_starts_with($header, ':path:')) {
+            if (0 === strpos($header, ':path:')) {
                 $path = substr($header, 6);
                 $url = (string) curl_getinfo($handle)['url'];
                 $url = str_replace((string) parse_url($url, \PHP_URL_PATH), $path, $url);
