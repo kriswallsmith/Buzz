@@ -1,6 +1,5 @@
+on: [ pull_request ]
 name: Static analysis
-
-on: [push, pull_request]
 
 jobs:
   phpstan:
@@ -9,17 +8,42 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: apcu, redis
+          coverage: none
+          tools: phpstan:1.12, cs2pr
 
       - name: Download dependencies
-        run: |
-          composer update --no-interaction --prefer-dist --optimize-autoloader
+        uses: ramsey/composer-install@v2
 
       - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga
+        run: phpstan analyze --no-progress --error-format=checkstyle | cs2pr
+
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          entrypoint: /composer/vendor/bin/phpstan
-          args: analyze --no-progress
+          php-version: 8.3
+          extensions: apcu, redis
+          coverage: none
+          tools: vimeo/psalm:5.26
+
+      - name: Download dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: Psalm
+        run: psalm --no-progress --output-format=github
 
   php-cs-fixer:
     name: PHP-CS-Fixer
@@ -27,21 +51,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          coverage: none
+          tools: php-cs-fixer:3.64, cs2pr
+
+      - name: Display PHP-CS-Fixer version
+        run: sleep 1 && php-cs-fixer --version
 
       - name: PHP-CS-Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga
-        with:
-          args: --dry-run --diff-format udiff
-
-  psalm:
-    name: Psalm
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Psalm
-        uses: docker://vimeo/psalm-github-actions
-        with:
-          args: --no-progress --show-info=false --stats
+        run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
