@@ -39,7 +39,7 @@ class Browser implements BuzzClientInterface
     public function __construct(BuzzClientInterface $client, $requestFactory)
     {
         if (!$requestFactory instanceof RequestFactoryInterface && !$requestFactory instanceof RequestFactory) {
-            throw new InvalidArgumentException(sprintf('Second argument of %s must be an instance of %s or %s.', __CLASS__, RequestFactoryInterface::class, RequestFactory::class));
+            throw new InvalidArgumentException(\sprintf('Second argument of %s must be an instance of %s or %s.', __CLASS__, RequestFactoryInterface::class, RequestFactory::class));
         }
 
         $this->client = $client;
@@ -222,9 +222,9 @@ class Browser implements BuzzClientInterface
         $fileHeaders = [];
 
         // Set a default content-disposition header
-        $fileHeaders['Content-Disposition'] = sprintf('form-data; name="%s"', $name);
+        $fileHeaders['Content-Disposition'] = \sprintf('form-data; name="%s"', $name);
         if (isset($data['filename'])) {
-            $fileHeaders['Content-Disposition'] .= sprintf('; filename="%s"', $data['filename']);
+            $fileHeaders['Content-Disposition'] .= \sprintf('; filename="%s"', $data['filename']);
         }
 
         // Set a default content-length header
@@ -239,7 +239,7 @@ class Browser implements BuzzClientInterface
         // Add start
         $output .= "--$boundary\r\n";
         foreach ($fileHeaders as $key => $value) {
-            $output .= sprintf("%s: %s\r\n", $key, $value);
+            $output .= \sprintf("%s: %s\r\n", $key, $value);
         }
         $output .= "\r\n";
         $output .= $content;

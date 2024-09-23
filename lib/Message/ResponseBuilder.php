@@ -54,7 +54,7 @@ final class ResponseBuilder
 
             // Make sure they are not empty
             $trimmed = trim($header);
-            if (false === strpos($trimmed, ':')) {
+            if (!str_contains($trimmed, ':')) {
                 continue;
             }
 
@@ -67,8 +67,8 @@ final class ResponseBuilder
     public function setStatus(string $input): void
     {
         $parts = explode(' ', $input, 3);
-        if (\count($parts) < 2 || 0 !== strpos(strtolower($parts[0]), 'http/')) {
-            throw new InvalidArgumentException(sprintf('"%s" is not a valid HTTP status line', $input));
+        if (\count($parts) < 2 || !str_starts_with(strtolower($parts[0]), 'http/')) {
+            throw new InvalidArgumentException(\sprintf('"%s" is not a valid HTTP status line', $input));
         }
 
         $this->response = $this->response->withStatus((int) $parts[1], isset($parts[2]) ? $parts[2] : '');

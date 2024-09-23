@@ -21,7 +21,7 @@ class DigestAuthListenerTest extends TestCase
             'WWW-Authenticate' => 'Digest realm="test", nonce="5PvRe0oZBQA=874ad6aea3519069f30dfc704e594dde6e01b2a6", algorithm=MD5, domain="/auth-digest/", qop="auth"',
             'Content-Length' => '401',
             'Content-Type' => 'text/html; charset=iso-8859-1',
-           ], "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">
+        ], "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">
 <html><head>
 <title>401 Authorization Required</title>
 </head><body>

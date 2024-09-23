@@ -20,9 +20,8 @@ class LoggerMiddleware implements MiddlewareInterface
     private $startTime;
 
     /**
-     * @param LoggerInterface $logger
-     * @param string          $level
-     * @param string|null     $prefix
+     * @param string      $level
+     * @param string|null $prefix
      */
     public function __construct(LoggerInterface $logger = null, $level = 'info', $prefix = null)
     {
@@ -41,7 +40,7 @@ class LoggerMiddleware implements MiddlewareInterface
     public function handleResponse(RequestInterface $request, ResponseInterface $response, callable $next)
     {
         $seconds = microtime(true) - $this->startTime;
-        $this->logger->log($this->level, sprintf('%sSent "%s %s" in %dms', $this->prefix, $request->getMethod(), $request->getUri(), round($seconds * 1000)));
+        $this->logger->log($this->level, \sprintf('%sSent "%s %s" in %dms', $this->prefix, $request->getMethod(), $request->getUri(), round($seconds * 1000)));
 
         return $next($request, $response);
     }

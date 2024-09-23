@@ -15,9 +15,9 @@ class ContentTypeMiddlewareTest extends TestCase
     {
         // XML
         $request = new Request('GET',
-                                'http://foo.com',
-                                [],
-                                '<?xml version="1.0" encoding="UTF-8"?>
+            'http://foo.com',
+            [],
+            '<?xml version="1.0" encoding="UTF-8"?>
                                 <note>
                                   <to>Lorem</to>
                                   <from>Ipsum</from>
@@ -34,11 +34,11 @@ class ContentTypeMiddlewareTest extends TestCase
 
         $this->assertEquals('application/xml', $updatedRequest->getHeaderLine('Content-Type'));
 
-        //JSON
+        // JSON
         $request = new Request('GET',
-                                'http://foo.com',
-                                [],
-                                '{
+            'http://foo.com',
+            [],
+            '{
                                   "userId": 1,
                                   "id": 1,
                                   "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",

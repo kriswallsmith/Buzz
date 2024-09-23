@@ -24,7 +24,7 @@ class WsseAuthMiddleware implements MiddlewareInterface
         $created = date('c');
         $digest = base64_encode(sha1(base64_decode($nonce).$created.$this->password, true));
 
-        $wsse = sprintf(
+        $wsse = \sprintf(
             'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"',
             $this->username,
             $digest,

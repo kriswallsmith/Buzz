@@ -8,15 +8,15 @@ use Psr\Http\Message\RequestInterface;
 
 class Cookie
 {
-    const ATTR_DOMAIN = 'domain';
+    public const ATTR_DOMAIN = 'domain';
 
-    const ATTR_PATH = 'path';
+    public const ATTR_PATH = 'path';
 
-    const ATTR_SECURE = 'secure';
+    public const ATTR_SECURE = 'secure';
 
-    const ATTR_MAX_AGE = 'max-age';
+    public const ATTR_MAX_AGE = 'max-age';
 
-    const ATTR_EXPIRES = 'expires';
+    public const ATTR_EXPIRES = 'expires';
 
     protected $name;
 
@@ -91,7 +91,7 @@ class Cookie
     {
         $cookieDomain = $this->getAttribute(static::ATTR_DOMAIN) ?? '';
 
-        if (0 === strpos($cookieDomain, '.')) {
+        if (str_starts_with($cookieDomain, '.')) {
             $pattern = '/\b'.preg_quote(substr($cookieDomain, 1), '/').'$/i';
 
             return (bool) preg_match($pattern, $domain);
@@ -109,7 +109,7 @@ class Cookie
     {
         $needle = $this->getAttribute(static::ATTR_PATH);
 
-        return null === $needle || 0 === strpos($path, $needle);
+        return null === $needle || str_starts_with($path, $needle);
     }
 
     /**
@@ -121,7 +121,7 @@ class Cookie
     public function fromSetCookieHeader(string $header, string $issuingDomain): void
     {
         list($this->name, $header) = explode('=', $header, 2);
-        if (false === strpos($header, ';')) {
+        if (!str_contains($header, ';')) {
             $this->value = $header;
             $header = null;
         } else {
@@ -131,7 +131,7 @@ class Cookie
         $this->clearAttributes();
         if (null !== $header) {
             foreach (array_map('trim', explode(';', trim($header))) as $pair) {
-                if (false === strpos($pair, '=')) {
+                if (!str_contains($pair, '=')) {
                     $name = $pair;
                     $value = null;
                 } else {

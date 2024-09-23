@@ -46,9 +46,6 @@ class CallbackLogger implements LoggerInterface
 
     private $callback;
 
-    /**
-     * @param $callback
-     */
     public function __construct(callable $callback)
     {
         $this->callback = $callback;

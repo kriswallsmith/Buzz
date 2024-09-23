@@ -200,8 +200,8 @@ class BuzzIntegrationTest extends BaseIntegrationTest
         }
 
         $curlOptions = [
-            CURLOPT_NOPROGRESS => false,
-            CURLOPT_PROGRESSFUNCTION => function ($curl, $downloadSize, $downloaded) {
+            \CURLOPT_NOPROGRESS => false,
+            \CURLOPT_PROGRESSFUNCTION => function ($curl, $downloadSize, $downloaded) {
                 return 1;
             },
         ];

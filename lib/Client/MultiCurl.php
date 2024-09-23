@@ -57,11 +57,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         parent::__construct($responseFactory, $options);
 
         if (
-            \PHP_VERSION_ID < 70215 ||
-            \PHP_VERSION_ID === 70300 ||
-            \PHP_VERSION_ID === 70301 ||
-            \PHP_VERSION_ID >= 80000 ||
-            !(CURL_VERSION_HTTP2 & curl_version()['features'])
+            \PHP_VERSION_ID < 70215
+            || \PHP_VERSION_ID === 70300
+            || \PHP_VERSION_ID === 70301
+            || \PHP_VERSION_ID >= 80000
+            || !(\CURL_VERSION_HTTP2 & curl_version()['features'])
         ) {
             // Dont use HTTP/2 push when it's unsupported or buggy, see https://bugs.php.net/76675
             $this->serverPushSupported = false;
@@ -126,7 +126,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         $resolver->setAllowedTypes('callback', 'callable');
 
         $resolver->setDefault('push_function_callback', function ($parent, $pushed, $headers) {
-            return CURL_PUSH_OK;
+            return \CURL_PUSH_OK;
         });
         $resolver->setAllowedTypes('push_function_callback', ['callable', 'null']);
 
@@ -175,11 +175,11 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         do {
             // Start processing each handler in the stack
             $mrc = curl_multi_exec($this->curlm, $stillRunning);
-        } while (CURLM_CALL_MULTI_PERFORM === $mrc);
+        } while (\CURLM_CALL_MULTI_PERFORM === $mrc);
 
         while ($info = curl_multi_info_read($this->curlm)) {
             // handle any completed requests
-            if (CURLMSG_DONE !== $info['msg']) {
+            if (\CURLMSG_DONE !== $info['msg']) {
                 continue;
             }
 
@@ -230,10 +230,10 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
     private function addPushHandle($headers, $handle)
     {
         foreach ($headers as $header) {
-            if (0 === strpos($header, ':path:')) {
+            if (str_starts_with($header, ':path:')) {
                 $path = substr($header, 6);
                 $url = (string) curl_getinfo($handle)['url'];
-                $url = str_replace((string) parse_url($url, PHP_URL_PATH), $path, $url);
+                $url = str_replace((string) parse_url($url, \PHP_URL_PATH), $path, $url);
                 $this->pushResponseHandles[$url] = $handle;
                 break;
             }
@@ -256,7 +256,7 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
 
         $content = curl_multi_getcontent($handle);
         // Check if we got some headers, if not, we do not bother to store it.
-        if (0 !== $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE)) {
+        if (0 !== $headerSize = curl_getinfo($handle, \CURLINFO_HEADER_SIZE)) {
             $this->pushedResponses[$found] = ['content' => $content, 'headerSize' => $headerSize];
             unset($this->pushResponseHandles[$found]);
         }
@@ -297,24 +297,24 @@ class MultiCurl extends AbstractCurl implements BatchClientInterface, BuzzClient
         if ($this->serverPushSupported) {
             $userCallbacks = $this->pushFunctions;
 
-            curl_multi_setopt($this->curlm, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
+            curl_multi_setopt($this->curlm, \CURLMOPT_PIPELINING, \CURLPIPE_MULTIPLEX);
             // We need to use $this->pushCb[] because of a bug in PHP
             curl_multi_setopt(
                 $this->curlm,
-                CURLMOPT_PUSHFUNCTION,
+                \CURLMOPT_PUSHFUNCTION,
                 $this->pushCb[] = function ($parent, $pushed, $headers) use ($userCallbacks) {
                     // If any callback say no, then do not accept.
                     foreach ($userCallbacks as $callback) {
-                        if (CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
-                            return CURL_PUSH_DENY;
+                        if (\CURL_PUSH_DENY === $callback($parent, $pushed, $headers)) {
+                            return \CURL_PUSH_DENY;
                         }
                     }
 
-                    curl_setopt($pushed, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($pushed, CURLOPT_HEADER, true);
+                    curl_setopt($pushed, \CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($pushed, \CURLOPT_HEADER, true);
                     $this->addPushHandle($headers, $pushed);
 
-                    return CURL_PUSH_OK;
+                    return \CURL_PUSH_OK;
                 }
             );
         }

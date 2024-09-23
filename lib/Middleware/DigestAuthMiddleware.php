@@ -43,20 +43,20 @@ class DigestAuthMiddleware implements MiddlewareInterface
      * OPTION_QOP_AUTH_INT       - Always use auth-int   (if available)
      * OPTION_QOP_AUTH           - Always use auth       (even if auth-int available).
      */
-    const OPTION_QOP_AUTH_INT = 1;
+    public const OPTION_QOP_AUTH_INT = 1;
 
-    const OPTION_QOP_AUTH = 2;
+    public const OPTION_QOP_AUTH = 2;
 
     /**
      * Ignore server request to downgrade authentication from Digest to Basic.
      * Breaks RFC compatibility, but ensures passwords are never sent using base64 which is trivial for an attacker to decode.
      */
-    const OPTION_IGNORE_DOWNGRADE_REQUEST = 4;
+    public const OPTION_IGNORE_DOWNGRADE_REQUEST = 4;
 
     /**
      * Discard Client Nonce on each request.
      */
-    const OPTION_DISCARD_CLIENT_NONCE = 8;
+    public const OPTION_DISCARD_CLIENT_NONCE = 8;
 
     private $options;
 
@@ -142,17 +142,17 @@ class DigestAuthMiddleware implements MiddlewareInterface
             if ($options & self::OPTION_QOP_AUTH) {
                 throw new \InvalidArgumentException('DigestAuthMiddleware: Only one value of OPTION_QOP_AUTH_INT or OPTION_QOP_AUTH may be set.');
             }
-            $this->options = $this->options | self::OPTION_QOP_AUTH_INT;
+            $this->options |= self::OPTION_QOP_AUTH_INT;
         } elseif ($options & self::OPTION_QOP_AUTH) {
-            $this->options = $this->options | self::OPTION_QOP_AUTH;
+            $this->options |= self::OPTION_QOP_AUTH;
         }
 
         if ($options & self::OPTION_IGNORE_DOWNGRADE_REQUEST) {
-            $this->options = $this->options | self::OPTION_IGNORE_DOWNGRADE_REQUEST;
+            $this->options |= self::OPTION_IGNORE_DOWNGRADE_REQUEST;
         }
 
         if ($options & self::OPTION_DISCARD_CLIENT_NONCE) {
-            $this->options = $this->options | self::OPTION_DISCARD_CLIENT_NONCE;
+            $this->options |= self::OPTION_DISCARD_CLIENT_NONCE;
         }
     }
 
@@ -252,7 +252,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         $password = $this->getPassword();
         $realm = $this->getRealm();
 
-        if (($username) && ($password) && ($realm)) {
+        if ($username && $password && $realm) {
             $algorithm = $this->getAlgorithm();
 
             if ('MD5' === $algorithm) {
@@ -262,7 +262,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
             } elseif ('MD5-sess' === $algorithm) {
                 $nonce = $this->getNonce();
                 $cnonce = $this->getClientNonce();
-                if (($nonce) && ($cnonce)) {
+                if ($nonce && $cnonce) {
                     $A1 = $this->hash("{$username}:{$realm}:{$password}").":{$nonce}:{$cnonce}";
 
                     return $this->hash($A1);
@@ -283,7 +283,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         $method = $this->getMethod();
         $uri = $this->getUri();
 
-        if (($method) && ($uri)) {
+        if ($method && $uri) {
             $qop = $this->getQOP();
 
             if (null === $qop || 'auth' === $qop) {
@@ -315,7 +315,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
             $realm = $this->getRealm();
             $nonce = $this->getNonce();
             $response = $this->getResponse();
-            if (($username) && ($realm) && ($nonce) && ($response)) {
+            if ($username && $realm && $nonce && $response) {
                 $uri = $this->getUri();
                 $opaque = $this->getOpaque();
                 $qop = $this->getQOP();
@@ -360,7 +360,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         if ('Basic' == $this->getAuthenticationMethod()) {
             $username = $this->getUsername();
             $password = $this->getPassword();
-            if (($username) && ($password)) {
+            if ($username && $password) {
                 $header = 'Basic '.base64_encode("{$username}:{$password}");
 
                 return $header;
@@ -442,7 +442,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
         $nonce = $this->getNonce();
         $HA2 = $this->getHA2();
 
-        if (null !== $HA1 && ($nonce) && null !== $HA2) {
+        if (null !== $HA1 && $nonce && null !== $HA2) {
             $qop = $this->getQOP();
 
             if (empty($qop)) {
@@ -453,7 +453,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
 
             $cnonce = $this->getClientNonce();
             $nc = $this->getNonceCount();
-            if (($cnonce) && ($nc)) {
+            if ($cnonce && $nc) {
                 $response = $this->hash("{$HA1}:{$nonce}:{$nc}:{$cnonce}:{$qop}:{$HA2}");
 
                 return $response;
@@ -489,6 +489,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
                 }
             }
         }
+
         // Server has not specified any value for Quality of Protection so return null
         return null;
     }
@@ -541,7 +542,6 @@ class DigestAuthMiddleware implements MiddlewareInterface
         foreach ($nameValuePairs as $name => $value) {
             switch ($name) {
                 case 'message-qop':
-
                     break;
                 case 'nextnonce':
                     // This function needs to only set the Nonce once the rspauth has been verified.

@@ -94,7 +94,7 @@ class CookieJar
      */
     private function getHash(Cookie $cookie): string
     {
-        return sha1(sprintf(
+        return sha1(\sprintf(
             '%s|%s|%s',
             $cookie->getName(),
             $cookie->getAttribute(Cookie::ATTR_DOMAIN),

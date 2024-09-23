@@ -31,9 +31,9 @@ class ContentTypeMiddleware implements MiddlewareInterface
     /**
      * @param array $config {
      *
-     *     @var bool $skip_detection True skip detection if stream size is bigger than $size_limit
-     *     @var int $size_limit size stream limit for which the detection as to be skipped.
-     * }
+     * @var bool $skip_detection True skip detection if stream size is bigger than $size_limit
+     * @var int  $size_limit size stream limit for which the detection as to be skipped.
+     *           }
      */
     public function __construct(array $config = [])
     {
@@ -91,7 +91,7 @@ class ContentTypeMiddleware implements MiddlewareInterface
         $stream->rewind();
         json_decode($stream->getContents());
 
-        return JSON_ERROR_NONE === json_last_error();
+        return \JSON_ERROR_NONE === json_last_error();
     }
 
     private function isXml(StreamInterface $stream): bool
