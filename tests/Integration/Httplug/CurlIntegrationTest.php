@@ -17,6 +17,7 @@ class CurlIntegrationTest extends BaseIntegrationTest
 
     /**
      * @dataProvider requestProvider
+     *
      * @group        integration
      */
     public function testSendRequest($method, $uri, array $headers, $body)
@@ -32,6 +33,7 @@ class CurlIntegrationTest extends BaseIntegrationTest
 
     /**
      * @dataProvider requestWithOutcomeProvider
+     *
      * @group        integration
      */
     public function testSendRequestWithOutcome($uriAndOutcome, $protocolVersion, array $headers, $body)

@@ -68,7 +68,7 @@ final class ResponseBuilder
     {
         $parts = explode(' ', $input, 3);
         if (\count($parts) < 2 || 0 !== strpos(strtolower($parts[0]), 'http/')) {
-            throw new InvalidArgumentException(sprintf('"%s" is not a valid HTTP status line', $input));
+            throw new InvalidArgumentException(\sprintf('"%s" is not a valid HTTP status line', $input));
         }
 
         $this->response = $this->response->withStatus((int) $parts[1], isset($parts[2]) ? $parts[2] : '');

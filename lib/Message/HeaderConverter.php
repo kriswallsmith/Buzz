@@ -30,10 +30,10 @@ class HeaderConverter
 
         foreach ($headers as $key => $values) {
             if (!\is_array($values)) {
-                $buzz[] = sprintf('%s: %s', $key, $values);
+                $buzz[] = \sprintf('%s: %s', $key, $values);
             } else {
                 foreach ($values as $value) {
-                    $buzz[] = sprintf('%s: %s', $key, $value);
+                    $buzz[] = \sprintf('%s: %s', $key, $value);
                 }
             }
         }

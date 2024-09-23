@@ -32,7 +32,7 @@ class Journal implements \Countable, \IteratorAggregate
 
     public function addEntry(Entry $entry): void
     {
-        array_push($this->entries, $entry);
+        $this->entries[] = $entry;
         $this->entries = \array_slice($this->entries, $this->getLimit() * -1);
         end($this->entries);
     }

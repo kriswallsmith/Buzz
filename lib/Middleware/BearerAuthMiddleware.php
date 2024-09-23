@@ -23,7 +23,7 @@ class BearerAuthMiddleware implements MiddlewareInterface
 
     public function handleRequest(RequestInterface $request, callable $next)
     {
-        $request = $request->withAddedHeader('Authorization', sprintf('Bearer %s', $this->accessToken));
+        $request = $request->withAddedHeader('Authorization', \sprintf('Bearer %s', $this->accessToken));
 
         return $next($request);
     }

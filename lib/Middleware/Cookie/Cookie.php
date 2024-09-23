@@ -8,15 +8,15 @@ use Psr\Http\Message\RequestInterface;
 
 class Cookie
 {
-    const ATTR_DOMAIN = 'domain';
+    public const ATTR_DOMAIN = 'domain';
 
-    const ATTR_PATH = 'path';
+    public const ATTR_PATH = 'path';
 
-    const ATTR_SECURE = 'secure';
+    public const ATTR_SECURE = 'secure';
 
-    const ATTR_MAX_AGE = 'max-age';
+    public const ATTR_MAX_AGE = 'max-age';
 
-    const ATTR_EXPIRES = 'expires';
+    public const ATTR_EXPIRES = 'expires';
 
     protected $name;
 
