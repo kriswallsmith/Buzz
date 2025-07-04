@@ -23,7 +23,7 @@ class LoggerMiddleware implements MiddlewareInterface
      * @param string      $level
      * @param string|null $prefix
      */
-    public function __construct(LoggerInterface $logger = null, $level = 'info', $prefix = null)
+    public function __construct(?LoggerInterface $logger = null, $level = 'info', $prefix = null)
     {
         $this->logger = $logger ?: new NullLogger();
         $this->level = $level;

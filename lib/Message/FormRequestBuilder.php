@@ -27,7 +27,7 @@ class FormRequestBuilder
         $this->data[$name] = $value;
     }
 
-    public function addFile(string $name, string $path, string $contentType = null, string $filename = null): void
+    public function addFile(string $name, string $path, ?string $contentType = null, ?string $filename = null): void
     {
         $this->files[$name] = [
             'path' => $path,

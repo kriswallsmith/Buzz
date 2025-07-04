@@ -42,7 +42,7 @@ A callback function that is called after a request has been sent.
 ```php
 use Nyholm\Psr7\Request;
 
-$callback = function(RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) {
+$callback = function(RequestInterface $request, ?ResponseInterface $response = null, ?ClientException $exception = null) {
     // Process the response
 };
 
