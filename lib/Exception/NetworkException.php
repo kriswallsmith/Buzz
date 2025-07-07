@@ -17,7 +17,7 @@ class NetworkException extends ClientException implements PsrNetworkException
      */
     private $request;
 
-    public function __construct(RequestInterface $request, string $message = '', int $code = 0, \Throwable $previous = null)
+    public function __construct(RequestInterface $request, string $message = '', int $code = 0, ?\Throwable $previous = null)
     {
         $this->request = $request;
         parent::__construct($message, $code, $previous);

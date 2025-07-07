@@ -168,7 +168,7 @@ class BuzzIntegrationTest extends BaseIntegrationTest
         $client = new MultiCurl(new Psr17Factory(), ['timeout' => 30]);
 
         $calls = [];
-        $callback = function (RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$calls) {
+        $callback = function (RequestInterface $request, ?ResponseInterface $response = null, ?ClientException $exception = null) use (&$calls) {
             $calls[] = \func_get_args();
         };
 
@@ -254,7 +254,7 @@ class BuzzIntegrationTest extends BaseIntegrationTest
         }
 
         $newResponse = null;
-        $options['callback'] = function (RequestInterface $request, ResponseInterface $response = null, ClientException $exception = null) use (&$newResponse) {
+        $options['callback'] = function (RequestInterface $request, ?ResponseInterface $response = null, ?ClientException $exception = null) use (&$newResponse) {
             $newResponse = $response;
         };
         $client->sendAsyncRequest($request, $options);

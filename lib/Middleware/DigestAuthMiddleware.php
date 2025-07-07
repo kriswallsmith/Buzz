@@ -63,7 +63,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
     /**
      * Set OPTION_QOP_BEST_AVAILABLE and OPTION_DISCARD_CLIENT_NONCE by default.
      */
-    public function __construct(string $username = null, string $password = null, string $realm = null)
+    public function __construct(?string $username = null, ?string $password = null, ?string $realm = null)
     {
         $this->setUsername($username);
         $this->setPassword($password);
@@ -713,7 +713,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      *
      * @param string $entityBody the body of the entity (The unencoded request minus the headers)
      */
-    private function setEntityBody(string $entityBody = null): void
+    private function setEntityBody(?string $entityBody = null): void
     {
         $this->entityBody = $entityBody;
     }
@@ -725,7 +725,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      *
      * @throws \InvalidArgumentException if $method is set to anything other than GET,POST,PUT,DELETE or HEAD
      */
-    private function setMethod(string $method = null): void
+    private function setMethod(?string $method = null): void
     {
         if ('GET' == $method) {
             $this->method = 'GET';
@@ -761,7 +761,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      *
      * @param string $nonce The server nonce value
      */
-    private function setNonce(string $nonce = null): void
+    private function setNonce(?string $nonce = null): void
     {
         $this->nonce = $nonce;
     }
@@ -804,7 +804,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      *
      * @param string $uri The uri
      */
-    private function setUri(string $uri = null): void
+    private function setUri(?string $uri = null): void
     {
         $this->uri = $uri;
     }
@@ -816,7 +816,7 @@ class DigestAuthMiddleware implements MiddlewareInterface
      *
      * @return string returns the original string without the quotation marks at either end
      */
-    private function unquoteString(string $str = null): ?string
+    private function unquoteString(?string $str = null): ?string
     {
         if ($str) {
             if ('"' == substr($str, 0, 1)) {
