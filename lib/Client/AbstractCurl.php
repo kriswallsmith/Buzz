@@ -193,7 +193,7 @@ abstract class AbstractCurl extends AbstractClient
             curl_setopt($curl, \CURLOPT_PROXY, $proxy);
         }
 
-        $canFollow = !\ini_get('safe_mode') && !\ini_get('open_basedir') && $options->get('allow_redirects');
+        $canFollow = !\ini_get('open_basedir') && $options->get('allow_redirects');
         curl_setopt($curl, \CURLOPT_FOLLOWLOCATION, $canFollow);
         curl_setopt($curl, \CURLOPT_MAXREDIRS, $canFollow ? $options->get('max_redirects') : 0);
         curl_setopt($curl, \CURLOPT_SSL_VERIFYPEER, $options->get('verify') ? 1 : 0);
