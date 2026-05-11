@@ -10,8 +10,8 @@ jobs:
     strategy:
       max-parallel: 10
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
-        sf_version: ['3.4.*', '4.4.*', '5.0.*', '6.4.*', '7.0.*']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+        sf_version: ['3.4.*', '4.4.*', '5.0.*', '6.4.*', '7.4.*', '8.0.*']
 
     steps:
       - name: Set up PHP
@@ -90,11 +90,6 @@ jobs:
 
       - name: Run tests
         run: ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
-
-      - name: Upload coverage
-        run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover coverage.xml || true
 
   h2push:
     name: HTTP/2 Server Push
